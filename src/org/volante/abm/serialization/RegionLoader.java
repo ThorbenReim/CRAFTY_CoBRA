@@ -181,7 +181,9 @@ public class RegionLoader {
 		persister.setRegion(region);
 
 		readPmParameters();
+
 		loadAgentTypes();
+
 		loadModels();
 		initialiseCells();
 		passInfoToRegion();

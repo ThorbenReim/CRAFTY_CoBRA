@@ -1846,6 +1846,11 @@
       <lowerValue xsi:type="uml:LiteralInteger"/>
       <upperValue xsi:type="uml:LiteralUnlimitedNatural" value="1"/>
     </ownedParameter>
+    <ownedTemplateSignature xsi:type="uml:RedefinableTemplateSignature" name="onEvent">
+      <ownedParameter xsi:type="uml:ClassifierTemplateParameter">
+        <ownedParameteredElement xsi:type="uml:Class" name="T"/>
+      </ownedParameter>
+    </ownedTemplateSignature>
   </uml:Operation>
   <uml:Operation name="onEvent" visibility="public">
     <ownedParameter visibility="public" type="/0/@packagedElement.0/@packagedElement.1/@packagedElement.5" direction="return">
@@ -1856,6 +1861,11 @@
       <lowerValue xsi:type="uml:LiteralInteger"/>
       <upperValue xsi:type="uml:LiteralUnlimitedNatural" value="1"/>
     </ownedParameter>
+    <ownedTemplateSignature xsi:type="uml:RedefinableTemplateSignature" name="onEvent">
+      <ownedParameter xsi:type="uml:ClassifierTemplateParameter">
+        <ownedParameteredElement xsi:type="uml:Class" name="T"/>
+      </ownedParameter>
+    </ownedTemplateSignature>
   </uml:Operation>
   <uml:Operation name="onEvent" visibility="public">
     <ownedParameter visibility="public" type="/0/@packagedElement.0/@packagedElement.1/@packagedElement.5" direction="return">
@@ -1866,5 +1876,10 @@
       <lowerValue xsi:type="uml:LiteralInteger"/>
       <upperValue xsi:type="uml:LiteralUnlimitedNatural" value="1"/>
     </ownedParameter>
+    <ownedTemplateSignature xsi:type="uml:RedefinableTemplateSignature" name="onEvent">
+      <ownedParameter xsi:type="uml:ClassifierTemplateParameter">
+        <ownedParameteredElement xsi:type="uml:Class" name="T"/>
+      </ownedParameter>
+    </ownedTemplateSignature>
   </uml:Operation>
 </xmi:XMI>

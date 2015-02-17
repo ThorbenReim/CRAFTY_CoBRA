@@ -137,14 +137,14 @@ public interface Agent {
 	 * 
 	 * Returns useful descriptive information about this agent
 	 * 
-	 * @return
+	 * @return description
 	 */
 	public String infoString();
 
 	/**
 	 * Returns the agent's current age in years
 	 * 
-	 * @return
+	 * @return age
 	 */
 	public int getAge();
 
