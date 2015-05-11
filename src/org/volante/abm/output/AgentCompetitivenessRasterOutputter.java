@@ -24,6 +24,7 @@
 package org.volante.abm.output;
 
 import org.volante.abm.data.Cell;
+import org.volante.abm.example.AgentPropertyIds;
 
 /**
  * @author Sascha Holzhauer
@@ -36,7 +37,7 @@ public class AgentCompetitivenessRasterOutputter extends RasterOutputter {
 	 */
 	@Override
 	public double apply(Cell c) {
-		return c.getOwner().getCompetitiveness();
+		return c.getOwner().getProperty(AgentPropertyIds.COMPETITIVENESS);
 	}
 
 	/**

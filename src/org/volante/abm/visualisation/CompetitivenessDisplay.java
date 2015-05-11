@@ -27,39 +27,41 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalComponent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 
 
-public class CompetitivenessDisplay extends DatatypeDisplay<PotentialAgent> implements Display,
+public class CompetitivenessDisplay extends DatatypeDisplay<FunctionalComponent> implements Display,
 		ActionListener {
 	private static final long	serialVersionUID	= 7016557610830690077L;
 
-	PotentialAgent				agentType			= null;
+	FunctionalRole fr = null;
 
 	@Override
 	public double getVal(Cell c) {
-		if (agentType == null) {
+		if (fr == null) {
 			return Double.NaN;
 		}
-		return c.getRegion().getCompetitiveness(agentType, c);
+		return c.getRegion().getCompetitiveness(fr.getNewFunctionalComp(null),
+				c);
 	}
 
 	@Override
 	public Collection<String> getNames() {
 		Set<String> names = new HashSet<String>();
-		for (PotentialAgent a : region.getAllPotentialAgents()) {
-			names.add(a.getID());
+		for (FunctionalRole fr : region.getFunctionalRoleMapByLabel().values()) {
+			names.add(fr.getLabel());
 		}
 		return names;
 	}
 
 	@Override
 	public void setupType(String type) {
-		agentType = null;
-		for (PotentialAgent a : region.getAllPotentialAgents()) {
-			if (a.getID().equals(type)) {
-				agentType = a;
+		fr = null;
+		for (FunctionalRole fr : region.getFunctionalRoleMapByLabel().values()) {
+			if (fr.getLabel().equals(type)) {
+				this.fr = fr;
 			}
 		}
 	}

@@ -31,6 +31,7 @@ import static java.lang.Math.pow;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,8 +41,8 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.GeoAgent;
-import org.volante.abm.agent.PotentialAgent;
 import org.volante.abm.agent.SocialAgent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
@@ -178,15 +179,21 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 		}
 
 		super.allocateLand(r); // Puts the best agent on any unmanaged cells
-		Score<PotentialAgent> compScore = new Score<PotentialAgent>()
+		Score<FunctionalRole> compScore = new Score<FunctionalRole>()
 		{
 			@Override
-			public double getScore(PotentialAgent a)
+			public double getScore(FunctionalRole a)
 			{
-				return pow(r.getCompetitiveness(a, perfectCell), probabilityExponent);
+				return pow(r.getCompetitiveness(a,
+						perfectCell), probabilityExponent);
 			}
 		};
-		Map<PotentialAgent, Double> scores = scoreMap(r.getPotentialAgents(),
+		
+		Set<FunctionalRole> fComps = new LinkedHashSet<FunctionalRole>();
+		for (FunctionalRole fRole : r.getFunctionalRoleMapByLabel().values()) {
+			fComps.add(fRole);
+		}
+		Map<FunctionalRole, Double> scores = scoreMap(fComps,
 				compScore);
 
 		logger.info("Number of derived take overs: " + numTakeoversDerived
@@ -221,7 +228,7 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 	 * r.setOwnership( agent, c ); break; } } }
 	 */
 
-	public void tryToComeIn(final PotentialAgent a, final Region r) {
+	public void tryToComeIn(final FunctionalRole a, final Region r) {
 		if (a == null) {
 			return; // In the rare case that all have 0 competitiveness, a can be null
 		}
@@ -260,9 +267,11 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 
 		for (Cell c : sorted) {
 			// if (competitiveness.get(c) < a.getGivingUp()) return;
-			if (competitiveness.get(c) > a.getGivingUp()) {
+			if (competitiveness.get(c) > a
+					.getAssociatedGivingUpThreshold()) {
 				boolean canTake = c.getOwner().canTakeOver(c, competitiveness.get(c));
 				if (canTake) {
+					// TODO
 					Agent agent = a.createAgent(r);
 
 					for (TakeoverObserver observer : takeoverObserver) {

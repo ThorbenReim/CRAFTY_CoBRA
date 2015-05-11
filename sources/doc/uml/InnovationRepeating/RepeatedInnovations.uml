@@ -7856,7 +7856,7 @@
               <packagedElement xmi:type="uml:Dependency" xmi:id="_dY4M8DFdEeSqaonJ_8gtAQ" client="_dY4MUjFdEeSqaonJ_8gtAQ" supplier="_dY5a4TFdEeSqaonJ_8gtAQ"/>
               <packagedElement xmi:type="uml:Dependency" xmi:id="_dY4M8TFdEeSqaonJ_8gtAQ" client="_dY4MUjFdEeSqaonJ_8gtAQ" supplier="_dY-5TzFdEeSqaonJ_8gtAQ"/>
               <packagedElement xmi:type="uml:Dependency" xmi:id="_dY4M8jFdEeSqaonJ_8gtAQ" client="_dY4MUjFdEeSqaonJ_8gtAQ" supplier="_dY9qJjFdEeSqaonJ_8gtAQ"/>
-              <packagedElement xmi:type="uml:Class" xmi:id="_dY4M8zFdEeSqaonJ_8gtAQ" name="org.volante.abm.optimization.OptimizationAllocationModel&lt;java.util.List&lt;org.volante.abm.agent.PotentialAgent>>">
+              <packagedElement xmi:type="uml:Class" xmi:id="_dY4M8zFdEeSqaonJ_8gtAQ" name="org.volante.abm.optimization.OptimizationAllocationModel&lt;java.util.List&lt;org.volante.abm.agent.fr.PotentialAgent>>">
                 <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY4M9DFdEeSqaonJ_8gtAQ" signature="_dY4K0DFdEeSqaonJ_8gtAQ">
                   <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY4M9TFdEeSqaonJ_8gtAQ" actual="_dY9tUDFdEeSqaonJ_8gtAQ" formal="_dY4K0TFdEeSqaonJ_8gtAQ"/>
                 </templateBinding>
@@ -16954,7 +16954,7 @@
                   <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY8bqTFdEeSqaonJ_8gtAQ" actual="_dY1vNzFdEeSqaonJ_8gtAQ" formal="_dY7PaDFdEeSqaonJ_8gtAQ"/>
                 </templateBinding>
               </packagedElement>
-              <packagedElement xmi:type="uml:Class" xmi:id="_dY8bqjFdEeSqaonJ_8gtAQ" name="org.volante.abm.visualisation.DatatypeDisplay&lt;org.volante.abm.agent.PotentialAgent>">
+              <packagedElement xmi:type="uml:Class" xmi:id="_dY8bqjFdEeSqaonJ_8gtAQ" name="org.volante.abm.visualisation.DatatypeDisplay&lt;org.volante.abm.agent.fr.PotentialAgent>">
                 <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY8bqzFdEeSqaonJ_8gtAQ" signature="_dY7PZzFdEeSqaonJ_8gtAQ">
                   <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY8brDFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY7PaDFdEeSqaonJ_8gtAQ"/>
                 </templateBinding>
@@ -17562,12 +17562,12 @@
                   </ownedOperation>
                 </packagedElement>
                 <packagedElement xmi:type="uml:Interface" xmi:id="_dY8dSTFdEeSqaonJ_8gtAQ" name="SelectionPolicy"/>
-                <packagedElement xmi:type="uml:Class" xmi:id="_dY8dSjFdEeSqaonJ_8gtAQ" name="org.apache.commons.math3.genetics.OnePointCrossover&lt;org.volante.abm.agent.PotentialAgent>">
+                <packagedElement xmi:type="uml:Class" xmi:id="_dY8dSjFdEeSqaonJ_8gtAQ" name="org.apache.commons.math3.genetics.OnePointCrossover&lt;org.volante.abm.agent.fr.PotentialAgent>">
                   <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY8dSzFdEeSqaonJ_8gtAQ" signature="_dY8dPTFdEeSqaonJ_8gtAQ">
                     <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY8dTDFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY8dPjFdEeSqaonJ_8gtAQ"/>
                   </templateBinding>
                 </packagedElement>
-                <packagedElement xmi:type="uml:Class" xmi:id="_dY8dTTFdEeSqaonJ_8gtAQ" name="org.apache.commons.math3.genetics.AbstractListChromosome&lt;org.volante.abm.agent.PotentialAgent>">
+                <packagedElement xmi:type="uml:Class" xmi:id="_dY8dTTFdEeSqaonJ_8gtAQ" name="org.apache.commons.math3.genetics.AbstractListChromosome&lt;org.volante.abm.agent.fr.PotentialAgent>">
                   <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY8dTjFdEeSqaonJ_8gtAQ" signature="_dY8dAjFdEeSqaonJ_8gtAQ">
                     <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY8dTzFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY8dAzFdEeSqaonJ_8gtAQ"/>
                   </templateBinding>
@@ -18943,7 +18943,7 @@
                 </ownedOperation>
               </nestedClassifier>
             </packagedElement>
-            <packagedElement xmi:type="uml:Interface" xmi:id="_dY9FpjFdEeSqaonJ_8gtAQ" name="com.moseph.modelutils.Utilities.Score&lt;org.volante.abm.agent.PotentialAgent>">
+            <packagedElement xmi:type="uml:Interface" xmi:id="_dY9FpjFdEeSqaonJ_8gtAQ" name="com.moseph.modelutils.Utilities.Score&lt;org.volante.abm.agent.fr.PotentialAgent>">
               <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY9FpzFdEeSqaonJ_8gtAQ" signature="_dY9FmjFdEeSqaonJ_8gtAQ">
                 <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9FqDFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY9FmzFdEeSqaonJ_8gtAQ"/>
               </templateBinding>
@@ -19171,7 +19171,7 @@
                   <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9GPjFdEeSqaonJ_8gtAQ" actual="_dY9rtTFdEeSqaonJ_8gtAQ" formal="_dY9GITFdEeSqaonJ_8gtAQ"/>
                 </templateBinding>
               </packagedElement>
-              <packagedElement xmi:type="uml:Interface" xmi:id="_dY9GPzFdEeSqaonJ_8gtAQ" name="com.google.common.base.Function&lt;org.volante.abm.data.Regions,java.lang.Iterable&lt;org.volante.abm.agent.PotentialAgent>>">
+              <packagedElement xmi:type="uml:Interface" xmi:id="_dY9GPzFdEeSqaonJ_8gtAQ" name="com.google.common.base.Function&lt;org.volante.abm.data.Regions,java.lang.Iterable&lt;org.volante.abm.agent.fr.PotentialAgent>>">
                 <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY9GQDFdEeSqaonJ_8gtAQ" signature="_dY9GHjFdEeSqaonJ_8gtAQ">
                   <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9GQTFdEeSqaonJ_8gtAQ" actual="_dY2VdTFdEeSqaonJ_8gtAQ" formal="_dY9GHzFdEeSqaonJ_8gtAQ"/>
                 </templateBinding>
@@ -19446,7 +19446,7 @@
                   <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9qPjFdEeSqaonJ_8gtAQ" actual="_dY2VkzFdEeSqaonJ_8gtAQ" formal="_dY9poTFdEeSqaonJ_8gtAQ"/>
                 </templateBinding>
               </packagedElement>
-              <packagedElement xmi:type="uml:Interface" xmi:id="_dY9qPzFdEeSqaonJ_8gtAQ" name="com.google.common.collect.Multimap&lt;org.volante.abm.agent.PotentialAgent,org.volante.abm.update.AgentTypeUpdater.CapitalUpdateFunction>">
+              <packagedElement xmi:type="uml:Interface" xmi:id="_dY9qPzFdEeSqaonJ_8gtAQ" name="com.google.common.collect.Multimap&lt;org.volante.abm.agent.fr.PotentialAgent,org.volante.abm.update.AgentTypeUpdater.CapitalUpdateFunction>">
                 <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY9qQDFdEeSqaonJ_8gtAQ" signature="_dY9p_DFdEeSqaonJ_8gtAQ">
                   <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9qQTFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY9p_TFdEeSqaonJ_8gtAQ"/>
                 </templateBinding>
@@ -19454,7 +19454,7 @@
                   <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9qQzFdEeSqaonJ_8gtAQ" actual="_dY6o1jFdEeSqaonJ_8gtAQ" formal="_dY9p_zFdEeSqaonJ_8gtAQ"/>
                 </templateBinding>
               </packagedElement>
-              <packagedElement xmi:type="uml:Interface" xmi:id="_dY9qRDFdEeSqaonJ_8gtAQ" name="com.google.common.collect.Multiset&lt;org.volante.abm.agent.PotentialAgent>">
+              <packagedElement xmi:type="uml:Interface" xmi:id="_dY9qRDFdEeSqaonJ_8gtAQ" name="com.google.common.collect.Multiset&lt;org.volante.abm.agent.fr.PotentialAgent>">
                 <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY9qRTFdEeSqaonJ_8gtAQ" signature="_dY9qJzFdEeSqaonJ_8gtAQ">
                   <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9qRjFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY9qKDFdEeSqaonJ_8gtAQ"/>
                 </templateBinding>
@@ -19988,7 +19988,7 @@
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9rtzFdEeSqaonJ_8gtAQ" actual="_dY2VkzFdEeSqaonJ_8gtAQ" formal="_dY9q8DFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
           </packagedElement>
-          <packagedElement xmi:type="uml:Interface" xmi:id="_dY9ruDFdEeSqaonJ_8gtAQ" name="java.lang.Iterable&lt;org.volante.abm.agent.PotentialAgent>">
+          <packagedElement xmi:type="uml:Interface" xmi:id="_dY9ruDFdEeSqaonJ_8gtAQ" name="java.lang.Iterable&lt;org.volante.abm.agent.fr.PotentialAgent>">
             <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY9ruTFdEeSqaonJ_8gtAQ" signature="_dY9q7zFdEeSqaonJ_8gtAQ">
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9rujFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY9q8DFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
@@ -20524,7 +20524,7 @@
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9tIzFdEeSqaonJ_8gtAQ" actual="_dY1HhjFdEeSqaonJ_8gtAQ" formal="_dY9sQjFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
           </packagedElement>
-          <packagedElement xmi:type="uml:Interface" xmi:id="_dY9tJDFdEeSqaonJ_8gtAQ" name="java.util.Set&lt;org.volante.abm.agent.PotentialAgent>">
+          <packagedElement xmi:type="uml:Interface" xmi:id="_dY9tJDFdEeSqaonJ_8gtAQ" name="java.util.Set&lt;org.volante.abm.agent.fr.PotentialAgent>">
             <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY9tJTFdEeSqaonJ_8gtAQ" signature="_dY9sQTFdEeSqaonJ_8gtAQ">
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9tJjFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY9sQjFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
@@ -20547,7 +20547,7 @@
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9tMTFdEeSqaonJ_8gtAQ" actual="_dY2VkzFdEeSqaonJ_8gtAQ" formal="_dY9sWjFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
           </packagedElement>
-          <packagedElement xmi:type="uml:Interface" xmi:id="_dY9tMjFdEeSqaonJ_8gtAQ" name="java.util.Collection&lt;org.volante.abm.agent.PotentialAgent>">
+          <packagedElement xmi:type="uml:Interface" xmi:id="_dY9tMjFdEeSqaonJ_8gtAQ" name="java.util.Collection&lt;org.volante.abm.agent.fr.PotentialAgent>">
             <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY9tMzFdEeSqaonJ_8gtAQ" signature="_dY9sWTFdEeSqaonJ_8gtAQ">
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9tNDFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY9sWjFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
@@ -20575,7 +20575,7 @@
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9tQjFdEeSqaonJ_8gtAQ" actual="_dY40jDFdEeSqaonJ_8gtAQ" formal="_dY9sQjFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
           </packagedElement>
-          <packagedElement xmi:type="uml:Interface" xmi:id="_dY9tQzFdEeSqaonJ_8gtAQ" name="java.util.Map&lt;org.volante.abm.agent.PotentialAgent,java.lang.Double>">
+          <packagedElement xmi:type="uml:Interface" xmi:id="_dY9tQzFdEeSqaonJ_8gtAQ" name="java.util.Map&lt;org.volante.abm.agent.fr.PotentialAgent,java.lang.Double>">
             <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY9tRDFdEeSqaonJ_8gtAQ" signature="_dY9sGzFdEeSqaonJ_8gtAQ">
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9tRTFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY9sHDFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
@@ -20596,7 +20596,7 @@
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9tTzFdEeSqaonJ_8gtAQ" actual="_dY2VkzFdEeSqaonJ_8gtAQ" formal="_dY9s3DFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
           </packagedElement>
-          <packagedElement xmi:type="uml:Interface" xmi:id="_dY9tUDFdEeSqaonJ_8gtAQ" name="java.util.List&lt;org.volante.abm.agent.PotentialAgent>">
+          <packagedElement xmi:type="uml:Interface" xmi:id="_dY9tUDFdEeSqaonJ_8gtAQ" name="java.util.List&lt;org.volante.abm.agent.fr.PotentialAgent>">
             <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY9tUTFdEeSqaonJ_8gtAQ" signature="_dY9s2zFdEeSqaonJ_8gtAQ">
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9tUjFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY9s3DFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
@@ -20654,7 +20654,7 @@
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9tczFdEeSqaonJ_8gtAQ" actual="_dY9q8zFdEeSqaonJ_8gtAQ" formal="_dY9sJDFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
           </packagedElement>
-          <packagedElement xmi:type="uml:Interface" xmi:id="_dY9tdDFdEeSqaonJ_8gtAQ" name="java.util.Map&lt;java.lang.String,org.volante.abm.agent.PotentialAgent>">
+          <packagedElement xmi:type="uml:Interface" xmi:id="_dY9tdDFdEeSqaonJ_8gtAQ" name="java.util.Map&lt;java.lang.String,org.volante.abm.agent.fr.PotentialAgent>">
             <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY9tdTFdEeSqaonJ_8gtAQ" signature="_dY9sGzFdEeSqaonJ_8gtAQ">
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY9tdjFdEeSqaonJ_8gtAQ" actual="_dY9qfDFdEeSqaonJ_8gtAQ" formal="_dY9sHDFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
@@ -20785,7 +20785,7 @@
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-QyTFdEeSqaonJ_8gtAQ" actual="_dY3l_jFdEeSqaonJ_8gtAQ" formal="_dY9s3DFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
           </packagedElement>
-          <packagedElement xmi:type="uml:Interface" xmi:id="_dY-QyjFdEeSqaonJ_8gtAQ" name="java.util.Map&lt;java.lang.Integer,org.volante.abm.agent.PotentialAgent>">
+          <packagedElement xmi:type="uml:Interface" xmi:id="_dY-QyjFdEeSqaonJ_8gtAQ" name="java.util.Map&lt;java.lang.Integer,org.volante.abm.agent.fr.PotentialAgent>">
             <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY-QyzFdEeSqaonJ_8gtAQ" signature="_dY9sGzFdEeSqaonJ_8gtAQ">
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-QzDFdEeSqaonJ_8gtAQ" actual="_dY9rQDFdEeSqaonJ_8gtAQ" formal="_dY9sHDFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
@@ -20960,7 +20960,7 @@
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-RNTFdEeSqaonJ_8gtAQ" actual="_dY1HhjFdEeSqaonJ_8gtAQ" formal="_dY9srjFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
           </packagedElement>
-          <packagedElement xmi:type="uml:Class" xmi:id="_dY-RNjFdEeSqaonJ_8gtAQ" name="java.util.LinkedHashSet&lt;org.volante.abm.agent.PotentialAgent>">
+          <packagedElement xmi:type="uml:Class" xmi:id="_dY-RNjFdEeSqaonJ_8gtAQ" name="java.util.LinkedHashSet&lt;org.volante.abm.agent.fr.PotentialAgent>">
             <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY-RNzFdEeSqaonJ_8gtAQ" signature="_dY9srTFdEeSqaonJ_8gtAQ">
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-RODFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY9srjFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
@@ -21001,7 +21001,7 @@
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-RTjFdEeSqaonJ_8gtAQ" actual="_dY2VkzFdEeSqaonJ_8gtAQ" formal="_dY9stzFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
           </packagedElement>
-          <packagedElement xmi:type="uml:Class" xmi:id="_dY-RTzFdEeSqaonJ_8gtAQ" name="java.util.ArrayList&lt;org.volante.abm.agent.PotentialAgent>">
+          <packagedElement xmi:type="uml:Class" xmi:id="_dY-RTzFdEeSqaonJ_8gtAQ" name="java.util.ArrayList&lt;org.volante.abm.agent.fr.PotentialAgent>">
             <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY-RUDFdEeSqaonJ_8gtAQ" signature="_dY9stjFdEeSqaonJ_8gtAQ">
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-RUTFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY9stzFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
@@ -21048,7 +21048,7 @@
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-RazFdEeSqaonJ_8gtAQ" actual="_dY1ucTFdEeSqaonJ_8gtAQ" formal="_dY9stzFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
           </packagedElement>
-          <packagedElement xmi:type="uml:Class" xmi:id="_dY-RbDFdEeSqaonJ_8gtAQ" name="java.util.HashMap&lt;org.volante.abm.agent.PotentialAgent,java.lang.Double>">
+          <packagedElement xmi:type="uml:Class" xmi:id="_dY-RbDFdEeSqaonJ_8gtAQ" name="java.util.HashMap&lt;org.volante.abm.agent.fr.PotentialAgent,java.lang.Double>">
             <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY-RbTFdEeSqaonJ_8gtAQ" signature="_dY9r_jFdEeSqaonJ_8gtAQ">
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-RbjFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY9r_zFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
@@ -21064,7 +21064,7 @@
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-RdTFdEeSqaonJ_8gtAQ" actual="_dY9q8zFdEeSqaonJ_8gtAQ" formal="_dY9sATFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
           </packagedElement>
-          <packagedElement xmi:type="uml:Class" xmi:id="_dY-RdjFdEeSqaonJ_8gtAQ" name="java.util.HashMap&lt;java.lang.String,org.volante.abm.agent.PotentialAgent>">
+          <packagedElement xmi:type="uml:Class" xmi:id="_dY-RdjFdEeSqaonJ_8gtAQ" name="java.util.HashMap&lt;java.lang.String,org.volante.abm.agent.fr.PotentialAgent>">
             <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY-RdzFdEeSqaonJ_8gtAQ" signature="_dY9r_jFdEeSqaonJ_8gtAQ">
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-ReDFdEeSqaonJ_8gtAQ" actual="_dY9qfDFdEeSqaonJ_8gtAQ" formal="_dY9r_zFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
@@ -21213,7 +21213,7 @@
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-R0DFdEeSqaonJ_8gtAQ" actual="_dY3l_jFdEeSqaonJ_8gtAQ" formal="_dY9stzFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
           </packagedElement>
-          <packagedElement xmi:type="uml:Class" xmi:id="_dY-R0TFdEeSqaonJ_8gtAQ" name="java.util.LinkedHashMap&lt;java.lang.String,org.volante.abm.agent.PotentialAgent>">
+          <packagedElement xmi:type="uml:Class" xmi:id="_dY-R0TFdEeSqaonJ_8gtAQ" name="java.util.LinkedHashMap&lt;java.lang.String,org.volante.abm.agent.fr.PotentialAgent>">
             <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY-R0jFdEeSqaonJ_8gtAQ" signature="_dY9r8TFdEeSqaonJ_8gtAQ">
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-R0zFdEeSqaonJ_8gtAQ" actual="_dY9qfDFdEeSqaonJ_8gtAQ" formal="_dY9r8jFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
@@ -21221,7 +21221,7 @@
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-R1TFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY9r9DFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
           </packagedElement>
-          <packagedElement xmi:type="uml:Class" xmi:id="_dY-R1jFdEeSqaonJ_8gtAQ" name="java.util.LinkedHashMap&lt;java.lang.Integer,org.volante.abm.agent.PotentialAgent>">
+          <packagedElement xmi:type="uml:Class" xmi:id="_dY-R1jFdEeSqaonJ_8gtAQ" name="java.util.LinkedHashMap&lt;java.lang.Integer,org.volante.abm.agent.fr.PotentialAgent>">
             <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY-R1zFdEeSqaonJ_8gtAQ" signature="_dY9r8TFdEeSqaonJ_8gtAQ">
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-R2DFdEeSqaonJ_8gtAQ" actual="_dY9rQDFdEeSqaonJ_8gtAQ" formal="_dY9r8jFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
@@ -21342,7 +21342,7 @@
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-SIDFdEeSqaonJ_8gtAQ" actual="_dY7PRTFdEeSqaonJ_8gtAQ" formal="_dY9sATFdEeSqaonJ_8gtAQ"/>
             </templateBinding>
           </packagedElement>
-          <packagedElement xmi:type="uml:Class" xmi:id="_dY-SITFdEeSqaonJ_8gtAQ" name="java.util.HashSet&lt;org.volante.abm.agent.PotentialAgent>">
+          <packagedElement xmi:type="uml:Class" xmi:id="_dY-SITFdEeSqaonJ_8gtAQ" name="java.util.HashSet&lt;org.volante.abm.agent.fr.PotentialAgent>">
             <templateBinding xmi:type="uml:TemplateBinding" xmi:id="_dY-SIjFdEeSqaonJ_8gtAQ" signature="_dY9scTFdEeSqaonJ_8gtAQ">
               <parameterSubstitution xmi:type="uml:TemplateParameterSubstitution" xmi:id="_dY-SIzFdEeSqaonJ_8gtAQ" actual="_dY1GtjFdEeSqaonJ_8gtAQ" formal="_dY9scjFdEeSqaonJ_8gtAQ"/>
             </templateBinding>

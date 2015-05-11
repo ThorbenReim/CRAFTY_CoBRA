@@ -28,7 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.volante.abm.agent.InnovationAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
+import org.volante.abm.example.AgentPropertyIds;
 
 
 /**
@@ -42,7 +43,7 @@ public class EvaluatingInnovationStatus extends SimpleInnovationStatus {
 	 */
 	static private Logger	logger					= Logger.getLogger(EvaluatingInnovationStatus.class);
 
-	InnovationAgent	agent;
+	InnovativeBC	agent;
 	List<Double>			competitivenessHistory	= new ArrayList<Double>();
 	List<Double>			productionHistory		= new ArrayList<Double>();
 	List<Double>			risidualHistory			= new ArrayList<Double>();
@@ -57,7 +58,7 @@ public class EvaluatingInnovationStatus extends SimpleInnovationStatus {
 		return tickOfTrialStart;
 	}
 
-	public EvaluatingInnovationStatus(InnovationAgent agent, double evaluationFactor) {
+	public EvaluatingInnovationStatus(InnovativeBC agent, double evaluationFactor) {
 		this.agent = agent;
 		this.evaluationFactor = evaluationFactor;
 		this.state = InnovationStates.AWARE;
@@ -78,7 +79,8 @@ public class EvaluatingInnovationStatus extends SimpleInnovationStatus {
 	}
 
 	public void record() {
-		competitivenessHistory.add(this.agent.getCompetitiveness());
+		competitivenessHistory.add(this.agent
+				.getProperty(AgentPropertyIds.COMPETITIVENESS));
 		productionHistory.add(this.agent.supply(this.agent.getCells().iterator().next()).getDouble(
 				this.agent.getRegion().getModelData().services.get(2)));
 		if (this.competitivenessHistory.size() != this.agent.getRegion().getRinfo().getSchedule()

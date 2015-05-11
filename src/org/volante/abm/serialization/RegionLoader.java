@@ -26,9 +26,7 @@ package org.volante.abm.serialization;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
@@ -37,7 +35,8 @@ import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.stream.NodeBuilder;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.bt.BehaviouralType;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -48,6 +47,7 @@ import org.volante.abm.example.SimpleCompetitivenessModel;
 import org.volante.abm.example.SimpleProductionModel;
 import org.volante.abm.institutions.Institution;
 import org.volante.abm.institutions.Institutions;
+import org.volante.abm.lara.RegionalLaraModel;
 import org.volante.abm.models.AllocationModel;
 import org.volante.abm.models.CompetitivenessModel;
 import org.volante.abm.models.DemandModel;
@@ -95,13 +95,19 @@ public class RegionLoader {
 	String							demandFile				= "";
 
 	@Element(required = false)
-	PotentialAgentList				potentialAgents			= new PotentialAgentList();
+	BTList bTypes = new BTList();
+
+	@Element(required = false)
+	FRList fRoles = new FRList();
 
 	@Element(required = false)
 	SocialNetworkLoaderList			socialNetworkLoaders	= new SocialNetworkLoaderList();
 
-	@ElementList(required = false, inline = true, entry = "agentFile")
-	List<String>					agentFileList			= new ArrayList<String>();
+	@ElementList(required = false, inline = true, entry = "btFile")
+	List<String> btFileList = new ArrayList<String>();
+
+	@ElementList(required = false, inline = true, entry = "frFile")
+	List<String> frFileList = new ArrayList<String>();
 
 	@ElementList(inline = true, required = false, empty = false, entry = "cellInitialiser")
 	List<CellInitialiser>			cellInitialisers		= new ArrayList<CellInitialiser>();
@@ -134,6 +140,9 @@ public class RegionLoader {
 	List<String>					institutionFiles		= new ArrayList<String>();
 
 	@Element(required = false)
+	RegionalLaraModel regionalLaraModel = null;
+
+	@Element(required = false)
 	int								randomSeed				= Integer.MIN_VALUE;
 
 	/**
@@ -149,8 +158,7 @@ public class RegionLoader {
 	ModelData						modelData				= null;
 	RunInfo							runInfo					= null;
 	Region							region					= null;
-	Map<String, PotentialAgent>		agentsByID				= new LinkedHashMap<String, PotentialAgent>();
-	Map<Integer, PotentialAgent>	agentsBySerialID		= new LinkedHashMap<Integer, PotentialAgent>();
+
 	Table<Integer, Integer, Cell>	cellTable				= TreeBasedTable.create();
 
 	public RegionLoader() {
@@ -176,7 +184,7 @@ public class RegionLoader {
 		this.competitionFile = competition;
 		this.allocationFile = allocation;
 		this.demandFile = demand;
-		this.agentFileList.addAll(ABMPersister.splitTags(potentialAgents));
+		this.frFileList.addAll(ABMPersister.splitTags(potentialAgents));
 		this.cellInitialiserFiles.addAll(ABMPersister
 				.splitTags(cellInitialisers));
 
@@ -214,7 +222,12 @@ public class RegionLoader {
 
 
 		readPmParameters();
-		loadAgentTypes();
+
+		loadLaraModel();
+
+		loadFunctionalRoles();
+		loadBehaviouralTypes();
+
 		loadModels();
 		loadSocialNetworks();
 
@@ -223,6 +236,16 @@ public class RegionLoader {
 		loadInstitutions();
 		initialiseAgents();
 		loadUpdaters();
+	}
+
+	/**
+	 * 
+	 */
+	private void loadLaraModel() {
+		if (this.regionalLaraModel != null) {
+			this.regionalLaraModel.initialise(this.modelData, this.runInfo,
+					this.region);
+		}
 	}
 
 	/**
@@ -254,31 +277,41 @@ public class RegionLoader {
 		}
 	}
 
-	public void loadAgentTypes() throws Exception {
-		for (String potentialAgentFile : agentFileList) {
+	public void loadBehaviouralTypes() throws Exception {
+		for (String btFile : btFileList) {
 			// <- LOGGING
-			log.info("Agent file: " + potentialAgentFile);
+			log.info("Behavioural Types file: " + btFile);
 			// LOGGING ->
 
-			potentialAgents.agents.addAll(persister.readXML(
-					PotentialAgentList.class, potentialAgentFile).agents);
+			bTypes.bTypes
+					.addAll(persister.readXML(BTList.class, btFile).bTypes);
 		}
-		for (PotentialAgent p : potentialAgents.agents) {
-			agentsByID.put(p.getID(), p);
-			agentsBySerialID.put(p.getSerialID(), p);
-		}
-		for (PotentialAgent a : agentsByID.values()) {
-			log.info("Initialise agent type: " + a.getID());
-			a.initialise(modelData, runInfo, region);
-			storeAgentParameters(a);
+		for (BehaviouralType bt : bTypes.bTypes) {
+			log.info("Initialise behavioural type: " + bt.getLabel());
+			bt.initialise(modelData, runInfo, region);
 		}
 	}
 
-	protected void storeAgentParameters(PotentialAgent pa) {
+	public void loadFunctionalRoles() throws Exception {
+		for (String frFile : frFileList) {
+			// <- LOGGING
+			log.info("Functional Roles file: " + frFile);
+			// LOGGING ->
+
+			fRoles.fRoles
+					.addAll(persister.readXML(FRList.class, frFile).fRoles);
+		}
+		for (FunctionalRole fr : fRoles.fRoles) {
+			log.info("Initialise funcitonal role: " + fr.getLabel());
+			fr.initialise(modelData, runInfo, region);
+			storeAgentParameters(fr);
+		}
+	}
+
+	protected void storeAgentParameters(FunctionalRole pa) {
 		this.runInfo.getParamRepos().addParameter(region,
-				"AFT" + pa.getSerialID() + "_GiveIN", pa.getGivingIn());
-		this.runInfo.getParamRepos().addParameter(region,
-				"AFT" + pa.getSerialID() + "_GiveUP", pa.getGivingUp());
+				"AFT" + pa.getSerialID() + "_AssociatedGiveUP",
+				pa.getAssociatedGivingUpThreshold());
 
 		if (pa.getProduction() instanceof SimpleProductionModel) {
 			for (Service s : modelData.services) {
@@ -291,25 +324,6 @@ public class RegionLoader {
 		}
 	}
 
-	public void setAgent(Cell c, String agentType) {
-		if (agentType.matches("\\d+")) {
-			int idNum = Integer.parseInt(agentType);
-			if (agentsBySerialID.containsKey(idNum)) {
-				setAgent(c, agentsBySerialID.get(idNum));
-			}
-		} else if (agentsByID.containsKey(agentType)) {
-			setAgent(c, agentsByID.get(agentType));
-		} else if (agentType.matches("\\s*") | agentType.equals(idUnmanaged)) {
-			// Ignore blank agents and those with ID given in idUnmanaged
-		}
-		else {
-			log.error("Couldn't find agent by id: " + agentType);
-		}
-	}
-
-	public void setAgent(Cell c, PotentialAgent pa) {
-		region.setInitialOwnership(pa.createAgent(region, c), c);
-	}
 
 	public void loadModels() throws Exception {
 		if (allocation == null) {
@@ -397,12 +411,22 @@ public class RegionLoader {
 		region.setDemandModel(demand);
 		region.setAllocationModel(allocation);
 		region.setCompetitivenessModel(competition);
-		region.addPotentialAgents(potentialAgents.agents);
+		region.addBehaviouralTypes(bTypes.bTypes);
+		region.addfunctionalRoles(fRoles.fRoles);
 		if (this.randomSeed != Integer.MIN_VALUE) {
 			PmParameterManager.getInstance(region).setParam(RandomPa.RANDOM_SEED, randomSeed);
 		}
 	}
 
+	/**
+	 * In case there is not yet a cell at the given coordinates, it instantiate
+	 * and initialise new cell. Add it to region at given coordinates.
+	 * Furthermore, sets initial ownership to {@link Agent#NOT_MANAGED}.
+	 * 
+	 * @param x
+	 * @param y
+	 * @return new cell object
+	 */
 	public Cell getCell(int x, int y) {
 		if (cellTable.contains(x, y)) {
 			return cellTable.get(x, y);

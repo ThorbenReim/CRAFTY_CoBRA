@@ -31,6 +31,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -38,7 +39,13 @@ import org.junit.Before;
 import org.volante.abm.agent.AbstractAgent;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.DefaultAgent;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.assembler.AgentAssembler;
+import org.volante.abm.agent.assembler.DefaultAgentAssembler;
+import org.volante.abm.agent.bt.BehaviouralType;
+import org.volante.abm.agent.fr.DefaultFR;
+import org.volante.abm.agent.fr.FunctionalComponent;
+import org.volante.abm.agent.fr.FunctionalRole;
+import org.volante.abm.agent.fr.VariantProductionFR;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
@@ -51,6 +58,8 @@ import org.volante.abm.models.DemandModel;
 import org.volante.abm.param.RandomPa;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.ABMPersister;
+import org.volante.abm.serialization.BTList;
+import org.volante.abm.serialization.FRList;
 
 import cern.jet.random.engine.RandomEngine;
 
@@ -75,8 +84,8 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
  * - {@link ModelData} <code>modelData</code>
  * - {@link RunInfo} <code>runInfo</code>
  * 
- * - {@link SimplePotentialAgent} forestry
- * - {@link SimplePotentialAgent} farmering
+ * - {@link DefaultFR} forestry
+ * - {@link DefaultFR} farmering
  * - {@link Set<PotentialAgent>} potentialAgents
  * 
  * Models:
@@ -102,8 +111,8 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
  *  - {@link SimpleProductionModel} forestryProduction
  *  - {@link SimpleProductionModel} farmingProduction
  *  
- *  - {@link SimplePotentialAgent} forestry
- *  - {@link SimplePotentialAgent} farming
+ *  - {@link DefaultFR} forestry
+ *  - {@link DefaultFR} farming
  *  - {@link Set<PotentialAgent>} potentialAgents
 	
  * Considered  Capitals are:
@@ -209,6 +218,9 @@ public class BasicTestsUtils
 	 * Logger
 	 */
 	static private Logger				logger								= Logger.getLogger(BasicTestsUtils.class);
+
+	static final String XML_FILENAME_FR = "test-data/xml/FunctionalRoles.xml";
+	static final String XML_FILENAME_BT = "test-data/xml/BehaviouralTypes.xml";
 
 	protected static int randomNumberCounter = 0;
 
@@ -405,22 +417,30 @@ public class BasicTestsUtils
 	public static final double			forestryGivingIn					= 0.5;
 	public static final double			farmingGivingUp						= 0.5;
 	public static final double			farmingGivingIn						= 0.5;
-	public static SimplePotentialAgent forestry = new VariantPotentialAgent(
+	public static FunctionalRole forestry = new VariantProductionFR(
 																					"Forestry",
-																					modelData,
 																					forestryProduction,
 																					forestryGivingUp,
 																					forestryGivingIn);
-	public static SimplePotentialAgent farming = new VariantPotentialAgent(
+	public static FunctionalRole farming = new VariantProductionFR(
 																					"Farming",
-																					modelData,
 																					farmingProduction,
 																					farmingGivingUp,
 																					farmingGivingIn);
-	public static Set<PotentialAgent>	potentialAgents						= new HashSet<PotentialAgent>(
-																					Arrays.asList(new PotentialAgent[] {
+
+	public static Set<FunctionalRole> functionalRoles = new HashSet<FunctionalRole>(
+			Arrays.asList(new FunctionalRole[] {
 																					forestry,
-			farming																}));
+																					farming }));
+
+
+	public static Set<BehaviouralType> behaviouralTypes = new HashSet<BehaviouralType>(
+			Arrays.asList(new BehaviouralType[] {
+					
+			}));
+
+	public AgentAssembler agentAssemblerR1 = new DefaultAgentAssembler();
+	public AgentAssembler agentAssemblerR2 = new DefaultAgentAssembler();
 
 	public Region						r1;
 	public Region						r2;
@@ -429,8 +449,8 @@ public class BasicTestsUtils
 																					r1, r2 }));
 
 	public RegionSet					w;
-	public AbstractAgent				a1;
-	public AbstractAgent				a2;
+	public Agent a1;
+	public Agent a2;
 
 	public ABMPersister					persister							= ABMPersister
 																					.getInstance();
@@ -488,21 +508,27 @@ public class BasicTestsUtils
 		r2cells = new HashSet<Cell>(Arrays.asList(new Cell[] { c21, c22, c23, c24, c25, c26, c27,
 				c28, c29 }));
 
-		r1 = new Region(allocation, competition, demandR1, potentialAgents, c11, c12, c13, c14,
+		r1 = new Region(allocation, competition, demandR1, behaviouralTypes,
+				functionalRoles, c11, c12, c13, c14,
 				c15, c16, c17, c18, c19);
 		r1.setID("Region01");
 
-		r2 = new Region(allocation, competition, demandR2, potentialAgents, c21, c22, c23, c24,
+		r2 = new Region(allocation, competition, demandR2, behaviouralTypes,
+				functionalRoles, c21, c22, c23, c24,
 				c25, c26, c27, c28, c29);
 		r2.setID("Region02");
 
 		regions = new HashSet<Region>(Arrays.asList(new Region[] { r1, r2 }));
+
 
 		w = new RegionSet(r1, r2);
 		try {
 			w.initialise(modelData, runInfo, null);
 			runInfo.getSchedule().setRegions(w);
 			runInfo.getSchedule().initialise(modelData, runInfo, null);
+
+			this.agentAssemblerR1.initialise(modelData, runInfo, r1);
+			this.agentAssemblerR2.initialise(modelData, runInfo, r2);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -635,7 +661,7 @@ public class BasicTestsUtils
 			Agent a = c.getOwner();
 			assertEquals("ID of agent on " + c.toString(), id, a.getID());
 			assertEquals("Competitiveness of agent on " + c.toString(), competitiveness,
-					a.getCompetitiveness(), 0.0001);
+					a.getProperty(AgentPropertyIds.COMPETITIVENESS), 0.0001);
 		}
 
 	}
@@ -665,7 +691,7 @@ public class BasicTestsUtils
 	public static void checkOwnership(Cell[] cells, String... owners)
 	{
 		for (int i = 0; i < cells.length; i++) {
-			assertEquals("Ownership: ", owners[i], cells[i].getOwnerID());
+			assertEquals("Ownership: ", owners[i], cells[i].getOwnersFrLabel());
 		}
 	}
 
@@ -676,10 +702,11 @@ public class BasicTestsUtils
 	 * @param cells
 	 * @param owners
 	 */
-	public static void checkOwnership(Cell[] cells, PotentialAgent... owners)
+	public static void checkOwnership(Cell[] cells, FunctionalComponent... owners)
 	{
 		for (int i = 0; i < cells.length; i++) {
-			assertEquals("Ownership: ", owners[i].getID(), cells[i].getOwnerID());
+			assertEquals("Ownership: ", owners[i].getFR().getSerialID(),
+					cells[i].getOwnersFrLabel());
 		}
 	}
 
@@ -710,7 +737,7 @@ public class BasicTestsUtils
 	 * Set up a basic world with the given cells.
 	 * 
 	 * @param cells
-	 * @return
+	 * @return region
 	 * @throws Exception
 	 */
 	public Region setupBasicWorld(Cell... cells) throws Exception
@@ -719,8 +746,9 @@ public class BasicTestsUtils
 	}
 
 	/**
-	 * Return a {@link PotentialAgent} with the given ID and given giving in/put thresholds that
-	 * produces only the given {@link Service} leveraging capitals according to given dependencies.
+	 * Return a {@link FunctionalComponent} with the given ID and given giving in/put
+	 * thresholds that produces only the given {@link Service} leveraging
+	 * capitals according to given dependencies.
 	 * 
 	 * @param id
 	 * @param givingUp
@@ -728,9 +756,10 @@ public class BasicTestsUtils
 	 * @param amount
 	 * @param service
 	 * @param dependencies
-	 * @return
+	 * @return potential agent
 	 */
-	public static PotentialAgent getSingleProductionAgent(String id, double givingUp,
+	public static FunctionalRole getSingleProductionFR(String id,
+			double givingUp,
 			double givingIn, double amount, Service service, Capital... dependencies)
 	{
 		SimpleProductionModel model = new SimpleProductionModel();
@@ -745,33 +774,34 @@ public class BasicTestsUtils
 		for (Capital d : dependencies) {
 			model.capitalWeights.put(d, service, 1);
 		}
-		return new SimplePotentialAgent(id, modelData, model, givingUp, givingIn);
+		return new DefaultFR(id, model, givingUp, givingIn);
 	}
 
 	/**
-	 * Returns a Multiset which provides the opportunity to receive counts agents of each
-	 * {@link PotentialAgent} in the given region.
+	 * Returns a Multiset which provides the opportunity to receive counts
+	 * agents of each {@link FunctionalComponent} in the given region.
 	 * 
 	 * @param r
-	 * @return
+	 * @return multiset
 	 */
-	public Multiset<PotentialAgent> countAgents(Region r)
+	public Multiset<FunctionalRole> countAgents(Region r)
 	{
-		Multiset<PotentialAgent> set = HashMultiset.create();
+		Multiset<FunctionalRole> set = HashMultiset.create();
 		for (Cell c : r.getCells()) {
-			set.add(c.getOwner().getType());
+			set.add(c.getOwner().getFC().getFR());
 		}
 		return set;
 	}
 
 	/**
-	 * Sets up a very basic world containing one region with the given cells. As models the
-	 * {@link SimpleAllocationModel}, {@link SimpleCompetitivenessModel}, and
-	 * {@link RegionalDemandModel} are applied. Schedule is initialised.
+	 * Sets up a very basic world containing one region with the given cells. As
+	 * models the {@link SimpleAllocationModel},
+	 * {@link SimpleCompetitivenessModel}, and {@link RegionalDemandModel} are
+	 * applied. Schedule is initialised.
 	 * 
 	 * @param initialiseRegion
 	 * @param cells
-	 * @return
+	 * @return region
 	 * @throws Exception
 	 */
 	public Region setupBasicWorld(boolean initialiseRegion, Cell... cells) throws Exception
@@ -797,16 +827,19 @@ public class BasicTestsUtils
 	 * @param allocation
 	 * @param competition
 	 * @param demand
-	 * @param potentialAgents
+	 * @param fRoles
 	 * @param cells
-	 * @return
+	 * @return region
 	 * @throws Exception
 	 */
 	public Region setupWorld(AllocationModel allocation, CompetitivenessModel competition,
-			DemandModel demand, Set<PotentialAgent> potentialAgents, Cell... cells)
+ DemandModel demand,
+			Set<BehaviouralType> bTypes, Set<FunctionalRole> fRoles,
+			Cell... cells)
 			throws Exception
 	{
-		Region r = new Region(allocation, competition, demand, potentialAgents, cells);
+		Region r = new Region(allocation, competition, demand, bTypes, fRoles,
+				cells);
 		r.initialise(modelData, runInfo, null);
 		runInfo.getSchedule().setRegions(new RegionSet(r));
 		runInfo.getSchedule().initialise(modelData, runInfo, r);
@@ -838,5 +871,27 @@ public class BasicTestsUtils
 								return 0;
 							}
 						});
+	}
+
+	public void loadBehaviouralTypes(Region r) {
+		try {
+			List<BehaviouralType> bTypes = runInfo.getPersister().readXML(
+					BTList.class, XML_FILENAME_BT).bTypes;
+			r.addBehaviouralTypes(bTypes);
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
+
+	public void loadFrPrototypes(Region r) {
+		try {
+			List<FunctionalRole> frPrototypes = runInfo.getPersister()
+					.readXML(FRList.class, XML_FILENAME_FR).fRoles;
+			r.addfunctionalRoles(frPrototypes);
+
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
 	}
 }

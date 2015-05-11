@@ -27,19 +27,23 @@ package org.volante.abm.decision.innovation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.InnovationAgent;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.bt.BehaviouralType;
+import org.volante.abm.agent.bt.InnovativeBC;
+import org.volante.abm.agent.bt.InnovativeCognitiveBC;
+import org.volante.abm.agent.bt.InnovativeCognitiveBT;
+import org.volante.abm.agent.fr.DefaultFR;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
 import org.volante.abm.example.BasicTestsUtils;
-import org.volante.abm.example.SocialVariantPotentialAgent;
 import org.volante.abm.institutions.Institution;
 import org.volante.abm.institutions.Institutions;
 import org.volante.abm.institutions.innovation.Innovation;
@@ -54,6 +58,13 @@ import org.volante.abm.models.utils.ProductionWeightReporter;
  */
 public class InnovationTestUtils extends BasicTestsUtils {
 
+	public BehaviouralType innovationTestBT = new InnovativeCognitiveTestBT();
+
+	public InnovationTestUtils() {
+		ArrayList<BehaviouralType> collection = new ArrayList<BehaviouralType>();
+		collection.add(innovationTestBT);
+		this.r1.addBehaviouralTypes(collection);
+	}
 	/**
 	 * Enables setting relative to base during runtime.
 	 * 
@@ -68,39 +79,67 @@ public class InnovationTestUtils extends BasicTestsUtils {
 		}
 	}
 
-	public static SocialVariantPotentialAgent innovativeForestry = new SocialVariantPotentialAgent(
+	public static class InnovativeCognitiveTestBT extends InnovativeCognitiveBT {
+
+		public boolean indicator = false;
+
+		public InnovativeCognitiveTestBT() {
+			this.label = "TestInnovator";
+			this.serialID = 77;
+		}
+
+		/**
+		 * @see org.volante.abm.agent.bt.InnovativeCognitiveBT#assignNewBehaviouralComp(org.volante.abm.agent.Agent)
+		 */
+		@Override
+		public final Agent assignNewBehaviouralComp(Agent agent) {
+			agent.setBC(new InnovativeCognitiveBC(this) {
+				public void makeAware(Innovation innovation) {
+					super.makeAware(innovation);
+					indicator = true;
+				}
+			});
+			return agent;
+		}
+	}
+
+	public static FunctionalRole innovativeForestry = new DefaultFR(
 			"Forestry",
-			BasicTestsUtils.modelData,
 			BasicTestsUtils.forestryProduction.copyWithNoise(modelData, null,
 					null),
 			BasicTestsUtils.forestryGivingUp,
 			BasicTestsUtils.forestryGivingIn);
 
-	public static SocialVariantPotentialAgent innovativeFarming = new SocialVariantPotentialAgent(
+	public static FunctionalRole innovativeFarming = new DefaultFR(
 			"Farming",
-			BasicTestsUtils.modelData,
 			BasicTestsUtils.farmingProduction.copyWithNoise(modelData, null,
 					null),
 			BasicTestsUtils.farmingGivingUp,
 			BasicTestsUtils.farmingGivingIn);
 
-	public static Set<PotentialAgent> potentialAgents = new HashSet<PotentialAgent>(
-			Arrays.asList(new PotentialAgent[] {
+	public static Set<FunctionalRole> potentialAgents = new HashSet<FunctionalRole>(
+			Arrays.asList(new FunctionalRole[] {
 					innovativeForestry,
 					innovativeFarming }));
 
-	public InnovationAgent innoFarmingA = (InnovationAgent) innovativeFarming.createAgent(r1);
-	public InnovationAgent innoForesterA = (InnovationAgent) innovativeForestry.createAgent(r1);
+	public Agent innoFarmingA = this.agentAssemblerR1.assembleAgent(null,
+			"Innovator", innovativeFarming.getLabel());
+	public Agent innoForesterA = this.agentAssemblerR1.assembleAgent(null,
+			"Innovator", innovativeForestry.getLabel());
 
 	protected static void checkInnovationState(Innovation innovation,
-			Collection<InnovationAgent> agents,
+			Collection<Agent> agents,
 			InnovationState status) {
-		for (InnovationAgent agent : agents) {
-			assertEquals("Check innovation status", status, agent.getState(innovation));
+		for (Agent agent : agents) {
+			if (agent.getBC() instanceof InnovativeBC) {
+				assertEquals("Check innovation status", status,
+						((InnovativeBC) agent.getBC()).getState(innovation));
+			}
 		}
 	}
 
-	protected void addInnovationAgentsToRegion1(int numberOfAgents, PotentialAgent pagent) {
+	protected void addInnovationAgentsToRegion1(int numberOfAgents,
+			FunctionalRole fRole) {
 		Cell[] cells = this.r1cells.toArray(new Cell[1]);
 
 		if (numberOfAgents > cells.length) {
@@ -108,7 +147,8 @@ public class InnovationTestUtils extends BasicTestsUtils {
 					numberOfAgents + " requested!");
 		}
 		for (int i = 0; i < numberOfAgents; i++) {
-			this.r1.setOwnership(pagent.createAgent(r1, cells[i]), cells[i]);
+			this.r1.setOwnership(this.agentAssemblerR1.assembleAgent(cells[i],
+					"Innovator", fRole.getLabel()), cells[i]);
 		}
 	}
 
@@ -157,9 +197,9 @@ public class InnovationTestUtils extends BasicTestsUtils {
 		}
 	}
 
-	public void checkCapitalChange(Agent agent, PotentialAgent pagent,
+	public void checkCapitalChange(Agent agent, FunctionalRole fRole,
 			double expectedProductivity, Service service) {
-		if (pagent.getProduction() instanceof ProductionWeightReporter) {
+		if (fRole.getProduction() instanceof ProductionWeightReporter) {
 			checkCapital(agent, expectedProductivity, service);
 		} else {
 			fail("Could not test productivity because potential agent's production model is not a ProductionWeightReporter!");

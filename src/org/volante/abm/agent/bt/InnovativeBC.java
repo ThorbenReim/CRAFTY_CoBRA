@@ -21,28 +21,31 @@
  * 
  * Created by Sascha Holzhauer on 05.02.2014
  */
-package org.volante.abm.agent;
+package org.volante.abm.agent.bt;
 
 
 import java.util.Set;
 
+import org.volante.abm.agent.Agent;
 import org.volante.abm.institutions.innovation.Innovation;
 import org.volante.abm.institutions.innovation.status.InnovationState;
 import org.volante.abm.institutions.innovation.status.InnovationStates;
-import org.volante.abm.models.ProductionModel;
+
+import de.cesr.more.basic.agent.MoreObservingNetworkAgent;
 
 /**
  * @author Sascha Holzhauer
  *
  */
-public interface InnovationAgent extends Agent {
+public interface InnovativeBC extends BehaviouralComponent,
+		MoreObservingNetworkAgent<Agent> {
 
 	/**
 	 * Checks each registered innovation for its status in order to consider
 	 * taking the next status. Calls
-	 * {@link InnovationAgent#considerTrial(Innovation)},
-	 * {@link InnovationAgent#considerAdoption(Innovation)}, or
-	 * {@link InnovationAgent#considerRejection(Innovation)} as appropriate.
+	 * {@link InnovativeBC#considerTrial(Innovation)},
+	 * {@link InnovativeBC#considerAdoption(Innovation)}, or
+	 * {@link InnovativeBC#considerRejection(Innovation)} as appropriate.
 	 * This method is usually called by the schedule.
 	 */
 	public void considerInnovationsNextStep();
@@ -103,6 +106,8 @@ public interface InnovationAgent extends Agent {
 
 	public void removeInnovation(Innovation innvoation);
 
+	public void perceiveSocialNetwork();
+
 	/********************************
 	 * GETTER and SETTER
 	 *******************************/
@@ -119,10 +124,4 @@ public interface InnovationAgent extends Agent {
 	 * @return the given innovation's current state
 	 */
 	public InnovationState getState(Innovation innovation);
-
-	/**
-	 * 
-	 * @return this agents production model
-	 */
-	public ProductionModel getProductionModel();
 }

@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.InnovationAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Region;
 import org.volante.abm.decision.innovation.InnovationTestUtils;
 import org.volante.abm.institutions.InnovativeInstitution;
@@ -84,8 +84,8 @@ public class ProbabilityRandomRecruitmentTest extends InnovationTestUtils {
 			int number, InnovationState state, Innovation innovation) {
 		int counter = 0;
 		for (Agent agent : region.getAllAgents()) {
-			if (agent instanceof InnovationAgent) {
-				if (((InnovationAgent) agent).getState(innovation) == state) {
+			if (agent instanceof InnovativeBC) {
+				if (((InnovativeBC) agent).getState(innovation) == state) {
 					counter++;
 				}
 			}

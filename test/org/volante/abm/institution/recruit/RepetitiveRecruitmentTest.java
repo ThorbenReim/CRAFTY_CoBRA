@@ -32,8 +32,8 @@ import java.util.Collection;
 import org.junit.Before;
 import org.junit.Test;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.InnovationAgent;
 import org.volante.abm.decision.innovation.InnovationTestUtils;
+import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.example.BasicTestsUtils;
 import org.volante.abm.institutions.RepeatingInnovativeInstitution;
 import org.volante.abm.institutions.innovation.Innovation;
@@ -78,12 +78,12 @@ public class RepetitiveRecruitmentTest extends InnovationTestUtils {
 		// Tick 0
 
 		for (Agent agent : r1.getAllAgents()) {
-			agent.setGivingUp(0.0);
+			agent.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, 0.0);
 		}
 		BasicTestsUtils.runInfo.getSchedule().tick();
 		// Tick 1
 		// Initial recruitment
-		Collection<InnovationAgent> informedAgents = this.institution
+		Collection<Agent> informedAgents = this.institution
 				.getInstitutionTargetRecruitment().getRecruitedAgents(null);
 		assertEquals("50% of 8 agents should be recruited!", 4,
 				informedAgents.size());

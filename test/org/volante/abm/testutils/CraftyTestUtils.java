@@ -23,6 +23,11 @@
  */
 package org.volante.abm.testutils;
 
+import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.fr.AbstractFC;
+import org.volante.abm.agent.fr.AbstractFR;
+import org.volante.abm.agent.fr.FunctionalComponent;
+
 import de.cesr.more.basic.MManager;
 
 /**
@@ -33,5 +38,22 @@ public class CraftyTestUtils {
 
 	public static void initTestEnvironment() {
 		MManager.init();
+	}
+
+	public static class PseudoFR extends AbstractFR {
+
+		public PseudoFR(String label, int serialID) {
+			this.label = label;
+			this.serialID = serialID;
+		}
+
+		/**
+		 * @see org.volante.abm.agent.fr.FunctionalRole#getNewFunctionalComp(org.volante.abm.agent.Agent)
+		 */
+		@Override
+		public FunctionalComponent getNewFunctionalComp(Agent agent) {
+			return new AbstractFC(agent, this, this.production) {
+			};
+		}
 	}
 }

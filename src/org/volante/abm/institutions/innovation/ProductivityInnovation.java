@@ -34,12 +34,12 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementMap;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.InnovationAgent;
 import org.volante.abm.agent.SocialAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
-import org.volante.abm.decision.bo.InnovationBo;
+import org.volante.abm.decision.po.InnovationBo;
 import org.volante.abm.example.SimpleProductionModel;
 import org.volante.abm.example.socialInteraction.NormaliseProductivityRegionHelper;
 import org.volante.abm.models.ProductionModel;
@@ -153,16 +153,18 @@ public class ProductivityInnovation extends Innovation implements PostTickAction
 	 * @see org.volante.abm.institutions.innovation.Innovation#getTrialThreshold(org.volante.abm.agent.Agent)
 	 */
 	public double getTrialThreshold(Agent agent) {
-		if (!socialPartnerShareAdjustment.containsKey(agent.getType().getID())) {
+		if (!socialPartnerShareAdjustment.containsKey(agent.getFC().getFR()
+				.getLabel())) {
 			// <- LOGGING
 			logger.warn("No social partner share adjustment factor provided for "
-					+ agent.getType().getID()
+					+ agent.getFC().getFR().getLabel()
 					+ ". Using 1.0.");
 			// LOGGING ->
 			return super.getTrialThreshold(agent);
 		}
 		return super.getTrialThreshold(agent)
-				* socialPartnerShareAdjustment.get(agent.getType().getID());
+				* socialPartnerShareAdjustment.get(agent.getFC().getFR()
+						.getLabel());
 	}
 
 	/**
@@ -185,10 +187,10 @@ public class ProductivityInnovation extends Innovation implements PostTickAction
 	}
 
 	/**
-	 * @see org.volante.abm.institutions.innovation.Innovation#perform(org.volante.abm.agent.InnovationAgent)
+	 * @see org.volante.abm.institutions.innovation.Innovation#perform(org.volante.abm.agent.bt.InnovativeBC)
 	 */
 	@Override
-	public void perform(InnovationAgent agent) {
+	public void perform(InnovativeBC agent) {
 		ProductionModel pModel = agent.getProductionModel();
 		if (pModel instanceof SimpleProductionModel) {
 			for (Service service : this.affectedServiceSet) {
@@ -209,10 +211,10 @@ public class ProductivityInnovation extends Innovation implements PostTickAction
 	}
 
 	/**
-	 * @see org.volante.abm.institutions.innovation.Innovation#unperform(org.volante.abm.agent.InnovationAgent)
+	 * @see org.volante.abm.institutions.innovation.Innovation#unperform(org.volante.abm.agent.bt.InnovativeBC)
 	 */
 	@Override
-	public void unperform(InnovationAgent agent) {
+	public void unperform(InnovativeBC agent) {
 		ProductionModel pModel = agent.getProductionModel();
 		if (pModel instanceof SimpleProductionModel) {
 			for (Service service : this.affectedServiceSet) {

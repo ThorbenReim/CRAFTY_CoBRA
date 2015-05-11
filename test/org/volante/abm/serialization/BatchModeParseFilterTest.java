@@ -27,9 +27,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.volante.abm.agent.fr.DefaultFR;
 import org.volante.abm.data.Region;
 import org.volante.abm.example.BasicTestsUtils;
-import org.volante.abm.example.SimplePotentialAgent;
 import org.volante.abm.schedule.RunInfo;
 
 /**
@@ -55,9 +55,9 @@ public class BatchModeParseFilterTest extends BasicTestsUtils {
 	@Test
 	public void test() throws Exception {
 		ABMPersister persister = ABMPersister.getInstance();
-		SimplePotentialAgent agent = persister.readXML(SimplePotentialAgent.class, XML_FILE);
-		agent.initialise(modelData, rInfo, region);
-		assertEquals(0.3, agent.getGivingIn(), 0.01);
-		assertEquals(0.5, agent.getGivingUp(), 0.01);
+		DefaultFR fRole = persister.readXML(DefaultFR.class, XML_FILE);
+		fRole.initialise(modelData, rInfo, region);
+		assertEquals(0.3, fRole.getAssociatedGivingUpThreshold(), 0.01);
+		assertEquals(0.5, fRole.getAssociatedGivingInThreshold(), 0.01);
 	}
 }

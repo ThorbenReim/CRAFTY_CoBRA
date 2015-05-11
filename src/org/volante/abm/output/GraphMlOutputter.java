@@ -88,7 +88,7 @@ public class GraphMlOutputter extends AbstractOutputter {
 					new Transformer<SocialAgent, String>() {
 						@Override
 						public String transform(SocialAgent agent) {
-							return "" + agent.getType().getSerialID();
+							return "" + agent.getFC().getFR().getSerialID();
 						}
 
 					}));

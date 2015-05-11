@@ -36,13 +36,13 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementMap;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.InnovationAgent;
 import org.volante.abm.agent.SocialAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
-import org.volante.abm.decision.bo.InnovationBo;
+import org.volante.abm.decision.po.InnovationBo;
 import org.volante.abm.institutions.Institution;
 import org.volante.abm.schedule.PreTickAction;
 import org.volante.abm.schedule.RunInfo;
@@ -155,16 +155,17 @@ public class VariableCapitalLevelInnovation extends Innovation {
 	 * @see org.volante.abm.institutions.innovation.Innovation#getTrialThreshold(org.volante.abm.agent.Agent)
 	 */
 	public double getTrialThreshold(Agent agent) {
-		if (!trialThresholdAdjustment.containsKey(agent.getType().getID())) {
+		if (!trialThresholdAdjustment.containsKey(agent.getFC().getFR()
+				.getLabel())) {
 			// <- LOGGING
 			logger.warn("No social partner share adjustment factor provided for "
-					+ agent.getType().getID() + ". Using 1.0.");
+					+ agent.getFC().getFR().getLabel() + ". Using 1.0.");
 			// LOGGING ->
 			return super.getTrialThreshold(agent);
 		}
 		return super.getTrialThreshold(agent)
 				* (trialThresholdAdjustment != null ? trialThresholdAdjustment
-						.get(agent.getType().getID()) : 1.0);
+						.get(agent.getFC().getFR().getLabel()) : 1.0);
 	}
 
 	/**
@@ -174,25 +175,26 @@ public class VariableCapitalLevelInnovation extends Innovation {
 	 * @see org.volante.abm.institutions.innovation.Innovation#getTrialThreshold(org.volante.abm.agent.Agent)
 	 */
 	public double getAdoptionThreshold(Agent agent) {
-		if (!trialThresholdAdjustment.containsKey(agent.getType().getID())) {
+		if (!trialThresholdAdjustment.containsKey(agent.getFC().getFR()
+				.getLabel())) {
 			// <- LOGGING
 			logger.warn("No social partner share adjustment factor provided for "
-					+ agent.getType().getID() + ". Using 1.0.");
+					+ agent.getFC().getFR().getLabel() + ". Using 1.0.");
 			// LOGGING ->
 			return super.getAdoptionThreshold(agent);
 		}
 		return super.getAdoptionThreshold(agent)
 				* (adoptionThresholdAdjustment != null ? adoptionThresholdAdjustment
-						.get(agent.getType().getID()) : 1.0);
+						.get(agent.getFC().getFR().getLabel()) : 1.0);
 	}
 
 	/**
-	 * @see org.volante.abm.institutions.innovation.Innovation#perform(org.volante.abm.agent.InnovationAgent)
+	 * @see org.volante.abm.institutions.innovation.Innovation#perform(org.volante.abm.agent.bt.InnovativeBC)
 	 */
 	@Override
-	public void perform(final InnovationAgent iagent) {
+	public void perform(final InnovativeBC iagent) {
 		this.capitalAdjustmentAction = new PreTickAction() {
-			InnovationAgent agent = iagent;
+			InnovativeBC agent = iagent;
 			@Override
 			public void preTick() {
 				for (Cell c : agent.getCells()) {
@@ -211,10 +213,10 @@ public class VariableCapitalLevelInnovation extends Innovation {
 	}
 
 	/**
-	 * @see org.volante.abm.institutions.innovation.Innovation#unperform(org.volante.abm.agent.InnovationAgent)
+	 * @see org.volante.abm.institutions.innovation.Innovation#unperform(org.volante.abm.agent.bt.InnovativeBC)
 	 */
 	@Override
-	public void unperform(InnovationAgent agent) {
+	public void unperform(InnovativeBC agent) {
 		this.rInfo.getSchedule().unregister(capitalAdjustmentAction);
 		for (Cell c : agent.getCells()) {
 			for (Capital capital : affectedCapitalObjects) {

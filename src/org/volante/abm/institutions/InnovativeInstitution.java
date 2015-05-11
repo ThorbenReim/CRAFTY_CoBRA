@@ -30,7 +30,7 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Element;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.InnovationAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.institutions.innovation.Innovation;
@@ -134,20 +134,20 @@ public class InnovativeInstitution extends AbstractInstitution {
 		logger.info("Make agents aware...");
 		// LOGGING ->
 
-		Collection<InnovationAgent> innovationAgents = new ArrayList<InnovationAgent>();
+		Collection<InnovativeBC> innovationAgents = new ArrayList<InnovativeBC>();
 
 		if (innovation.getAffectedAFTs().contains("all")) {
 			for (Agent agent : this.region.getAllAgents()) {
-				if (agent instanceof InnovationAgent) {
-					innovationAgents.add((InnovationAgent) agent);
+				if (agent instanceof InnovativeBC) {
+					innovationAgents.add((InnovativeBC) agent);
 				}
 			}
 		} else {
 			for (Agent agent : this.region.getAllAgents()) {
-				if (agent instanceof InnovationAgent
+				if (agent instanceof InnovativeBC
 						&& innovation.getAffectedAFTs().contains(
-								agent.getType().getID())) {
-					innovationAgents.add((InnovationAgent) agent);
+								agent.getFC().getFR().getLabel())) {
+					innovationAgents.add((InnovativeBC) agent);
 				}
 			}
 
@@ -173,7 +173,7 @@ public class InnovativeInstitution extends AbstractInstitution {
 		}
 		// LOGGING ->
 
-		for (InnovationAgent agent : innovationAgents) {
+		for (InnovativeBC agent : innovationAgents) {
 			agent.makeAware(innovation);
 			agent.makeTrial(innovation);
 		}

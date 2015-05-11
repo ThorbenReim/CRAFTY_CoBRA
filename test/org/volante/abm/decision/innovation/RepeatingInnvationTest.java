@@ -27,7 +27,8 @@ package org.volante.abm.decision.innovation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.volante.abm.agent.InnovationAgent;
+import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Service;
 import org.volante.abm.example.BasicTestsUtils;
 import org.volante.abm.institutions.RepeatingInnovativeInstitution;
@@ -83,8 +84,9 @@ public class RepeatingInnvationTest extends InnovationTestUtils {
 	@Test
 	public void testDiscountFactor() {
 		Service service = BasicTestsUtils.modelData.services.forName("FOOD");
-		InnovationAgent one = (InnovationAgent) innovativeFarming
-				.createAgent(r1);
+
+		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel());
 
 		double initialProductivity = ((ProductionWeightReporter) one
 				.getProductionModel()).getProductionWeights()
@@ -95,16 +97,16 @@ public class RepeatingInnvationTest extends InnovationTestUtils {
 		BasicTestsUtils.runInfo.getSchedule().tick();
 
 		// Tick 2
-		InnovationAgent two = (InnovationAgent) innovativeFarming
-				.createAgent(r1);
+		Agent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel());
 
 		adoptAndCheck(two, 2, service, initialProductivity);
 		BasicTestsUtils.runInfo.getSchedule().tick();
 		BasicTestsUtils.runInfo.getSchedule().tick();
 
 		// Tick 4
-		InnovationAgent three = (InnovationAgent) innovativeFarming
-				.createAgent(r1);
+		Agent three = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel());
 
 		adoptAndCheck(three, 4, service, initialProductivity);
 	}
@@ -112,12 +114,12 @@ public class RepeatingInnvationTest extends InnovationTestUtils {
 	/**
 	 * @param agent
 	 */
-	protected void adoptAndCheck(InnovationAgent agent, int ticks, Service service,
+	protected void adoptAndCheck(Agent agent, int ticks, Service service,
 			double initialProductivity) {
 		// need to adopt here in order to enable time-delayed adoptions
-		agent.makeAware(this.currentInnovation);
-		agent.makeTrial(this.currentInnovation);
-		agent.makeAdopted(this.currentInnovation);
+		((InnovativeBC) agent.getBC()).makeAware(this.currentInnovation);
+		((InnovativeBC) agent.getBC()).makeTrial(this.currentInnovation);
+		((InnovativeBC) agent.getBC()).makeAdopted(this.currentInnovation);
 
 		checkCapitalChange(agent, InnovationTestUtils.innovativeFarming,
 				INNOVATION_EFFECT_ON_PRODUCTIVITY

@@ -29,12 +29,10 @@ import java.util.Set;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
-import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.InnovationAgent;
-import org.volante.abm.agent.SocialAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
-import org.volante.abm.decision.bo.InnovationBo;
+import org.volante.abm.decision.po.InnovationBo;
 import org.volante.abm.institutions.InnovativeInstitution;
 import org.volante.abm.param.RandomPa;
 import org.volante.abm.schedule.RunInfo;
@@ -79,7 +77,7 @@ public abstract class Innovation implements Initialisable {
 
 	/**
 	 * At the end of the lifespan, this innovation outdates itself at all
-	 * {@link InnovationAgent}s.
+	 * {@link InnovativeBC}s.
 	 */
 	@Element(name = "lifeSpan", required = false)
 	protected int			lifeSpan		= Integer.MAX_VALUE;
@@ -104,10 +102,10 @@ public abstract class Innovation implements Initialisable {
 	 * Factor in the decision of trial. Values &gt; 1 cause the trial to be
 	 * likelier, values &lt; 1 cause to adoption to be less likely.
 	 * 
-	 * @param agent
+	 * @param bComp
 	 * @return trial factor independent from given agent
 	 */
-	public double getTrialThreshold(Agent agent) {
+	public double getTrialThreshold(InnovativeBC bComp) {
 		return trialThreshold;
 	}
 
@@ -115,10 +113,10 @@ public abstract class Innovation implements Initialisable {
 	 * Factor in the decision of adoption. Values &gt; 1 cause the adoption to
 	 * be likelier, values &lt; 1 cause to adoption to be less likely.
 	 * 
-	 * @param agent
+	 * @param bComp
 	 * @return adoption factor independent from given agent
 	 */
-	public double getAdoptionThreshold(Agent agent) {
+	public double getAdoptionThreshold(InnovativeBC bComp) {
 		return adoptionThreshold;
 	}
 
@@ -130,33 +128,35 @@ public abstract class Innovation implements Initialisable {
 		return adoptionNoise != null ? adoptionNoise.sample() : 0.0;
 	}
 
-	public abstract InnovationBo getWaitingBo(SocialAgent agent);
+	public abstract InnovationBo getWaitingBo(InnovativeBC bComp);
 
 	/**
 	 * Let this innovation take effect for the given agent.
 	 * 
-	 * @param agent
+	 * @param bComp
 	 */
-	public abstract void perform(InnovationAgent agent);
+	public abstract void perform(InnovativeBC bComp);
 
 	/**
 	 * Undo the effect of this innovation for the given agent.
 	 * 
-	 * @param agent
+	 * @param bComp
 	 */
-	public abstract void unperform(InnovationAgent agent);
+	public abstract void unperform(InnovativeBC bComp);
 
 	/**
-	 * This method is called by {@link InnovativeInstitution}s (because they are rather aware of
-	 * affected agents) once this innovation's lifespan is exceeded. Removed the innovation from
-	 * {@link InnovationAgent}s to prevent further spreading.
+	 * This method is called by {@link InnovativeInstitution}s (because they are
+	 * rather aware of affected agents) once this innovation's lifespan is
+	 * exceeded. Removed the innovation from {@link InnovativeBC}s to prevent
+	 * further spreading.
 	 * 
-	 * For some innovations, this method may call {@link #unperform(InnovationAgent)}.
+	 * For some innovations, this method may call
+	 * {@link #unperform(InnovativeBC)}.
 	 * 
-	 * @param agent
+	 * @param bComp
 	 */
-	public void outdate(InnovationAgent agent) {
-		agent.removeInnovation(this);
+	public void outdate(InnovativeBC bComp) {
+		bComp.removeInnovation(this);
 	}
 
 	/**

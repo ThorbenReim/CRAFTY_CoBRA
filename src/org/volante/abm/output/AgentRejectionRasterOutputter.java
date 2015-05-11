@@ -25,7 +25,7 @@ package org.volante.abm.output;
 
 
 import org.simpleframework.xml.Attribute;
-import org.volante.abm.agent.InnovationAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Cell;
 import org.volante.abm.institutions.innovation.Innovation;
 import org.volante.abm.institutions.innovation.status.InnovationStates;
@@ -46,7 +46,7 @@ public class AgentRejectionRasterOutputter extends RasterOutputter {
 	boolean					initialised		= false;
 
 	/**
-	 * Return 0 if the owner currently has not adopted or is not an {@link InnovationAgent}, 1 if
+	 * Return 0 if the owner currently has not adopted or is not an {@link InnovativeBC}, 1 if
 	 * the owners has currently adopted the innovation.
 	 * 
 	 * @see org.volante.abm.serialization.CellToDouble#apply(org.volante.abm.data.Cell)
@@ -56,8 +56,8 @@ public class AgentRejectionRasterOutputter extends RasterOutputter {
 		if (!initialised) {
 			this.innovation = c.getRegion().getInnovationRegistry().getInnovation(innovationID);
 		}
-		if (c.getOwner() instanceof InnovationAgent) {
-			return ((InnovationAgent) c.getOwner()).getState(this.innovation) == InnovationStates.REJECTED ? 1
+		if (c.getOwner() instanceof InnovativeBC) {
+			return ((InnovativeBC) c.getOwner()).getState(this.innovation) == InnovationStates.REJECTED ? 1
 					: 0;
 		} else {
 			return 0;

@@ -34,15 +34,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultSocialInnovationAgent;
-import org.volante.abm.agent.InnovationAgent;
+import org.volante.abm.agent.DefaultSocialAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.example.BasicTestsUtils;
 import org.volante.abm.institutions.RepeatingInnovativeInstitution;
-import org.volante.abm.institutions.innovation.Innovation;
 import org.volante.abm.institutions.innovation.RepeatingCapitalLevelInnovation;
 import org.volante.abm.institutions.recruit.InstitutionTargetRecruitment;
 import org.volante.abm.schedule.RunInfo;
@@ -117,12 +116,14 @@ public class RepetitiveCapitalLevelInnovationTest extends InnovationTestUtils {
 		cells[2].setBaseCapitals(cellCapitalsA);
 		cells[3].setBaseCapitals(cellCapitalsA);
 
-		InnovationAgent one = (InnovationAgent) innovativeFarming.createAgent(
-				r1, "One");
-		InnovationAgent two = (InnovationAgent) innovativeFarming.createAgent(
-				r1, "Two");
-		InnovationAgent three = (InnovationAgent) innovativeFarming
-				.createAgent(r1, "Three");
+		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel(), "One");
+
+		Agent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel(), "Two");
+
+		Agent three = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel(), "Three");
 
 		this.r1.setOwnership(one, cells[1]);
 		this.r1.setOwnership(two, cells[2]);
@@ -150,7 +151,7 @@ public class RepetitiveCapitalLevelInnovationTest extends InnovationTestUtils {
 		checkCapitalLevel(three, 3, capital, initialCapital * 1.002 * 1.2 * 1.5);
 	}
 
-	protected void checkCapitalLevel(final InnovationAgent agent, int ticks,
+	protected void checkCapitalLevel(final Agent agent, int ticks,
 			Capital capital, double initialCapital) {
 		
 		double expectedValue = initialCapital;
@@ -172,13 +173,16 @@ public class RepetitiveCapitalLevelInnovationTest extends InnovationTestUtils {
 	 * @param expectedCapital
 	 * @param capital
 	 */
-	public void checkCapitalChange(InnovationAgent agent,
+	public void checkCapitalChange(Agent agent,
 			double expectedCapital,
 			Capital capital) {
 		// need to adopt here in order to enable time-delayed adoptions
-		agent.makeAware(this.csvInstitution.getCurrentInnovation());
-		agent.makeTrial(this.csvInstitution.getCurrentInnovation());
-		agent.makeAdopted(this.csvInstitution.getCurrentInnovation());
+		((InnovativeBC) agent.getBC()).makeAware(this.csvInstitution
+				.getCurrentInnovation());
+		((InnovativeBC) agent.getBC()).makeTrial(this.csvInstitution
+				.getCurrentInnovation());
+		((InnovativeBC) agent.getBC()).makeAdopted(this.csvInstitution
+				.getCurrentInnovation());
 
 		double actualCapital;
 		for (Cell c : agent.getCells()) {
@@ -200,23 +204,19 @@ public class RepetitiveCapitalLevelInnovationTest extends InnovationTestUtils {
 	 */
 	@Test
 	public void testInnovationRenewal() {
-		final InnovationAgent agent = new DefaultSocialInnovationAgent(
+		final Agent agent = new DefaultSocialAgent(
 				innovativeFarming, "ID", modelData, r1,
 				farmingProduction.copyWithNoise(modelData, null, null), 0.5,
-				0.5) {
-			public void makeAware(Innovation innovation) {
-				super.makeAware(innovation);
-				indicator = true;
-			}
-		};
+ 0.5);
+		this.innovationTestBT.assignNewBehaviouralComp(agent);
 
 		this.csvInstitution
 				.setInstitutionTargetRecruitment(new InstitutionTargetRecruitment() {
 
 					@Override
-					public Collection<InnovationAgent> getRecruitedAgents(
+					public Collection<Agent> getRecruitedAgents(
 							Collection<? extends Agent> allAgents) {
-						Collection<InnovationAgent> agents = new ArrayList<InnovationAgent>();
+						Collection<Agent> agents = new ArrayList<Agent>();
 						agents.add(agent);
 						return agents;
 					}

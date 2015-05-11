@@ -28,7 +28,6 @@ import java.util.LinkedHashSet;
 
 import org.simpleframework.xml.Element;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.InnovationAgent;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.PopulationRegionHelper;
 import org.volante.abm.data.Region;
@@ -62,13 +61,14 @@ public class RepetitiveRecruitment implements InstitutionTargetRecruitment,
 
 	protected Region region;
 
-	Collection<InnovationAgent> recruitedAgents = null;
+	Collection<Agent> recruitedAgents = null;
 
 	/**
 	 * @see org.volante.abm.institutions.recruit.InstitutionTargetRecruitment#getRecruitedAgents(java.util.Collection)
 	 */
 	@Override
-	public Collection<InnovationAgent> getRecruitedAgents(Collection<? extends Agent> allAgents) {
+	public Collection<Agent> getRecruitedAgents(
+			Collection<? extends Agent> allAgents) {
 		if (this.recruitedAgents == null)
 			this.recruitedAgents = this.initialTargetRecruitment.getRecruitedAgents(allAgents);
 		

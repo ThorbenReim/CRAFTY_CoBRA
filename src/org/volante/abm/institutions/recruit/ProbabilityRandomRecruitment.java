@@ -28,7 +28,7 @@ import java.util.LinkedHashSet;
 
 import org.simpleframework.xml.Element;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.InnovationAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.param.RandomPa;
@@ -70,19 +70,20 @@ public class ProbabilityRandomRecruitment implements InstitutionTargetRecruitmen
 	 * @see org.volante.abm.institutions.recruit.InstitutionTargetRecruitment#getRecruitedAgents(java.util.Collection)
 	 */
 	@Override
-	public Collection<InnovationAgent> getRecruitedAgents(Collection<? extends Agent> allAgents) {
+	public Collection<Agent> getRecruitedAgents(
+			Collection<? extends Agent> allAgents) {
 
-		Collection<InnovationAgent> recruitedAgents = new LinkedHashSet<InnovationAgent>();
+		Collection<Agent> recruitedAgents = new LinkedHashSet<Agent>();
 		RandomEngine rEngine = region.getRandom().getURService()
 				.getGenerator(RandomPa.RANDOM_SEED_RUN.name());
 
 		double awarenessProb = BatchRunParser.parseDouble(
 				this.probability, rInfo);
 		for (Agent agent : allAgents) {
-			if (agent instanceof InnovationAgent
+			if (agent.getBC() instanceof InnovativeBC
 					&& (awarenessProb == 1.0 || rEngine.nextDouble() <= awarenessProb)) {
 
-				recruitedAgents.add((InnovationAgent) agent);
+				recruitedAgents.add(agent);
 			}
 		}
 		return recruitedAgents;

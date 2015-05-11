@@ -56,7 +56,7 @@ public class Cell implements Initialisable {
 	DoubleMap<Service>	supply				= null;				// Current levels of spatialised
 																	// supply
 	// DoubleMap<Service> residual; //Residual demand
-	Agent				owner				= Agent.NOT_MANAGED;
+	Agent owner = null;
 	Region				region				= null;
 	String				id					= "";
 	int					x					= 0;
@@ -142,8 +142,12 @@ public class Cell implements Initialisable {
 		owner = o;
 	}
 
-	public String getOwnerID() {
-		return (owner == null) ? "None" : owner.getID();
+	public int getOwnersFrSerialID() {
+		return (owner == null) ? -1 : owner.getFC().getFR().getSerialID();
+	}
+
+	public String getOwnersFrLabel() {
+		return (owner == null) ? "None" : owner.getFC().getFR().getLabel();
 	}
 
 	/*

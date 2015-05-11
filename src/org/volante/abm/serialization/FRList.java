@@ -27,11 +27,11 @@ import java.util.List;
 
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalRole;
 
 
 @Root
-public class PotentialAgentList {
-	@ElementList(inline = true, required = false, entry = "agent", empty = false)
-	List<PotentialAgent>	agents	= new ArrayList<PotentialAgent>();
+public class FRList {
+	@ElementList(inline = true, required = false, entry = "fRole", empty = false)
+	public List<FunctionalRole> fRoles = new ArrayList<FunctionalRole>();
 }

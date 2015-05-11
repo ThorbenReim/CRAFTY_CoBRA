@@ -38,7 +38,7 @@ import javax.swing.JTextArea;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -101,7 +101,7 @@ public class CellInfoDisplay extends JPanel {
 		productionDisplay.setMap(c.getSupply().toMap());
 		competitivenessDisplay.setMap(getCompetitivenessMap(c));
 		unadjustedCompetitivenessDisplay.setMap(getUnadjustedCompetitivenessMap(c));
-		owner.setText(c.getOwnerID() + "\n" + c.getOwner().infoString());
+		owner.setText(c.getOwnersFrLabel() + "\n" + c.getOwner().infoString());
 		setCellXY(c.getX(), c.getY());
 		setCellRegion(c.getRegion());
 		revalidate();
@@ -134,8 +134,9 @@ public class CellInfoDisplay extends JPanel {
 		Map<String, Double> map = new HashMap<String, Double>();
 		Region r = c.getRegion();
 		if (r != null) {
-			for (PotentialAgent a : r.getAllPotentialAgents()) {
-				map.put(a.getID(), r.getCompetitiveness(a, c));
+			for (FunctionalRole fr : r.getFunctionalRoleMapByLabel().values()) {
+				map.put(fr.getLabel(),
+						r.getCompetitiveness(fr.getNewFunctionalComp(null), c));
 			}
 		}
 		return map;
@@ -145,8 +146,10 @@ public class CellInfoDisplay extends JPanel {
 		Map<String, Double> map = new HashMap<String, Double>();
 		Region r = c.getRegion();
 		if (r != null) {
-			for (PotentialAgent a : r.getAllPotentialAgents()) {
-				map.put(a.getID(), r.getUnadjustedCompetitiveness(a, c));
+			for (FunctionalRole fr : r.getFunctionalRoleMapByLabel().values()) {
+				map.put(fr.getLabel(),
+						r.getUnadjustedCompetitiveness(
+								fr.getNewFunctionalComp(null), c));
 			}
 		}
 		return map;

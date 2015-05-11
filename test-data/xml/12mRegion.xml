@@ -8,7 +8,7 @@
 	<demand class="org.volante.abm.example.RegionalDemandModel" demandCSV="csv/Region1Demand.csv"/>
 
 	<potentialAgents>
-		<agent class="org.volante.abm.example.SimplePotentialAgent" givingUp="0.5" givingIn="1" id="LowIntensityArable"
+		<agent class="org.volante.abm.agent.fr.SimplePotentialAgent" givingUp="0.5" givingIn="1" id="LowIntensityArable"
 			serialID="1">
 			<production class="org.volante.abm.example.SimpleProductionModel" csvFile="csv/LowIntensityArable.csv" />
 		</agent>

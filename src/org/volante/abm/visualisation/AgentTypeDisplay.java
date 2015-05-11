@@ -63,16 +63,16 @@ public class AgentTypeDisplay extends CellDisplay {
 	}
 
 	public Color getColor(Cell c) {
-		Color col = agentColours.get(c.getOwnerID());
+		Color col = agentColours.get(c.getOwnersFrLabel());
 		if (col != null) {
 			return col;
 		}
-		log.warn("No colour found for: " + c.getOwnerID() + " so making one up");
+		log.warn("No colour found for: " + c.getOwnersFrLabel() + " so making one up");
 		Color nc = new Color(URandomService.getURandomService().getUniform().nextIntFromTo(0, 255),
 				URandomService.getURandomService().getUniform().nextIntFromTo(0, 255),
 				URandomService.getURandomService().getUniform().nextIntFromTo(0, 255));
 
-		agentColours.put(c.getOwnerID(), nc);
+		agentColours.put(c.getOwnersFrLabel(), nc);
 		updateLegend();
 		return nc;
 	}

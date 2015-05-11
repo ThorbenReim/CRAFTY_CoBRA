@@ -31,10 +31,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
-import org.volante.abm.agent.InnovationAgent;
-import org.volante.abm.agent.SocialAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Region;
-import org.volante.abm.decision.bo.InnovationBo;
+import org.volante.abm.decision.po.InnovationBo;
 import org.volante.abm.example.BasicTestsUtils;
 import org.volante.abm.institutions.innovation.Innovation;
 import org.volante.abm.institutions.innovation.InnovationRegistry;
@@ -60,18 +59,21 @@ public class InnovationTest extends BasicTestsUtils {
 		}
 
 		@Override
-		public InnovationBo getWaitingBo(SocialAgent agent) {
+		public void perform(InnovativeBC agent) {
+			// do nothing
+		}
+
+		@Override
+		public void unperform(InnovativeBC agent) {
+			// do nothing
+		}
+
+		/**
+		 * @see org.volante.abm.institutions.innovation.Innovation#getWaitingBo(org.volante.abm.agent.bt.InnovativeBC)
+		 */
+		@Override
+		public InnovationBo getWaitingBo(InnovativeBC bComp) {
 			return null;
-		}
-
-		@Override
-		public void perform(InnovationAgent agent) {
-			// do nothing
-		}
-
-		@Override
-		public void unperform(InnovationAgent agent) {
-			// do nothing
 		}
 	}
 

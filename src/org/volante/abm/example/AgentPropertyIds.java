@@ -3,7 +3,7 @@
  * 
  * CRAFTY - Competition for Resources between Agent Functional TYpes
  *
- * Copyright (C) 2014 School of GeoScience, University of Edinburgh, Edinburgh, UK
+ * Copyright (C) 2015 School of GeoScience, University of Edinburgh, Edinburgh, UK
  * 
  * CRAFTY is free software: You can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software 
@@ -19,19 +19,24 @@
  *
  * School of Geoscience, University of Edinburgh, Edinburgh, UK
  * 
- * Created by Sascha Holzhauer on 16.04.2014
+ * Created by Sascha Holzhauer on 12 Jan 2015
  */
-package org.volante.abm.agent;
+package org.volante.abm.example;
 
-import org.volante.abm.decision.bo.InnovationBo;
-
-import de.cesr.lara.components.agents.LaraAgent;
+import org.volante.abm.agent.property.AgentPropertyId;
 
 /**
  * @author Sascha Holzhauer
  *
  */
-public interface DeliberativeInnovationAgent extends
-		LaraAgent<DeliberativeInnovationAgent, InnovationBo> {
+public enum AgentPropertyIds implements AgentPropertyId {
+
+	AGE,
+	EDUCATION,
+	EXPERIENCE,
+	FARM_SIZE,
+	COMPETITIVENESS,
+	GIVING_IN_THRESHOLD,
+	GIVING_UP_THRESHOLD;
 
 }

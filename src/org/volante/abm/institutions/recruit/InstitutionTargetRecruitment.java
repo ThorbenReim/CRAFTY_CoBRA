@@ -26,7 +26,6 @@ package org.volante.abm.institutions.recruit;
 import java.util.Collection;
 
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.InnovationAgent;
 import org.volante.abm.institutions.Institution;
 import org.volante.abm.institutions.innovation.Innovation;
 import org.volante.abm.serialization.Initialisable;
@@ -44,6 +43,7 @@ public interface InstitutionTargetRecruitment extends Initialisable {
 	 * @param allAgents
 	 * @return recruited agents
 	 */
-	public Collection<InnovationAgent> getRecruitedAgents(Collection<? extends Agent> allAgents);
+	public Collection<Agent> getRecruitedAgents(
+			Collection<? extends Agent> allAgents);
 
 }

@@ -26,10 +26,10 @@ public class SimpleRegionalDemandTest extends BasicTestsUtils
 		r1.setDemandModel( dem );
 		
 		//Create a farmer, get it farming
-		farmer = (DefaultAgent) farming.createAgent( r1 );
+		farmer = new DefaultAgent(farming, "TestFarmer", modelData, r1);
 
-		//Create a farmer, get it farming
-		forester = (DefaultAgent) forestry.createAgent( r1 );
+		// Create a forester, get it managing
+		forester = new DefaultAgent(forestry, "TestForester", modelData, r1);
 	}
 	
 	@Test

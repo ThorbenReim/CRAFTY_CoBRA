@@ -31,7 +31,7 @@ import java.util.LinkedHashSet;
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Element;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.InnovationAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.param.RandomPa;
@@ -77,8 +77,9 @@ public class NumberRandomRecruitment implements InstitutionTargetRecruitment {
 	 * @see org.volante.abm.institutions.recruit.InstitutionTargetRecruitment#getRecruitedAgents(java.util.Collection)
 	 */
 	@Override
-	public Collection<InnovationAgent> getRecruitedAgents(Collection<? extends Agent> allAgents) {
-		Collection<InnovationAgent> recruitedAgents = new LinkedHashSet<InnovationAgent>();
+	public Collection<Agent> getRecruitedAgents(
+			Collection<? extends Agent> allAgents) {
+		Collection<Agent> recruitedAgents = new LinkedHashSet<Agent>();
 		ArrayList<Agent> agents = new ArrayList<Agent>(allAgents);
 
 		for (int i = 0; i < number; i++) {
@@ -88,8 +89,8 @@ public class NumberRandomRecruitment implements InstitutionTargetRecruitment {
 				int index = Utilities.nextIntFromTo(0, agents.size() - 1,
 						region.getRandom().getURService(),
 						RandomPa.RANDOM_SEED_RUN.name());
-				if (agents.get(index) instanceof InnovationAgent) {
-					recruitedAgents.add((InnovationAgent) agents.get(index));
+				if (agents.get(index).getBC() instanceof InnovativeBC) {
+					recruitedAgents.add(agents.get(index));
 					agents.remove(index);
 				} else {
 					logger.warn("Skip selected agent " + agents.get(index)

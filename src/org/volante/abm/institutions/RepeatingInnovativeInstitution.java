@@ -25,7 +25,7 @@ package org.volante.abm.institutions;
 
 
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.InnovationAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.institutions.innovation.Innovation;
@@ -59,8 +59,8 @@ public class RepeatingInnovativeInstitution extends InnovativeInstitution implem
 						% ((RepeatingInnovation) this.innovation)
 								.getRepetitionComp().getRenewalInterval() == 0) {
 			for (Agent agent : this.region.getAgents()) {
-				if (agent instanceof InnovationAgent) {
-					this.innovation.outdate((InnovationAgent) agent);
+				if (agent instanceof InnovativeBC) {
+					this.innovation.outdate((InnovativeBC) agent);
 				}
 			}
 			if (this.innovation instanceof RepeatingInnovation) {

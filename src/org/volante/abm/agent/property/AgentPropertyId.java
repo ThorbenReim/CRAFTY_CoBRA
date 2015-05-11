@@ -19,14 +19,14 @@
  *
  * School of Geoscience, University of Edinburgh, Edinburgh, UK
  * 
- * Created by Sascha Holzhauer on 21 Jan 2015
+ * Created by Sascha Holzhauer on 12 Jan 2015
  */
-package org.volante.abm.agent;
+package org.volante.abm.agent.property;
 
 /**
  * @author Sascha Holzhauer
  *
  */
-public interface SocialInnovationAgent extends SocialAgent, InnovationAgent {
+public interface AgentPropertyId {
 
 }

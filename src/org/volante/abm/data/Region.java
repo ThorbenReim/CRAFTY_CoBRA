@@ -23,8 +23,6 @@
 package org.volante.abm.data;
 
 
-import static org.volante.abm.agent.Agent.NOT_MANAGED;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,8 +35,10 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.PotentialAgent;
 import org.volante.abm.agent.SocialAgent;
+import org.volante.abm.agent.bt.BehaviouralType;
+import org.volante.abm.agent.fr.FunctionalRole;
+import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.institutions.Institutions;
 import org.volante.abm.institutions.innovation.InnovationRegistry;
 import org.volante.abm.models.AllocationModel;
@@ -86,7 +86,13 @@ public class Region implements Regions, PreTickAction {
 	CompetitivenessModel	competition;
 	DemandModel				demand;
 	Set<Cell>				available					= new LinkedHashSet<Cell>();
-	Set<PotentialAgent>		potentialAgents				= new LinkedHashSet<PotentialAgent>();
+
+	Map<String, BehaviouralType> behaviouralTypesByLabel = new LinkedHashMap<String, BehaviouralType>();
+	Map<Integer, BehaviouralType> behaviouralTypesBySerialId = new LinkedHashMap<Integer, BehaviouralType>();
+
+	Map<String, FunctionalRole> functionalRolesByLabel = new LinkedHashMap<String, FunctionalRole>();
+	Map<Integer, FunctionalRole> functionalRolesBySerialId = new LinkedHashMap<Integer, FunctionalRole>();
+
 	ModelData				data;
 	RunInfo					rinfo;
 	Institutions			institutions				= null;
@@ -110,6 +116,76 @@ public class Region implements Regions, PreTickAction {
 	GeometryFactory		geoFactory;
 
 	RegionalRandom			random			= null;
+
+	/*
+	 * Unmodifiable versions to pass out as necessary
+	 */
+	Set<Agent> uAgents = Collections.unmodifiableSet(agents);
+
+	Map<String, BehaviouralType> uBehaviouralTypesByLabel = Collections
+			.unmodifiableMap(behaviouralTypesByLabel);
+
+	Map<Integer, BehaviouralType> uBehaviouralTypesBySerialId = Collections
+			.unmodifiableMap(behaviouralTypesBySerialId);
+
+	Map<String, FunctionalRole> ufunctionalRolesByLabel = Collections
+			.unmodifiableMap(functionalRolesByLabel);
+
+	Map<Integer, FunctionalRole> uFunctionalRolesBySerialId = Collections
+			.unmodifiableMap(functionalRolesBySerialId);
+
+	Set<Cell> uCells = Collections.unmodifiableSet(cells);
+	Set<Cell> uAvailable = Collections.unmodifiableSet(available);
+	Set<Region> uRegions = Collections.unmodifiableSet(new HashSet<Region>(
+			Arrays.asList(new Region[] { this })));
+	Table<Integer, Integer, Cell> cellTable = null;
+
+	Extent extent = new Extent();
+
+	Logger log = Logger.getLogger(getClass());
+
+	/*
+	 * Constructors, with initial sets of cells for convenience
+	 */
+	public Region() {
+		PmParameterManager pm = PmParameterManager.getNewInstance(this);
+		pm.setDefaultPm(PmParameterManager.getInstance(null));
+		this.random = new RegionalRandom(this);
+		this.random.init();
+	}
+
+	public Region(AllocationModel allocation, CompetitivenessModel competition,
+			DemandModel demand, Set<BehaviouralType> bts,
+			Set<FunctionalRole> frs, Cell... initialCells) {
+		this(initialCells);
+
+		for (BehaviouralType type : bts) {
+			behaviouralTypesByLabel.put(type.getLabel(), type);
+			behaviouralTypesBySerialId.put(type.getSerialID(), type);
+		}
+
+		for (FunctionalRole role : frs) {
+			functionalRolesByLabel.put(role.getLabel(), role);
+			functionalRolesBySerialId.put(role.getSerialID(), role);
+		}
+
+		this.allocation = allocation;
+		this.competition = competition;
+		this.demand = demand;
+	}
+
+	public Region(Cell... initialCells) {
+		this(Arrays.asList(initialCells));
+	}
+
+	public Region(Collection<Cell> initialCells) {
+		this();
+		cells.addAll(initialCells);
+		available.addAll(initialCells);
+		for (Cell c : initialCells) {
+			updateExtent(c);
+		}
+	}
 
 	/**
 	 * @return the random
@@ -228,56 +304,6 @@ public class Region implements Regions, PreTickAction {
 	}
 
 	/*
-	 * Unmodifiable versions to pass out as necessary
-	 */
-	Set<Agent>						uAgents				= Collections.unmodifiableSet(agents);
-	Set<PotentialAgent>				uPotentialAgents	= Collections
-																.unmodifiableSet(potentialAgents);
-	Set<Cell>						uCells				= Collections.unmodifiableSet(cells);
-	Set<Cell>						uAvailable			= Collections.unmodifiableSet(available);
-	Set<Region>						uRegions			= Collections
-																.unmodifiableSet(
-																new HashSet<Region>(
-																		Arrays.asList(new Region[] { this })));
-	Table<Integer, Integer, Cell>	cellTable			= null;
-
-	Extent							extent				= new Extent();
-
-	Logger							log					= Logger.getLogger(getClass());
-
-	/*
-	 * Constructors, with initial sets of cells for convenience
-	 */
-	public Region() {
-		PmParameterManager pm = PmParameterManager.getNewInstance(this);
-		pm.setDefaultPm(PmParameterManager.getInstance(null));
-		this.random = new RegionalRandom(this);
-		this.random.init();
-	}
-
-	public Region(AllocationModel allocation, CompetitivenessModel competition, DemandModel demand,
-			Set<PotentialAgent> potential, Cell... initialCells) {
-		this(initialCells);
-		potentialAgents.addAll(potential);
-		this.allocation = allocation;
-		this.competition = competition;
-		this.demand = demand;
-	}
-
-	public Region(Cell... initialCells) {
-		this(Arrays.asList(initialCells));
-	}
-
-	public Region(Collection<Cell> initialCells) {
-		this();
-		cells.addAll(initialCells);
-		available.addAll(initialCells);
-		for (Cell c : initialCells) {
-			updateExtent(c);
-		}
-	}
-
-	/*
 	 * Initialisation
 	 */
 	/**
@@ -330,8 +356,18 @@ public class Region implements Regions, PreTickAction {
 		this.competition = d;
 	}
 
-	public void addPotentialAgents(Collection<PotentialAgent> agents) {
-		this.potentialAgents.addAll(agents);
+	public void addBehaviouralTypes(Collection<BehaviouralType> types) {
+		for (BehaviouralType type : types) {
+			behaviouralTypesByLabel.put(type.getLabel(), type);
+			behaviouralTypesBySerialId.put(type.getSerialID(), type);
+		}
+	}
+
+	public void addfunctionalRoles(Collection<FunctionalRole> roles) {
+		for (FunctionalRole role : roles) {
+			functionalRolesByLabel.put(role.getLabel(), role);
+			functionalRolesBySerialId.put(role.getSerialID(), role);
+		}
 	}
 
 	/*
@@ -362,13 +398,13 @@ public class Region implements Regions, PreTickAction {
 		return uAgents;
 	}
 
-	public Collection<PotentialAgent> getPotentialAgents() {
-		return uPotentialAgents;
+	public Collection<FunctionalRole> getFunctionalRoles() {
+		return ufunctionalRolesByLabel.values();
 	}
 
 	public void removeAgent(Agent a) {
 		for (Cell c : a.getCells()) {
-			c.setOwner(NOT_MANAGED);
+			c.setOwner(null);
 			c.resetSupply();
 			available.add(c);
 			demand.agentChange(c);
@@ -409,8 +445,23 @@ public class Region implements Regions, PreTickAction {
 	}
 
 	@Override
-	public Iterable<PotentialAgent> getAllPotentialAgents() {
-		return uPotentialAgents;
+	public Map<String, BehaviouralType> getBehaviouralTypeMapByLabel() {
+		return uBehaviouralTypesByLabel;
+	}
+
+	@Override
+	public Map<Integer, BehaviouralType> getBehaviouralTypeMapBySerialId() {
+		return uBehaviouralTypesBySerialId;
+	}
+
+	@Override
+	public Map<String, FunctionalRole> getFunctionalRoleMapByLabel() {
+		return ufunctionalRolesByLabel;
+	}
+
+	@Override
+	public Map<Integer, FunctionalRole> getFunctionalRoleMapBySerialId() {
+		return uFunctionalRolesBySerialId;
 	}
 
 	/*
@@ -424,9 +475,9 @@ public class Region implements Regions, PreTickAction {
 	 * @param c
 	 * @return competitiveness for the given potential agent on the given cell
 	 */
-	public double getCompetitiveness(PotentialAgent agent, Cell c) {
+	public double getCompetitiveness(FunctionalRole agent, Cell c) {
 		if (hasCompetitivenessAdjustingInstitution()) {
-			UnmodifiableNumberMap<Service> provision = agent.getPotentialSupply(c);
+			UnmodifiableNumberMap<Service> provision = agent.getExpectedSupply(c);
 			// same as getUnadjustedCompetitiveness() but this way omits
 			// calculating provision twice:
 			double comp = competition.getCompetitiveness(demand, provision, c);
@@ -438,6 +489,7 @@ public class Region implements Regions, PreTickAction {
 		}
 	}
 
+
 	/**
 	 * Just used for displays and checking to see the effect without
 	 * institutions
@@ -447,8 +499,8 @@ public class Region implements Regions, PreTickAction {
 	 * @return unadjusted competitiveness for the given potential agent on the
 	 *         given cell
 	 */
-	public double getUnadjustedCompetitiveness(PotentialAgent agent, Cell c) {
-		return competition.getCompetitiveness(demand, agent.getPotentialSupply(c), c);
+	public double getUnadjustedCompetitiveness(FunctionalRole agent, Cell c) {
+		return competition.getCompetitiveness(demand, agent.getExpectedSupply(c), c);
 	}
 
 	/**
@@ -461,7 +513,8 @@ public class Region implements Regions, PreTickAction {
 	public double getCompetitiveness(Cell c) {
 		double comp = getUnadjustedCompetitiveness(c);
 		if (hasCompetitivenessAdjustingInstitution()) {
-			PotentialAgent a = c.getOwner() == null ? null : c.getOwner().getType();
+			FunctionalRole a = c.getOwner() == null ? null : c.getOwner()
+					.getFC().getFR();
 			return institutions.adjustCompetitiveness(a, c, c.getSupply(), comp);
 		} else {
 			return comp;
@@ -523,9 +576,13 @@ public class Region implements Regions, PreTickAction {
 			if (demand != null) {
 				demand.agentChange(c); // could be null in initialisation
 			}
-			if (log.isDebugEnabled() && a.getCompetitiveness() < a.getGivingUp()) {
+			if (log.isDebugEnabled()
+					&& a.getProperty(AgentPropertyIds.COMPETITIVENESS) < a
+							.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)) {
 				log.debug(" Cell below new " + a.getID() + "'s GivingUp threshold: comp = "
-						+ a.getCompetitiveness() + " GU = " + a.getGivingUp());
+						+ a.getProperty(AgentPropertyIds.COMPETITIVENESS)
+						+ " GU = "
+						+ a.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD));
 			}
 			log.trace(" owner is now " + a);
 		}
@@ -543,11 +600,11 @@ public class Region implements Regions, PreTickAction {
 		for (Cell c : cells) {
 			a.addCell(c);
 			c.setOwner(a);
-			if (a != Agent.NOT_MANAGED) {
+			if (a != null) {
 				available.remove(c);
 			}
 		}
-		if (a != Agent.NOT_MANAGED) {
+		if (a != null) {
 			agents.add(a);
 		}
 	}
@@ -557,7 +614,7 @@ public class Region implements Regions, PreTickAction {
 	 */
 	public void makeUnmanagedCellsAvailable() {
 		for (Cell c : cells) {
-			if (c.getOwner() == null || c.getOwner() == Agent.NOT_MANAGED) {
+			if (c.getOwner() == null || c.getOwner() == null) {
 				available.add(c);
 			}
 		}

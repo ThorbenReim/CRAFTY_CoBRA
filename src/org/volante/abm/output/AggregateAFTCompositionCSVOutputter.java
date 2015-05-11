@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Regions;
@@ -57,9 +57,9 @@ public class AggregateAFTCompositionCSVOutputter extends AggregateCSVOutputter {
 	public void initAftColumns(Regions regions) {
 		Set<String> pAgentSet = new LinkedHashSet<String>();
 		for (Region r : regions.getAllRegions()) {
-			for (PotentialAgent pa : r.getPotentialAgents()) {
-				if (!pAgentSet.contains(pa.getID())) {
-					pAgentSet.add(pa.getID());
+			for (FunctionalRole fr : r.getFunctionalRoleMapByLabel().values()) {
+				if (!pAgentSet.contains(fr.getLabel())) {
+					pAgentSet.add(fr.getLabel());
 				}
 			}
 			HashMap<String, Double> pMap = new HashMap<String, Double>();
@@ -85,18 +85,19 @@ public class AggregateAFTCompositionCSVOutputter extends AggregateCSVOutputter {
 
 		for (Region r : regions.getAllRegions()) {
 
-			int[] pagentNumbers = new int[r.getPotentialAgents().size()];
+			int[] pagentNumbers = new int[r.getFunctionalRoles().size()];
 			for (Agent a : r.getAgents()) {
-				pagentNumbers[a.getType().getSerialID()]++;
+				pagentNumbers[a.getFC().getFR().getSerialID()]++;
 			}
 
 			int sum = 0;
 			for (int i = 0; i < pagentNumbers.length; i++) {
 				sum += pagentNumbers[i];
 			}
-			for (PotentialAgent p : r.getPotentialAgents()) {
-				aftData.get(r).put(p.getID(),
-						new Double((double) pagentNumbers[p.getSerialID()] / sum));
+			for (FunctionalRole fr : r.getFunctionalRoles()) {
+				aftData.get(r).put(
+						fr.getLabel(),
+						new Double((double) pagentNumbers[fr.getSerialID()] / sum));
 			}
 		}
 		super.doOutput(regions);

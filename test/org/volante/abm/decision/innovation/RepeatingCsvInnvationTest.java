@@ -34,14 +34,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultSocialInnovationAgent;
-import org.volante.abm.agent.InnovationAgent;
+import org.volante.abm.agent.DefaultSocialAgent;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
 import org.volante.abm.example.BasicTestsUtils;
 import org.volante.abm.institutions.RepeatingInnovativeInstitution;
-import org.volante.abm.institutions.innovation.Innovation;
 import org.volante.abm.institutions.innovation.RepeatingProductivityInnovation;
 import org.volante.abm.institutions.recruit.InstitutionTargetRecruitment;
 import org.volante.abm.models.utils.ProductionWeightReporter;
@@ -116,9 +114,13 @@ public class RepeatingCsvInnvationTest extends InnovationTestUtils {
 				.setRelativeToPreviousTick(true);
 
 		Service service = BasicTestsUtils.modelData.services.forName("FOOD");
-		InnovationAgent one = (InnovationAgent) innovativeFarming.createAgent(r1);
-		InnovationAgent two = (InnovationAgent) innovativeFarming.createAgent(r1);
-		InnovationAgent three = (InnovationAgent) innovativeFarming.createAgent(r1);
+
+		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel());
+		Agent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel());
+		Agent three = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel());
 
 		double initialProductivity = ((ProductionWeightReporter) one.getProductionModel()).
 				getProductionWeights().getDouble(service);
@@ -147,12 +149,14 @@ public class RepeatingCsvInnvationTest extends InnovationTestUtils {
 
 		Service service = BasicTestsUtils.modelData.services.forName("FOOD");
 
-		InnovationAgent one = (InnovationAgent) innovativeFarming.createAgent(
-				r1, "One");
-		InnovationAgent two = (InnovationAgent) innovativeFarming.createAgent(
-				r1, "Two");
-		InnovationAgent three = (InnovationAgent) innovativeFarming
-				.createAgent(r1, "Three");
+		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel(), "One");
+
+		Agent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel(), "Two");
+
+		Agent three = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel(), "Three");
 
 
 		double initialProductivity = ((ProductionWeightReporter) two
@@ -179,7 +183,7 @@ public class RepeatingCsvInnvationTest extends InnovationTestUtils {
 		adoptAndCheckCsv(three, 3, false, service, initialProductivity);
 	}
 
-	protected void adoptAndCheckCsv(final InnovationAgent agent, int ticks,
+	protected void adoptAndCheckCsv(final Agent agent, int ticks,
 			boolean relToPreviousTick,
 			Service service,
 			double initialProductivity) {
@@ -221,25 +225,19 @@ public class RepeatingCsvInnvationTest extends InnovationTestUtils {
 
 	@Test
 	public void testInnovationRenewal() {
-		final InnovationAgent agent = new DefaultSocialInnovationAgent(
-				innovativeFarming,
-				"ID", modelData, r1, farmingProduction.copyWithNoise(modelData, null,
- null), 0.5,
-				0.5) {
-			public void makeAware(Innovation innovation) {
-				super.makeAware(innovation);
-				indicator = true;
-			}
-		};
+		final Agent agent = new DefaultSocialAgent(innovativeFarming, "ID",
+				modelData, r1, farmingProduction.copyWithNoise(modelData, null,
+						null), 0.5, 0.5);
+		this.innovationTestBT.assignNewBehaviouralComp(agent);
 
 
 		this.csvInstitution
 				.setInstitutionTargetRecruitment(new InstitutionTargetRecruitment() {
 
 					@Override
-					public Collection<InnovationAgent> getRecruitedAgents(
+					public Collection<Agent> getRecruitedAgents(
 							Collection<? extends Agent> allAgents) {
-						Collection<InnovationAgent> agents = new ArrayList<InnovationAgent>();
+						Collection<Agent> agents = new ArrayList<Agent>();
 						agents.add(agent);
 						return agents;
 					}

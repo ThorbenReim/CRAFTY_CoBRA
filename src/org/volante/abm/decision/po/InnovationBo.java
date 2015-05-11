@@ -1,14 +1,13 @@
 /**
  * 
  */
-package org.volante.abm.decision.bo;
+package org.volante.abm.decision.po;
 
 
 import java.util.Map;
 
-import org.volante.abm.agent.DeliberativeInnovationAgent;
+import org.volante.abm.agent.bt.LaraBehaviouralComponent;
 
-import de.cesr.lara.components.LaraBehaviouralOption;
 import de.cesr.lara.components.decision.LaraDecisionConfiguration;
 
 /**
@@ -16,15 +15,15 @@ import de.cesr.lara.components.decision.LaraDecisionConfiguration;
  *
  */
 public class InnovationBo extends
-		LaraBehaviouralOption<DeliberativeInnovationAgent, InnovationBo> {
+ CraftyPo<InnovationBo> {
 
-	public InnovationBo(String key, DeliberativeInnovationAgent agent) {
-		super(key, agent);
+	public InnovationBo(String key, LaraBehaviouralComponent comp) {
+		super(key, comp);
 	}
 
 
 	@Override
-	public InnovationBo getModifiedBO(DeliberativeInnovationAgent agent,
+	public InnovationBo getModifiedBO(LaraBehaviouralComponent comp,
 			Map preferenceUtilities) {
 		// TODO Auto-generated method stub
 		return null;

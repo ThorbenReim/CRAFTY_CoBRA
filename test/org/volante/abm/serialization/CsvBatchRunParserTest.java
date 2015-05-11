@@ -32,7 +32,7 @@ import org.volante.abm.schedule.RunInfo;
  * @author Sascha Holzhauer
  *
  */
-public class CsvBatchRunParsertTest {
+public class CsvBatchRunParserTest {
 
 	final String	CSV_FILENAME		= "csv/CsvBatchRunParserTest.csv";
 	final String	CSV_FILENAME_SEC	= "csv/CsvBatchRunParserSecondaryTest.csv";

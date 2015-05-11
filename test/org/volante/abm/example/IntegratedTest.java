@@ -30,7 +30,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.DefaultFR;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -75,11 +76,13 @@ public class IntegratedTest extends BasicTestsUtils
 	SimpleAllocationModel allocation = new SimpleAllocationModel();
 	StaticPerCellDemandModel demand = new StaticPerCellDemandModel();
 	SimpleCompetitivenessModel competition = new SimpleCompetitivenessModel();
-	SimplePotentialAgent farming = new SimplePotentialAgent("Farming", data, farmingProdModel, 1, 1 );
-	SimplePotentialAgent forest = new SimplePotentialAgent("Forest", data, forestProdModel, 1, 1 );
-	Set<PotentialAgent> agents = new HashSet<PotentialAgent>( Arrays.asList( farming, forest ) );
+	DefaultFR farming = new DefaultFR("Farming", farmingProdModel, 1, 1);
+	DefaultFR forest = new DefaultFR("Forest", forestProdModel, 1, 1);
+	Set<FunctionalRole> fRoles = new HashSet<FunctionalRole>(Arrays.asList(
+			farming, forest));
 	
-	Region r1 = new Region( allocation, competition, demand, agents, c1, c2, c3, c4 );
+	Region r1 = new Region(allocation, competition, demand, behaviouralTypes,
+			fRoles, c1, c2, c3, c4);
 	RegionSet w;
 
 	public IntegratedTest() {
@@ -105,7 +108,7 @@ public class IntegratedTest extends BasicTestsUtils
 		
 		demand.setDemand( c1, services( 0, 0, 10, 0 ));
 		demand.updateSupply();
-		assertEqualMaps( services(0,0,1,0), farming.getPotentialSupply( c1 ));
+		assertEqualMaps( services(0,0,1,0), farming.getExpectedSupply( c1 ));
 		assertEqualMaps( demand.getDemand( c1 ), services(0,0,10,0));
 		assertEqualMaps( demand.getResidualDemand( c1 ), services(0,0,10,0));
 		sched.tick();

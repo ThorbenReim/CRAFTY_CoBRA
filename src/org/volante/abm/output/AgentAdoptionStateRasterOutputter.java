@@ -25,7 +25,7 @@ package org.volante.abm.output;
 
 
 import org.simpleframework.xml.Attribute;
-import org.volante.abm.agent.InnovationAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Cell;
 import org.volante.abm.institutions.innovation.Innovation;
 import org.volante.abm.institutions.innovation.status.InnovationStates;
@@ -47,7 +47,7 @@ public class AgentAdoptionStateRasterOutputter extends RasterOutputter {
 
 	/**
 	 * Return the adoption state or 0 if the agent is not an
-	 * {@link InnovationAgent}.
+	 * {@link InnovativeBC}.
 	 * 
 	 * @see org.volante.abm.serialization.CellToDouble#apply(org.volante.abm.data.Cell)
 	 */
@@ -56,8 +56,8 @@ public class AgentAdoptionStateRasterOutputter extends RasterOutputter {
 		if (!initialised) {
 			this.innovation = c.getRegion().getInnovationRegistry().getInnovation(innovationID);
 		}
-		if (c.getOwner() instanceof InnovationAgent) {
-			return ((InnovationAgent) c.getOwner()).getState(this.innovation)
+		if (c.getOwner() instanceof InnovativeBC) {
+			return ((InnovativeBC) c.getOwner()).getState(this.innovation)
 					.getID();
 		} else {
 			return InnovationStates.UNAWARE.getID();

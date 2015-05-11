@@ -22,8 +22,11 @@
  */
 package org.volante.abm.data;
 
+import java.util.Map;
+
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.bt.BehaviouralType;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.serialization.Initialisable;
 
 public interface Regions extends Initialisable
@@ -32,7 +35,12 @@ public interface Regions extends Initialisable
 	public Iterable<Region> getAllRegions();
 	public Iterable<Agent> getAllAgents();
 	public Iterable<Cell> getAllCells();
-	public Iterable<PotentialAgent> getAllPotentialAgents();
+
+	public Map<String, BehaviouralType> getBehaviouralTypeMapByLabel();
+	public Map<Integer, BehaviouralType> getBehaviouralTypeMapBySerialId();
+	public Map<String, FunctionalRole> getFunctionalRoleMapByLabel();
+	public Map<Integer, FunctionalRole> getFunctionalRoleMapBySerialId();
+
 	public Extent getExtent();
 	public int getNumCells();
 }

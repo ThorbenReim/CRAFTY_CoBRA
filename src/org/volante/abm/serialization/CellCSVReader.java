@@ -23,8 +23,6 @@
 package org.volante.abm.serialization;
 
 
-import java.util.Arrays;
-
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -38,7 +36,8 @@ import com.csvreader.CsvReader;
 
 
 /**
- * Reads information from a csv file into the given region
+ * Reads information from a csv file into the given region Does not consider
+ * agent column!
  * 
  * @author dmrust
  * 
@@ -46,8 +45,7 @@ import com.csvreader.CsvReader;
 public class CellCSVReader implements CellInitialiser {
 	@Attribute
 	String	csvFile		= "";
-	@Attribute(required = false)
-	String	agentColumn	= "Agent";
+
 	@Attribute(required = false)
 	String			xColumn			= "X";
 	@Attribute(required = false)
@@ -64,7 +62,6 @@ public class CellCSVReader implements CellInitialiser {
 	@Override
 	public void initialise(RegionLoader rl) throws Exception {
 		ModelData data = rl.modelData;
-		boolean hasAgentColumn = true;
 
 		if (!rl.persister.csvFileOK("RegionLoader", csvFile, xColumn, yColumn)) {
 			return;
@@ -73,10 +70,7 @@ public class CellCSVReader implements CellInitialiser {
 		ModelRunner.clog("CapitalCSVFile", csvFile);
 
 		CsvReader reader = rl.persister.getCSVReader(csvFile);
-		if (!Arrays.asList(reader.getHeaders()).contains(agentColumn)) {
-			hasAgentColumn = false;
-			log.info("No Agent Column found in CSV file: " + rl.persister.getFullPath(csvFile));
-		}
+
 		while (reader.readRecord()) {
 			// <- LOGGING
 			if (log.isDebugEnabled()) {
@@ -104,12 +98,6 @@ public class CellCSVReader implements CellInitialiser {
 						log.error("Exception in row " + reader.getCurrentRecord() + " ("
 								+ exception.getMessage() + ") for capital " + cap.getName());
 					}
-				}
-			}
-			if (hasAgentColumn) {
-				String ag = reader.get(agentColumn);
-				if (ag != null) {
-					rl.setAgent(c, ag);
 				}
 			}
 		}

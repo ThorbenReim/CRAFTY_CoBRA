@@ -28,7 +28,8 @@ import static org.junit.Assert.assertEquals;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
-import org.volante.abm.agent.InnovationAgent;
+import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.example.BasicTestsUtils;
@@ -101,15 +102,17 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 				.forName(CONSIDERED_CAPITAL);
 		double initialCapital = BasicTestsUtils.cellCapitalsA.get(capital);
 
-		InnovationAgent one = (InnovationAgent) innovativeFarming.createAgent(
-				r1, "One");
+		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel(), "One");
+
 		Cell[] cells = this.r1cells.toArray(new Cell[1]);
 		cells[1].setBaseCapitals(cellCapitalsA);
+
 		this.r1.setOwnership(one, cells[1]);
 
-		one.makeAware(innovation);
-		one.makeTrial(innovation);
-		one.makeAdopted(innovation);
+		((InnovativeBC) one.getBC()).makeAware(innovation);
+		((InnovativeBC) one.getBC()).makeTrial(innovation);
+		((InnovativeBC) one.getBC()).makeAdopted(innovation);
 
 		BasicTestsUtils.runInfo.getSchedule().tick();
 		// Tick 1 finished
@@ -133,22 +136,23 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 				.forName(CONSIDERED_CAPITAL);
 		double initialCapital = BasicTestsUtils.cellCapitalsA.get(capital);
 
-		InnovationAgent one = (InnovationAgent) innovativeFarming.createAgent(
-				r1, "One");
+		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel(), "One");
+
 		Cell[] cells = this.r1cells.toArray(new Cell[1]);
 		cells[1].setBaseCapitals(cellCapitalsA);
 		this.r1.setOwnership(one, cells[1]);
 
-		one.makeAware(innovation);
-		one.makeTrial(innovation);
-		one.makeAdopted(innovation);
+		((InnovativeBC) one.getBC()).makeAware(innovation);
+		((InnovativeBC) one.getBC()).makeTrial(innovation);
+		((InnovativeBC) one.getBC()).makeAdopted(innovation);
 
 		BasicTestsUtils.runInfo.getSchedule().tick();
 		// Tick 1 finished
 
 		checkCapitalLevel(one, 1, capital, initialCapital);
 
-		one.rejectInnovation(innovation);
+		((InnovativeBC) one.getBC()).rejectInnovation(innovation);
 		BasicTestsUtils.runInfo.getSchedule().tick();
 		// Tick 2 finished
 
@@ -162,15 +166,16 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 				.forName(CONSIDERED_CAPITAL);
 		double initialCapital = BasicTestsUtils.cellCapitalsA.get(capital);
 
-		InnovationAgent one = (InnovationAgent) innovativeFarming.createAgent(
-				r1, "One");
+		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel(), "One");
+
 		Cell[] cells = this.r1cells.toArray(new Cell[1]);
 		cells[1].setBaseCapitals(cellCapitalsA);
 		this.r1.setOwnership(one, cells[1]);
 
-		one.makeAware(innovation);
-		one.makeTrial(innovation);
-		one.makeAdopted(innovation);
+		((InnovativeBC) one.getBC()).makeAware(innovation);
+		((InnovativeBC) one.getBC()).makeTrial(innovation);
+		((InnovativeBC) one.getBC()).makeAdopted(innovation);
 
 		assertEquals(initialCapital,
 				cells[1].getBaseCapitals().getDouble(capital), 0.0001);
@@ -197,22 +202,23 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 				.forName(CONSIDERED_CAPITAL);
 		Cell[] cells = this.r1cells.toArray(new Cell[1]);
 
+		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel(), "One");
 
-		InnovationAgent one = (InnovationAgent) innovativeFarming.createAgent(
-				r1, "One");
 		cells[1].setBaseCapitals(cellCapitalsA);
 		this.r1.setOwnership(one, cells[1]);
 
-		InnovationAgent two = (InnovationAgent) innovativeFarming.createAgent(
-				r1, "Two");
+		Agent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel(), "Two");
+
 		cells[2].setBaseCapitals(cellCapitalsA);
 		this.r1.setOwnership(two, cells[2]);
 
 		double initialCapital = BasicTestsUtils.cellCapitalsA.get(capital);
 
-		one.makeAware(innovation);
-		one.makeTrial(innovation);
-		one.makeAdopted(innovation);
+		((InnovativeBC) one.getBC()).makeAware(innovation);
+		((InnovativeBC) one.getBC()).makeTrial(innovation);
+		((InnovativeBC) one.getBC()).makeAdopted(innovation);
 
 		BasicTestsUtils.runInfo.getSchedule().tick();
 		// Tick 1 finished
@@ -220,9 +226,9 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 		assertEquals(initialCapital,
 				cells[2].getEffectiveCapitals().getDouble(capital), 0.0001);
 
-		two.makeAware(innovation);
-		two.makeTrial(innovation);
-		two.makeAdopted(innovation);
+		((InnovativeBC) two.getBC()).makeAware(innovation);
+		((InnovativeBC) two.getBC()).makeTrial(innovation);
+		((InnovativeBC) two.getBC()).makeAdopted(innovation);
 
 		BasicTestsUtils.runInfo.getSchedule().tick();
 		// Tick 2 finished
@@ -254,15 +260,16 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 		institutions.addInstitution(institution);
 
 		// setup adopted agent:
-		InnovationAgent one = (InnovationAgent) innovativeFarming.createAgent(
-				r1, "One");
+		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel(), "One");
+
 		Cell[] cells = this.r1cells.toArray(new Cell[1]);
 		cells[1].setBaseCapitals(cellCapitalsA);
 		this.r1.setOwnership(one, cells[1]);
 
-		one.makeAware(innovation);
-		one.makeTrial(innovation);
-		one.makeAdopted(innovation);
+		((InnovativeBC) one.getBC()).makeAware(innovation);
+		((InnovativeBC) one.getBC()).makeTrial(innovation);
+		((InnovativeBC) one.getBC()).makeAdopted(innovation);
 
 		BasicTestsUtils.runInfo.getSchedule().tick();
 		// Tick 1 finished
@@ -298,7 +305,7 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 				cells[1].getBaseCapitals().getDouble(capital), 0.0001);
 	}
 
-	protected void checkCapitalLevel(final InnovationAgent agent, int ticks,
+	protected void checkCapitalLevel(final Agent agent, int ticks,
 			Capital capital, double initialCapitalValue) {
 
 		double expectedCapitalValue = initialCapitalValue

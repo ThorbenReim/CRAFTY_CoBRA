@@ -41,7 +41,7 @@ import org.simpleframework.xml.ElementMap;
 import org.simpleframework.xml.ElementMapUnion;
 import org.simpleframework.xml.Root;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultSocialInnovationAgent;
+import org.volante.abm.agent.DefaultSocialAgent;
 import org.volante.abm.agent.GeoAgent;
 import org.volante.abm.agent.SocialAgent;
 import org.volante.abm.data.ModelData;
@@ -247,7 +247,7 @@ public class SocialNetworkLoader {
 					for (Agent a : region.getAgents()) {
 						if (a instanceof GeoAgent
 								&& region.getNetworkService() instanceof MoreGeoNetworkService) {
-							((DefaultSocialInnovationAgent) a).addToGeography();
+							((DefaultSocialAgent) a).addToGeography();
 						}
 					}
 					

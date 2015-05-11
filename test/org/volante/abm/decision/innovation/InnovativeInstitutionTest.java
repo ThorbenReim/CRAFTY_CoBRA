@@ -26,7 +26,7 @@ package org.volante.abm.decision.innovation;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
-import org.volante.abm.agent.InnovationAgent;
+import org.volante.abm.agent.Agent;
 import org.volante.abm.data.Service;
 import org.volante.abm.example.BasicTestsUtils;
 import org.volante.abm.institutions.InnovativeInstitution;
@@ -79,12 +79,12 @@ public class InnovativeInstitutionTest extends InnovationTestUtils {
 		Service serviceTimber = BasicTestsUtils.modelData.services
 				.forName("TIMBER");
 		
-		InnovationAgent forester = (InnovationAgent) innovativeForestry
-				.createAgent(r1);
-		InnovationAgent farmerA = (InnovationAgent) innovativeFarming
-				.createAgent(r1);
-		InnovationAgent farmerB = (InnovationAgent) innovativeFarming
-				.createAgent(r1);
+		Agent forester = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeForestry.getLabel());
+		Agent farmerA = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel());
+		Agent farmerB = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel());
 
 		double initialProductivityForesterFood = ((ProductionWeightReporter) forester
 				.getProductionModel()).getProductionWeights().getDouble(
@@ -135,12 +135,12 @@ public class InnovativeInstitutionTest extends InnovationTestUtils {
 		Service serviceFood = BasicTestsUtils.modelData.services.forName("FOOD");
 		Service serviceTimber = BasicTestsUtils.modelData.services.forName("TIMBER");
 		
-		InnovationAgent forester = (InnovationAgent) innovativeForestry
-				.createAgent(r1, "Forrrrester");
-		InnovationAgent farmerA = (InnovationAgent) innovativeFarming
-				.createAgent(r1, "FaaaarmerA");
-		InnovationAgent farmerB = (InnovationAgent) innovativeFarming
-				.createAgent(r1, "FaaaarmerB");
+		Agent forester = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeForestry.getLabel(), "Forrrrester");
+		Agent farmerA = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel(), "FaaaarmerA");
+		Agent farmerB = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel(), "FaaaarmerB");
 
 		double initialProductivityForesterFood = ((ProductionWeightReporter) forester
 				.getProductionModel()).getProductionWeights()
@@ -193,12 +193,12 @@ public class InnovativeInstitutionTest extends InnovationTestUtils {
 		Service serviceTimber = BasicTestsUtils.modelData.services
 				.forName("TIMBER");
 		
-		InnovationAgent forester = (InnovationAgent) innovativeForestry
-				.createAgent(r1);
-		InnovationAgent farmerA = (InnovationAgent) innovativeFarming
-				.createAgent(r1);
-		InnovationAgent farmerB = (InnovationAgent) innovativeFarming
-				.createAgent(r1);
+		Agent forester = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeForestry.getLabel());
+		Agent farmerA = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel());
+		Agent farmerB = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+				innovativeFarming.getLabel());
 
 		double initialProductivityForesterFood = ((ProductionWeightReporter) forester
 				.getProductionModel()).getProductionWeights().getDouble(

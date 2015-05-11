@@ -31,8 +31,8 @@ import org.apache.log4j.Logger;
 import org.simpleframework.xml.Root;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.GeoAgent;
-import org.volante.abm.agent.PotentialAgent;
 import org.volante.abm.agent.SocialAgent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -90,12 +90,14 @@ public class SimpleAllocationModel implements AllocationModel,
 		}
 	}
 
-	private void createBestAgentForCell( Region r, Cell c )
-	{
-		List<PotentialAgent> potential = new ArrayList<PotentialAgent>( r.getPotentialAgents() );
+	private void createBestAgentForCell(Region r, Cell c) {
+		List<FunctionalRole> fComps = new ArrayList<FunctionalRole>();
+		for (FunctionalRole fRole : r.getFunctionalRoleMapByLabel().values()) {
+			fComps.add(fRole);
+		}
 		double max = -Double.MAX_VALUE;
-		PotentialAgent p = null;
-		for( PotentialAgent a : potential )
+		FunctionalRole p = null;
+		for (FunctionalRole a : fComps)
 		{
 			// TODO Check institutions for allowance
 
@@ -108,7 +110,7 @@ public class SimpleAllocationModel implements AllocationModel,
 
 			if( s > max )
 			{
-				if (s > a.getGivingUp()) {
+				if (s > a.getAssociatedGivingUpThreshold()) {
 					max = s;
 					p = a;
 				}

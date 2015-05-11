@@ -31,7 +31,7 @@ public class NormaliseProductivityRegionHelper implements SocialRegionHelper {
 		this.service = service;
 		this.normalise = normalise;
 
-		changes = new double[region.getPotentialAgents().size()];
+		changes = new double[region.getFunctionalRoles().size()];
 	}
 
 	public NormaliseProductivityRegionHelper(Region region, Service service) {
@@ -58,9 +58,9 @@ public class NormaliseProductivityRegionHelper implements SocialRegionHelper {
 	 */
 	public void normaliseProductivity() {
 		// calculate AFT numbers
-		int[] aftNumbers = new int[region.getPotentialAgents().size()];
+		int[] aftNumbers = new int[region.getFunctionalRoles().size()];
 		for (Agent a : region.getAgents()) {
-			aftNumbers[a.getType().getSerialID()]++;
+			aftNumbers[a.getFC().getFR().getSerialID()]++;
 		}
 
 		// calculate shares
@@ -73,7 +73,8 @@ public class NormaliseProductivityRegionHelper implements SocialRegionHelper {
 			for (Agent a : region.getAgents()) {
 				if (a instanceof NormalisableProductivityAgent) {
 					((NormalisableProductivityAgent) a)
-							.normaliseProductivity(this.service, changes[a.getType()
+.normaliseProductivity(
+							this.service, changes[a.getFC().getFR()
 									.getSerialID()]);
 				}
 			}

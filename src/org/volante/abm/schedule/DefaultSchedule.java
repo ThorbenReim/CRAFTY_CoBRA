@@ -27,8 +27,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultSocialInnovationAgent;
-import org.volante.abm.agent.InnovationAgent;
+import org.volante.abm.agent.DefaultSocialAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -52,6 +52,7 @@ public class DefaultSchedule implements Schedule {
 
 	List<PreTickAction>				preTickActions	= new ArrayList<PreTickAction>();
 	List<PostTickAction>			postTickActions	= new ArrayList<PostTickAction>();
+	List<FinishAction> finishActions = new ArrayList<FinishAction>();
 
 	Outputs							output			= new Outputs();
 	private RunInfo					info			= null;
@@ -107,8 +108,8 @@ public class DefaultSchedule implements Schedule {
 		// Recalculate agent competitiveness and give up
 		log.info("Update agents' competitiveness and consider giving up ...");
 		for (Agent a : regions.getAllAgents()) {
-			if (a instanceof InnovationAgent) {
-				((InnovationAgent) a).considerInnovationsNextStep();
+			if (a instanceof InnovativeBC) {
+				((InnovativeBC) a).considerInnovationsNextStep();
 			}
 
 			a.tickStartUpdate();
@@ -145,11 +146,9 @@ public class DefaultSchedule implements Schedule {
 		fireScheduleStatus(new ScheduleStatusEvent(tick, ScheduleStage.POST_TICK, true));
 		postTickUpdates();
 
-		log.info("Number of Adoptions in total: "
-				+ DefaultSocialInnovationAgent.numberAdoptions);
 
 		log.info("Number of Agents in total: "
-				+ DefaultSocialInnovationAgent.numberAgents);
+				+ DefaultSocialAgent.numberAgents);
 
 		output();
 		log.info("\n********************\nEnd of tick " + tick + "\n********************");
@@ -160,6 +159,7 @@ public class DefaultSchedule implements Schedule {
 	@Override
 	public void finish() {
 		output.finished();
+		this.finishUpdates();
 		fireScheduleStatus(new ScheduleStatusEvent(tick, ScheduleStage.FINISHING, true));
 	}
 
@@ -272,6 +272,18 @@ public class DefaultSchedule implements Schedule {
 		}
 	}
 
+	private void finishUpdates() {
+		log.info("Finish\t\t (DefaultSchedule ID " + id + ")");
+
+		// copy to prevent concurrent modifications:
+		List<FinishAction> finishActionsCopy = new ArrayList<FinishAction>(
+				finishActions);
+
+		for (FinishAction p : finishActionsCopy) {
+			p.afterLastTick();
+		}
+	}
+
 	@Override
 	public void register(TickAction o) {
 		if (o instanceof PreTickAction && !preTickActions.contains(o)) {
@@ -279,6 +291,9 @@ public class DefaultSchedule implements Schedule {
 		}
 		if (o instanceof PostTickAction && !postTickActions.contains(o)) {
 			postTickActions.add((PostTickAction) o);
+		}
+		if (o instanceof FinishAction && !finishActions.contains(o)) {
+			finishActions.add((FinishAction) o);
 		}
 	}
 
@@ -328,10 +343,5 @@ public class DefaultSchedule implements Schedule {
 		for (ScheduleStatusListener l : listeners) {
 			l.scheduleStatus(e);
 		}
-	}
-
-	@Override
-	public void addStatusListener(ScheduleStatusListener l) {
-		listeners.add(l);
 	}
 }
