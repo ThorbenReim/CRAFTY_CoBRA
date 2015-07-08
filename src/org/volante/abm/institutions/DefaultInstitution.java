@@ -27,7 +27,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.simpleframework.xml.ElementMap;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalComponent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
@@ -42,7 +43,7 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
 public class DefaultInstitution extends AbstractInstitution {
 	DoubleMap<Service>			subsidies				= null;
 	DoubleMap<Capital>			adjustments				= null;
-	Map<PotentialAgent, Double>	agentSubsidies			= new HashMap<PotentialAgent, Double>();
+	Map<FunctionalRole, Double> agentSubsidies = new HashMap<FunctionalRole, Double>();
 
 	@ElementMap(inline = true, required = false, entry = "subsidy", attribute = true, key = "service")
 	Map<String, Double>			serialSubsidies			= new HashMap<String, Double>();
@@ -58,20 +59,20 @@ public class DefaultInstitution extends AbstractInstitution {
 	}
 
 	@Override
-	public double adjustCompetitiveness(PotentialAgent agent, Cell location,
+	public double adjustCompetitiveness(FunctionalRole fRole,
+			Cell location,
 			UnmodifiableNumberMap<Service> provision, double competitiveness) {
 		double result = competitiveness;
 		double subsidy = provision.dotProduct(subsidies);
 		result += subsidy;
-		if (agentSubsidies.containsKey(agent)) {
-			result += agentSubsidies.get(agent);
+		if (agentSubsidies.containsKey(fRole)) {
+			result += agentSubsidies.get(fRole);
 		}
 		return result;
-
 	}
 
 	@Override
-	public boolean isAllowed(PotentialAgent agent, Cell location) {
+	public boolean isAllowed(FunctionalComponent fComp, Cell location) {
 		return true;
 	}
 
@@ -83,8 +84,8 @@ public class DefaultInstitution extends AbstractInstitution {
 		subsidies.copyFrom(s);
 	}
 
-	public void setSubsidy(PotentialAgent a, double value) {
-		agentSubsidies.put(a, value);
+	public void setSubsidy(FunctionalRole fRole, double value) {
+		agentSubsidies.put(fRole, value);
 	}
 
 	@Override
@@ -104,13 +105,11 @@ public class DefaultInstitution extends AbstractInstitution {
 				adjustments.put(data.capitals.forName(e.getKey()), e.getValue());
 			}
 		}
-		Map<String, PotentialAgent> agents = new HashMap<String, PotentialAgent>();
-		for (PotentialAgent p : extent.getAllPotentialAgents()) {
-			agents.put(p.getID(), p);
-		}
+
 		for (Entry<String, Double> e : serialAgentSubsidies.entrySet()) {
-			if (agents.containsKey(e.getKey())) {
-				agentSubsidies.put(agents.get(e.getKey()), e.getValue());
+			if (extent.getFunctionalRoleMapByLabel().containsKey(e.getKey())) {
+				agentSubsidies.put(extent.getFunctionalRoleMapByLabel()
+						.get(e.getKey()), e.getValue());
 			}
 		}
 

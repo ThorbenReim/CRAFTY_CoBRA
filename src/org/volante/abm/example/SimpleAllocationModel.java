@@ -28,12 +28,17 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.GeoAgent;
+import org.volante.abm.agent.SocialAgent;
+import org.volante.abm.agent.assembler.DefaultAgentAssembler;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
+import org.volante.abm.example.allocation.AgentFinder;
 import org.volante.abm.models.AllocationModel;
 import org.volante.abm.models.utils.CellVolatilityMessenger;
 import org.volante.abm.models.utils.CellVolatilityObserver;
@@ -63,9 +68,26 @@ public class SimpleAllocationModel implements AllocationModel,
 
 	Set<CellVolatilityObserver> cellVolatilityObserver = new HashSet<CellVolatilityObserver>();
 
+	@Element(required = false)
+	AgentFinder agentFinder = new DefaultAgentAssembler();
+
+	/**
+	 * @param agentFinder
+	 */
+	public void setAgentFinder(AgentFinder agentFinder) {
+		this.agentFinder = agentFinder;
+	}
+
 	@Override
-	public void initialise( ModelData data, RunInfo info, Region r ){};
-	
+	public void initialise(ModelData data, RunInfo info, Region r) {
+		try {
+			this.agentFinder.initialise(data, info, r);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	};
+
+	protected boolean networkNullErrorOccurred = false;
 	/**
 	 * Creates a copy of the best performing potential agent on each empty cell
 	 */
@@ -79,7 +101,9 @@ public class SimpleAllocationModel implements AllocationModel,
 		for( Cell c : new ArrayList<Cell>( r.getAvailable() ) ) {
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {
-				logger.debug("Create best agent for cell " + c + " of region " + r + " ...");
+				logger.debug("Create best agent for cell " + c + " of region "
+						+ r + " (current owner: " + c.getOwner()
+						+ ")...");
 			}
 			// LOGGING ->
 
@@ -87,33 +111,44 @@ public class SimpleAllocationModel implements AllocationModel,
 		}
 	}
 
-	private void createBestAgentForCell( Region r, Cell c )
-	{
-		List<PotentialAgent> potential = new ArrayList<PotentialAgent>( r.getPotentialAgents() );
+	private void createBestAgentForCell(Region r, Cell c) {
+		List<FunctionalRole> fComps = new ArrayList<FunctionalRole>();
+		for (FunctionalRole fRole : r.getFunctionalRoleMapByLabel().values()) {
+			fComps.add(fRole);
+		}
 		double max = -Double.MAX_VALUE;
-		PotentialAgent p = null;
-		for( PotentialAgent a : potential )
+		FunctionalRole bestFr = null;
+
+		// Find FR with highest competitiveness above his GU threshold:
+		for (FunctionalRole fr : fComps)
 		{
-			double s = r.getCompetitiveness( a, c );
+			// TODO Check institutions for allowance
+
+			double s = r.getCompetitiveness(fr, c);
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {
-				logger.debug(a + "> competitiveness: " + s);
+				logger.debug(fr + "> competitiveness: " + s);
 			}
 			// LOGGING ->
 
 			if( s > max )
 			{
-				if (s > a.getGivingUp()) {
+				if (s > fr.getMeanGivingUpThreshold()) {
 					max = s;
-					p = a;
+					bestFr = fr;
 				}
 			}
 		}
-		//Only create agents if their competitiveness is good enough
 
-		// TODO
-		if (p != null) {
-			Agent agent = p.createAgent(r);
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Chosen FR: " + bestFr);
+		}
+		// LOGGING ->
+
+		if (bestFr != null) {
+			// acquire an agent with requested FR (and undefined BT):
+			Agent agent = agentFinder.findAgent(c, Integer.MIN_VALUE, bestFr.getSerialID());
 
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {
@@ -122,9 +157,30 @@ public class SimpleAllocationModel implements AllocationModel,
 			// LOGGING ->
 
 			r.setOwnership(agent, c);
-			
+
 			for (CellVolatilityObserver o : cellVolatilityObserver) {
 				o.increaseVolatility(c);
+			}
+
+			if (r.getNetworkService() != null) {
+				// <- LOGGING
+				if (logger.isDebugEnabled()) {
+					logger.debug("Linking agent " + agent);
+				}
+				// LOGGING ->
+
+				if (r.getNetwork() != null) {
+					if (r.getGeography() != null && agent instanceof GeoAgent) {
+						((GeoAgent) agent).addToGeography();
+					}
+					r.getNetworkService().addAndLinkNode(r.getNetwork(),
+							(SocialAgent) agent);
+				} else {
+					if (!networkNullErrorOccurred) {
+						logger.warn("Network object not present during creation of new agent (subsequent error messages are suppressed)");
+						networkNullErrorOccurred = true;
+					}
+				}
 			}
 		}
 	}

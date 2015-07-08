@@ -24,12 +24,21 @@ package org.volante.abm.agent;
 
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import org.simpleframework.xml.ElementMap;
+import org.volante.abm.agent.bt.BehaviouralComponent;
+import org.volante.abm.agent.fr.FunctionalComponent;
+import org.volante.abm.agent.property.AgentPropertyId;
+import org.volante.abm.agent.property.DoublePropertyProvider;
+import org.volante.abm.agent.property.DoublePropertyProviderComp;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
+import org.volante.abm.example.AgentPropertyIds;
 
 import com.moseph.modelutils.fastdata.DoubleMap;
 
@@ -44,13 +53,93 @@ import com.moseph.modelutils.fastdata.DoubleMap;
  */
 public abstract class AbstractAgent implements Agent {
 
-	int								age						= 0;
+	@ElementMap(inline = true, entry = "property", attribute = true, required = false, key = "param", valueType = Double.class)
+	Map<String, Object> params = new HashMap<String, Object>();
+
+	protected FunctionalComponent functionalComp = null;
+
+	protected BehaviouralComponent behaviouralComp = null;
+
+	protected DoublePropertyProvider propertyProvider;
+
+	protected DoubleMap<Service> productivity = null;
+
 	protected String				id						= "Default";
+
 	protected Region				region					= null;
+
+	protected Cell homecell = null;
 	protected Set<Cell>				cells					= new HashSet<Cell>();
 	Set<Cell>						uCells					= Collections.unmodifiableSet(cells);
-	protected DoubleMap<Service>	productivity			= null;
-	protected double				currentCompetitiveness	= 0;
+
+
+	public AbstractAgent(Region region) {
+		this.propertyProvider = new DoublePropertyProviderComp();
+		this.setProperty(AgentPropertyIds.AGE, 1);
+		this.region = region;
+		this.initHook();
+	}
+
+	protected void initHook() {
+
+	}
+
+	/**
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#isProvided(org.volante.abm.agent.property.AgentPropertyId)
+	 */
+	@Override
+	public boolean isProvided(AgentPropertyId property) {
+		return this.propertyProvider.isProvided(property);
+	}
+
+	/**
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#getProperty(org.volante.abm.agent.property.AgentPropertyId)
+	 */
+	@Override
+	public double getProperty(AgentPropertyId property) {
+		return this.propertyProvider.getProperty(property);
+	}
+
+	/**
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#setProperty(org.volante.abm.agent.property.AgentPropertyId,
+	 *      double)
+	 */
+	@Override
+	public void setProperty(AgentPropertyId propertyId, double value) {
+		this.propertyProvider.setProperty(propertyId, value);
+	}
+
+	/**
+	 * @see org.volante.abm.agent.Agent#getBC()
+	 */
+	@Override
+	public BehaviouralComponent getBC() {
+		return this.behaviouralComp;
+	}
+
+	/**
+	 * @see org.volante.abm.agent.Agent#getFC()
+	 */
+	@Override
+	public FunctionalComponent getFC() {
+		return this.functionalComp;
+	}
+
+	/**
+	 * @see org.volante.abm.agent.Agent#setBC(org.volante.abm.agent.bt.BehaviouralComponent)
+	 */
+	@Override
+	public void setBC(BehaviouralComponent bt) {
+		this.behaviouralComp = bt;
+	}
+
+	/**
+	 * @see org.volante.abm.agent.Agent#setFC(org.volante.abm.agent.fr.FunctionalComponent)
+	 */
+	@Override
+	public void setFC(FunctionalComponent fr) {
+		this.functionalComp = fr;
+	}
 
 	/*
 	 * Generally useful methods
@@ -65,14 +154,14 @@ public abstract class AbstractAgent implements Agent {
 		cells.remove(c);
 	}
 
-	@Override
-	public double getCompetitiveness() {
-		return currentCompetitiveness;
-	}
 
 	@Override
 	public Set<Cell> getCells() {
 		return uCells;
+	}
+
+	public void setHomeCell(Cell homecell) {
+		this.homecell = homecell;
 	}
 
 	/**
@@ -82,11 +171,11 @@ public abstract class AbstractAgent implements Agent {
 	 */
 	@Override
 	public Cell getHomeCell() {
-		return cells.size() > 0 ? cells.iterator().next() : null;
+		return this.homecell;
 	}
 
 	@Override
-	public boolean toRemove() {
+	public boolean notAllocated() {
 		return cells.size() == 0;
 	}
 
@@ -97,7 +186,13 @@ public abstract class AbstractAgent implements Agent {
 
 	@Override
 	public String toString() {
-		return getID() + ":" + hashCode();
+		return getID()
+				+ " ("
+				+ (this.getBC() == null ? "None" : this.getBC().getType()
+						.getLabel())
+				+ "/"
+				+ (this.getFC() == null ? "None" : this.getFC().getFR()
+						.getLabel()) + "):" + hashCode();
 	}
 
 	public void setId(String id) {
@@ -106,21 +201,13 @@ public abstract class AbstractAgent implements Agent {
 
 	@Override
 	public void tickStartUpdate() {
-		age++;
+		this.propertyProvider.setProperty(AgentPropertyIds.AGE,
+				this.propertyProvider.getProperty(AgentPropertyIds.AGE) + 1);
+		this.behaviouralComp.triggerDecisions(this);
 	}
 
 	@Override
 	public void tickEndUpdate() {
-	}
-
-	@Override
-	public int getAge() {
-		return age;
-	}
-
-	@Override
-	public void setAge(int a) {
-		age = a;
 	}
 
 	@Override
@@ -139,14 +226,6 @@ public abstract class AbstractAgent implements Agent {
 	}
 
 	/**
-	 * @see org.volante.abm.agent.Agent#die()
-	 */
-	@Override
-	public void die() {
-		// nothing to do
-	}
-
-	/**
 	 * Uses the current level of production in each Cell to update competitiveness (hence
 	 * independent of the Agent)
 	 */
@@ -156,6 +235,8 @@ public abstract class AbstractAgent implements Agent {
 		for (Cell c : cells) {
 			comp += region.getCompetitiveness(c);
 		}
-		currentCompetitiveness = comp / cells.size();
+		this.propertyProvider.setProperty(
+				AgentPropertyIds.COMPETITIVENESS,
+				comp / cells.size());
 	}
 }

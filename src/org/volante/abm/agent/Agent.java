@@ -23,15 +23,22 @@
 package org.volante.abm.agent;
 
 
-import java.util.HashSet;
 import java.util.Set;
 
+import org.volante.abm.agent.bt.BehaviouralComponent;
+import org.volante.abm.agent.bt.PseudoBT;
+import org.volante.abm.agent.fr.FunctionalComponent;
+import org.volante.abm.agent.fr.LazyFR;
+import org.volante.abm.agent.property.DoublePropertyProvider;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
+import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.models.ProductionModel;
 
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
+
+import de.cesr.more.basic.agent.MoreObservingNetworkAgent;
 
 
 
@@ -41,7 +48,9 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
  * @author dmrust
  *
  */
-public interface Agent {
+public interface Agent extends DoublePropertyProvider,
+		MoreObservingNetworkAgent<Agent> {
+
 	/**
 	 * Returns all the cells the agent manages
 	 *
@@ -55,21 +64,23 @@ public interface Agent {
 	public Cell getHomeCell();
 
 	/**
+	 * Sets this agent's home cell
+	 * 
+	 * @param homecell
+	 *            new home cell
+	 */
+	public void setHomeCell(Cell homecell);
+
+	/**
 	 * Removes the cell from the set the agent manages
 	 *
 	 * @param c
 	 */
 	public void removeCell(Cell c);
 
-	/**
-	 * Returns the agents current competitiveness. Should be free
-	 *
-	 * @return competitiveness
-	 */
-	public double getCompetitiveness();
 
 	/**
-	 * Returns the production model of this agent.
+	 * Returns the production model of this agent (refers to the FR).
 	 * 
 	 * @return production model
 	 */
@@ -110,7 +121,7 @@ public interface Agent {
 	 *
 	 * @return true if this agent is to remove
 	 */
-	public boolean toRemove();
+	public boolean notAllocated();
 
 	/**
 	 * Called to remove the agent instance from the system.
@@ -127,9 +138,10 @@ public interface Agent {
 	/**
 	 * Return true if this agent is happy to cede to an agent with the given
 	 * level of competitiveness
-	 *
+	 * 
 	 * @param c
 	 * @param competitiveness
+	 *            competing agents competitiveness
 	 * @return true if an agent with the given competitiveness can take over the
 	 *         given cell from this agents
 	 */
@@ -138,24 +150,10 @@ public interface Agent {
 	/**
 	 *
 	 * Returns useful descriptive information about this agent
-	 *
+	 * 
 	 * @return info
 	 */
 	public String infoString();
-
-	/**
-	 * Returns the agent's current age in years
-	 *
-	 * @return agent's age
-	 */
-	public int getAge();
-
-	/**
-	 * Sets the agent's current age
-	 *
-	 * @param age
-	 */
-	public void setAge(int age);
 
 	/**
 	 * Called at the beginning of each tick to allow the agent to do any internal housekeeping
@@ -163,163 +161,102 @@ public interface Agent {
 	public void tickStartUpdate();
 
 	/**
-	 * Called at the ending of each tick to allow the agent to do any internal housekeeping
+	 * Called at the ending of each tick to allow the agent to do any internal
+	 * housekeeping
 	 */
 	public void tickEndUpdate();
 
-	public PotentialAgent getType();
-
-	public void setGivingUp(double threshold);
-
-	public double getGivingUp();
-
-	public void setGivingIn(double threshold);
-
-	public double getGivingIn();
 
 	public void setRegion(Region r);
 
 	public Region getRegion();
 
 	/**
-	 * The NOT_MANAGED agent is used for all cells without a manager
+	 * Access Methods
 	 */
-	public static Agent		NOT_MANAGED				= new Agent()
-													{
-														Region			r		= null;
-														HashSet<Cell>	cells	= new HashSet<Cell>();
 
-														@Override
-														public Set<Cell> getCells() {
-															return cells;
-														}
+	/**
+	 * Access to this agent's behavioural component
+	 * 
+	 * @return bc
+	 */
+	public BehaviouralComponent getBC();
 
-														@Override
-														public void removeCell(Cell c) {
-														}
+	public FunctionalComponent getFC();
 
-														@Override
-														public double getCompetitiveness() {
-															return NOT_MANAGED_COMPETITION;
-														}
+	public void setBC(BehaviouralComponent bt);
 
-														@Override
-														public double getGivingUp() {
-															return 0;
-														}
+	public void setFC(FunctionalComponent fr);
 
-														@Override
-														public double getGivingIn() {
-															return 0;
-														}
 
-														@Override
-														public void updateSupply() {
-														}
-
-														@Override
-														public void updateCompetitiveness() {
-														}
-
-														@Override
-														public void considerGivingUp() {
-														}
-
-														@Override
-														public UnmodifiableNumberMap<Service> supply(
-																Cell c) {
-															return null;
-														}
-
-														@Override
-														public void addCell(Cell c) {
-														}
-
-														@Override
-														public boolean toRemove() {
-															return false;
-														}
-
-														@Override
-														public String getID() {
-															return NOT_MANAGED_ID;
-														}
-
-														@Override
-														public String toString() {
-															return getID();
-														}
-
-														@Override
-														public String infoString() {
-															return "Not Managed...";
-														}
-
-														@Override
-														public boolean canTakeOver(Cell c,
-																double competitiveness) {
-															return true;
-														}
-
-														@Override
-														public int getAge() {
-															return 0;
-														}
-
-														@Override
-														public void setAge(int a) {
-														}
-
-														@Override
-														public void tickStartUpdate() {
-														}
-
-														@Override
-														public void tickEndUpdate() {
-														}
-
-														@Override
-														public PotentialAgent getType() {
-															return PotentialAgent.NOT_MANAGED_TYPE;
-														}
-
-														@Override
-														public void setRegion(Region r) {
-															this.r = r;
-														}
-
-														@Override
-														public Region getRegion() {
-															return r;
-														}
-
-														@Override
-														public void die() {
-															// do nothing
-														}
-
-														@Override
-														public Cell getHomeCell() {
-															return null;
-														}
-
-														@Override
-														public ProductionModel getProductionModel() {
-															return null;
-														}
-														
-														@Override
-														public void setGivingUp(double threshold) {
-															// Nothing to do
-
-														}
-
-														@Override
-														public void setGivingIn(double threshold) {
-															// Nothing to do
-														}
-													};
-
-	public static String	NOT_MANAGED_ID			= "NOT MANAGED";
+	public static String NOT_MANAGED_AGENT_ID = "NOT_MANAGED";
+	public static String NOT_MANAGED_FR_ID = "Lazy FR";
 	public static double	NOT_MANAGED_COMPETITION	= -Double.MAX_VALUE;
+	
+	
+	public static Agent NOT_MANAGED = new AbstractAgent(null) {
+
+		{
+			id = NOT_MANAGED_AGENT_ID;
+			this.setProperty(AgentPropertyIds.COMPETITIVENESS,
+					Agent.NOT_MANAGED_COMPETITION);
+		}
+
+		@Override
+		public ProductionModel getProductionModel() {
+			return null;
+		}
+
+		protected void initHook() {
+			new PseudoBT().assignNewBehaviouralComp(this);
+			LazyFR.getInstance().assignNewFunctionalComp(this);
+		}
+
+		@Override
+		public void updateSupply() {
+
+		}
+
+		@Override
+		public void considerGivingUp() {
+			// nothing to do
+		}
+
+		@Override
+		public UnmodifiableNumberMap<Service> supply(Cell c) {
+			return null;
+		}
+
+		@Override
+		public void die() {
+			// nothing to do
+		}
+
+		@Override
+		public boolean canTakeOver(Cell c, double competitiveness) {
+			return true;
+		}
+
+		@Override
+		public String infoString() {
+			return NOT_MANAGED_AGENT_ID;
+		}
+
+		/**
+		 * @see org.volante.abm.agent.AbstractAgent#toString()
+		 */
+		public String toString() {
+			return NOT_MANAGED_AGENT_ID;
+		}
+
+		@Override
+		public void receiveNotification(
+				de.cesr.more.basic.agent.MoreObservingNetworkAgent.NetworkObservation observation,
+				Agent object) {
+		}
+
+		@Override
+		public void setHomeCell(Cell homecell) {
+		}
+	};
 }

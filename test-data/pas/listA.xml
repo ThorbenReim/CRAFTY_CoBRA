@@ -1,0 +1,20 @@
+<LBoFactoryList>
+	<bofactory classname="org.volante.abm.decision.pa.InnovationPa">
+		 <key>InnovationA</key>
+		 <preferenceUtilities>
+			 <utility pref="PreferenceA">2.0</utility>
+			 <utility pref="PreferenceB">1.0</utility>
+			 <utility pref="PreferenceC">1.0</utility>
+		 </preferenceUtilities>
+		 <agentclassname>org.volante.abm.agent.bt.LaraBehaviouralComponent</agentclassname>
+	</bofactory>
+		<bofactory classname="org.volante.abm.decision.pa.InnovationPa">
+		 <key>InnovationB</key>
+		 <preferenceUtilities>
+			 <utility pref="PreferenceA">1.0</utility>
+			 <utility pref="PreferenceB">2.0</utility>
+			 <utility pref="PreferenceC">1.0</utility>
+		 </preferenceUtilities>
+		 <agentclassname>org.volante.abm.agent.bt.LaraBehaviouralComponent</agentclassname>
+	</bofactory>
+</LBoFactoryList>

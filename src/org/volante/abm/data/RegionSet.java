@@ -24,11 +24,14 @@ package org.volante.abm.data;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.bt.BehaviouralType;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.schedule.RunInfo;
 
 import com.google.common.base.Function;
@@ -92,15 +95,29 @@ public class RegionSet implements Regions {
 	}
 
 	/**
-	 * @see org.volante.abm.data.Regions#getAllAgents()
+	 * @see org.volante.abm.data.Regions#getAllAmbulantAgents()
 	 */
 	@Override
-	public Iterable<Agent> getAllAgents() {
+	public Iterable<Agent> getAllAmbulantAgents() {
 		return Iterables.concat(Iterables.transform(regions,
 				new Function<Regions, Iterable<Agent>>() {
 					@Override
 					public Iterable<Agent> apply(Regions r) {
-						return r.getAllAgents();
+						return r.getAllAmbulantAgents();
+					}
+				}));
+	}
+
+	/**
+	 * @see org.volante.abm.data.Regions#getAllAllocatedAgents()
+	 */
+	@Override
+	public Iterable<Agent> getAllAllocatedAgents() {
+		return Iterables.concat(Iterables.transform(regions,
+				new Function<Regions, Iterable<Agent>>() {
+					@Override
+					public Iterable<Agent> apply(Regions r) {
+						return r.getAllAllocatedAgents();
 					}
 				}));
 	}
@@ -120,20 +137,6 @@ public class RegionSet implements Regions {
 	}
 
 	/**
-	 * @see org.volante.abm.data.Regions#getAllPotentialAgents()
-	 */
-	@Override
-	public Iterable<PotentialAgent> getAllPotentialAgents() {
-		return Iterables.concat(Iterables.transform(regions,
-				new Function<Regions, Iterable<PotentialAgent>>() {
-					@Override
-					public Iterable<PotentialAgent> apply(Regions r) {
-						return r.getAllPotentialAgents();
-					}
-				}));
-	}
-
-	/**
 	 * @param r
 	 */
 	public void addRegion(Region r) {
@@ -142,7 +145,7 @@ public class RegionSet implements Regions {
 	}
 
 	/**
-	 * @return
+	 * @return collection of regions
 	 */
 	public Collection<Regions> getRegions() {
 		return Collections.unmodifiableCollection(regions);
@@ -181,5 +184,57 @@ public class RegionSet implements Regions {
 			c += r.getNumCells();
 		}
 		return c;
+	}
+
+	/**
+	 * @see org.volante.abm.data.Regions#getBehaviouralTypeMapByLabel()
+	 */
+	@Override
+	public Map<String, BehaviouralType> getBehaviouralTypeMapByLabel() {
+		Map<String, BehaviouralType> behaviouralTypes = new HashMap<String, BehaviouralType>();
+
+		for (Regions region : regions) {
+			behaviouralTypes.putAll(region.getBehaviouralTypeMapByLabel());
+		}
+		return behaviouralTypes;
+	}
+
+	/**
+	 * @see org.volante.abm.data.Regions#getBehaviouralTypeMapBySerialId()
+	 */
+	@Override
+	public Map<Integer, BehaviouralType> getBehaviouralTypeMapBySerialId() {
+		Map<Integer, BehaviouralType> behaviouralTypes = new HashMap<Integer, BehaviouralType>();
+
+		for (Regions region : regions) {
+			behaviouralTypes.putAll(region.getBehaviouralTypeMapBySerialId());
+		}
+		return behaviouralTypes;
+	}
+
+	/**
+	 * @see org.volante.abm.data.Regions#getFunctionalRoleMapByLabel()
+	 */
+	@Override
+	public Map<String, FunctionalRole> getFunctionalRoleMapByLabel() {
+		Map<String, FunctionalRole> functionalRoles = new HashMap<String, FunctionalRole>();
+
+		for (Regions region : regions) {
+			functionalRoles.putAll(region.getFunctionalRoleMapByLabel());
+		}
+		return functionalRoles;
+	}
+
+	/**
+	 * @see org.volante.abm.data.Regions#getFunctionalRoleMapBySerialId()
+	 */
+	@Override
+	public Map<Integer, FunctionalRole> getFunctionalRoleMapBySerialId() {
+		Map<Integer, FunctionalRole> functionalRoles = new HashMap<Integer, FunctionalRole>();
+
+		for (Regions region : regions) {
+			functionalRoles.putAll(region.getFunctionalRoleMapBySerialId());
+		}
+		return functionalRoles;
 	}
 }

@@ -32,6 +32,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.volante.abm.schedule.FinishAction;
 import org.volante.abm.schedule.Schedule;
 import org.volante.abm.schedule.ScheduleStatusEvent;
 import org.volante.abm.schedule.ScheduleStatusListener;
@@ -64,9 +65,16 @@ public class TimeDisplay extends JPanel implements ScheduleStatusListener {
 		setSchedule(s);
 	}
 
-	public void setSchedule(Schedule s) {
+	public void setSchedule(final Schedule s) {
 		tick.setText(s.getCurrentTick() + "");
-		s.addStatusListener(this);
+		s.register(new FinishAction() {
+
+			@Override
+			public void afterLastTick() {
+				tick.setText(s.getCurrentTick() + "");
+				status.setText("Finished");
+			}
+		});
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import static java.lang.Math.pow;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,7 +40,9 @@ import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.GeoAgent;
+import org.volante.abm.agent.SocialAgent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
@@ -96,6 +99,7 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 
 	@Element(required = false)
 	public AllocationTryToComeInMode tryToComeInMode = AllocationTryToComeInMode.RANDOM_CELL_ORDER;
+
 
 	/**
 	 * Alternative to {@link GiveUpGiveInAllocationModel#numTakeovers}: specify
@@ -176,15 +180,21 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 		}
 
 		super.allocateLand(r); // Puts the best agent on any unmanaged cells
-		Score<PotentialAgent> compScore = new Score<PotentialAgent>()
+		Score<FunctionalRole> compScore = new Score<FunctionalRole>()
 		{
 			@Override
-			public double getScore(PotentialAgent a)
+			public double getScore(FunctionalRole a)
 			{
-				return pow(r.getCompetitiveness(a, perfectCell), probabilityExponent);
+				return pow(r.getCompetitiveness(a,
+						perfectCell), probabilityExponent);
 			}
 		};
-		Map<PotentialAgent, Double> scores = scoreMap(r.getPotentialAgents(),
+		
+		Set<FunctionalRole> fComps = new LinkedHashSet<FunctionalRole>();
+		for (FunctionalRole fRole : r.getFunctionalRoleMapByLabel().values()) {
+			fComps.add(fRole);
+		}
+		Map<FunctionalRole, Double> scores = scoreMap(fComps,
 				compScore);
 
 		logger.info("Number of derived take overs: " + numTakeoversDerived
@@ -219,7 +229,7 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 	 * r.setOwnership( agent, c ); break; } } }
 	 */
 
-	public void tryToComeIn(final PotentialAgent a, final Region r) {
+	public void tryToComeIn(final FunctionalRole a, final Region r) {
 		if (a == null) {
 			return; // In the rare case that all have 0 competitiveness, a can be null
 		}
@@ -257,9 +267,16 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 				+ r.getNumCells() + " cells).");
 
 		for (Cell c : sorted) {
-			if (competitiveness.get(c) > a.getGivingUp()
+			// if (competitiveness.get(c) < a.getGivingUp()) return;
+			double newAgentsGU = a.getSampledGivingUpThreshold();
+			if (competitiveness.get(c) > newAgentsGU
 					&& c.getOwner().canTakeOver(c, competitiveness.get(c))) {
-				Agent agent = a.createAgent(r);
+				
+				Agent agent = agentFinder.findAgent(c, Integer.MIN_VALUE,
+						a.getSerialID());
+
+				agent.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD,
+						newAgentsGU);
 
 				for (TakeoverObserver observer : takeoverObserver) {
 					observer.setTakeover(r, c.getOwner(), agent);
@@ -275,6 +292,25 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 				// LOGGING ->
 
 				r.setOwnership(agent, c);
+
+
+				if (r.getNetworkService() != null) {
+					if (r.getNetwork() != null) {
+
+						if (r.getGeography() != null && agent instanceof GeoAgent) {
+							((GeoAgent) agent).addToGeography();
+						}
+						r.getNetworkService().addAndLinkNode(
+								r.getNetwork(), (SocialAgent) agent);
+
+					} else {
+						if (!networkNullErrorOccurred) {
+							logger.warn("Network object not present during creation of new agent (subsequent error messages are suppressed)");
+							networkNullErrorOccurred = true;
+						}
+					}
+				}
+
 				break;
 			}
 		}

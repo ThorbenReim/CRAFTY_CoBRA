@@ -1,0 +1,7 @@
+<agent class="org.volante.abm.example.DefaultAgent">
+	<property key="GIVING_UP">-20</property>
+	<property key="GIVING_IN">10.5</property>
+
+	<givingUpDistribution class = "com.moseph.modelutils.distribution.UniformDistribution" min = "10" max = "11" />
+	<production class="org.volante.abm.example.SimpleProductionModel" csvFile="csv/VariantFarmer1.csv" />
+</agent>

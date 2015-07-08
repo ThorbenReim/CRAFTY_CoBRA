@@ -37,6 +37,7 @@ import org.volante.abm.schedule.ScheduleThread;
 import org.volante.abm.visualisation.ScheduleControls;
 import org.volante.abm.visualisation.TimeDisplay;
 
+import de.cesr.more.basic.MManager;
 import de.cesr.parma.core.PmParameterManager;
 
 
@@ -73,7 +74,8 @@ public class ModelRunner
 		boolean interactive = cmd.hasOption("i");
 
 		String filename = cmd.hasOption("f") ? cmd.getOptionValue('f') : "xml/test-scenario.xml";
-		String directory = cmd.hasOption("d") ? cmd.getOptionValue('d') : "test-data";
+		String directory = cmd.hasOption("d") ? cmd.getOptionValue('d')
+				: "data";
 
 		int start = cmd.hasOption("s") ? Integer.parseInt(cmd.getOptionValue('s'))
 				: Integer.MIN_VALUE;
@@ -127,6 +129,9 @@ public class ModelRunner
 
 					doRun(filename, start, end, rInfo, interactive);
 				}
+				rInfo.getOutputs().removeClosingOutputThreads();
+				PmParameterManager.reset();
+				MManager.reset();
 			}
 		}
 	}
@@ -134,18 +139,16 @@ public class ModelRunner
 	public static void doRun(String filename, int start,
 			int end, RunInfo rInfo, boolean interactive) throws Exception
 	{
-		ScenarioLoader loader = setupRun(filename, rInfo);
+		ScenarioLoader loader = setupRun(filename, start, end, rInfo);
 		if (interactive) {
 			interactiveRun(loader);
 		} else {
 			noninteractiveRun(loader, start == Integer.MIN_VALUE ? loader.startTick : start,
 					end == Integer.MIN_VALUE ? loader.endTick : end);
-			rInfo.getOutputs().removeClosingOutputThreads();
-			PmParameterManager.reset();
 		}
 	}
 
-	public static void noninteractiveRun(ScenarioLoader loader, int start, int end)
+	public static void noninteractiveRun( ScenarioLoader loader, int start, int end )
 	{
 		logger.info(String.format("Running from %s to %s\n",
 				(start == Integer.MIN_VALUE ? "<ScenarioFile>" : start + ""),
@@ -180,7 +183,8 @@ public class ModelRunner
 		controls.setVisible( true );
 	}
 
-	public static ScenarioLoader setupRun(String filename, RunInfo rInfo) throws Exception
+	public static ScenarioLoader setupRun(String filename,
+			int start, int end, RunInfo rInfo) throws Exception
 	{
 		// TODO override persister method
 		ScenarioLoader loader = ABMPersister.getInstance().readXML(ScenarioLoader.class, filename,

@@ -21,7 +21,8 @@
  */
 package org.volante.abm.institutions;
 
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalComponent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -47,11 +48,12 @@ public class AbstractInstitution implements Institution
 	{}
 
 	@Override
-	public double adjustCompetitiveness( PotentialAgent agent, Cell location, UnmodifiableNumberMap<Service> provision, double competitiveness )
+	public double adjustCompetitiveness(FunctionalRole agent, Cell location,
+			UnmodifiableNumberMap<Service> provision, double competitiveness)
 	{ return competitiveness; }
 
 	@Override
-	public boolean isAllowed( PotentialAgent agent, Cell location ) { return true; }
+	public boolean isAllowed( FunctionalComponent agent, Cell location ) { return true; }
 	@Override
 	public void update() {}
 

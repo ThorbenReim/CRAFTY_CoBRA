@@ -27,7 +27,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Root;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalComponent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -51,7 +52,7 @@ public class Institutions implements Institution, PreTickAction {
 	}
 
 	@Override
-	public boolean isAllowed(PotentialAgent a, Cell c) {
+	public boolean isAllowed(FunctionalComponent a, Cell c) {
 		for (Institution i : institutions) {
 			if (!i.isAllowed(a, c)) {
 				return false;
@@ -68,16 +69,16 @@ public class Institutions implements Institution, PreTickAction {
 	}
 
 	/**
-	 * @see org.volante.abm.institutions.Institution#adjustCompetitiveness(org.volante.abm.agent.PotentialAgent,
+	 * @see org.volante.abm.institutions.Institution#adjustCompetitiveness(org.volante.abm.agent.fr.FunctionalComponent,
 	 *      org.volante.abm.data.Cell,
 	 *      com.moseph.modelutils.fastdata.UnmodifiableNumberMap, double)
 	 */
 	@Override
-	public double adjustCompetitiveness(PotentialAgent agent, Cell location,
+	public double adjustCompetitiveness(FunctionalRole fComp, Cell location,
 			UnmodifiableNumberMap<Service> provision, double competitiveness) {
 		double result = competitiveness;
 		for (Institution i : institutions) {
-			result = i.adjustCompetitiveness(agent, location,
+			result = i.adjustCompetitiveness(fComp, location,
 					provision, result);
 		}
 		return result;

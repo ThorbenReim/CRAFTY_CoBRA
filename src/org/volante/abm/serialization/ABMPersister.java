@@ -32,6 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.simpleframework.xml.transform.Matcher;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.Extent;
 import org.volante.abm.data.Regions;
@@ -42,7 +43,6 @@ import com.moseph.gis.raster.Raster;
 import com.moseph.gis.raster.RasterWriter;
 import com.moseph.modelutils.curve.LinearInterpolator;
 import com.moseph.modelutils.serialisation.EasyPersister;
-
 
 /**
  * Note: The Raster class is not well implemented. Calling {@link Raster#getNDATA()} without a
@@ -69,6 +69,11 @@ public class ABMPersister extends EasyPersister {
 
 	private ABMPersister(BatchModeParseFilter filter) {
 		super(filter);
+		this.filter = filter;
+	}
+
+	private ABMPersister(BatchModeParseFilter filter, Matcher matcher) {
+		super(filter, matcher);
 		this.filter = filter;
 	}
 

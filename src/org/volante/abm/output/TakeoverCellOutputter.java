@@ -32,14 +32,14 @@ import java.util.Map;
 
 import org.simpleframework.xml.Attribute;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Regions;
 import org.volante.abm.models.AllocationModel;
 import org.volante.abm.models.utils.TakeoverMessenger;
 import org.volante.abm.models.utils.TakeoverObserver;
-import org.volante.abm.output.TakeoverCellOutputter.RegionPotentialAgent;
+import org.volante.abm.output.TakeoverCellOutputter.RegionFunctionalRole;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.GloballyInitialisable;
 
@@ -52,12 +52,13 @@ import org.volante.abm.serialization.GloballyInitialisable;
  * this way take-overs only need to be reported in case there is a
  * {@link TakeoverObserver} registered.
  * 
- * NOTE: Assumes that AFT IDs do not leave out any number (i.e. max(AFT-ID) == length(AFTs))
+ * NOTE: Assumes that AFT IDs do not leave out any number (i.e. max(AFT-ID) ==
+ * length(AFTs))
  * 
  * @author Sascha Holzhauer
  * 
  */
-public class TakeoverCellOutputter extends TableOutputter<RegionPotentialAgent> implements
+public class TakeoverCellOutputter extends TableOutputter<RegionFunctionalRole> implements
 		GloballyInitialisable,
 		TakeoverObserver {
 
@@ -92,24 +93,24 @@ public class TakeoverCellOutputter extends TableOutputter<RegionPotentialAgent> 
 		super.setOutputManager(outputs);
 
 		if (addTick) {
-			addColumn(new TickColumn<RegionPotentialAgent>());
+			addColumn(new TickColumn<RegionFunctionalRole>());
 		}
 
 		if (addRegion) {
-			addColumn(new RegionsColumn<RegionPotentialAgent>());
+			addColumn(new RegionsColumn<RegionFunctionalRole>());
 		}
 
 		addColumn(new TakeOverAfTColumn());
 	}
 
 	public void initTakeOvers(Region region) {
-		numTakeOvers.put(region, new int[region.getPotentialAgents().size()][region
-				.getPotentialAgents().size()]);
-		if (maxAftID + 1 < region.getPotentialAgents().size()) {
-			for (int i = maxAftID + 1; i < region.getPotentialAgents().size(); i++) {
-				for (PotentialAgent pa : region.getPotentialAgents()) {
-					if (pa.getSerialID() == i) {
-						addColumn(new TakeOverColumn(pa.getID(), i));
+		numTakeOvers.put(region, new int[region.getFunctionalRoles().size()][region
+				.getFunctionalRoles().size()]);
+		if (maxAftID + 1 < region.getFunctionalRoles().size()) {
+			for (int i = maxAftID + 1; i < region.getFunctionalRoles().size(); i++) {
+				for (FunctionalRole fr : region.getFunctionalRoleMapByLabel().values()) {
+					if (fr.getSerialID() == i) {
+						addColumn(new TakeOverColumn(fr.getLabel(), i));
 					}
 				}
 			}
@@ -121,7 +122,8 @@ public class TakeoverCellOutputter extends TableOutputter<RegionPotentialAgent> 
 	 *      org.volante.abm.agent.Agent, org.volante.abm.agent.Agent)
 	 */
 	public void setTakeover(Region region, Agent previousAgent, Agent newAgent) {
-		numTakeOvers.get(region)[previousAgent.getType().getSerialID()][newAgent.getType()
+		numTakeOvers.get(region)[previousAgent.getFC().getFR().getSerialID()][newAgent
+				.getFC().getFR()
 				.getSerialID()]++;
 	}
 
@@ -129,11 +131,11 @@ public class TakeoverCellOutputter extends TableOutputter<RegionPotentialAgent> 
 	 * @see org.volante.abm.output.TableOutputter#getData(org.volante.abm.data.Regions)
 	 */
 	@Override
-	public Iterable<RegionPotentialAgent> getData(Regions r) {
-		Collection<RegionPotentialAgent> pagents = new HashSet<RegionPotentialAgent>();
+	public Iterable<RegionFunctionalRole> getData(Regions r) {
+		Collection<RegionFunctionalRole> pagents = new HashSet<RegionFunctionalRole>();
 		for(Region region : r.getAllRegions()) {
-			for (PotentialAgent pagent : region.getPotentialAgents()) {
-				pagents.add(new RegionPotentialAgent(region, pagent));
+			for (FunctionalRole fr : region.getFunctionalRoleMapByLabel().values()) {
+				pagents.add(new RegionFunctionalRole(region, fr));
 			}
 		}
 		return pagents;
@@ -151,7 +153,7 @@ public class TakeoverCellOutputter extends TableOutputter<RegionPotentialAgent> 
 	 * @see org.volante.abm.output.TableOutputter#writeData(java.lang.Iterable,
 	 *      org.volante.abm.data.Regions)
 	 */
-	public void writeData(Iterable<RegionPotentialAgent> data, Regions r) throws IOException {
+	public void writeData(Iterable<RegionFunctionalRole> data, Regions r) throws IOException {
 		super.writeData(data, r);
 		// reset:
 		for (int[][] nums : numTakeOvers.values()) {
@@ -163,25 +165,25 @@ public class TakeoverCellOutputter extends TableOutputter<RegionPotentialAgent> 
 		}
 	}
 
-	public class RegionPotentialAgent {
-		PotentialAgent	pagent;
+	public class RegionFunctionalRole {
+		FunctionalRole fRole;
 		Region			region;
 
-		public RegionPotentialAgent(Region region, PotentialAgent pagent) {
+		public RegionFunctionalRole(Region region, FunctionalRole fRole) {
 			this.region = region;
-			this.pagent = pagent;
+			this.fRole = fRole;
 		}
 
 		public Region getRegion() {
 			return this.region;
 		}
 
-		public PotentialAgent getPotentialAgent() {
-			return this.pagent;
+		public FunctionalRole getFunctionalRole() {
+			return this.fRole;
 		}
 	}
 
-	public class TakeOverAfTColumn implements TableColumn<RegionPotentialAgent> {
+	public class TakeOverAfTColumn implements TableColumn<RegionFunctionalRole> {
 
 		public TakeOverAfTColumn() {
 		}
@@ -192,13 +194,13 @@ public class TakeoverCellOutputter extends TableOutputter<RegionPotentialAgent> 
 		}
 
 		@Override
-		public String getValue(RegionPotentialAgent pragent, ModelData data, RunInfo info,
+		public String getValue(RegionFunctionalRole regionFRole, ModelData data, RunInfo info,
 				Regions rs) {
-			return pragent.getPotentialAgent().getID();
+			return regionFRole.getFunctionalRole().getLabel();
 		}
 	}
 
-	public class TakeOverColumn implements TableColumn<RegionPotentialAgent> {
+	public class TakeOverColumn implements TableColumn<RegionFunctionalRole> {
 		String	aftName	= "";
 		int		id;
 
@@ -213,11 +215,11 @@ public class TakeoverCellOutputter extends TableOutputter<RegionPotentialAgent> 
 		}
 
 		@Override
-		public String getValue(RegionPotentialAgent pragent, ModelData data, RunInfo info,
+		public String getValue(RegionFunctionalRole pragent, ModelData data, RunInfo info,
 				Regions rs) {
 			if (numTakeOvers.containsKey(pragent.getRegion())
 					&& numTakeOvers.get(pragent.getRegion()).length > id) {
-				return "" + numTakeOvers.get(pragent.getRegion())[pragent.getPotentialAgent()
+				return "" + numTakeOvers.get(pragent.getRegion())[pragent.getFunctionalRole()
 						.getSerialID()][id];
 			} else {
 				return "0";

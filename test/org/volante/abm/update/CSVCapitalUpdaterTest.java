@@ -85,11 +85,11 @@ public class CSVCapitalUpdaterTest extends BasicTestsUtils
 	public Region setupWorldWithUpdater(boolean requiresEffectiveCapitalData,
 			int year, AbstractUpdater updater, Cell... cells) throws Exception
 	{
-		Region r = setupBasicWorld(!requiresEffectiveCapitalData, cells);
+		Region r = new Region(cells);
 		if (requiresEffectiveCapitalData) {
 			r.setRequiresEffectiveCapitalData();
-			r.initialise(modelData, runInfo, null);
 		}
+		setupBasicWorld(r, cells);
 
 		updater.initialise( modelData, runInfo, r );
 		runInfo.getSchedule().register( updater );

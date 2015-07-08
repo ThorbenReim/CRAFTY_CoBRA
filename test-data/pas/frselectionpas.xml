@@ -1,0 +1,29 @@
+<LBoFactoryList>
+	<bofactory classname="org.volante.abm.decision.pa.FrSelectionPa">
+		 <key>NC_Cereal</key>
+		 <preferenceUtilities>
+			 <utility pref="Competitiveness">1.0</utility>
+			 <utility pref="SocialApproval">1.0</utility>
+			 <utility pref="NeighbourApproval">1.0</utility>
+		 </preferenceUtilities>
+		 <agentclassname>org.volante.abm.agent.bt.LaraBehaviouralComponent</agentclassname>
+	</bofactory>
+	<bofactory classname="org.volante.abm.decision.pa.FrSelectionPa">
+		 <key>C_Cereal</key>
+		 <preferenceUtilities>
+			 <utility pref="Competitiveness">1.0</utility>
+			 <utility pref="SocialApproval">1.0</utility>
+			 <utility pref="NeighbourApproval">1.0</utility>
+		 </preferenceUtilities>
+		 <agentclassname>org.volante.abm.agent.bt.LaraBehaviouralComponent</agentclassname>
+	</bofactory>
+		<bofactory classname="org.volante.abm.decision.pa.FrSelectionPa">
+		 <key>C_Forester</key>
+		 <preferenceUtilities>
+			 <utility pref="Competitiveness">1.0</utility>
+			 <utility pref="SocialApproval">1.0</utility>
+			 <utility pref="NeighbourApproval">1.0</utility>
+		 </preferenceUtilities>
+		 <agentclassname>org.volante.abm.agent.bt.LaraBehaviouralComponent</agentclassname>
+	</bofactory>
+</LBoFactoryList>

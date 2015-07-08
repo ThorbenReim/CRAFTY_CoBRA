@@ -31,7 +31,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Regions;
@@ -56,9 +56,9 @@ public class SimpleAllocationDisplay extends AbstractDisplay implements Allocati
 
 	@Override
 	public void update() {
-		int[] pagentNumbers = new int[r.getPotentialAgents().size()];
+		int[] pagentNumbers = new int[r.getFunctionalRoles().size()];
 		for (Agent a : r.getAgents()) {
-			pagentNumbers[a.getType().getSerialID()]++;
+			pagentNumbers[a.getFC().getFR().getSerialID()]++;
 		}
 
 		// calculate overall sum
@@ -67,8 +67,9 @@ public class SimpleAllocationDisplay extends AbstractDisplay implements Allocati
 			sum += pagentNumbers[i];
 		}
 
-		for (PotentialAgent p : r.getPotentialAgents()) {
-			disps.get(p.getID()).setText(format((double) pagentNumbers[p.getSerialID()] / sum));
+		for (FunctionalRole fr : r.getFunctionalRoleMapByLabel().values()) {
+			disps.get(fr.getLabel()).setText(
+					format((double) pagentNumbers[fr.getSerialID()] / sum));
 		}
 		invalidate();
 	}
@@ -85,16 +86,16 @@ public class SimpleAllocationDisplay extends AbstractDisplay implements Allocati
 		r = region.getAllRegions().iterator().next();
 		
 		
-		for (PotentialAgent p : r.getPotentialAgents()) {
+		for (FunctionalRole fr : r.getFunctionalRoleMapByLabel().values()) {
 			Box b = new Box(BoxLayout.X_AXIS);
-			JLabel lab = new JLabel(p.getID() + ": ");
+			JLabel lab = new JLabel(fr.getLabel() + ": ");
 			lab.setPreferredSize(new Dimension(170, 15));
 			b.add(lab);
 
-			disps.put(p.getID(), new JLabel(format(10.0)));
+			disps.put(fr.getLabel(), new JLabel(format(10.0)));
 			// disp.setPreferredSize(new Dimension(80, 15));
 			// disp.setMinimumSize(new Dimension(80, 15));
-			b.add(disps.get(p.getID()));
+			b.add(disps.get(fr.getLabel()));
 			b.setAlignmentX(1);
 			add(b);
 		}
