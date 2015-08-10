@@ -14,3 +14,7 @@ syntax: regexp
 ^build/docs$
 syntax: regexp
 ^build$
+syntax: regexp
+^java2kdmFragments$
+syntax: regexp
+^\.gradle/2\.2$

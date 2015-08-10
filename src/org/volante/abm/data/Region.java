@@ -98,7 +98,7 @@ public class Region implements Regions, PreTickAction {
 
 	ModelData				data;
 	RunInfo					rinfo;
-	Institutions			institutions				= null;
+	Institutions institutions = null;
 	String					id							= "UnknownRegion";
 	Map<String, String>			peristerContextExtra					= new HashMap<String, String>();
 
@@ -716,7 +716,7 @@ public class Region implements Regions, PreTickAction {
 				available.remove(c);
 			}
 		}
-		if (a != null) {
+		if (a != null && a != Agent.NOT_MANAGED) {
 			allocatedAgents.add(a);
 			ambulantAgents.remove(a);
 		}
@@ -727,7 +727,7 @@ public class Region implements Regions, PreTickAction {
 	 */
 	public void makeUnmanagedCellsAvailable() {
 		for (Cell c : cells) {
-			if (c.getOwner() == null || c.getOwner() == null) {
+			if (c.getOwner() == Agent.NOT_MANAGED || c.getOwner() == null) {
 				available.add(c);
 			}
 		}
@@ -818,7 +818,7 @@ public class Region implements Regions, PreTickAction {
 	}
 
 	public boolean hasInstitutions() {
-		return institutions != null;
+		return institutions == null ? false : institutions.hasInstitutions();
 	}
 
 	public boolean doesRequireEffectiveCapitalData() {
@@ -838,11 +838,17 @@ public class Region implements Regions, PreTickAction {
 	}
 
 	public Institutions getInstitutions() {
+		if (this.institutions == null) {
+			this.institutions = new Institutions();
+			try {
+				this.institutions.initialise(data, rinfo, this);
+				rinfo.getSchedule().register(institutions);
+			} catch (Exception exception) {
+				logger.error("Error while initialising Institutions");
+				exception.printStackTrace();
+			}
+		}
 		return institutions;
-	}
-
-	public void setInstitutions(Institutions inst) {
-		this.institutions = inst;
 	}
 
 	public ModelData getModelData() {

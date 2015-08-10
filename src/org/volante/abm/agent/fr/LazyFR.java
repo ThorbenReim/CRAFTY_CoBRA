@@ -24,7 +24,14 @@
 package org.volante.abm.agent.fr;
 
 import org.volante.abm.agent.Agent;
+import org.volante.abm.data.Cell;
+import org.volante.abm.data.ModelData;
+import org.volante.abm.data.Region;
+import org.volante.abm.data.Service;
 import org.volante.abm.models.ProductionModel;
+import org.volante.abm.schedule.RunInfo;
+
+import com.moseph.modelutils.fastdata.DoubleMap;
 
 /**
  * @author Sascha Holzhauer
@@ -36,7 +43,7 @@ public class LazyFR extends AbstractFR implements FunctionalComponent {
 
 	public static LazyFR getInstance() {
 		if (instance == null) {
-			instance = new LazyFR("Lazy FR", null);
+			instance = new LazyFR("Lazy FR");
 		}
 		return instance;
 	}
@@ -48,8 +55,19 @@ public class LazyFR extends AbstractFR implements FunctionalComponent {
 	 * @param givingUp
 	 * @param givingIn
 	 */
-	private LazyFR(String id, ProductionModel production) {
-		super(id, production);
+	private LazyFR(String id) {
+		super(id, new ProductionModel() {
+
+			@Override
+			public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
+				// nothing to do
+			}
+
+			@Override
+			public void production(Cell c, DoubleMap<Service> v) {
+				// nothing to do
+			}
+		});
 	}
 
 	/**

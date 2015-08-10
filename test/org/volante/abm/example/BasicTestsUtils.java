@@ -819,7 +819,7 @@ public class BasicTestsUtils {
 						});
 	}
 
-	public void loadBehaviouralTypes(Region r) {
+	public static void loadBehaviouralTypes(Region r) {
 		try {
 			// we need to apply the LARA specific persister here because a
 			// region-specific persister needs to
@@ -836,7 +836,7 @@ public class BasicTestsUtils {
 		}
 	}
 
-	public void loadFrPrototypes(Region r) {
+	public static void loadFrPrototypes(Region r) {
 		try {
 			List<FunctionalRole> frPrototypes = runInfo.getPersister().readXML(
 					FRList.class, XML_FILENAME_FR, r.getPeristerContextExtra()).fRoles;

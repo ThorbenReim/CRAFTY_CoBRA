@@ -59,6 +59,7 @@ public class InnovativeCognitiveBC extends CognitiveBC implements InnovativeBC {
 
 	/**
 	 * @param bType
+	 * @param agent
 	 */
 	public InnovativeCognitiveBC(BehaviouralType bType, Agent agent) {
 		super(bType, agent);

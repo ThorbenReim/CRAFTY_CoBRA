@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 import org.simpleframework.xml.Element;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.DefaultAgent;
+import org.volante.abm.agent.fr.LazyFR;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -51,6 +52,8 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 	@Element(required = false)
 	int defaultBtId = Integer.MIN_VALUE;
 
+	@Element(required = false)
+	int defaultFrId = Integer.MIN_VALUE;
 
 	/**
 	 * Assigns the ID of the first entry of
@@ -65,7 +68,7 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 		this.mData = mData;
 		if (this.defaultBtId == Integer.MIN_VALUE) {
 			if (region.getBehaviouralTypeMapBySerialId().isEmpty()) {
-				logger.warn("Cannot assign default Behavioural Type since the list is empty!");
+				logger.warn("Cannot determine default Behavioural Type ID since the regional list of BT is empty!");
 			} else {
 				this.defaultBtId = region.getBehaviouralTypeMapBySerialId()
 					.entrySet().iterator().next().getValue().getSerialID();
@@ -77,7 +80,7 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 	 * @see org.volante.abm.agent.assembler.AgentAssembler#assembleAgent(org.volante.abm.data.Cell, int, int)
 	 */
 	@Override
-	public Agent assembleAgent(Cell homecell, int btIdInitial, int frId,
+	public Agent assembleAgent(Cell homecell, int btIdInitial, int frIdInitial,
 			String id) {
 		if (region == null) {
 			throw new IllegalStateException(
@@ -91,6 +94,13 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 			btId = btIdInitial;
 		}
 
+		int frId;
+		if (frIdInitial == Integer.MIN_VALUE) {
+			frId = this.defaultFrId;
+		} else {
+			frId = frIdInitial;
+		}
+
 		Agent agent = new DefaultAgent((id != null ? id : "Agent_"
 				+ (homecell == null ? "" : homecell.toString())), mData);
 		agent.setRegion(this.region);
@@ -99,6 +109,8 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 		if (this.region.getFunctionalRoleMapBySerialId().containsKey(frId)) {
 			this.region.getFunctionalRoleMapBySerialId().get(frId)
 				.assignNewFunctionalComp(agent);
+		} else if (this.defaultFrId == Integer.MIN_VALUE) {
+			LazyFR.getInstance().assignNewFunctionalComp(agent);
 		} else {
 			logger.error("Couldn't find FunctionalRole by id: " + frId);
 		}

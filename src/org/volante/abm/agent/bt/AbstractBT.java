@@ -34,10 +34,10 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementMap;
 import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.property.AgentPropertyRegistry;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.decision.DecisionTrigger;
-import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.schedule.RunInfo;
 
 /**
@@ -89,7 +89,7 @@ public abstract class AbstractBT implements BehaviouralType {
 			// LOGGING ->
 		}
 		for (Entry<String, Double> entry : agentProperties2Set.entrySet()) {
-			agent.setProperty(AgentPropertyIds.valueOf(entry.getKey()), entry
+			agent.setProperty(AgentPropertyRegistry.get(entry.getKey()), entry
 					.getValue().doubleValue());
 		}
 		return agent;

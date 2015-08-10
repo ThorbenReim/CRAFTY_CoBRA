@@ -22,6 +22,7 @@
  */
 package org.volante.abm.institutions;
 
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,16 +40,32 @@ import org.volante.abm.schedule.RunInfo;
 
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
 
+
 @Root
 public class Institutions implements Institution, PreTickAction {
+
 	Set<Institution> institutions = new HashSet<Institution>();
-	Region				region			= null;
-	ModelData			data			= null;
-	RunInfo				info			= null;
+
+	Region region = null;
+	ModelData data = null;
+	RunInfo info = null;
 	Logger log = Logger.getLogger(getClass());
 
 	public void addInstitution(Institution i) {
 		institutions.add(i);
+		try {
+			i.initialise(data, info, region);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
+
+	/**
+	 * @param i
+	 * @return true if the given institution was registered at this Institutions
+	 */
+	public boolean hasInstitution(Institution i) {
+		return institutions.contains(i);
 	}
 
 	@Override
@@ -69,17 +86,15 @@ public class Institutions implements Institution, PreTickAction {
 	}
 
 	/**
-	 * @see org.volante.abm.institutions.Institution#adjustCompetitiveness(org.volante.abm.agent.fr.FunctionalComponent,
-	 *      org.volante.abm.data.Cell,
-	 *      com.moseph.modelutils.fastdata.UnmodifiableNumberMap, double)
+	 * @see org.volante.abm.institutions.Institution#adjustCompetitiveness(org.volante.abm.agent.fr.FunctionalRole,
+	 *      org.volante.abm.data.Cell, com.moseph.modelutils.fastdata.UnmodifiableNumberMap, double)
 	 */
 	@Override
-	public double adjustCompetitiveness(FunctionalRole fComp, Cell location,
-			UnmodifiableNumberMap<Service> provision, double competitiveness) {
+	public double adjustCompetitiveness(FunctionalRole fComp, Cell location, UnmodifiableNumberMap<Service> provision,
+			double competitiveness) {
 		double result = competitiveness;
 		for (Institution i : institutions) {
-			result = i.adjustCompetitiveness(fComp, location,
-					provision, result);
+			result = i.adjustCompetitiveness(fComp, location, provision, result);
 		}
 		return result;
 	}
@@ -102,14 +117,10 @@ public class Institutions implements Institution, PreTickAction {
 	}
 
 	@Override
-	public void initialise(ModelData data, RunInfo info, Region extent)
-			throws Exception {
+	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
 		this.data = data;
 		this.info = info;
 		this.region = extent;
-		for (Institution i : institutions) {
-			i.initialise(data, info, extent);
-		}
 	}
 
 	/**
@@ -118,5 +129,12 @@ public class Institutions implements Institution, PreTickAction {
 	@Override
 	public void preTick() {
 		update();
+	}
+
+	/**
+	 * @return true if any institution registered
+	 */
+	public boolean hasInstitutions() {
+		return !institutions.isEmpty();
 	}
 }

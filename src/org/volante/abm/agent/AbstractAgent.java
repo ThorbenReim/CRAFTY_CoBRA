@@ -74,9 +74,13 @@ public abstract class AbstractAgent implements Agent {
 
 
 	public AbstractAgent(Region region) {
-		this.propertyProvider = new DoublePropertyProviderComp();
-		this.setProperty(AgentPropertyIds.AGE, 1);
 		this.region = region;
+		this.propertyProvider = new DoublePropertyProviderComp();
+
+		// initialise important agent properties:
+		this.setProperty(AgentPropertyIds.AGE, 1);
+		this.setProperty(AgentPropertyIds.COMPETITIVENESS, 0.0);
+
 		this.initHook();
 	}
 

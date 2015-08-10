@@ -27,10 +27,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
@@ -39,7 +41,9 @@ import org.geotools.util.UnsupportedImplementationException;
 import org.simpleframework.xml.Element;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.assembler.AgentAssembler;
-import org.volante.abm.agent.assembler.DefaultAgentAssembler;
+import org.volante.abm.agent.assembler.DefaultSocialAgentAssembler;
+import org.volante.abm.agent.property.AgentPropertyId;
+import org.volante.abm.agent.property.AgentPropertyRegistry;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
@@ -107,12 +111,14 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 	
 	
 	@Element(required = false)
-	AgentAssembler agentAssembler = new DefaultAgentAssembler();
+	AgentAssembler agentAssembler = new DefaultSocialAgentAssembler();
 
 	@Element(required=false)
 	boolean shuffleCellsBeforeAssembling = true;
 	
 	Logger	logger			= Logger.getLogger(getClass());
+
+	Set<String> agentPropertyColumns = new HashSet<String>();
 
 	enum HomeCellMode {
 		MANAGE_EVERY, UNMANAGED, TAGGED, UNDETERMINED;
@@ -137,6 +143,8 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 		Map<String, String> agentBTs = new LinkedHashMap<String, String>();
 		Map<String, String> agentFRs = new LinkedHashMap<String, String>();
 
+		Map<String, Map<AgentPropertyId, Double>> agentProperties = new HashMap<String, Map<AgentPropertyId, Double>>();
+
 		// Basic CSV file validation:
 		if (!rLoader.persister.csvFileOK("RegionLoader", csvFile, rLoader
 				.getRegion()
@@ -150,19 +158,34 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 				.getRegion()
 				.getPeristerContextExtra());
 		List<String> columns = Arrays.asList(reader.getHeaders());
+		agentPropertyColumns.addAll(columns);
+
+		agentPropertyColumns.remove(xColumn);
+		agentPropertyColumns.remove(yColumn);
+		for (Capital cap : data.capitals) {
+			agentPropertyColumns.remove(cap.getName());
+		}
 
 		if (columns.contains(agentIdColumnName)) {
 			hasAgentColumn = true;
+			agentPropertyColumns.remove(agentIdColumnName);
 		}
 		if (!columns.contains(homeCellColumnName)) {
 			singleCellAgentMode = true;
+			agentPropertyColumns.remove(homeCellColumnName);
 		}
 
 		if (columns.contains(btColumnName)) {
 			assignBT = true;
+			agentPropertyColumns.remove(btColumnName);
 		}
 		if (columns.contains(frColumnName)) {
 			assignFR = true;
+			agentPropertyColumns.remove(frColumnName);
+		}
+
+		if (taggedHomeCells) {
+			agentPropertyColumns.remove(manageHomeCellColumnName);
 		}
 
 		if (manageEveryHomeCell && !manageNoHomeCell && !taggedHomeCells) {
@@ -256,6 +279,11 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 						reader, c, agentId, reader.get(btColumnName),
 						reader.get(frColumnName));
 
+				for (String agentPropertyColumn : agentPropertyColumns) {
+					agent.setProperty(AgentPropertyRegistry.get(agentPropertyColumn),
+							Double.parseDouble(reader.get(agentPropertyColumn)));
+				}
+
 				if (homeCellMode == HomeCellMode.MANAGE_EVERY) {
 					rLoader.region.setInitialOwnership(agent, c);
 				}
@@ -294,6 +322,14 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 
 					agentBTs.put(agentId, reader.get(btColumnName));
 					agentFRs.put(agentId, reader.get(frColumnName));
+
+					Map<AgentPropertyId, Double> agentPropertyMap = new HashMap<AgentPropertyId, Double>();
+					for (String agentPropertyColumn : agentPropertyColumns) {
+						agentPropertyMap.put(AgentPropertyRegistry.get(agentPropertyColumn),
+								Double.parseDouble(reader.get(agentPropertyColumn)));
+					}
+					agentProperties.put(agentId, agentPropertyMap);
+
 				} else {
 					// assign all non-home cells in the 'agentID -> cells' map
 					addManagedCell(agentCellMap, c, agentId);
@@ -318,6 +354,10 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 			
 			rLoader.region.setInitialOwnership(agent, agentCellMap.get(agentId)
 					.toArray(new Cell[1]));
+
+			for (Entry<AgentPropertyId, Double> property : agentProperties.get(agentId).entrySet()) {
+				agent.setProperty(property.getKey(), property.getValue());
+			}
 		}
 
 		// <- LOGGING

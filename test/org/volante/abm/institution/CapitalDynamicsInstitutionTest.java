@@ -65,18 +65,6 @@ public class CapitalDynamicsInstitutionTest extends BasicTestsUtils {
 	}
 
 	/**
-	 * @param i
-	 * @param r
-	 * @throws Exception
-	 */
-	protected void setupInstitutions(Institutions i, Region r) throws Exception
-	{
-		runInfo.getSchedule().register(i);
-		i.initialise(modelData, runInfo, r);
-		r.setInstitutions(i);
-	}
-
-	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -90,9 +78,7 @@ public class CapitalDynamicsInstitutionTest extends BasicTestsUtils {
 		assertFalse(c11.isInitialised());
 
 		r = setupBasicWorld(c11, c12, c21, c22);
-		Institutions institutions = new Institutions();
-		setupInstitutions(institutions, r);
-
+		Institutions institutions = r.getInstitutions();
 		CapitalDynamicsInstitution a = getTestInstitution();
 		institutions.addInstitution(a);
 

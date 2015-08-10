@@ -300,9 +300,9 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 						if (r.getGeography() != null && agent instanceof GeoAgent) {
 							((GeoAgent) agent).addToGeography();
 						}
-						r.getNetworkService().addAndLinkNode(
-								r.getNetwork(), (SocialAgent) agent);
-
+						if (agent instanceof SocialAgent) {
+							r.getNetworkService().addAndLinkNode(r.getNetwork(), (SocialAgent) agent);
+						}
 					} else {
 						if (!networkNullErrorOccurred) {
 							logger.warn("Network object not present during creation of new agent (subsequent error messages are suppressed)");

@@ -239,7 +239,9 @@ public class SocialNetworkLoader {
 				if (info.getSchedule().getCurrentTick() == tick) {
 					Collection<SocialAgent> socialAgentSet = new LinkedHashSet<SocialAgent>();
 					for (Agent agent : region.getAgents()) {
-						socialAgentSet.add((SocialAgent) agent);
+						if (agent instanceof SocialAgent) {
+							socialAgentSet.add((SocialAgent) agent);
+						}
 					}
 
 					// <- LOGGING

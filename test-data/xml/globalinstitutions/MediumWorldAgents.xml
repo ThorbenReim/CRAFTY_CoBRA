@@ -1,0 +1,7 @@
+<fRoles>
+	<fRole class="org.volante.abm.agent.fr.DefaultFR"
+		givingUpMean="0.0" givingInMean="1" label="HighIntensityArable" serialID="2">
+		<production class="org.volante.abm.example.SimpleProductionModel"
+			csvFile="csv/globalinstitutions/HighIntensityArable.csv" />
+	</fRole>
+</fRoles>

@@ -36,6 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.data.Cell;
+import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.example.BasicTestsUtils;
 import org.volante.abm.example.SimpleCapital;
 
@@ -101,7 +102,6 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 
 	// Manage every home cell
 	static final String FILENAME_XML_POPULATOR_MANAGE_EVERY_HOMECELL = "./xml/CsvAftPopulator_ManageEveryHomeCell.xml";
-	static final String FILENAME_CSV_POPULATOR_MANAGE_EVERY_HOMECELL = "./Region_CsvAgentPopulator_HomeCells.csv";
 	static final int NUM_AGENTS_MANAGE_EVERY_HOMECELL = 2;
 	static final Map<String, Cell> HOME_CELLS_MANAGE_EVERY_HOMECELL = new HashMap<String, Cell>();
 	static {
@@ -123,7 +123,6 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 
 	// Unmanaged home cell
 	static final String FILENAME_XML_POPULATOR_UNMANAGED_HOMECELL = "./xml/CsvAftPopulator_UnmanagedHomeCell.xml";
-	static final String FILENAME_CSV_POPULATOR_UNMANAGED_HOMECELL = "./Region_CsvAgentPopulator_HomeCells.csv";
 	static final int NUM_AGENTS_UNMANAGED_HOMECELL = 2;
 	static final Map<String, Cell> HOME_CELLS_UNMANAGED_HOMECELL = new HashMap<String, Cell>();
 	static {
@@ -143,7 +142,6 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 
 	// Tagged home cells
 	static final String FILENAME_XML_POPULATOR_TAGGED_HOMECELLS = "./xml/CsvAftPopulator_TaggedHomeCells.xml";
-	static final String FILENAME_CSV_POPULATOR_TAGGED_HOMECELLS = "./Region_CsvAgentPopulator_TaggedHomeCells.csv";
 	static final int NUM_AGENTS_TAGGED_HOMECELLS = 2;
 	static final Map<String, Cell> HOME_CELLS_TAGGED_HOMECELLS = new HashMap<String, Cell>();
 	static {
@@ -178,6 +176,19 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 				Agent.NOT_MANAGED_AGENT_ID);
 	}
 	static final Map<String, Set<Cell>> MANAGED_CELLS_SINGLE_CELL_AGENTS_UNMANAGED = new HashMap<String, Set<Cell>>();
+
+	static final String FILENAME_XML_POPULATOR_UNMANAGED_HOMECELL_PROPERTIES =
+			"./xml/CsvAftPopulator_UnmanagedHomeCell_Properties.xml";
+	static final Map<String, Integer> AGENT_AGES = new HashMap<String, Integer>(2);
+	static {
+		AGENT_AGES.put("Agent1", 23);
+		AGENT_AGES.put("Agent2", 50);
+	}
+	static final Map<String, Double> AGENT_FARMSIZES = new HashMap<String, Double>(2);
+	static {
+		AGENT_FARMSIZES.put("Agent1", 2.0);
+		AGENT_FARMSIZES.put("Agent2", 330.2);
+	}
 
 	/**
 	 * @throws java.lang.Exception
@@ -221,7 +232,7 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 
 		// check number of agents
 		assertEquals("Number of agents", NUM_AGENTS_SINGLE_CELL_AGENTS,
-				rl.region.getAgents().size() - 1); // NOT_MANAGED
+ rl.region.getAgents().size());
 
 		// check agent home cells
 		checkHomeCells(HOME_CELLS_SINGLE_CELL_AGENTS);
@@ -247,7 +258,7 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 		
 		// check number of agents
 		assertEquals("Number of agents", NUM_AGENTS_MANAGE_EVERY_HOMECELL,
-				rl.region.getAgents().size() - 1); // - NOT_MANAGED
+ rl.region.getAgents().size());
 		
 		// check agent home cells
 		checkHomeCells(HOME_CELLS_MANAGE_EVERY_HOMECELL);
@@ -274,7 +285,7 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 
 		// check number of agents
 		assertEquals("Number of agents", NUM_AGENTS_UNMANAGED_HOMECELL,
-				rl.region.getAgents().size() - 1); // - NOT_MANAGED agent
+ rl.region.getAgents().size());
 
 		// check agent home cells
 		checkHomeCells(HOME_CELLS_UNMANAGED_HOMECELL);
@@ -284,6 +295,44 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 
 		// check agent's managed cells
 		checkManagedCells(MANAGED_CELLS_UNMANAGED_HOMECELL);
+	}
+
+	@Test
+	public void testUnmanagedHomeCellsWithAge() throws Exception {
+		fillManagedCellsMap(CELL_OWNERS_UNMANAGED_HOMECELL,
+				MANAGED_CELLS_UNMANAGED_HOMECELL);
+		CsvAftPopulator populator = runInfo.getPersister().readXML(
+				CsvAftPopulator.class,
+ FILENAME_XML_POPULATOR_UNMANAGED_HOMECELL_PROPERTIES,
+				rl.getRegion().getPeristerContextExtra());
+		populator.initialise(rl);
+
+		// check capitals
+		checkInfrastructureCapitalReading();
+
+		// check number of agents
+		assertEquals("Number of agents", NUM_AGENTS_UNMANAGED_HOMECELL,
+ rl.region.getAgents().size());
+
+		// check agent home cells
+		checkHomeCells(HOME_CELLS_UNMANAGED_HOMECELL);
+
+		// check cell's owners
+		checkCellOwners(CELL_OWNERS_UNMANAGED_HOMECELL);
+
+		// check agent's managed cells
+		checkManagedCells(MANAGED_CELLS_UNMANAGED_HOMECELL);
+
+		// check agent properties
+		for (Agent agent : rl.region.getAllAllocatedAgents()) {
+			assertEquals("Check AGE property", AGENT_AGES.get(agent.getID()).doubleValue(),
+					agent
+					.getProperty(AgentPropertyIds.AGE), 0.001);
+		}
+		for (Agent agent : rl.region.getAllAllocatedAgents()) {
+			assertEquals("Check FARM_SIZE property", AGENT_FARMSIZES.get(agent.getID()).doubleValue(),
+					agent.getProperty(AgentPropertyIds.FARM_SIZE), 0.001);
+		}
 	}
 
 	@Test
@@ -300,7 +349,7 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 
 		// check number of agents
 		assertEquals("Number of agents", NUM_AGENTS_TAGGED_HOMECELLS, rl.region
-				.getAgents().size() - 1); // - NOT_MANAGED
+.getAgents().size());
 
 		// check agent home cells
 		checkHomeCells(HOME_CELLS_TAGGED_HOMECELLS);
@@ -328,7 +377,7 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 		// check number of agents
 		assertEquals("Number of agents",
 				NUM_AGENTS_SINGLE_CELL_AGENTS_UNMANAGED,
-				rl.region.getAgents().size() - 1); // - NOT_MANAGED agent
+ rl.region.getAgents().size());
 
 		// check agent home cells
 		checkHomeCells(HOME_CELLS_SINGLE_CELL_AGENTS);

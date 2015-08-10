@@ -144,6 +144,8 @@ public class ABMPersister extends EasyPersister {
 		}
 		columHeader.remove(xCol);
 
+		// TODO check for other header columns
+
 		for (String s : columHeader) {
 			map.put(s, new LinearInterpolator());
 		}

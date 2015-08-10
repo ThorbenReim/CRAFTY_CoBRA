@@ -141,6 +141,9 @@ public class RegionLoader {
 	List<String> institutionFiles = new ArrayList<String>();
 
 	@Element(required = false)
+	String regionalLaraModelFile = null;
+
+	@Element(required = false)
 	RegionalLaraModel regionalLaraModel = null;
 
 	@Element(required = false)
@@ -171,21 +174,25 @@ public class RegionLoader {
 	}
 
 	public RegionLoader(String id, String competition, String allocation,
-			String demand, String potentialAgents, String cellInitialisers,
+ String demand, String btfiles,
+			String frfiles, String cellInitialisers,
 			String agentInitialisers) {
-		this(id, competition, allocation, demand, potentialAgents,
-				cellInitialisers, agentInitialisers, null, null);
+		this(id, competition, allocation, demand, btfiles, frfiles,
+ cellInitialisers, agentInitialisers, null, null,
+				null);
 	}
 
 	public RegionLoader(String id, String competition, String allocation,
-			String demand, String potentialAgents, String cellInitialisers,
-			String agentInitialisers, String socialNetworkFile,
-			String institutionFile) {
+ String demand, String btfiles,
+			String frfiles, String cellInitialisers, String agentInitialisers, String socialNetworkFile,
+			String institutionFile,
+			String laraModelFile) {
 		this.id = id;
 		this.competitionFile = competition;
 		this.allocationFile = allocation;
 		this.demandFile = demand;
-		this.frFileList.addAll(ABMPersister.splitTags(potentialAgents));
+		this.btFileList.addAll(ABMPersister.splitTags(btfiles));
+		this.frFileList.addAll(ABMPersister.splitTags(frfiles));
 		this.cellInitialiserFiles.addAll(ABMPersister
 				.splitTags(cellInitialisers));
 
@@ -202,6 +209,9 @@ public class RegionLoader {
 			for (String iFile : institutionFile.split("\\|")) {
 				this.institutionFiles.add(iFile.trim());
 			}
+		}
+		if (laraModelFile != null && !laraModelFile.equals("")) {
+			regionalLaraModelFile = laraModelFile;
 		}
 	}
 
@@ -230,17 +240,29 @@ public class RegionLoader {
 		loadModels();
 		loadSocialNetworks();
 
-		initialiseCells();
 		passInfoToRegion();
+		initialiseCells();
+
 		loadInstitutions();
 		initialiseAgents();
 		loadUpdaters();
 	}
 
 	/**
+	 * @throws Exception
 	 * 
 	 */
-	private void initLaraModel() {
+	private void initLaraModel() throws Exception {
+		if (regionalLaraModel == null && regionalLaraModelFile != null && !regionalLaraModelFile.equals("")) {
+			// <- LOGGING
+			log.info("LaraModel file: " + regionalLaraModelFile);
+			// LOGGING ->
+
+			regionalLaraModel =
+					persister.readXML(RegionalLaraModel.class, regionalLaraModelFile,
+							this.region.getPeristerContextExtra());
+		}
+
 		if (this.regionalLaraModel != null) {
 			this.regionalLaraModel.initialise(this.modelData, this.runInfo,
 					this.region);
@@ -387,13 +409,10 @@ public class RegionLoader {
 			}
 		}
 		if (institutions.size() > 0) {
-			Institutions in = new Institutions();
+			Institutions in = region.getInstitutions();
 			for (Institution i : institutions) {
 				in.addInstitution(i);
 			}
-			region.setInstitutions(in);
-			in.initialise(modelData, runInfo, region);
-			runInfo.getSchedule().register(in);
 		}
 	}
 

@@ -92,7 +92,9 @@ public class AggregateAFTCompositionCSVOutputter extends AggregateCSVOutputter {
 
 			int[] pagentNumbers = new int[r.getFunctionalRoles().size()];
 			for (Agent a : r.getAgents()) {
-				pagentNumbers[a.getFC().getFR().getSerialID()]++;
+				if (a.getFC().getFR().getSerialID() >= 0) {
+					pagentNumbers[a.getFC().getFR().getSerialID()]++;
+				}
 			}
 
 			int sum = 0;

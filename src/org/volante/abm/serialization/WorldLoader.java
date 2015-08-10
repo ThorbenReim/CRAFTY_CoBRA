@@ -61,8 +61,12 @@ public class WorldLoader {
 	String allocationColumn = "Allocation";
 	@Attribute(required=false)
 	String demandColumn = "Demand";
+
+	@Attribute(required = false)
+	String btColumn = "Behavioural Types";
 	@Attribute(required=false)
-	String potentialColumn = "Agents";
+	String frColumn = "Functional Roles";
+
 	@Attribute(required=false)
 	String institutionsColumn = "Institutions";
 	@Attribute(required = false)
@@ -73,6 +77,9 @@ public class WorldLoader {
 	@Attribute(required=false)
 	String agentColumn = "Agent Initialisers";
 	
+	@Attribute(required = false)
+	String laraModelColumn = "LARA Model";
+
 	ABMPersister persister = ABMPersister.getInstance();
 	ModelData modelData = new ModelData();
 	RunInfo					info				= null;
@@ -137,11 +144,13 @@ public class WorldLoader {
 				BatchRunParser.parseString(reader.get(competitionColumn), info),
 				BatchRunParser.parseString(reader.get(allocationColumn), info),
 				BatchRunParser.parseString(reader.get(demandColumn), info),
-				BatchRunParser.parseString(reader.get(potentialColumn), info),
+ BatchRunParser.parseString(
+						reader.get(btColumn), info), BatchRunParser.parseString(reader.get(frColumn), info),
 				BatchRunParser.parseString(reader.get(cellColumn), info),
 				null,
 				BatchRunParser.parseString(reader.get(socNetColumn), info),
-				BatchRunParser.parseString(reader.get(institutionsColumn), info));
+ BatchRunParser.parseString(reader.get(institutionsColumn),
+						info), BatchRunParser.parseString(reader.get(laraModelColumn), info));
 	}
 	
 	public void setModelData( ModelData data ) { this.modelData = data; }

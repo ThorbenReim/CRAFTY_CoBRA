@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
 import org.simpleframework.xml.Element;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.assembler.AgentAssembler;
-import org.volante.abm.agent.assembler.DefaultAgentAssembler;
+import org.volante.abm.agent.assembler.DefaultSocialAgentAssembler;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -52,7 +52,7 @@ public class GlobalAgentFinder implements AgentFinder {
 	ModelData mData;
 
 	@Element(required = false)
-	AgentAssembler assembler = new DefaultAgentAssembler();
+	AgentAssembler assembler = new DefaultSocialAgentAssembler();
 
 	/**
 	 * @see org.volante.abm.serialization.Initialisable#initialise(org.volante.abm.data.ModelData,

@@ -58,7 +58,9 @@ public class SimpleAllocationDisplay extends AbstractDisplay implements Allocati
 	public void update() {
 		int[] pagentNumbers = new int[r.getFunctionalRoles().size()];
 		for (Agent a : r.getAgents()) {
-			pagentNumbers[a.getFC().getFR().getSerialID()]++;
+			if (a.getFC().getFR().getSerialID() != FunctionalRole.UNKNOWN_SERIAL) {
+				pagentNumbers[a.getFC().getFR().getSerialID()]++;
+			}
 		}
 
 		// calculate overall sum

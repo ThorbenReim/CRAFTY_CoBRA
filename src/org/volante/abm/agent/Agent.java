@@ -233,6 +233,11 @@ public interface Agent extends DoublePropertyProvider,
 		}
 
 		@Override
+		public void updateCompetitiveness() {
+			// nothing to do
+		}
+
+		@Override
 		public boolean canTakeOver(Cell c, double competitiveness) {
 			return true;
 		}

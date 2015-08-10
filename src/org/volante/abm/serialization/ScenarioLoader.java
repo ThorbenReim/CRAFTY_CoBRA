@@ -23,7 +23,9 @@
 package org.volante.abm.serialization;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
@@ -35,6 +37,8 @@ import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.RegionSet;
 import org.volante.abm.data.Service;
+import org.volante.abm.institutions.global.GlobalInstitution;
+import org.volante.abm.institutions.global.GlobalInstitutionsList;
 import org.volante.abm.output.Outputs;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.schedule.Schedule;
@@ -141,6 +145,9 @@ public class ScenarioLoader {
 	@ElementList(required = false, inline = true, entry = "regionFile")
 	List<String> regionFileList = new ArrayList<String>();
 
+	@ElementList(inline = true, required = false, entry = "globalInstitutionFile")
+	List<String> globalInstitutionFiles = new ArrayList<String>();
+
 	@Element(required = false)
 	WorldLoader worldLoader = null;
 
@@ -242,6 +249,18 @@ public class ScenarioLoader {
 		log.info("Final extent: " + regions.getExtent());
 		regions.initialise(modelData, info, null);
 		outputs.initialise(modelData, info, regions);
+
+		// global institutions:
+		log.info("About to global institutions");
+		Set<GlobalInstitution> institutions = new HashSet<GlobalInstitution>();
+
+		for (String institutionsFile : globalInstitutionFiles) {
+			institutions.addAll(persister.readXML(GlobalInstitutionsList.class, institutionsFile, null)
+					.getGlobalInstitutions());
+		}
+		for (GlobalInstitution institution : institutions) {
+			institution.initialise(info, modelData, this);
+		}
 
 		// initialisation
 		if (displays == null) {

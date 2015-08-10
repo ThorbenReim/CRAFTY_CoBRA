@@ -176,17 +176,7 @@ public class InnovationTestUtils extends BasicTestsUtils {
 	 */
 	protected void registerInstitution(Institution institution, Region region) {
 		Institutions institutions = region.getInstitutions();
-		if (institutions == null) {
-			institutions = new Institutions();
-			try {
-				institutions.initialise(modelData, runInfo, r1);
-			} catch (Exception exception) {
-				exception.printStackTrace();
-			}
-			runInfo.getSchedule().register(institutions);
-		}
 		institutions.addInstitution(institution);
-		region.setInstitutions(institutions);
 	}
 
 	/**
