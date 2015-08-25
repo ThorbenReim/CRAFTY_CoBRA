@@ -74,6 +74,11 @@ import de.cesr.parma.reader.PmXmlParameterReader;
 @Root(name = "region")
 public class RegionLoader {
 
+	/**
+	 * Logger
+	 */
+	static private Logger log = Logger.getLogger(RegionLoader.class);
+
 	final static String INSTITUTION_LIST_ELEMENT_NAME = "institutionsList";
 
 	@Attribute(name = "id")
@@ -155,8 +160,6 @@ public class RegionLoader {
 	 */
 	@Element(required = false)
 	String idUnmanaged = "UNMANAGED";
-
-	Logger log = Logger.getLogger(getClass());
 
 	ABMPersister persister = null;
 	ModelData modelData = null;
@@ -266,6 +269,8 @@ public class RegionLoader {
 		if (this.regionalLaraModel != null) {
 			this.regionalLaraModel.initialise(this.modelData, this.runInfo,
 					this.region);
+		} else {
+			log.warn("LARA model could not be initialised in RegionLoader (LARA model not initialised)!");
 		}
 	}
 

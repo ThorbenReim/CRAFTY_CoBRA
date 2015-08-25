@@ -59,7 +59,7 @@ public class GlobalInstitutionsRegistry {
 	 * @return set of registered global institutions
 	 */
 	public Set<GlobalInstitution> getGlobalInstitutions() {
-		return new HashSet<GlobalInstitution>(globalInstitutions);
+		return new HashSet<>(globalInstitutions);
 	}
 
 	public static void reset() {
