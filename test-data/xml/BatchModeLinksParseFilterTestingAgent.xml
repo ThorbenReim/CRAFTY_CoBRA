@@ -1,7 +1,7 @@
-<agent class="org.volante.abm.example.SimplePotentialAgent" 
-	givingUp="${@(csv/CsvBatchRunParserTest.csv ~ @@(csv; secondA)/CsvBatchRunParserSecondaryTest.csv, givingUp)}" 
-	givingIn="${@(csv/CsvBatchRunParserTest.csv ~ @@(csv; secondB)/CsvBatchRunParserSecondaryTest.csv, givingIn)}" 
-		id="TestAgent" serialID="1">
+<fRole class="org.volante.abm.agent.fr.DefautlFR" 
+	givingUpMean="${@(csv/CsvBatchRunParserTest.csv ~ @@(csv; secondA)/CsvBatchRunParserSecondaryTest.csv, givingUp)}" 
+	givingInMean="${@(csv/CsvBatchRunParserTest.csv ~ @@(csv; secondB)/CsvBatchRunParserSecondaryTest.csv, givingIn)}" 
+		label="TestAgent" serialID="1">
 	<production class="org.volante.abm.example.SimpleProductionModel" 
 			csvFile="csv/LowIntensityArable.csv" />
-</agent>
+</fRole>

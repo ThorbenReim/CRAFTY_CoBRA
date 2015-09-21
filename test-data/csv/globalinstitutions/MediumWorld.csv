@@ -1,0 +1,3 @@
+ID,Competition,Allocation,Demand,Functional Roles,Behavioural Types,Cell Initialisers,Agent Initialisers,LARA Model
+Region1,xml/globalinstitutions/DefaultCompetition.xml,xml/DefaultAllocation.xml,xml/globalinstitutions/DefaultDemand.xml,xml/globalinstitutions/MediumWorldAgents.xml,xml/BehaviouralTypes.xml,xml/globalinstitutions/CSVCells.xml,Agents not implemented,xml/RegionalLaraModel.xml
+Region2,xml/globalinstitutions/DefaultCompetition.xml,xml/DefaultAllocation.xml,xml/globalinstitutions/DefaultDemand.xml,xml/globalinstitutions/MediumWorldAgents.xml,xml/BehaviouralTypes.xml,xml/globalinstitutions/CSVCells.xml,Agents not implemented,xml/RegionalLaraModel.xml

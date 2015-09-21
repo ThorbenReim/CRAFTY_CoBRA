@@ -10,7 +10,7 @@ import java.util.Arrays;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.volante.abm.agent.DefaultAgent;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.Region;
@@ -21,6 +21,7 @@ import org.volante.abm.institutions.DefaultInstitution;
 import org.volante.abm.institutions.Institutions;
 
 import com.moseph.modelutils.fastdata.DoubleMap;
+import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
 
 public class InstitutionsTest extends BasicTestsUtils
 {
@@ -42,8 +43,7 @@ public class InstitutionsTest extends BasicTestsUtils
 		assertFalse( c11.isInitialised() );
 		
 		Region r = setupBasicWorld( c11, c12, c21, c22 );
-		Institutions institutions = new Institutions();
-		setupInstitutions( institutions, r );
+		Institutions institutions = r.getInstitutions();
 
 		DefaultInstitution a = getTestInstitution(1, 1, r);
 		institutions.addInstitution( a );
@@ -86,21 +86,20 @@ public class InstitutionsTest extends BasicTestsUtils
 		dem.setDemand( services(1,1,1,1) );
 		c11.setBaseCapitals( cellCapitalsA );
 		c11.initEffectiveCapitals();
-		double farmComp = r.getCompetitiveness( farming, c11 ); //Get the initial competitiveness
-		double forestComp = r.getCompetitiveness( forestry, c11 ); //Get the initial competitiveness
+		double farmComp = r.getCompetitiveness( farmingR1, c11 ); //Get the initial competitiveness
+		double forestComp = r.getCompetitiveness( forestryR1, c11 ); //Get the initial competitiveness
 		assertTrue( abs( farmComp ) > 0.001 ); //And make sure that its not zero, just to be sure
 		
 		DefaultInstitution a = getTestInstitution(1, 1, r);
-		Institutions inst = new Institutions();
+		Institutions inst = r.getInstitutions();
 		inst.addInstitution( a );
-		setupInstitutions( inst, r );
-		assertTrue( r.hasInstitutions() );
-		assertEquals( farmComp + 1, r.getCompetitiveness( farming, c11 ), 0.001 ); //Check that the competition is adjusted
-		assertEquals( forestComp + 1, r.getCompetitiveness( forestry, c11 ), 0.001 ); 
+
+		assertEquals( farmComp + 1, r.getCompetitiveness( farmingR1, c11 ), 0.001 ); //Check that the competition is adjusted
+		assertEquals( forestComp + 1, r.getCompetitiveness( forestryR1, c11 ), 0.001 ); 
 		
-		a.setSubsidy( farming, 3 );
-		assertEquals( farmComp + 3, r.getCompetitiveness( farming, c11 ), 0.001 ); //Check that the competition is adjusted per agent
-		assertEquals( forestComp + 1, r.getCompetitiveness( forestry, c11 ), 0.001 ); 
+		a.setSubsidy( farmingR1, 3 );
+		assertEquals( farmComp + 3, r.getCompetitiveness( farmingR1, c11 ), 0.001 ); //Check that the competition is adjusted per agent
+		assertEquals( forestComp + 1, r.getCompetitiveness( forestryR1, c11 ), 0.001 ); 
 	}
 	
 	@Test
@@ -111,23 +110,23 @@ public class InstitutionsTest extends BasicTestsUtils
 		dem.setDemand( services(1,1,1,1) );
 		c11.setBaseCapitals( cellCapitalsA );
 		c11.initEffectiveCapitals();
-		double farmComp = r.getCompetitiveness( farming, c11 ); //Get the initial competitiveness
-		double forestComp = r.getCompetitiveness( forestry, c11 ); //Get the initial competitiveness
+		double farmComp = r.getCompetitiveness( farmingR1, c11 ); //Get the initial competitiveness
+		double forestComp = r.getCompetitiveness( forestryR1, c11 ); //Get the initial competitiveness
 		assertTrue( abs( farmComp ) > 0.001 ); //And make sure that its not zero, just to be sure
-		DoubleMap<Service> farmSupply = farming.getPotentialSupply( c11 );
-		DoubleMap<Service> forestSupply = forestry.getPotentialSupply( c11 );
+		UnmodifiableNumberMap<Service> farmSupply = farmingR1
+				.getExpectedSupply(c11);
+		UnmodifiableNumberMap<Service> forestSupply = forestryR1
+				.getExpectedSupply(c11);
 		@SuppressWarnings("deprecation")
 		double baseComp = r.getCompetitionModel().getCompetitiveness( r.getDemandModel(), farmSupply );
 		assertEquals( farmComp, baseComp, 0.0001 );
 		
-		Institutions inst = new Institutions();
+		Institutions inst = r.getInstitutions();
 		DefaultInstitution a = getTestInstitution(0, 0, r);
 		inst.addInstitution( a );
-		setupInstitutions( inst, r );
-		assertTrue( r.hasInstitutions() );
 		
-		assertEquals( farmComp, r.getCompetitiveness( farming, c11 ), 0.001 ); //Check that the competition is adjusted
-		assertEquals( forestComp, r.getCompetitiveness( forestry, c11 ), 0.001 ); 
+		assertEquals( farmComp, r.getCompetitiveness( farmingR1, c11 ), 0.001 ); //Check that the competition is adjusted
+		assertEquals( forestComp, r.getCompetitiveness( forestryR1, c11 ), 0.001 ); 
 		
 		DoubleMap<Service> subsidies = services(2,2,2,2);
 		double farmSubsidy = farmSupply.dotProduct( subsidies );
@@ -136,8 +135,8 @@ public class InstitutionsTest extends BasicTestsUtils
 		assertTrue( forestSubsidy > 0 );
 		assertTrue( abs(forestSubsidy-farmSubsidy) > 0 );
 		a.setSubsidies( subsidies );
-		assertEquals( farmComp + farmSubsidy, r.getCompetitiveness( farming, c11 ), 0.001 ); //Check that the competition is adjusted based on production
-		assertEquals( forestComp + forestSubsidy, r.getCompetitiveness( forestry, c11 ), 0.001 ); 
+		assertEquals( farmComp + farmSubsidy, r.getCompetitiveness( farmingR1, c11 ), 0.001 ); //Check that the competition is adjusted based on production
+		assertEquals( forestComp + forestSubsidy, r.getCompetitiveness( forestryR1, c11 ), 0.001 ); 
 	}
 	
 	@Test
@@ -145,31 +144,31 @@ public class InstitutionsTest extends BasicTestsUtils
 	{
 		c11 =  new Cell(1,1);
 		Region r = setupBasicWorld( c11 );
-		r.addPotentialAgents( Arrays.asList( new PotentialAgent[] {forestry, farming }) );
+		r.addfunctionalRoles(Arrays.asList(new FunctionalRole[] { forestryR1,
+				farmingR1 }));
 		RegionalDemandModel dem = (RegionalDemandModel) r.getDemandModel();
 		dem.setDemand( services(1,1,1,1) );
 		c11.setBaseCapitals( cellCapitalsA );
 		c11.initEffectiveCapitals();
-		double farmComp = r.getCompetitiveness( farming, c11 ); //Get the initial competitiveness
-		double forestComp = r.getCompetitiveness( forestry, c11 ); //Get the initial competitiveness
+		double farmComp = r.getCompetitiveness( farmingR1, c11 ); //Get the initial competitiveness
+		double forestComp = r.getCompetitiveness( forestryR1, c11 ); //Get the initial competitiveness
 		assertTrue( abs( farmComp ) > 0.001 ); //And make sure that its not zero, just to be sure
-		DoubleMap<Service> farmSupply = farming.getPotentialSupply( c11 );
-		DoubleMap<Service> forestSupply = forestry.getPotentialSupply( c11 );
+		UnmodifiableNumberMap<Service> farmSupply = farmingR1
+				.getExpectedSupply(c11);
+		UnmodifiableNumberMap<Service> forestSupply = forestryR1
+				.getExpectedSupply(c11);
 		@SuppressWarnings("deprecation")
 		double baseComp = r.getCompetitionModel().getCompetitiveness( r.getDemandModel(), farmSupply );
 		assertEquals( farmComp, baseComp, 0.0001 );
 		
-		assertEquals( farmComp, r.getCompetitiveness( farming, c11 ), 0.001 ); //Check that the competition is adjusted
-		assertEquals( forestComp, r.getCompetitiveness( forestry, c11 ), 0.001 ); 
+		assertEquals( farmComp, r.getCompetitiveness( farmingR1, c11 ), 0.001 ); //Check that the competition is adjusted
+		assertEquals( forestComp, r.getCompetitiveness( forestryR1, c11 ), 0.001 ); 
 		
-		Institutions inst = new Institutions();
+		Institutions inst = r.getInstitutions();
 		DefaultInstitution a = persister.readXML(DefaultInstitution.class,
 				"xml/TestInstitution.xml",
 				r.getPeristerContextExtra());
 		inst.addInstitution( a );
-		setupInstitutions( inst, r );
-		assertTrue( r.hasInstitutions() );
-		
 		
 		//Subsidy levels set in the XML file
 		DoubleMap<Service> subsidies = services(0,0.7,1.2,0);
@@ -179,8 +178,8 @@ public class InstitutionsTest extends BasicTestsUtils
 		assertTrue( forestSubsidy > 0 );
 		assertTrue( abs(forestSubsidy-farmSubsidy) > 0 );
 		//Farming subsidy set in the XML file
-		assertEquals( farmComp + farmSubsidy + 3.2, r.getCompetitiveness( farming, c11 ), 0.001 ); //Check that the competition is adjusted based on production
-		assertEquals( forestComp + forestSubsidy, r.getCompetitiveness( forestry, c11 ), 0.001 ); 
+		assertEquals( farmComp + farmSubsidy + 3.2, r.getCompetitiveness( farmingR1, c11 ), 0.001 ); //Check that the competition is adjusted based on production
+		assertEquals( forestComp + forestSubsidy, r.getCompetitiveness( forestryR1, c11 ), 0.001 ); 
 		
 		//Capital sub set in XML file
 		DoubleMap<Capital> capitals = capitals(0,0,0.2,0,0,0,0);
@@ -193,28 +192,24 @@ public class InstitutionsTest extends BasicTestsUtils
 		DoubleMap<Service> expected = services(0,0,0,0);
 		farmingProduction.production( capitals, expected );
 		//And check against potential supply
-		assertEqualMaps( expected, farming.getPotentialSupply( c11 ));
+		assertEqualMaps( expected, farmingR1.getExpectedSupply( c11 ));
 		
 		//And check they're used by the agent
-		DefaultAgent agent = (DefaultAgent) farming.createAgent( r, c11 );
+		DefaultAgent agent = new DefaultAgent(farmingR1, "TestFarmer", modelData,
+				r);
+		r.setOwnership(agent, c11);
 		agent.supply( c11 );
 		assertEqualMaps( expected, c11.getSupply() );
 	}
 	
-	void setupInstitutions( Institutions i, Region r ) throws Exception
-	{
-		runInfo.getSchedule().register( i );
-		i.initialise( modelData, runInfo, r );
-		r.setInstitutions( i );
-	}
-	
-	DefaultInstitution getTestInstitution(double cap, double comp, Region r) throws Exception
+	DefaultInstitution getTestInstitution(double cap, double comp, Region r)
+			throws Exception
 	{
 		DefaultInstitution i = new DefaultInstitution();
 		i.initialise(modelData, runInfo, r);
 		i.setAdjustment( capitals(cap,cap,cap,cap,cap,cap,cap) );
-		i.setSubsidy( farming, comp );
-		i.setSubsidy( forestry, comp );
+		i.setSubsidy( farmingR1, comp );
+		i.setSubsidy( forestryR1, comp );
 		return i;
 	}
 

@@ -22,13 +22,10 @@
  */
 package org.volante.abm.serialization;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
@@ -37,7 +34,8 @@ import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.stream.NodeBuilder;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.bt.BehaviouralType;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -48,6 +46,7 @@ import org.volante.abm.example.SimpleCompetitivenessModel;
 import org.volante.abm.example.SimpleProductionModel;
 import org.volante.abm.institutions.Institution;
 import org.volante.abm.institutions.Institutions;
+import org.volante.abm.lara.RegionalLaraModel;
 import org.volante.abm.models.AllocationModel;
 import org.volante.abm.models.CompetitivenessModel;
 import org.volante.abm.models.DemandModel;
@@ -59,72 +58,101 @@ import org.volante.abm.update.Updater;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 
+import de.cesr.lara.toolbox.config.xml.LPersister;
 import de.cesr.parma.core.PmParameterManager;
 import de.cesr.parma.definition.PmFrameworkPa;
 import de.cesr.parma.reader.PmXmlParameterReader;
 
-
 /**
- * Class to load Regions from serialised data. Needs to load: * competitiveness models * demand
- * model * allocation model * baseCapitals for all cells * initial agents for all cells
- *
+ * Class to load Regions from serialised data. Needs to load: * competitiveness
+ * models * demand model * allocation model * baseCapitals for all cells *
+ * initial agents for all cells
+ * 
  * @author dmrust
- *
+ * 
  */
 @Root(name = "region")
 public class RegionLoader {
 
+	/**
+	 * Logger
+	 */
+	static private Logger log = Logger.getLogger(RegionLoader.class);
+
 	final static String INSTITUTION_LIST_ELEMENT_NAME = "institutionsList";
 
 	@Attribute(name = "id")
-	String							id						= "Unknown";
+	String id = "Unknown";
 
 	@Element(required = false)
-	String							competitionFile			= "";
+	String competitionFile = "";
 	@Element(required = false)
-	CompetitivenessModel			competition				= null;
+	CompetitivenessModel competition = null;
 
 	@Element(required = false)
-	AllocationModel					allocation				= null;
+	AllocationModel allocation = null;
 	@Element(required = false)
-	String							allocationFile			= "";
+	String allocationFile = "";
 
 	@Element(required = false)
-	DemandModel						demand					= null;
+	DemandModel demand = null;
 	@Element(required = false)
-	String							demandFile				= "";
+	String demandFile = "";
 
 	@Element(required = false)
-	PotentialAgentList				potentialAgents			= new PotentialAgentList();
+	BTList bTypes = new BTList();
 
-	@ElementList(required = false, inline = true, entry = "agentFile")
-	List<String>					agentFileList			= new ArrayList<String>();
+	@Element(required = false)
+	FRList fRoles = new FRList();
+
+	@Element(required = false)
+	SocialNetworkLoaderList socialNetworkLoaders = new SocialNetworkLoaderList();
+
+	@ElementList(required = false, inline = true, entry = "btFile")
+	List<String> btFileList = new ArrayList<String>();
+
+	@ElementList(required = false, inline = true, entry = "frFile")
+	List<String> frFileList = new ArrayList<String>();
 
 	@ElementList(inline = true, required = false, empty = false, entry = "cellInitialiser")
-	List<CellInitialiser>			cellInitialisers		= new ArrayList<CellInitialiser>();
+	List<CellInitialiser> cellInitialisers = new ArrayList<CellInitialiser>();
 	@ElementList(required = false, inline = true, entry = "cellInitialiserFile")
-	List<String>					cellInitialiserFiles	= new ArrayList<String>();
+	List<String> cellInitialiserFiles = new ArrayList<String>();
 
 	@ElementList(inline = true, required = false, empty = false, entry = "agentInitialiser")
-	List<AgentInitialiser>			agentInitialisers		= new ArrayList<AgentInitialiser>();
+	List<AgentInitialiser> agentInitialisers = new ArrayList<AgentInitialiser>();
 	@ElementList(required = false, inline = true, entry = "agentInitialiserFile")
-	List<String>					agentInitialiserFiles	= new ArrayList<String>();
+	List<String> agentInitialiserFiles = new ArrayList<String>();
 
 	@Element(required = false)
-	String							pmParameterFile					= null;
-	
+	String pmParameterFile = null;
+
+	/**
+	 * Location of XML parameter file for social network initialisations (it is
+	 * possible to have several networks of agents to build up a multiplex
+	 * social network).
+	 */
+	@ElementList(required = false, inline = true, entry = "socialNetworkParamFile")
+	List<String> socialNetworkFileList = new ArrayList<String>();
+
 	@ElementList(inline = true, required = false, entry = "updater")
-	List<Updater>					updaters				= new ArrayList<Updater>();
+	List<Updater> updaters = new ArrayList<Updater>();
 	@ElementList(inline = true, required = false, entry = "updaterFile")
-	List<String>					updaterFiles			= new ArrayList<String>();
+	List<String> updaterFiles = new ArrayList<String>();
 
 	@ElementList(inline = true, required = false, entry = "institution")
-	List<Institution>				institutions			= new ArrayList<Institution>();
+	List<Institution> institutions = new ArrayList<Institution>();
 	@ElementList(inline = true, required = false, entry = "institutionFile")
-	List<String>					institutionFiles		= new ArrayList<String>();
+	List<String> institutionFiles = new ArrayList<String>();
 
 	@Element(required = false)
-	int								randomSeed				= Integer.MIN_VALUE;
+	String regionalLaraModelFile = null;
+
+	@Element(required = false)
+	RegionalLaraModel regionalLaraModel = null;
+
+	@Element(required = false)
+	int randomSeed = Integer.MIN_VALUE;
 
 	@Element(required = false)
 	boolean skipInitialAllocation = false;
@@ -136,15 +164,11 @@ public class RegionLoader {
 	@Element(required = false)
 	String idUnmanaged = "UNMANAGED";
 
-	Logger							log						= Logger.getLogger(getClass());
-
-	ABMPersister					persister				= null;
-	ModelData						modelData				= null;
-	RunInfo							runInfo					= null;
-	Region							region					= null;
-	Map<String, PotentialAgent>		agentsByID				= new LinkedHashMap<String, PotentialAgent>();
-	Map<Integer, PotentialAgent>	agentsBySerialID		= new LinkedHashMap<Integer, PotentialAgent>();
-	Table<Integer, Integer, Cell>	cellTable				= TreeBasedTable.create();
+	ABMPersister persister = null;
+	ModelData modelData = null;
+	RunInfo runInfo = null;
+	Region region = null;
+	Table<Integer, Integer, Cell> cellTable = TreeBasedTable.create();
 
 	public RegionLoader() {
 		this(null, null);
@@ -156,20 +180,25 @@ public class RegionLoader {
 	}
 
 	public RegionLoader(String id, String competition, String allocation,
-			String demand, String potentialAgents, String cellInitialisers,
+ String demand, String btfiles,
+			String frfiles, String cellInitialisers,
 			String agentInitialisers) {
-		this(id, competition, allocation, demand, potentialAgents, cellInitialisers,
-				agentInitialisers, null);
+		this(id, competition, allocation, demand, btfiles, frfiles,
+ cellInitialisers, agentInitialisers, null, null,
+				null);
 	}
 
 	public RegionLoader(String id, String competition, String allocation,
-			String demand, String potentialAgents, String cellInitialisers,
-			String agentInitialisers, String institutionFile) {
+ String demand, String btfiles,
+			String frfiles, String cellInitialisers, String agentInitialisers, String socialNetworkFile,
+			String institutionFile,
+			String laraModelFile) {
 		this.id = id;
 		this.competitionFile = competition;
 		this.allocationFile = allocation;
 		this.demandFile = demand;
-		this.agentFileList.addAll(ABMPersister.splitTags(potentialAgents));
+		this.btFileList.addAll(ABMPersister.splitTags(btfiles));
+		this.frFileList.addAll(ABMPersister.splitTags(frfiles));
 		this.cellInitialiserFiles.addAll(ABMPersister
 				.splitTags(cellInitialisers));
 
@@ -177,11 +206,18 @@ public class RegionLoader {
 			this.agentInitialiserFiles.addAll(ABMPersister
 					.splitTags(agentInitialisers));
 		}
-		
+
+		if (socialNetworkFile != null && !socialNetworkFile.equals("")) {
+			this.socialNetworkFileList.add(socialNetworkFile);
+		}
+
 		if (institutionFile != null && !institutionFile.equals("")) {
 			for (String iFile : institutionFile.split("\\|")) {
 				this.institutionFiles.add(iFile.trim());
 			}
+		}
+		if (laraModelFile != null && !laraModelFile.equals("")) {
+			regionalLaraModelFile = laraModelFile;
 		}
 	}
 
@@ -201,13 +237,44 @@ public class RegionLoader {
 		region.setID(id);
 
 		readPmParameters();
-		loadAgentTypes();
+
+		initLaraModel();
+
+		loadFunctionalRoles();
+		loadBehaviouralTypes();
+
 		loadModels();
-		initialiseCells();
+		loadSocialNetworks();
+
 		passInfoToRegion();
+		initialiseCells();
+
 		loadInstitutions();
 		initialiseAgents();
 		loadUpdaters();
+	}
+
+	/**
+	 * @throws Exception
+	 * 
+	 */
+	private void initLaraModel() throws Exception {
+		if (regionalLaraModel == null && regionalLaraModelFile != null && !regionalLaraModelFile.equals("")) {
+			// <- LOGGING
+			log.info("LaraModel file: " + regionalLaraModelFile);
+			// LOGGING ->
+
+			regionalLaraModel =
+					persister.readXML(RegionalLaraModel.class, regionalLaraModelFile,
+							this.region.getPeristerContextExtra());
+		}
+
+		if (this.regionalLaraModel != null) {
+			this.regionalLaraModel.initialise(this.modelData, this.runInfo,
+					this.region);
+		} else {
+			log.warn("LARA model could not be initialised in RegionLoader (LARA model not initialised)!");
+		}
 	}
 
 	/**
@@ -216,69 +283,81 @@ public class RegionLoader {
 	protected void readPmParameters() {
 		if (this.pmParameterFile != null) {
 			PmParameterManager pm = PmParameterManager.getInstance(this.region);
-			pm.setParam(PmFrameworkPa.XML_PARAMETER_FILE,
+			pm.setParam(
+					PmFrameworkPa.XML_PARAMETER_FILE,
 					ABMPersister.getInstance().getFullPath(pmParameterFile,
 							this.region.getPeristerContextExtra()));
-			new PmXmlParameterReader(pm, PmFrameworkPa.XML_PARAMETER_FILE).initParameters();
+			new PmXmlParameterReader(pm, PmFrameworkPa.XML_PARAMETER_FILE)
+					.initParameters();
 		}
 	}
-	
-	public void loadAgentTypes() throws Exception {
-		for (String potentialAgentFile : agentFileList) {
+
+	/**
+	 * Initialises {@link SocialNetworkLoader}s.
+	 * 
+	 * @throws Exception
+	 */
+	protected void loadSocialNetworks() throws Exception {
+		for (String socialNetworkFile : socialNetworkFileList) {
+			socialNetworkLoaders.loaders.addAll(persister.readXML(
+					SocialNetworkLoaderList.class, socialNetworkFile,
+					this.region.getPeristerContextExtra()).loaders);
+		}
+
+		for (SocialNetworkLoader l : socialNetworkLoaders.loaders) {
+			log.info("Initialise social network loader: " + l.getName());
+			l.initialise(modelData, runInfo, region);
+		}
+	}
+
+	public void loadBehaviouralTypes() throws Exception {
+		for (String btFile : btFileList) {
 			// <- LOGGING
-			log.info("Agent file: " + potentialAgentFile);
+			log.info("Behavioural Types file: " + btFile);
 			// LOGGING ->
 
-			potentialAgents.agents.addAll(persister.readXML(
-					PotentialAgentList.class, potentialAgentFile,
-					this.region.getPeristerContextExtra()).agents);
+			// we need to apply the LARA specific persister here because a
+			// region-specific persister needs to
+			// refer to the region-specific LaraPreferecenRegistry!
+			bTypes.bTypes.addAll(LPersister.getPersister(region).readXML(
+					BTList.class, btFile).bTypes);
 		}
-		for (PotentialAgent p : potentialAgents.agents) {
-			agentsByID.put(p.getID(), p);
-			agentsBySerialID.put(p.getSerialID(), p);
-		}
-		for (PotentialAgent a : agentsByID.values()) {
-			log.info("Initialise agent type: " + a.getID());
-			a.initialise(modelData, runInfo, region);
-			storeAgentParameters(a);
+		for (BehaviouralType bt : bTypes.bTypes) {
+			log.info("Initialise behavioural type: " + bt.getLabel());
+			bt.initialise(modelData, runInfo, region);
 		}
 	}
 
-	protected void storeAgentParameters(PotentialAgent pa) {
+	public void loadFunctionalRoles() throws Exception {
+		for (String frFile : frFileList) {
+			// <- LOGGING
+			log.info("Functional Roles file: " + frFile);
+			// LOGGING ->
+
+			fRoles.fRoles.addAll(persister.readXML(FRList.class, frFile,
+					this.region.getPeristerContextExtra()).fRoles);
+		}
+		for (FunctionalRole fr : fRoles.fRoles) {
+			log.info("Initialise funcitonal role: " + fr.getLabel());
+			fr.initialise(modelData, runInfo, region);
+			storeAgentParameters(fr);
+		}
+	}
+
+	protected void storeAgentParameters(FunctionalRole pa) {
 		this.runInfo.getParamRepos().addParameter(region,
-				"AFT" + pa.getSerialID() + "_GiveIN", pa.getGivingIn());
-		this.runInfo.getParamRepos().addParameter(region,
-				"AFT" + pa.getSerialID() + "_GiveUP", pa.getGivingUp());
+				"AFT" + pa.getSerialID() + "_AssociatedGiveUP",
+				pa.getMeanGivingUpThreshold());
 
 		if (pa.getProduction() instanceof SimpleProductionModel) {
 			for (Service s : modelData.services) {
 				this.runInfo.getParamRepos().addParameter(
 						region,
 						"AFT" + pa.getSerialID() + "_" + s + "_Productivity",
-						((SimpleProductionModel) pa.getProduction()).getProductionWeights()
-								.getDouble(s));
+						((SimpleProductionModel) pa.getProduction())
+								.getProductionWeights().getDouble(s));
 			}
 		}
-	}
-
-	public void setAgent(Cell c, String agentType) {
-		if (agentType.matches("\\d+")) {
-			int idNum = Integer.parseInt(agentType);
-			if (agentsBySerialID.containsKey(idNum)) {
-				setAgent(c, agentsBySerialID.get(idNum));
-			}
-		} else if (agentsByID.containsKey(agentType)) {
-			setAgent(c, agentsByID.get(agentType));
-		} else if (agentType.matches("\\s*") | agentType.equals(idUnmanaged)) {
-			// Ignore blank agents and those with ID given in idUnmanaged
-		}
-		else {
-			log.error("Couldn't find agent by id: " + agentType);
-		}
-	}
-
-	public void setAgent(Cell c, PotentialAgent pa) {
-		region.setInitialOwnership(pa.createAgent(region, c), c);
 	}
 
 	public void loadModels() throws Exception {
@@ -323,24 +402,25 @@ public class RegionLoader {
 
 			// TODO document (SH)
 			if (NodeBuilder.read(
-					new FileInputStream(new File(persister
-							.getFullPath(institutionFile, this.region.getPeristerContextExtra()))))
-					.getName() == INSTITUTION_LIST_ELEMENT_NAME) {
-				institutions.addAll(persister.readXML(InstitutionsList.class,
-						institutionFile, this.region.getPeristerContextExtra()).institutions);
+					new FileInputStream(new File(persister.getFullPath(
+							institutionFile,
+							this.region.getPeristerContextExtra())))).getName() == INSTITUTION_LIST_ELEMENT_NAME) {
+				institutions
+						.addAll(persister.readXML(InstitutionsList.class,
+								institutionFile,
+								this.region.getPeristerContextExtra()).institutions);
 			} else {
-				institutions.add(persister.readXML(Institution.class,
-						institutionFile, this.region.getPeristerContextExtra()));
+				institutions
+						.add(persister.readXML(Institution.class,
+								institutionFile,
+								this.region.getPeristerContextExtra()));
 			}
 		}
 		if (institutions.size() > 0) {
-			Institutions in = new Institutions();
+			Institutions in = region.getInstitutions();
 			for (Institution i : institutions) {
 				in.addInstitution(i);
 			}
-			region.setInstitutions(in);
-			in.initialise(modelData, runInfo, region);
-			runInfo.getSchedule().register(in);
 		}
 	}
 
@@ -372,13 +452,24 @@ public class RegionLoader {
 		region.setDemandModel(demand);
 		region.setAllocationModel(allocation);
 		region.setCompetitivenessModel(competition);
-		region.addPotentialAgents(potentialAgents.agents);
+		region.addBehaviouralTypes(bTypes.bTypes);
+		region.addfunctionalRoles(fRoles.fRoles);
 		if (this.randomSeed != Integer.MIN_VALUE) {
-			PmParameterManager.getInstance(region).setParam(RandomPa.RANDOM_SEED, randomSeed);
+			PmParameterManager.getInstance(region).setParam(
+					RandomPa.RANDOM_SEED, randomSeed);
 		}
 		region.setSkipInitialAllocation(skipInitialAllocation);
 	}
 
+	/**
+	 * In case there is not yet a cell at the given coordinates, it instantiate
+	 * and initialise new cell. Add it to region at given coordinates.
+	 * Furthermore, sets initial ownership to {@link Agent#NOT_MANAGED}.
+	 * 
+	 * @param x
+	 * @param y
+	 * @return new cell object
+	 */
 	public Cell getCell(int x, int y) {
 		if (cellTable.contains(x, y)) {
 			return cellTable.get(x, y);

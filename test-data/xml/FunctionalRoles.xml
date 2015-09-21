@@ -1,0 +1,19 @@
+<functionalRoles>
+	<fRole class="org.volante.abm.agent.fr.DefaultFR" label="C_Cereal" serialID="0"
+	givingUpMean="0.2" givingInMean="0.1">
+		<production class="org.volante.abm.example.SimpleProductionModel"
+			csvFile="csv/HighIntensityArable.csv" />
+	</fRole>
+	
+	<fRole class="org.volante.abm.agent.fr.DefaultFR" label="NC_Cereal" serialID="1"
+	givingUpMean="0.2" givingInMean="0.1">
+		<production class="org.volante.abm.example.SimpleProductionModel"
+			csvFile="csv/LowIntensityArable.csv" />
+	</fRole>
+	
+	<fRole class="org.volante.abm.agent.fr.DefaultFR" label="C_Forester" serialID="2"
+	givingUpMean="0.2" givingInMean ="0.1">
+		<production class="org.volante.abm.example.SimpleProductionModel"
+			csvFile="csv/CommercialForestry.csv" />
+	</fRole>
+</functionalRoles>

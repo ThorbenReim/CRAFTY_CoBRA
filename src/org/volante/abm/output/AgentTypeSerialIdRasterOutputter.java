@@ -36,7 +36,7 @@ public class AgentTypeSerialIdRasterOutputter extends RasterOutputter {
 	 */
 	@Override
 	public double apply(Cell c) {
-		return c.getOwner().getType().getSerialID();
+		return c.getOwner().getFC().getFR().getSerialID();
 	}
 
 	/**

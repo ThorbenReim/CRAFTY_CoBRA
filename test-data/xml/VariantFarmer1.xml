@@ -1,5 +1,5 @@
-<agent class="org.volante.abm.example.VariantPotentialAgent" givingUp="-20" givingIn="10.5" 
-		id="VariantFarmer1" serialID="1">
+<fRole class="org.volante.abm.agent.fr.VariantProductionFR" givingUpMean="-20" givingInMean="10.5" 
+		label="VariantFarmer1" serialID="22">
 	<givingUpDistribution class = "com.moseph.modelutils.distribution.UniformDistribution" min = "10" max = "11" />
 	<production class="org.volante.abm.example.SimpleProductionModel" csvFile="csv/VariantFarmer1.csv" />
-</agent>
+</fRole>

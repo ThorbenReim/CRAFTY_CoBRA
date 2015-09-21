@@ -21,15 +21,14 @@ public class SimpleRegionalDemandTest extends BasicTestsUtils
 	@Before
 	public void setupFunction() throws Exception
 	{
-		initTestEnvironment();
 		dem.initialise( modelData, runInfo, r1 ) ;
 		r1.setDemandModel( dem );
 		
 		//Create a farmer, get it farming
-		farmer = (DefaultAgent) farming.createAgent( r1 );
+		farmer = new DefaultAgent(farmingR1, "TestFarmer", modelData, r1);
 
-		//Create a farmer, get it farming
-		forester = (DefaultAgent) forestry.createAgent( r1 );
+		// Create a forester, get it managing
+		forester = new DefaultAgent(forestryR1, "TestForester", modelData, r1);
 	}
 	
 	@Test

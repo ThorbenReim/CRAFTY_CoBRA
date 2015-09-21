@@ -23,7 +23,9 @@
 package org.volante.abm.serialization;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
@@ -35,11 +37,15 @@ import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.RegionSet;
 import org.volante.abm.data.Service;
+import org.volante.abm.institutions.global.GlobalInstitution;
+import org.volante.abm.institutions.global.GlobalInstitutionsList;
 import org.volante.abm.output.Outputs;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.schedule.Schedule;
 import org.volante.abm.visualisation.DefaultModelDisplays;
 import org.volante.abm.visualisation.ModelDisplays;
+
+import de.cesr.more.basic.MManager;
 
 /**
  * The scenario loader is responsible for setting up the following things:
@@ -95,16 +101,17 @@ public class ScenarioLoader {
 	String					runID			= "SET_INTERNAL";
 
 	/**
-	 * After the scenario configuration file has been parsed, this string is appended to the
-	 * persister's basedir. This is useful is a configuration adapts some parameters and points to
-	 * the super directory otherwise.
+	 * After the scenario configuration file has been parsed, this string is
+	 * appended to the persister's basedir. This is useful if a configuration
+	 * adapts some parameters and points to the super directory otherwise.
 	 */
 	@Attribute(name = "basedirAdaptation", required = false)
 	String					basedirAdaptation			= "";
 	
 	/**
-	 * This is appended to the adapted basedir to enable pointings to parameters in batch model CSV
-	 * parameter files e.g. in the same directory as the scenario file.
+	 * This is appended to the adapted basedir when looking up CSV parameter
+	 * files from parameters in batch mode (usually points to the same directory
+	 * as the scenario file).
 	 */
 	@Attribute(name = "csvParamBasedirCorrection", required = false)
 	String					csvParamBasedirCorrection	= "";
@@ -138,6 +145,9 @@ public class ScenarioLoader {
 	@ElementList(required = false, inline = true, entry = "regionFile")
 	List<String> regionFileList = new ArrayList<String>();
 
+	@ElementList(inline = true, required = false, entry = "globalInstitutionFile")
+	List<String> globalInstitutionFiles = new ArrayList<String>();
+
 	@Element(required = false)
 	WorldLoader worldLoader = null;
 
@@ -162,6 +172,8 @@ public class ScenarioLoader {
 	public void initialise(RunInfo info) throws Exception {
 		this.setSchedule(info.getSchedule());
 
+		MManager.init();
+		
 		this.scenario = BatchRunParser.parseString(scenario, info);
 
 		this.info = info;
@@ -237,6 +249,18 @@ public class ScenarioLoader {
 		log.info("Final extent: " + regions.getExtent());
 		regions.initialise(modelData, info, null);
 		outputs.initialise(modelData, info, regions);
+
+		// global institutions:
+		log.info("About to global institutions");
+		Set<GlobalInstitution> institutions = new HashSet<GlobalInstitution>();
+
+		for (String institutionsFile : globalInstitutionFiles) {
+			institutions.addAll(persister.readXML(GlobalInstitutionsList.class, institutionsFile, null)
+					.getGlobalInstitutions());
+		}
+		for (GlobalInstitution institution : institutions) {
+			institution.initialise(info, modelData, this);
+		}
 
 		// initialisation
 		if (displays == null) {

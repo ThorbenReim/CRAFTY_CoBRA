@@ -25,11 +25,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.DefaultFR;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Region;
 import org.volante.abm.example.BasicTestsUtils;
-import org.volante.abm.example.SimplePotentialAgent;
-import org.volante.abm.example.SimplePotentialAgentTest;
+import org.volante.abm.example.DefaultFrTest;
 import org.volante.abm.schedule.RunInfo;
 
 public class RegionLoaderTest extends BasicTestsUtils
@@ -63,10 +63,18 @@ public class RegionLoaderTest extends BasicTestsUtils
 		assertEqualMaps( loader.cellTable.get( 3, 3 ).getEffectiveCapitals(), capitals( 1, 0, 1, 0.5, 1, 0, 0.9 ) );
 		assertEqualMaps( loader.cellTable.get( 4, 2 ).getEffectiveCapitals(), capitals( 1, 0, 1, 0.5, 1, 0, 1 ) );
 		
-		PotentialAgent ag = loader.agentsByID.get( "LowIntensityArable" );
+		FunctionalRole ag = loader.getRegion().getFunctionalRoleMapByLabel()
+				.get("LowIntensityArable");
 		assertNotNull( ag );
-		SimplePotentialAgentTest.testLowIntensityArableAgent( (SimplePotentialAgent) loader.agentsByID.get("LowIntensityArable") );
-		SimplePotentialAgentTest.testHighIntensityArableAgent( (SimplePotentialAgent) loader.agentsByID.get("HighIntensityArable") );
-		SimplePotentialAgentTest.testCommercialForestryAgent( (SimplePotentialAgent) loader.agentsByID.get("CommercialForestry") );
+		DefaultFrTest.testLowIntensityArableAgent((DefaultFR) loader
+				.getRegion().getFunctionalRoleMapByLabel()
+				.get("LowIntensityArable"));
+		DefaultFrTest
+				.testHighIntensityArableAgent((DefaultFR) loader.getRegion()
+						.getFunctionalRoleMapByLabel()
+						.get("HighIntensityArable"));
+		DefaultFrTest.testCommercialForestryAgent((DefaultFR) loader
+				.getRegion().getFunctionalRoleMapByLabel()
+				.get("CommercialForestry"));
 	}
 }

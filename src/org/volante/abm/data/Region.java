@@ -23,8 +23,6 @@
 package org.volante.abm.data;
 
 
-import static org.volante.abm.agent.Agent.NOT_MANAGED;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,20 +35,35 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.SocialAgent;
+import org.volante.abm.agent.bt.BehaviouralType;
+import org.volante.abm.agent.fr.FunctionalRole;
+import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.institutions.Institutions;
+import org.volante.abm.institutions.innovation.InnovationRegistry;
 import org.volante.abm.models.AllocationModel;
 import org.volante.abm.models.CompetitivenessModel;
 import org.volante.abm.models.DemandModel;
+import org.volante.abm.param.GeoPa;
 import org.volante.abm.schedule.PreTickAction;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.ABMPersister;
 
+import repast.simphony.space.gis.DefaultGeography;
+import repast.simphony.space.gis.Geography;
+import repast.simphony.space.gis.GeographyParameters;
+
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
+import de.cesr.more.basic.edge.MoreEdge;
+import de.cesr.more.basic.network.MoreNetwork;
+import de.cesr.more.building.network.MoreNetworkService;
 import de.cesr.parma.core.PmParameterManager;
+import de.cesr.uranus.util.UIdentifyCallerException;
 
 
 public class Region implements Regions, PreTickAction {
@@ -58,65 +71,84 @@ public class Region implements Regions, PreTickAction {
 	/**
 	 * Logger
 	 */
-	static private Logger	logger			= Logger.getLogger(Region.class);
+	static private Logger	logger						= Logger.getLogger(Region.class);
+
+	static final String		GEOGRAPHY_NAME_EXTENSION	= "_Geography";
 
 	/*
 	 * Main data fields
+	 * 
+	 * LinkedHashMaps are required to guarantee a defined order of agent creation
+	 * which usually involves random number generation (cells > available > allocation)
 	 */
-	Set<Cell>				cells			= new HashSet<Cell>();
-	Set<Agent>				agents			= new HashSet<Agent>();
-	Set<Agent>				agentsToRemove	= new HashSet<Agent>();
-	AllocationModel			allocation		= null;
-	CompetitivenessModel	competition		= null;
-	DemandModel				demand			= null;
-	Set<Cell>				available		= new HashSet<Cell>();
-	Set<PotentialAgent>		potentialAgents	= new LinkedHashSet<PotentialAgent>();
-	ModelData				data			= null;
-	RunInfo					rinfo			= null;
-	Institutions			institutions	= null;
-	String					id				= "UnknownRegion";
+	Set<Cell>				cells						= new LinkedHashSet<Cell>();
+	Set<Agent> allocatedAgents = new LinkedHashSet<Agent>();
+	Set<Agent> ambulantAgents = new LinkedHashSet<Agent>();
+
+	AllocationModel			allocation;
+	CompetitivenessModel	competition;
+	DemandModel				demand;
+	Set<Cell>				available					= new LinkedHashSet<Cell>();
+
+	Map<String, BehaviouralType> behaviouralTypesByLabel = new LinkedHashMap<String, BehaviouralType>();
+	Map<Integer, BehaviouralType> behaviouralTypesBySerialId = new LinkedHashMap<Integer, BehaviouralType>();
+
+	Map<String, FunctionalRole> functionalRolesByLabel = new LinkedHashMap<String, FunctionalRole>();
+	Map<Integer, FunctionalRole> functionalRolesBySerialId = new LinkedHashMap<Integer, FunctionalRole>();
+
+	ModelData				data;
+	RunInfo					rinfo;
+	Institutions institutions = null;
+	String					id							= "UnknownRegion";
 	Map<String, String>			peristerContextExtra					= new HashMap<String, String>();
 
-	RegionalRandom			random			= null;
-	
 	boolean requiresEffectiveCapitalData = false;
 	boolean hasCompetitivenessAdjustingInstitution = false;
 
 	boolean skipInitialAllocation = false;
 	
-	Map<Object, RegionHelper>	helpers		= new LinkedHashMap<Object, RegionHelper>();
+	Map<Object, RegionHelper>	helpers					= new LinkedHashMap<Object, RegionHelper>();
+
+	InnovationRegistry		innovationRegistry			= new InnovationRegistry(this);
 
 	/**
-	 * @return the random
+	 * @return the innovationRegistry
 	 */
-	public RegionalRandom getRandom() {
-		return random;
+	public InnovationRegistry getInnovationRegistry() {
+		return innovationRegistry;
 	}
 
-	/**
-	 * @return the rinfo
-	 */
-	public RunInfo getRinfo() {
-		return rinfo;
-	}
+	Geography<Object>	geography;
+	GeometryFactory		geoFactory;
+
+	RegionalRandom			random			= null;
 
 	/*
 	 * Unmodifiable versions to pass out as necessary
 	 */
-	Set<Agent>						uAgents				= Collections.unmodifiableSet(agents);
-	Set<PotentialAgent>				uPotentialAgents	= Collections
-																.unmodifiableSet(potentialAgents);
-	Set<Cell>						uCells				= Collections.unmodifiableSet(cells);
-	Set<Cell>						uAvailable			= Collections.unmodifiableSet(available);
-	Set<Region>						uRegions			= Collections
-																.unmodifiableSet(
-																new HashSet<Region>(
-																		Arrays.asList(new Region[] { this })));
-	Table<Integer, Integer, Cell>	cellTable			= null;
+	Set<Agent> uAgents = Collections.unmodifiableSet(allocatedAgents);
 
-	Extent							extent				= new Extent();
+	Map<String, BehaviouralType> uBehaviouralTypesByLabel = Collections
+			.unmodifiableMap(behaviouralTypesByLabel);
 
-	Logger							log					= Logger.getLogger(getClass());
+	Map<Integer, BehaviouralType> uBehaviouralTypesBySerialId = Collections
+			.unmodifiableMap(behaviouralTypesBySerialId);
+
+	Map<String, FunctionalRole> ufunctionalRolesByLabel = Collections
+			.unmodifiableMap(functionalRolesByLabel);
+
+	Map<Integer, FunctionalRole> uFunctionalRolesBySerialId = Collections
+			.unmodifiableMap(functionalRolesBySerialId);
+
+	Set<Cell> uCells = Collections.unmodifiableSet(cells);
+	Set<Cell> uAvailable = Collections.unmodifiableSet(available);
+	Set<Region> uRegions = Collections.unmodifiableSet(new HashSet<Region>(
+			Arrays.asList(new Region[] { this })));
+	Table<Integer, Integer, Cell> cellTable = null;
+
+	Extent extent = new Extent();
+
+	Logger log = Logger.getLogger(getClass());
 
 	/*
 	 * Constructors, with initial sets of cells for convenience
@@ -129,10 +161,24 @@ public class Region implements Regions, PreTickAction {
 		this.peristerContextExtra.put(ABMPersister.REGION_CONTEXT_KEY, this.id);
 	}
 
-	public Region(AllocationModel allocation, CompetitivenessModel competition, DemandModel demand,
-			Set<PotentialAgent> potential, Cell... initialCells) {
+	/**
+	 * Initialises {@link FunctionalRole}s.
+	 * 
+	 * @param allocation
+	 * @param competition
+	 * @param demand
+	 * @param bts
+	 * @param frs
+	 * @param initialCells
+	 */
+	public Region(AllocationModel allocation, CompetitivenessModel competition,
+			DemandModel demand, Set<BehaviouralType> bts,
+			Set<FunctionalRole> frs, Cell... initialCells) {
 		this(initialCells);
-		potentialAgents.addAll(potential);
+
+		this.addBehaviouralTypes(bts);
+		this.addfunctionalRoles(frs);
+
 		this.allocation = allocation;
 		this.competition = competition;
 		this.demand = demand;
@@ -148,6 +194,122 @@ public class Region implements Regions, PreTickAction {
 		available.addAll(initialCells);
 		for (Cell c : initialCells) {
 			updateExtent(c);
+		}
+	}
+
+	/**
+	 * @return the random
+	 */
+	public RegionalRandom getRandom() {
+		return random;
+	}
+
+	/**
+	 * @return the geoFactory
+	 */
+	public GeometryFactory getGeoFactory() {
+		if (this.geoFactory == null) {
+			// geometry factory with floating precision model (default)
+			this.geoFactory =
+						new GeometryFactory(new PrecisionModel(), 32632);
+		}
+		return geoFactory;
+	}
+
+	/**
+	 * @return the geography
+	 */
+	public Geography<Object> getGeography() {
+		if (this.geography == null) {
+			// Causes the CRS factory to apply (longitude, latitude) order of
+			// axis:
+			// TODO
+			// System.setProperty(GeoTools.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
+			// "true");
+			GeographyParameters<Object> geoParams = new GeographyParameters<Object>();
+			geoParams.setCrs((String) PmParameterManager
+					.getParameter(GeoPa.CRS));
+
+			String crsCode = geoParams.getCrs();
+			this.geography = new DefaultGeography<Object>(this.id
+					+ GEOGRAPHY_NAME_EXTENSION,
+					crsCode);
+
+			this.geography.setAdder(geoParams.getAdder());
+
+			// <- LOGGING
+			if (logger.isDebugEnabled()) {
+				logger.debug("Geography CRS: " + this.geography.getCRS());
+			}
+			// LOGGING ->
+		}
+		return this.geography;
+	}
+
+	/**
+	 * @return the rinfo
+	 */
+	public RunInfo getRinfo() {
+		return rinfo;
+	}
+
+	MoreNetworkService<SocialAgent, ? extends MoreEdge<SocialAgent>> networkService;
+
+	/**
+	 * @return the networkService
+	 */
+	public MoreNetworkService<SocialAgent, ? extends MoreEdge<SocialAgent>> getNetworkService() {
+		return networkService;
+	}
+
+	/**
+	 * Sets the network service.
+	 * 
+	 * @param networkService
+	 *        the networkService to set
+	 */
+	public void setNetworkService(
+			MoreNetworkService<SocialAgent, ? extends MoreEdge<SocialAgent>> networkService) {
+		this.networkService = networkService;
+	}
+
+	MoreNetwork<SocialAgent, MoreEdge<SocialAgent>> network;
+
+	/**
+	 * @return the network
+	 */
+	public MoreNetwork<SocialAgent, MoreEdge<SocialAgent>> getNetwork() {
+		return network;
+	}
+
+	/**
+	 * @param network
+	 *        the network to set
+	 */
+	public void setNetwork(
+			MoreNetwork<SocialAgent, MoreEdge<SocialAgent>> network) {
+		this.network = network;
+	}
+
+	/**
+	 * 
+	 */
+	public void perceiveSocialNetwork() {
+		if (this.getNetwork() != null) {
+
+			logger.info("Perceive social network.");
+
+			for (Agent a : this.getAgents()) {
+				if (a instanceof SocialAgent) {
+					((SocialAgent) a).perceiveSocialNetwork();
+				}
+			}
+
+			for (RegionHelper helper : this.helpers.values()) {
+				if (helper instanceof SocialRegionHelper) {
+					((SocialRegionHelper) helper).socialNetworkPerceived();
+				}
+			}
 		}
 	}
 
@@ -170,6 +332,19 @@ public class Region implements Regions, PreTickAction {
 		for (Cell c : cells) {
 			c.initialise(data, info, this);
 		}
+
+		try {
+			for (BehaviouralType type : behaviouralTypesByLabel.values()) {
+				type.initialise(data, rinfo, this);
+			}
+
+			for (FunctionalRole role : functionalRolesByLabel.values()) {
+				role.initialise(data, rinfo, this);
+			}
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+
 		allocation.initialise(data, info, this);
 		competition.initialise(data, info, this);
 		demand.initialise(data, info, this);
@@ -204,8 +379,67 @@ public class Region implements Regions, PreTickAction {
 		this.competition = d;
 	}
 
-	public void addPotentialAgents(Collection<PotentialAgent> agents) {
-		this.potentialAgents.addAll(agents);
+	/**
+	 * 
+	 */
+	public void clearBehaviouralTypes() {
+		behaviouralTypesByLabel.clear();
+		behaviouralTypesBySerialId.clear();
+	}
+
+	/**
+	 * Behavioural types need to be initialised when added after the region has
+	 * been initialised!
+	 * 
+	 * @param types
+	 */
+	public void addBehaviouralTypes(Collection<BehaviouralType> types) {
+		for (BehaviouralType type : types) {
+
+			if (behaviouralTypesByLabel.containsKey(type.getLabel())) {
+				logger.warn("New Behavioural Type overwrites existing one with label "
+						+ type.getLabel());
+			}
+			behaviouralTypesByLabel.put(type.getLabel(), type);
+
+			if (behaviouralTypesBySerialId.containsKey(type.getSerialID())) {
+				logger.warn("New Behavioural Type overwrites existing one with serial ID "
+						+ type.getSerialID());
+			}
+			behaviouralTypesBySerialId.put(type.getSerialID(), type);
+		}
+	}
+
+	/**
+	 * 
+	 */
+	public void clearFunctionalRoles() {
+		functionalRolesByLabel.clear();
+		functionalRolesBySerialId.clear();
+	}
+
+	/**
+	 * Functions roles need to be initialised when added after the region has
+	 * been initialised!
+	 * 
+	 * @param roles
+	 */
+	public void addfunctionalRoles(Collection<FunctionalRole> roles) {
+		for (FunctionalRole role : roles) {
+			if (functionalRolesByLabel.containsKey(role.getLabel())) {
+				logger.warn("New Functional Role overwrites existing one with label "
+						+ role.getLabel());
+			}
+			functionalRolesByLabel.put(role.getLabel(), role);
+
+			UIdentifyCallerException.setOmitLineNumbers(false);
+			if (functionalRolesBySerialId.containsKey(role.getSerialID())) {
+				logger.warn("New Functional Role overwrites existing one with serial ID "
+								+ role.getSerialID(),
+						new UIdentifyCallerException());
+			}
+			functionalRolesBySerialId.put(role.getSerialID(), role);
+		}
 	}
 
 	/*
@@ -232,36 +466,57 @@ public class Region implements Regions, PreTickAction {
 	/*
 	 * Agent methods
 	 */
+
+	/**
+	 * Note that the returned collections is not modification save. In the risk
+	 * of modifications the collection needs to be cached.
+	 * 
+	 * @return collection of managing agents.
+	 */
 	public Collection<Agent> getAgents() {
 		return uAgents;
 	}
 
-	public Collection<PotentialAgent> getPotentialAgents() {
-		return uPotentialAgents;
+	public Collection<FunctionalRole> getFunctionalRoles() {
+		return ufunctionalRolesByLabel.values();
 	}
 
-	public void removeAgent(Agent a) {
-		for (Cell c : a.getCells()) {
-			c.setOwner(NOT_MANAGED);
+	/**
+	 * Also tries to remove agent from list of allocated agents.
+	 * 
+	 * @param agent
+	 */
+	public void setAmbulant(Agent agent) {
+		allocatedAgents.remove(agent);
+
+		// check whether too remove agent or make ambulant
+		ambulantAgents.add(agent);
+	}
+
+	/**
+	 * Resets ownership of cells the agent still owns. Removes the given agent
+	 * from both allocated and ambulant agent list.
+	 * 
+	 * @param agent
+	 */
+	public void removeAgent(Agent agent) {
+		for (Cell c : agent.getCells()) {
+			c.setOwner(Agent.NOT_MANAGED);
 			c.resetSupply();
 			available.add(c);
 			demand.agentChange(c);
 		}
-		agentsToRemove.add(a);
-	}
 
-	public void cleanupAgents() {
-		for (Agent a : agentsToRemove) {
-			log.trace(" removing agent " + a.getID() + " at " + a.getCells());
+		allocatedAgents.remove(agent);
+		ambulantAgents.remove(agent);
 
-			agents.remove(a);
-			for (RegionHelper helper : this.helpers.values()) {
-				if (helper instanceof PopulationRegionHelper) {
-					((PopulationRegionHelper) helper).agentRemoved(a);
-				}
+		agent.die();
+
+		for (RegionHelper helper : this.helpers.values()) {
+			if (helper instanceof PopulationRegionHelper) {
+				((PopulationRegionHelper) helper).agentRemoved(agent);
 			}
 		}
-		agentsToRemove.clear();
 	}
 
 	/*
@@ -272,9 +527,24 @@ public class Region implements Regions, PreTickAction {
 		return uRegions;
 	}
 
+	/**
+	 * Returns a new {@link LinkedHashSet}.
+	 * 
+	 * @see org.volante.abm.data.Regions#getAllAllocatedAgents()
+	 */
 	@Override
-	public Iterable<Agent> getAllAgents() {
-		return uAgents;
+	public Collection<Agent> getAllAllocatedAgents() {
+		return new LinkedHashSet<Agent>(this.allocatedAgents);
+	}
+
+	/**
+	 * Returns a new {@link LinkedHashSet}.
+	 * 
+	 * @see org.volante.abm.data.Regions#getAllAmbulantAgents()
+	 */
+	@Override
+	public Collection<Agent> getAllAmbulantAgents() {
+		return new LinkedHashSet<Agent>(this.ambulantAgents);
 	}
 
 	@Override
@@ -283,8 +553,23 @@ public class Region implements Regions, PreTickAction {
 	}
 
 	@Override
-	public Iterable<PotentialAgent> getAllPotentialAgents() {
-		return uPotentialAgents;
+	public Map<String, BehaviouralType> getBehaviouralTypeMapByLabel() {
+		return uBehaviouralTypesByLabel;
+	}
+
+	@Override
+	public Map<Integer, BehaviouralType> getBehaviouralTypeMapBySerialId() {
+		return uBehaviouralTypesBySerialId;
+	}
+
+	@Override
+	public Map<String, FunctionalRole> getFunctionalRoleMapByLabel() {
+		return ufunctionalRolesByLabel;
+	}
+
+	@Override
+	public Map<Integer, FunctionalRole> getFunctionalRoleMapBySerialId() {
+		return uFunctionalRolesBySerialId;
 	}
 
 	/*
@@ -298,9 +583,11 @@ public class Region implements Regions, PreTickAction {
 	 * @param c
 	 * @return competitiveness for the given potential agent on the given cell
 	 */
-	public double getCompetitiveness(PotentialAgent agent, Cell c) {
+	public double getCompetitiveness(FunctionalRole agent, Cell c) {
 		if (hasCompetitivenessAdjustingInstitution()) {
-			UnmodifiableNumberMap<Service> provision = agent.getPotentialSupply(c);
+			UnmodifiableNumberMap<Service> provision = agent.getExpectedSupply(c);
+			// same as getUnadjustedCompetitiveness() but this way omits
+			// calculating provision twice:
 			double comp = competition.getCompetitiveness(demand, provision, c);
 			// same as getUnadjustedCompetitiveness() but this way omits
 			// calculating provision twice:
@@ -309,6 +596,7 @@ public class Region implements Regions, PreTickAction {
 			return getUnadjustedCompetitiveness(agent, c);
 		}
 	}
+
 
 	/**
 	 * Just used for displays and checking to see the effect without
@@ -319,8 +607,8 @@ public class Region implements Regions, PreTickAction {
 	 * @return unadjusted competitiveness for the given potential agent on the
 	 *         given cell
 	 */
-	public double getUnadjustedCompetitiveness(PotentialAgent agent, Cell c) {
-		return competition.getCompetitiveness(demand, agent.getPotentialSupply(c), c);
+	public double getUnadjustedCompetitiveness(FunctionalRole agent, Cell c) {
+		return competition.getCompetitiveness(demand, agent.getExpectedSupply(c), c);
 	}
 
 	/**
@@ -333,7 +621,8 @@ public class Region implements Regions, PreTickAction {
 	public double getCompetitiveness(Cell c) {
 		double comp = getUnadjustedCompetitiveness(c);
 		if (hasCompetitivenessAdjustingInstitution()) {
-			PotentialAgent a = c.getOwner() == null ? null : c.getOwner().getType();
+			FunctionalRole a = c.getOwner() == null ? null : c.getOwner()
+					.getFC().getFR();
 			return institutions.adjustCompetitiveness(a, c, c.getSupply(), comp);
 		} else {
 			return comp;
@@ -372,36 +661,46 @@ public class Region implements Regions, PreTickAction {
 		a.setRegion(this);
 		for (Cell c : cells) {
 			Agent cur = c.getOwner();
-			log.trace(" removing agent " + cur + " from cell " + c);
-			cur.removeCell(c);
-			if (cur.toRemove()) {
-				log.trace("also removing agent " + cur);
-				agents.remove(cur);
-
-				for (RegionHelper helper : this.helpers.values()) {
-					if (helper instanceof PopulationRegionHelper) {
-						((PopulationRegionHelper) helper).agentRemoved(cur);
-					}
+			if (cur != null) {
+				log.trace(" removing agent " + cur + " from cell " + c);
+				cur.removeCell(c);
+				if (cur.notAllocated()) {
+					log.trace("also removing entire agent " + cur);
+					setAmbulant(cur);
 				}
-
-				cur.die();
 			}
-			log.trace(" adding agent " + a + " to cell");
+
 			a.addCell(c);
 			c.setOwner(a);
 			a.updateSupply();
 			a.updateCompetitiveness();
+
+			if (log.isTraceEnabled()) {
+				log.trace(" adding agent " + a + " to cell " + c
+						+ " (competitiveness: "
+						+ a.getProperty(AgentPropertyIds.COMPETITIVENESS) + ")");
+			}
+
 			available.remove(c);
 			if (demand != null) {
 				demand.agentChange(c); // could be null in initialisation
 			}
-			if (log.isDebugEnabled() && a.getCompetitiveness() < a.getGivingUp()) {
-				log.debug(" Cell below new " + a.getID() + "'s GivingUp threshold: comp = "
-						+ a.getCompetitiveness() + " GU = " + a.getGivingUp());
+			if (log.isDebugEnabled()
+					&& a.getProperty(AgentPropertyIds.COMPETITIVENESS) < a
+							.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)) {
+				log.debug(" Cell below new " + a.getID()
+						+ "'s GivingUp threshold: comp = "
+						+ a.getProperty(AgentPropertyIds.COMPETITIVENESS)
+						+ " GU = "
+						+ a.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD));
 			}
-			log.trace(" owner is now " + a);
+			if (log.isTraceEnabled()) {
+				log.trace(" owner is now " + a);
+			}
+
+			allocatedAgents.add(a);
+			ambulantAgents.remove(a);
 		}
-		agents.add(a);
 	}
 
 	/**
@@ -415,12 +714,13 @@ public class Region implements Regions, PreTickAction {
 		for (Cell c : cells) {
 			a.addCell(c);
 			c.setOwner(a);
-			if (a != Agent.NOT_MANAGED) {
+			if (a != null) {
 				available.remove(c);
 			}
 		}
-		if (a != Agent.NOT_MANAGED) {
-			agents.add(a);
+		if (a != null && a != Agent.NOT_MANAGED) {
+			allocatedAgents.add(a);
+			ambulantAgents.remove(a);
 		}
 	}
 
@@ -429,7 +729,7 @@ public class Region implements Regions, PreTickAction {
 	 */
 	public void makeUnmanagedCellsAvailable() {
 		for (Cell c : cells) {
-			if (c.getOwner() == null || c.getOwner() == Agent.NOT_MANAGED) {
+			if (c.getOwner() == Agent.NOT_MANAGED || c.getOwner() == null) {
 				available.add(c);
 			}
 		}
@@ -463,7 +763,7 @@ public class Region implements Regions, PreTickAction {
 		for (Cell c : cells) {
 			// <- LOGGING
 			if (log.isDebugEnabled()) {
-				log.error("Update extent by cell " + c);
+				log.debug("Update extent by cell " + c);
 			}
 			// LOGGING ->
 
@@ -502,8 +802,25 @@ public class Region implements Regions, PreTickAction {
 		return cells.size();
 	}
 
+	public Set<Cell> getAdjacentCells(Cell c) {
+		if (cellTable == null) {
+			this.cellsCreated();
+		}
+		Set<Cell> adjacent = new HashSet<Cell>();
+
+		for (int x = c.getX() - 1; x <= c.getX() + 1; x++) {
+			for (int y = c.getY() - 1; y <= c.getY() + 1; y++) {
+				if ((x != c.getX() || y != c.getY())
+						&& this.getCell(x, y) != null) {
+					adjacent.add(this.getCell(x, y));
+				}
+			}
+		}
+		return adjacent;
+	}
+
 	public boolean hasInstitutions() {
-		return institutions != null;
+		return institutions == null ? false : institutions.hasInstitutions();
 	}
 
 	public boolean doesRequireEffectiveCapitalData() {
@@ -523,11 +840,17 @@ public class Region implements Regions, PreTickAction {
 	}
 
 	public Institutions getInstitutions() {
+		if (this.institutions == null) {
+			this.institutions = new Institutions();
+			try {
+				this.institutions.initialise(data, rinfo, this);
+				rinfo.getSchedule().register(institutions);
+			} catch (Exception exception) {
+				logger.error("Error while initialising Institutions");
+				exception.printStackTrace();
+			}
+		}
 		return institutions;
-	}
-
-	public void setInstitutions(Institutions inst) {
-		this.institutions = inst;
 	}
 
 	public ModelData getModelData() {

@@ -33,7 +33,7 @@ import java.util.Set;
 import org.apache.commons.collections15.Bag;
 import org.apache.commons.collections15.bag.HashBag;
 import org.simpleframework.xml.Attribute;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Regions;
@@ -69,7 +69,7 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 
 	int											maxAftID			= -1;
 
-	Map<Region, Map<PotentialAgent, Bag<Integer>>>	numSearchedCells	= new HashMap<Region, Map<PotentialAgent, Bag<Integer>>>();
+	Map<Region, Map<FunctionalRole, Bag<Integer>>> numSearchedCells = new HashMap<>();
 
 	@Override
 	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception {
@@ -100,17 +100,17 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 	}
 
 	public void initGivingInStatistic(Region region) {
-		for (PotentialAgent pa : region.getPotentialAgents()) {
-			addColumn(new SearchedCellsAftColumn(pa.getID(), pa, region));
+		for (FunctionalRole pa : region.getFunctionalRoles()) {
+			addColumn(new SearchedCellsAftColumn(pa.getLabel(), pa, region));
 		}
 	}
 
 	@Override
 	public Iterable<Integer> getData(Regions r) {
-		Set<Integer> regionIntegers = new HashSet<Integer>();
+		Set<Integer> regionIntegers = new HashSet<>();
 		for (Region region : r.getAllRegions()) {
 			if (numSearchedCells.containsKey(region)) {
-				for (PotentialAgent pagent : region.getPotentialAgents()) {
+				for (FunctionalRole pagent : region.getFunctionalRoles()) {
 					if (numSearchedCells.get(region).containsKey(pagent)) {
 						for (Integer integer : numSearchedCells.get(region).get(pagent)) {
 							regionIntegers.add(integer);
@@ -138,7 +138,7 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 		endFile(regions);
 		writers.put(regions, new CsvWriter(filename));
 
-		Set<Region> regionsSet = new HashSet<Region>();
+		Set<Region> regionsSet = new HashSet<>();
 		for (Region reg : regions.getAllRegions()) {
 			regionsSet.add(reg);
 		}
@@ -169,7 +169,7 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 	 */
 	public void writeData(Iterable<Integer> data, Regions r) throws IOException {
 		String[] output = new String[columns.size()];
-		Set<Region> regions = new HashSet<Region>();
+		Set<Region> regions = new HashSet<>();
 		for (Region reg : r.getAllRegions()) {
 			regions.add(reg);
 		}
@@ -206,7 +206,7 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 		// reset particular region:
 		for (Region reg : r.getAllRegions()) {
 			if (numSearchedCells.containsKey(reg)) {
-				for (PotentialAgent pa : numSearchedCells.get(reg).keySet()) {
+				for (FunctionalRole pa : numSearchedCells.get(reg).keySet()) {
 					numSearchedCells.get(reg).get(pa).clear();
 				}
 			}
@@ -214,9 +214,9 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 	}
 
 	@Override
-	public void setNumberSearchedCells(Region region, PotentialAgent pa, int number) {
+	public void setNumberSearchedCells(Region region, FunctionalRole pa, int number) {
 		if (!this.numSearchedCells.containsKey(region)) {
-			this.numSearchedCells.put(region, new HashMap<PotentialAgent, Bag<Integer>>());
+			this.numSearchedCells.put(region, new HashMap<FunctionalRole, Bag<Integer>>());
 		}
 		if (!this.numSearchedCells.get(region).containsKey(pa)) {
 			this.numSearchedCells.get(region).put(pa, new HashBag<Integer>());
@@ -243,12 +243,12 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 
 	public class SearchedCellsAftColumn implements TableColumn<Integer> {
 		String			aftName	= "";
-		PotentialAgent	pa;
+		FunctionalRole fr;
 		Region			region;
 
-		public SearchedCellsAftColumn(String aftName, PotentialAgent pa, Region region) {
+		public SearchedCellsAftColumn(String aftName, FunctionalRole fr, Region region) {
 			this.aftName = aftName;
-			this.pa = pa;
+			this.fr = fr;
 			this.region = region;
 		}
 
@@ -266,9 +266,9 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 		public String getValue(Integer integer, ModelData data, RunInfo info,
 				Regions rs) {
 			if (numSearchedCells.containsKey(this.region)
-					&& numSearchedCells.get(this.region).containsKey(pa)) {
+ && numSearchedCells.get(this.region).containsKey(fr)) {
 				return ""
-						+ numSearchedCells.get(this.region).get(pa)
+ + numSearchedCells.get(this.region).get(fr)
 								.getCount(integer);
 			} else {
 				return "0";

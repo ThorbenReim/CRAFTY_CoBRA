@@ -1,0 +1,10 @@
+<LBoFactoryList>
+	<bofactory classname="org.volante.abm.decision.FrCheckThresholdDecisionTriggerTest$FRCheckThresholdCompIndicatorPa">
+		 <key>FRCheckThresholdPA</key>
+		 <preferenceUtilities>
+			 <utility pref="Competitiveness">1.0</utility>
+			 <utility pref="SocialApproval">1.0</utility>
+		 </preferenceUtilities>
+		 <agentclassname>org.volante.abm.agent.bt.LaraBehaviouralComponent</agentclassname>
+	</bofactory>
+</LBoFactoryList>

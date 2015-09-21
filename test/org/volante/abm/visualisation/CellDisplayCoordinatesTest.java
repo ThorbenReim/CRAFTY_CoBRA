@@ -47,7 +47,10 @@ public class CellDisplayCoordinatesTest extends BasicTestsUtils {
 				return 0;
 			}
 		};
+
+		// reinitialise to account for new cells:
 		r1.initialise(modelData, runInfo, null);
+
 		display.initialise(modelData, runInfo, r1);
 		display.update();
 		checkCellAtLocation(0, 0, -5, -3);
@@ -71,7 +74,6 @@ public class CellDisplayCoordinatesTest extends BasicTestsUtils {
 				r1.addCell(c);
 			}
 		}
-
 	}
 
 	public void checkCellAtLocation(int x, int y, int cx, int cy) {

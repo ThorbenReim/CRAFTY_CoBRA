@@ -27,10 +27,10 @@ import javax.swing.JFileChooser;
 import org.apache.log4j.Logger;
 import org.rosuda.JRI.RMainLoopCallbacks;
 import org.rosuda.JRI.Rengine;
+import org.volante.abm.schedule.FinishAction;
 import org.volante.abm.schedule.RunInfo;
-import org.volante.abm.schedule.ScheduleStatusEvent;
-import org.volante.abm.schedule.ScheduleStatusEvent.ScheduleStage;
-import org.volante.abm.schedule.ScheduleStatusListener;
+
+import de.cesr.more.measures.util.MRService;
 
 
 /**
@@ -40,7 +40,7 @@ import org.volante.abm.schedule.ScheduleStatusListener;
  * 
  * @author Sascha Holzhauer
  */
-public class RService implements RMainLoopCallbacks, ScheduleStatusListener {
+public class RService implements RMainLoopCallbacks {
 
 	/**
 	 * Logger
@@ -56,7 +56,12 @@ public class RService implements RMainLoopCallbacks, ScheduleStatusListener {
 	 */
 	private RService(RunInfo rInfo) {
 		// Stop R engine:
-		rInfo.getSchedule().addStatusListener(this);
+		rInfo.getSchedule().register(new FinishAction() {
+			@Override
+			public void afterLastTick() {
+				RService.endEngine();
+			}
+		});
 	}
 
 	/**
@@ -178,13 +183,6 @@ public class RService implements RMainLoopCallbacks, ScheduleStatusListener {
 			logger.info(message);
 		} else if (level == 1) {
 			logger.warn(message);
-		}
-	}
-
-	@Override
-	public void scheduleStatus(ScheduleStatusEvent e) {
-		if (e.getStage().equals(ScheduleStage.FINISHING)) {
-			RService.endEngine();
 		}
 	}
 }

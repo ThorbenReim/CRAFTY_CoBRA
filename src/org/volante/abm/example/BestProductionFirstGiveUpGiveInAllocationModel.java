@@ -34,8 +34,8 @@ import javafx.collections.transformation.SortedList;
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Element;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.PotentialAgent;
-import org.volante.abm.agent.PotentialAgentProductionObserver;
+import org.volante.abm.agent.FunctionalRoleProductionObserver;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.CellCapitalObserver;
 import org.volante.abm.data.ModelData;
@@ -56,7 +56,7 @@ import org.volante.abm.schedule.RunInfo;
  * 
  */
 public class BestProductionFirstGiveUpGiveInAllocationModel extends GiveUpGiveInAllocationModel
-		implements CellCapitalObserver, PotentialAgentProductionObserver {
+		implements CellCapitalObserver, FunctionalRoleProductionObserver {
 
 	/**
 	 * Logger
@@ -65,7 +65,7 @@ public class BestProductionFirstGiveUpGiveInAllocationModel extends GiveUpGiveIn
 
 	protected Region						region;
 
-	Map<PotentialAgent, SortedList<Cell>>	cellProductions	= new HashMap<PotentialAgent, SortedList<Cell>>();
+	Map<FunctionalRole, SortedList<Cell>> cellProductions = new HashMap<>();
 
 	/**
 	 * Applied to sampled indices from the list of sorted cells. A curve object can be assigned to
@@ -84,16 +84,16 @@ public class BestProductionFirstGiveUpGiveInAllocationModel extends GiveUpGiveIn
 		for (Cell c : region.getAllCells()) {
 			c.registerCellCapitalObserver(this);
 		}
-		for (PotentialAgent pa : region.getAllPotentialAgents()) {
-			pa.registerPotentialAgentProductionObserver(this);
+		for (FunctionalRole fr : region.getFunctionalRoles()) {
+			fr.registerFunctionalRoleProductionObserver(this);
 		}
 	};
 
 	protected void initCellProductions() {
-		for (final PotentialAgent pa : this.region.getPotentialAgents()) {
+		for (final FunctionalRole fr : this.region.getFunctionalRoles()) {
 			final Service mainService;
-			if (pa.getProduction() instanceof ProductionWeightReporter) {
-				mainService = ((ProductionWeightReporter) pa.getProduction())
+			if (fr.getProduction() instanceof ProductionWeightReporter) {
+				mainService = ((ProductionWeightReporter) fr.getProduction())
 						.getProductionWeights().getMax();
 			} else {
 				mainService = null;
@@ -101,20 +101,19 @@ public class BestProductionFirstGiveUpGiveInAllocationModel extends GiveUpGiveIn
 
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {
-				logger.debug("Main service for " + pa + ": " + mainService);
+				logger.debug("Main service for " + fr + ": " + mainService);
 			}
 			// LOGGING ->
 
-			cellProductions.put(pa, new SortedList<Cell>(FXCollections.<Cell> observableArrayList(
-					new HashSet<Cell>(this.region.getCells())),
+			cellProductions.put(fr,
+					new SortedList<>(FXCollections.<Cell> observableArrayList(new HashSet<>(this.region.getCells())),
 					new Comparator<Cell>() {
 						@Override
 						public int compare(Cell cell1, Cell cell2) {
 							return (-1) * Double.compare(
-									pa.getPotentialSupply(cell1).getDouble(mainService),
-									pa.getPotentialSupply(cell2).getDouble(mainService));
+fr.getExpectedSupply(cell1).getDouble(mainService), fr
+													.getExpectedSupply(cell2).getDouble(mainService));
 						}
-
 					}));
 		}
 	}
@@ -122,11 +121,11 @@ public class BestProductionFirstGiveUpGiveInAllocationModel extends GiveUpGiveIn
 	/**
 	 * Tries to create one of the given agents if it can take over a cell
 	 * 
-	 * @param a
+	 * @param fr
 	 * @param r
 	 */
-	public void tryToComeIn(final PotentialAgent a, final Region r) {
-		if (a == null) {
+	public void tryToComeIn(final FunctionalRole fr, final Region r) {
+		if (fr == null) {
 			return; // In the rare case that all have 0 competitiveness, a can be null
 		}
 		
@@ -134,7 +133,7 @@ public class BestProductionFirstGiveUpGiveInAllocationModel extends GiveUpGiveIn
 				r.getNumCells(),
 				numSearchedCells, r);
 
-		logger.debug("Try " + a.getID() + " to take over on mostly " + numSearchedCells
+		logger.debug("Try " + fr.getLabel() + " to take over on mostly " + numSearchedCells
 				+ " cells (region "
 				+ r.getID() + " has "
 				+ r.getNumCells() + " cells).");
@@ -144,20 +143,22 @@ public class BestProductionFirstGiveUpGiveInAllocationModel extends GiveUpGiveIn
 		
 		boolean takenover = false;
 		while (!takenover && cellsampler.hasMoreToSample()) {
-			c = cellProductions.get(a).get(cellsampler.sample());
-			competitiveness = r.getCompetitiveness(a, c);
+			c = cellProductions.get(fr).get(cellsampler.sample());
+			competitiveness = r.getCompetitiveness(fr, c);
 
 			if (logger.isDebugEnabled()) {
 				logger.debug(cellsampler.numSampled() + "th sampled cell: " + c + " (owners["
-						+ c.getOwnerID() +
-						"] competitiveness:" + r.getCompetitiveness(c) + " / challenger (" + a
+ + c.getOwnersFrSerialID()
+						+
+						"] competitiveness:" + r.getCompetitiveness(c) + " / challenger (" + fr
 						+ "): " +
 						competitiveness + ")");
 			}
 
-			if (competitiveness > a.getGivingUp()
+			if (competitiveness > fr.getMeanGivingUpThreshold()
 					&& c.getOwner().canTakeOver(c, competitiveness)) {
-				Agent agent = a.createAgent(r);
+
+				Agent agent = agentFinder.findAgent(c, Integer.MIN_VALUE, fr.getSerialID());
 
 				for (TakeoverObserver observer : takeoverObserver) {
 					observer.setTakeover(r, c.getOwner(), agent);
@@ -176,7 +177,7 @@ public class BestProductionFirstGiveUpGiveInAllocationModel extends GiveUpGiveIn
 				// LOGGING ->
 
 				for (GivingInStatisticsObserver observer : this.statisticsObserver) {
-					observer.setNumberSearchedCells(r, a, cellsampler.numSampled());
+					observer.setNumberSearchedCells(r, fr, cellsampler.numSampled());
 				}
 
 				r.setOwnership(agent, c);
@@ -198,32 +199,34 @@ public class BestProductionFirstGiveUpGiveInAllocationModel extends GiveUpGiveIn
 
 	@Override
 	public void cellCapitalChanged(Cell cell) {
-		for (final PotentialAgent pa : this.region.getPotentialAgents()) {
-			cellProductions.get(pa).remove(cell);
-			cellProductions.get(pa).add(cell);
+		for (final FunctionalRole fr : this.region.getFunctionalRoles()) {
+			cellProductions.get(fr).remove(cell);
+			cellProductions.get(fr).add(cell);
 		}
 	}
 
 	@Override
-	public void potentialAgentProductionChanged(final PotentialAgent pa) {
+	public void functionalRoleProductionChanged(final FunctionalRole fr) {
 		final Service mainService;
-		if (pa.getProduction() instanceof ProductionWeightReporter) {
-			mainService = ((ProductionWeightReporter) pa.getProduction())
+		if (fr.getProduction() instanceof ProductionWeightReporter) {
+			mainService = ((ProductionWeightReporter) fr.getProduction())
 					.getProductionWeights().getMax();
 		} else {
 			mainService = null;
 		}
 
-		cellProductions.put(pa, new SortedList<Cell>(FXCollections.<Cell> observableArrayList(
-				new HashSet<Cell>(this.region.getCells())),
+		cellProductions.put(
+				fr,
+				new SortedList<>(
+						FXCollections.<Cell> observableArrayList(
+new HashSet<>(this.region.getCells())),
 				new Comparator<Cell>() {
 					@Override
 					public int compare(Cell cell1, Cell cell2) {
 						return Double.compare(
-								pa.getPotentialSupply(cell1).getDouble(mainService),
-								pa.getPotentialSupply(cell2).getDouble(mainService));
+fr.getExpectedSupply(cell1).getDouble(mainService), fr
+										.getExpectedSupply(cell2).getDouble(mainService));
 					}
-
 				}));
 	}
 }

@@ -5,28 +5,42 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.commons.collections15.CollectionUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.DefaultAgent;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalRole;
 
 public class SimpleAllocationTest extends BasicTestsUtils
 {
+
+	@Before
+	public void setupBasicTestEnvironment() {
+		super.setupBasicTestEnvironment();
+		r1.clearBehaviouralTypes();
+		r1.addBehaviouralTypes(behaviouralTypes);
+		r1.clearFunctionalRoles();
+		r1.addfunctionalRoles(functionalRolesR1);
+	}
+
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testSimpleAllocation() throws Exception
 	{
 		log.info("Test simple Allocation...");
-		log.info(r1.getPotentialAgents());
-		log.info(r2.getPotentialAgents());
-		assertEquals( potentialAgents, r1.getPotentialAgents() );
+		log.info(r1.getFunctionalRoles());
+		log.info(r2.getFunctionalRoles());
+		assertTrue(CollectionUtils.isEqualCollection(functionalRolesR1,
+				r1.getFunctionalRoles()));
+
 		allocation = persister.roundTripSerialise( allocation );
 		r1.setAvailable( c11 );
 		c11.setBaseCapitals( cellCapitalsA );
 		assertNotNull( r1.getCompetitiveness( c11 ));
-		PotentialAgent ag = r1.getPotentialAgents().iterator().next();
+		FunctionalRole ag = r1.getFunctionalRoles().iterator().next();
 		assertNotNull( ag );
-		print( r1.getCompetitiveness( c11 ), ag.getPotentialSupply( c11 ), c11 );
+		print(r1.getCompetitiveness(c11), ag.getExpectedSupply(c11), c11);
 		
 		assertTrue(r1.getCells().contains(c11));
 		assertTrue(demandR1.demand.containsKey(c11));
@@ -34,11 +48,14 @@ public class SimpleAllocationTest extends BasicTestsUtils
 
 		demandR1.setResidual( c11, services(5, 0, 5, 0) );
 		r1.getAllocationModel().allocateLand( r1 );
-		assertEquals( farming.getID(), c11.getOwner().getID() ); //Make sure that demand for food gives a farmer
+
+		// Make sure that demand for food gives a farmer
+		assertEquals(farmingR1.getSerialID(), c11.getOwnersFrSerialID());
 		print(c11.getOwner().getID());
 		
 		demandR1.setResidual( c11, services(0, 0, 0, 0) );
-		((DefaultAgent)c11.getOwner()).setGivingUp( 1 );
+		((DefaultAgent) c11.getOwner()).setProperty(
+				AgentPropertyIds.GIVING_UP_THRESHOLD, 1);
 		c11.getOwner().updateCompetitiveness();
 		c11.getOwner().considerGivingUp();
 		
@@ -46,6 +63,8 @@ public class SimpleAllocationTest extends BasicTestsUtils
 		
 		demandR1.setResidual( c11, services(0, 8, 0, 0) );
 		r1.getAllocationModel().allocateLand( r1 );
-		assertEquals( forestry.getID(), c11.getOwner().getID() ); //Make sure that demand for food gives a farmer
+		// Make sure that demand for food gives a farmer
+		assertEquals(forestryR1.getSerialID(), c11.getOwner().getFC().getFR()
+				.getSerialID());
 	}
 }

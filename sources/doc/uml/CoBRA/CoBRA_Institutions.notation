@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<notation:Diagram xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:style="http://www.eclipse.org/papyrus/infra/viewpoints/policy/style" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_Q34YkDXdEeWHo8qIAglDxA" type="PapyrusUMLSequenceDiagram" name="InstitutionsTriggering" measurementUnit="Pixel">
+  <children xmi:type="notation:Shape" xmi:id="_Q34YkTXdEeWHo8qIAglDxA" type="2001">
+    <children xmi:type="notation:DecorationNode" xmi:id="_Q34YkjXdEeWHo8qIAglDxA" type="5001"/>
+    <children xmi:type="notation:DecorationNode" xmi:id="_Q34YkzXdEeWHo8qIAglDxA" type="7001">
+      <children xmi:type="notation:Shape" xmi:id="_4QsyAjXdEeWHo8qIAglDxA" type="3001">
+        <children xmi:type="notation:DecorationNode" xmi:id="_4QsyBDXdEeWHo8qIAglDxA" type="5002"/>
+        <element xmi:type="uml:Lifeline" href="CoBRA_Institutions.uml#_4QsyADXdEeWHo8qIAglDxA"/>
+        <layoutConstraint xmi:type="notation:Bounds" xmi:id="_4QsyAzXdEeWHo8qIAglDxA" x="2" y="10" width="96"/>
+      </children>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Q34YlDXdEeWHo8qIAglDxA"/>
+    </children>
+    <element xmi:type="uml:Interaction" href="CoBRA_Institutions.uml#_OZS2QDXdEeWHo8qIAglDxA"/>
+    <layoutConstraint xmi:type="notation:Bounds" xmi:id="_Q34YlTXdEeWHo8qIAglDxA"/>
+  </children>
+  <styles xmi:type="notation:StringValueStyle" xmi:id="_Q34YljXdEeWHo8qIAglDxA" name="diagram_compatibility_version" stringValue="1.0.0"/>
+  <styles xmi:type="notation:DiagramStyle" xmi:id="_Q34YlzXdEeWHo8qIAglDxA"/>
+  <styles xmi:type="style:PapyrusViewStyle" xmi:id="_Q34YmDXdEeWHo8qIAglDxA">
+    <owner xmi:type="uml:Model" href="CoBRA_Institutions.uml#_HsYSUDXdEeWHo8qIAglDxA"/>
+  </styles>
+  <element xmi:type="uml:Interaction" href="CoBRA_Institutions.uml#_OZS2QDXdEeWHo8qIAglDxA"/>
+</notation:Diagram>

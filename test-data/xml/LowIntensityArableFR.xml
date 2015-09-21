@@ -1,0 +1,4 @@
+<agent class="org.volante.abm.agent.fr.DefaultFR" givingUpMean="0.5" givingInMean="1" 
+		label="LowIntensityArable" serialID="1">
+	<production class="org.volante.abm.example.SimpleProductionModel" csvFile="csv/LowIntensityArable.csv" />
+</agent>

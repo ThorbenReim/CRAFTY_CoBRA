@@ -23,10 +23,14 @@ package org.volante.abm.schedule;
 
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.DefaultSocialAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -51,6 +55,7 @@ public class DefaultSchedule implements Schedule {
 	List<PrePreTickAction>			prePreTickActions	= new ArrayList<PrePreTickAction>();
 	List<PreTickAction>				preTickActions	= new ArrayList<PreTickAction>();
 	List<PostTickAction>			postTickActions	= new ArrayList<PostTickAction>();
+	List<FinishAction> finishActions = new ArrayList<FinishAction>();
 
 	Outputs							output			= new Outputs();
 	private RunInfo					info			= null;
@@ -88,7 +93,20 @@ public class DefaultSchedule implements Schedule {
 			c.initEffectiveCapitals();
 		}
 
+		// check and register for decisions (which are performed at
+		// preTickUpdates)
+		Set<Agent> allAgents = new LinkedHashSet<Agent>();
+		for (Region region : regions.getAllRegions()) {
+			allAgents.addAll(region.getAllAllocatedAgents());
+			allAgents.addAll(region.getAllAmbulantAgents());
+		}
+
+		for (Agent a : allAgents) {
+			a.tickStartUpdate();
+		}
+
 		preTickUpdates();
+		// e.g. update institutions
 
 		fireScheduleStatus(new ScheduleStatusEvent(tick,
 				ScheduleStage.MAIN_LOOP, true));
@@ -100,18 +118,20 @@ public class DefaultSchedule implements Schedule {
 			}
 		}
 
-		// Recalculate agent competitiveness and give up
-		log.info("Update agents' competitiveness and consider giving up ...");
-		for (Agent a : regions.getAllAgents()) {
-
-			a.tickStartUpdate();
-			a.updateCompetitiveness();
-			a.considerGivingUp();
+		// perceive social network if existent:
+		for (Region r : regions.getAllRegions()) {
+			r.perceiveSocialNetwork();
 		}
 
-		// Remove any unneeded agents
-		for (Region r : regions.getAllRegions()) {
-			r.cleanupAgents();
+		// Recalculate agent competitiveness and give up
+		log.info("Update agents' competitiveness and consider giving up ...");
+		for (Agent a : regions.getAllAllocatedAgents()) {
+			if (a instanceof InnovativeBC) {
+				((InnovativeBC) a).considerInnovationsNextStep();
+			}
+
+			a.updateCompetitiveness();
+			a.considerGivingUp();
 		}
 
 		// Allocate land
@@ -123,7 +143,7 @@ public class DefaultSchedule implements Schedule {
 
 		// Calculate supply
 		log.info("Update agents' supply...");
-		for (Agent a : regions.getAllAgents()) {
+		for (Agent a : regions.getAllAllocatedAgents()) {
 			a.updateSupply();
 		}
 
@@ -132,13 +152,21 @@ public class DefaultSchedule implements Schedule {
 			r.getDemandModel().updateSupply();
 		}
 
-		for (Agent a : regions.getAllAgents()) {
+		for (Agent a : regions.getAllAllocatedAgents()) {
 			a.updateCompetitiveness();
+			a.tickEndUpdate();
+		}
+		// iterate ambulant agents:
+		for (Agent a : regions.getAllAmbulantAgents()) {
 			a.tickEndUpdate();
 		}
 
 		fireScheduleStatus(new ScheduleStatusEvent(tick, ScheduleStage.POST_TICK, true));
 		postTickUpdates();
+
+
+		log.info("Number of Agents in total: "
+				+ DefaultSocialAgent.numberAgents);
 
 		output();
 		log.info("\n********************\nEnd of tick " + tick + "\n********************");
@@ -149,6 +177,7 @@ public class DefaultSchedule implements Schedule {
 	@Override
 	public void finish() {
 		output.finished();
+		this.finishUpdates();
 		fireScheduleStatus(new ScheduleStatusEvent(tick, ScheduleStage.FINISHING, true));
 	}
 
@@ -279,6 +308,18 @@ public class DefaultSchedule implements Schedule {
 		}
 	}
 
+	private void finishUpdates() {
+		log.info("Finish\t\t (DefaultSchedule ID " + id + ")");
+
+		// copy to prevent concurrent modifications:
+		List<FinishAction> finishActionsCopy = new ArrayList<FinishAction>(
+				finishActions);
+
+		for (FinishAction p : finishActionsCopy) {
+			p.afterLastTick();
+		}
+	}
+
 	@Override
 	public void register(TickAction o) {
 		if (o instanceof PrePreTickAction && !prePreTickActions.contains(o)) {
@@ -289,6 +330,9 @@ public class DefaultSchedule implements Schedule {
 		}
 		if (o instanceof PostTickAction && !postTickActions.contains(o)) {
 			postTickActions.add((PostTickAction) o);
+		}
+		if (o instanceof FinishAction && !finishActions.contains(o)) {
+			finishActions.add((FinishAction) o);
 		}
 	}
 
@@ -338,10 +382,5 @@ public class DefaultSchedule implements Schedule {
 		for (ScheduleStatusListener l : listeners) {
 			l.scheduleStatus(e);
 		}
-	}
-
-	@Override
-	public void addStatusListener(ScheduleStatusListener l) {
-		listeners.add(l);
 	}
 }

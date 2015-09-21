@@ -27,7 +27,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.simpleframework.xml.ElementMap;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalComponent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
@@ -39,10 +40,17 @@ import com.moseph.modelutils.fastdata.DoubleMap;
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
 
 
+/**
+ * Subsidies, agent subsidies, and competitiveness adjustments are only set in
+ * {@link DefaultInstitution#initialise(ModelData, RunInfo, Region)} when they have not been set before (i.e. are null).
+ * 
+ * @author Sascha Holzhauer
+ * 
+ */
 public class DefaultInstitution extends AbstractInstitution {
 	DoubleMap<Service>			subsidies				= null;
 	DoubleMap<Capital>			adjustments				= null;
-	Map<PotentialAgent, Double>	agentSubsidies			= new HashMap<PotentialAgent, Double>();
+	Map<FunctionalRole, Double> agentSubsidies = new HashMap<FunctionalRole, Double>();
 
 	@ElementMap(inline = true, required = false, entry = "subsidy", attribute = true, key = "service")
 	Map<String, Double>			serialSubsidies			= new HashMap<String, Double>();
@@ -59,21 +67,23 @@ public class DefaultInstitution extends AbstractInstitution {
 		c.setEffectiveCapitals(adjusted);
 	}
 
+	protected boolean initialised = false;
+	
 	@Override
-	public double adjustCompetitiveness(PotentialAgent agent, Cell location,
+	public double adjustCompetitiveness(FunctionalRole fRole,
+			Cell location,
 			UnmodifiableNumberMap<Service> provision, double competitiveness) {
 		double result = competitiveness;
 		double subsidy = provision.dotProduct(subsidies);
 		result += subsidy;
-		if (agentSubsidies.containsKey(agent)) {
-			result += agentSubsidies.get(agent);
+		if (agentSubsidies.containsKey(fRole)) {
+			result += agentSubsidies.get(fRole);
 		}
 		return result;
-
 	}
 
 	@Override
-	public boolean isAllowed(PotentialAgent agent, Cell location) {
+	public boolean isAllowed(FunctionalComponent fComp, Cell location) {
 		return true;
 	}
 
@@ -85,37 +95,48 @@ public class DefaultInstitution extends AbstractInstitution {
 		subsidies.copyFrom(s);
 	}
 
-	public void setSubsidy(PotentialAgent a, double value) {
-		agentSubsidies.put(a, value);
+	public void setSubsidy(FunctionalRole fRole, double value) {
+		agentSubsidies.put(fRole, value);
 	}
 
+	/**
+	 * Checks if the institutions has already been initialised. This is important not to overwrite assignments to 
+	 * <code>subsidies</code> or <code>adjustments</code>. Therefore, these data structures can be assigned when 
+	 * the institutions is initialised before.
+	 * 
+	 * @param data
+	 * @param info
+	 * @param extent
+	 * @throws Exception
+	 */
 	@Override
 	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
-		super.initialise(data, info, extent);
-		extent.setRequiresEffectiveCapitalData();
-		extent.setHasCompetitivenessAdjustingInstitution();
-		subsidies = data.serviceMap();
-		adjustments = data.capitalMap();
-		for (Entry<String, Double> e : serialSubsidies.entrySet()) {
-			if (data.services.contains(e.getKey())) {
-				subsidies.put(data.services.forName(e.getKey()), e.getValue());
-			}
-		}
-		for (Entry<String, Double> e : serialAdjustments.entrySet()) {
-			if (data.capitals.contains(e.getKey())) {
-				adjustments.put(data.capitals.forName(e.getKey()), e.getValue());
-			}
-		}
-		Map<String, PotentialAgent> agents = new HashMap<String, PotentialAgent>();
-		for (PotentialAgent p : extent.getAllPotentialAgents()) {
-			agents.put(p.getID(), p);
-		}
-		for (Entry<String, Double> e : serialAgentSubsidies.entrySet()) {
-			if (agents.containsKey(e.getKey())) {
-				agentSubsidies.put(agents.get(e.getKey()), e.getValue());
-			}
-		}
+		if (!initialised) {
+			super.initialise(data, info, extent);
+			extent.setRequiresEffectiveCapitalData();
+			extent.setHasCompetitivenessAdjustingInstitution();
+			subsidies = data.serviceMap();
+			adjustments = data.capitalMap();
 
+			for (Entry<String, Double> e : serialSubsidies.entrySet()) {
+				if (data.services.contains(e.getKey())) {
+					subsidies.put(data.services.forName(e.getKey()), e.getValue());
+				}
+			}
+
+			for (Entry<String, Double> e : serialAdjustments.entrySet()) {
+				if (data.capitals.contains(e.getKey())) {
+					adjustments.put(data.capitals.forName(e.getKey()), e.getValue());
+				}
+			}
+
+			for (Entry<String, Double> e : serialAgentSubsidies.entrySet()) {
+				if (extent.getFunctionalRoleMapByLabel().containsKey(e.getKey())) {
+					agentSubsidies.put(extent.getFunctionalRoleMapByLabel().get(e.getKey()), e.getValue());
+				}
+			}
+			this.initialised = true;
+		}
 	}
 
 }

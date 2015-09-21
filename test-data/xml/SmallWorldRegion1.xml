@@ -4,20 +4,17 @@
 	
 	<!--  all the models use default settings, an are inline -->
 	<competition class="org.volante.abm.example.SimpleCompetitivenessModel" />
-	<allocation class="org.volante.abm.optimization.GeneticAlgorithmAllocationModel" 
-		convergenceProportion="0.001" convergenceGenerations="10" numGenerations="1000"/>
+	<allocation class="org.volante.abm.example.GiveUpGiveInAllocationModel"/>
 	<demand class="org.volante.abm.example.RegionalDemandModel" demandCSV="csv/Region1Demand.csv"/>
-
-	<!--  Some potential agents inline -->
-	<potentialAgents>
-		<agent class="org.volante.abm.example.SimplePotentialAgent" givingUp="0.5" givingIn="1" id="LowIntensityArable"
-			serialID="1">
-			<production class="org.volante.abm.example.SimpleProductionModel" csvFile="csv/LowIntensityArable.csv" />
-		</agent>
-	</potentialAgents>
-	<!--  Some potential agents in another file -->
-	<agentFile>xml/OtherSmallWorldAgents.xml</agentFile>
 	
+	<frFile>xml/FunctionalRoles_SmallWorld.xml</frFile>
+	<btFile>xml/BehaviouralTypes.xml</btFile>
+	
+	<regionalLaraModel>
+		<Boolean param="de.cesr.lara.components.param.LBasicPa:EVENTBUS_FORCE_SEQUENTIAL">true</Boolean>
+		<String param="de.cesr.lara.toolbox.param.LXmlConfigPa:XML_PATH_PREFERENCES">xml/LaraPreferences.xml</String>
+		<String param="de.cesr.lara.toolbox.param.LXmlConfigPa:XML_PATH_DCONFIG">xml/LaraDecisionConfigurations.xml</String>
+	</regionalLaraModel>
 	<!-- Have an updater that uses CSV files to update capitals -->
 	<!-- 
 	<updater class ="org.volante.abm.update.CSVCapitalUpdater" X_COL="x" Y_COL="y" yearInFilename="false" reapplyPreviousFile="false">

@@ -24,7 +24,7 @@
 package org.volante.abm.output;
 
 
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Region;
 
 
@@ -34,7 +34,7 @@ import org.volante.abm.data.Region;
  */
 public interface GivingInStatisticsObserver {
 
-	public void setNumberSearchedCells(Region region, PotentialAgent pa, int number);
+	public void setNumberSearchedCells(Region region, FunctionalRole fr, int number);
 
 	public void initGivingInStatistic(Region region);
 

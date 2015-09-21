@@ -61,17 +61,27 @@ public class WorldLoader {
 	String allocationColumn = "Allocation";
 	@Attribute(required=false)
 	String demandColumn = "Demand";
+
+	@Attribute(required = false)
+	String btColumn = "Behavioural Types";
 	@Attribute(required=false)
-	String potentialColumn = "Agents";
+	String frColumn = "Functional Roles";
+
 	@Attribute(required=false)
 	String institutionsColumn = "Institutions";
 	@Attribute(required = false)
 	String cellColumn = "Cell Initialisers";
 	@Attribute(required=false)
+	String socNetColumn = "Social Network";
+
+	@Attribute(required=false)
 	String agentColumn = "Agent Initialisers";
-	
+
 	@Attribute(required = false)
 	String					skipInitialAllocationColumn	= "Skip Inital Allocation";
+
+	@Attribute(required = false)
+	String laraModelColumn = "LARA Model";
 
 	ABMPersister persister = ABMPersister.getInstance();
 	ModelData modelData = new ModelData();
@@ -137,10 +147,13 @@ public class WorldLoader {
 				BatchRunParser.parseString(reader.get(competitionColumn), info),
 				BatchRunParser.parseString(reader.get(allocationColumn), info),
 				BatchRunParser.parseString(reader.get(demandColumn), info),
-				BatchRunParser.parseString(reader.get(potentialColumn), info),
+ BatchRunParser.parseString(
+						reader.get(btColumn), info), BatchRunParser.parseString(reader.get(frColumn), info),
 				BatchRunParser.parseString(reader.get(cellColumn), info),
 				null,
-				BatchRunParser.parseString(reader.get(institutionsColumn), info));
+				BatchRunParser.parseString(reader.get(socNetColumn), info),
+ BatchRunParser.parseString(reader.get(institutionsColumn),
+						info), BatchRunParser.parseString(reader.get(laraModelColumn), info));
 
 		if (!reader.get(this.skipInitialAllocationColumn).equals("")) {
 			rl.skipInitialAllocation = Boolean.parseBoolean(reader

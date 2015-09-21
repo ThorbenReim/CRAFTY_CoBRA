@@ -4,3 +4,17 @@ test-data\tmp\CSVCapitalUpdater.xml
 test-data/tmp/
 syntax: regexp
 ^lib/CRAFTY\.jar$
+syntax: regexp
+^CRAFTY_CoBRA_Trunk_java\.xmi$
+syntax: regexp
+^CRAFTY_CoBRA_Trunk_kdm\.xmi$
+syntax: regexp
+^target$
+syntax: regexp
+^build/docs$
+syntax: regexp
+^build$
+syntax: regexp
+^java2kdmFragments$
+syntax: regexp
+^\.gradle/2\.2$
