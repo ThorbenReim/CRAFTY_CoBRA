@@ -1,4 +1,4 @@
-<fRole class="org.volante.abm.agent.fr.DefautlFR" 
+<fRole class="org.volante.abm.agent.fr.DefaultFR" 
 	givingUpMean="${@(csv/CsvBatchRunParserTest.csv ~ @@(csv; secondA)/CsvBatchRunParserSecondaryTest.csv, givingUp)}" 
 	givingInMean="${@(csv/CsvBatchRunParserTest.csv ~ @@(csv; secondB)/CsvBatchRunParserSecondaryTest.csv, givingIn)}" 
 		label="TestAgent" serialID="1">

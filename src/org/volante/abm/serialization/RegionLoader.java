@@ -79,10 +79,18 @@ public class RegionLoader {
 	 */
 	static private Logger log = Logger.getLogger(RegionLoader.class);
 
+	static int						currentUid				= 0;
+	
 	final static String INSTITUTION_LIST_ELEMENT_NAME = "institutionsList";
 
 	@Attribute(name = "id")
-	String id = "Unknown";
+	String							id						= "Unknown";
+
+	/**
+	 * Required for parallel mpiJava computing:
+	 */
+	@Element(required = false)
+	int pid = -1;
 
 	@Element(required = false)
 	String competitionFile = "";
@@ -179,20 +187,21 @@ public class RegionLoader {
 		this.modelData = data;
 	}
 
-	public RegionLoader(String id, String competition, String allocation,
+	public RegionLoader(String pid, String id, String competition, String allocation,
  String demand, String btfiles,
 			String frfiles, String cellInitialisers,
 			String agentInitialisers) {
-		this(id, competition, allocation, demand, btfiles, frfiles,
+		this(pid, id, competition, allocation, demand, btfiles, frfiles,
  cellInitialisers, agentInitialisers, null, null,
 				null);
 	}
 
-	public RegionLoader(String id, String competition, String allocation,
+	public RegionLoader(String pid, String id, String competition, String allocation,
  String demand, String btfiles,
 			String frfiles, String cellInitialisers, String agentInitialisers, String socialNetworkFile,
 			String institutionFile,
 			String laraModelFile) {
+		this.pid = Integer.parseInt(pid);
 		this.id = id;
 		this.competitionFile = competition;
 		this.allocationFile = allocation;
@@ -462,8 +471,8 @@ public class RegionLoader {
 	}
 
 	/**
-	 * In case there is not yet a cell at the given coordinates, it instantiate
-	 * and initialise new cell. Add it to region at given coordinates.
+	 * In case there is not yet a cell at the given coordinates, it instantiates
+	 * and initialises a new cell. Add it adds it to region at given coordinates.
 	 * Furthermore, sets initial ownership to {@link Agent#NOT_MANAGED}.
 	 * 
 	 * @param x
@@ -569,5 +578,12 @@ public class RegionLoader {
 
 	public int getRandomSeed() {
 		return this.randomSeed;
+	}
+
+	/**
+	 * @return the pid
+	 */
+	public int getUid() {
+		return pid;
 	}
 }

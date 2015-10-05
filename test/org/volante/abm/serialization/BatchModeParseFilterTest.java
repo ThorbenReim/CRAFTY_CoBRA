@@ -40,6 +40,7 @@ public class BatchModeParseFilterTest extends BasicTestsUtils {
 
 	static final String XML_FILE = "xml/BatchModeParseFilterTestingFR.xml";
 	static final String XML_FILE_LINKS = "xml/BatchModeLinksParseFilterTestingFR.xml";
+	static final String XML_FILE_COMBINED = "xml/BatchModeLinksParseFilterTestingFRCombined.xml";
 
 	protected RunInfo	rInfo;
 	protected Region	region		= new Region();
@@ -61,5 +62,25 @@ public class BatchModeParseFilterTest extends BasicTestsUtils {
 		fRole.initialise(modelData, rInfo, region);
 		assertEquals(0.3, fRole.getMeanGivingInThreshold(), 0.01);
 		assertEquals(0.5, fRole.getMeanGivingUpThreshold(), 0.01);
+	}
+	
+	@Test
+	public void testLinks() throws Exception {
+		ABMPersister persister = ABMPersister.getInstance();
+		DefaultFR fRole = persister.readXML(DefaultFR.class, XML_FILE_LINKS,
+				region.getPeristerContextExtra());
+		fRole.initialise(modelData, rInfo, region);
+		assertEquals(2.3, fRole.getMeanGivingInThreshold(), 0.01);
+		assertEquals(1.5, fRole.getMeanGivingUpThreshold(), 0.01);
+	}
+
+	@Test
+	public void testLinksCombined() throws Exception {
+		ABMPersister persister = ABMPersister.getInstance();
+		DefaultFR fRole = persister.readXML(DefaultFR.class,
+				XML_FILE_COMBINED,
+				region.getPeristerContextExtra());
+		fRole.initialise(modelData, rInfo, region);
+		assertEquals("identifier_TestAgent_99", fRole.getLabel());
 	}
 }

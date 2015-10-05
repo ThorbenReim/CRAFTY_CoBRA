@@ -77,6 +77,9 @@ public class BestProductionFirstGiveUpGiveInAllocationModel extends GiveUpGiveIn
 
 	@Override
 	public void initialise(ModelData data, RunInfo info, Region r) {
+		// <- LOGGING
+		logger.info("Init...");
+		// LOGGING ->
 		super.initialise(data, info, r);
 		this.region = r;
 		this.initCellProductions();
@@ -198,10 +201,13 @@ fr.getExpectedSupply(cell1).getDouble(mainService), fr
 	}
 
 	@Override
-	public void cellCapitalChanged(Cell cell) {
+	public void cellCapitalChanged(Cell cell, boolean remove) {
 		for (final FunctionalRole fr : this.region.getFunctionalRoles()) {
-			cellProductions.get(fr).remove(cell);
-			cellProductions.get(fr).add(cell);
+			if (remove) {
+				cellProductions.get(fr).remove(cell);
+			} else {
+				cellProductions.get(fr).add(cell);
+			}
 		}
 	}
 
@@ -223,7 +229,7 @@ new HashSet<>(this.region.getCells())),
 				new Comparator<Cell>() {
 					@Override
 					public int compare(Cell cell1, Cell cell2) {
-						return Double.compare(
+						return (-1) * Double.compare(
 fr.getExpectedSupply(cell1).getDouble(mainService), fr
 										.getExpectedSupply(cell2).getDouble(mainService));
 					}

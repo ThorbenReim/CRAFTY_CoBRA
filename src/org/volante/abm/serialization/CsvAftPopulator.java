@@ -54,6 +54,7 @@ import org.volante.abm.serialization.transform.IntTransformer;
 import repast.simphony.parameter.IllegalParameterException;
 
 import com.csvreader.CsvReader;
+import com.moseph.modelutils.fastdata.DoubleMap;
 
 import de.cesr.parma.core.PmParameterManager;
 
@@ -257,7 +258,11 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 				String s = reader.get(cap.getName());
 				if (s != null) {
 					try {
-						c.getModifiableBaseCapitals().putDouble(cap, Double.parseDouble(s));
+						DoubleMap<Capital> adjusted = data.capitalMap();
+						c.getBaseCapitals().copyInto(adjusted);
+						adjusted.putDouble(cap, Double.parseDouble(s));
+						c.setBaseCapitals(adjusted);
+
 					} catch (Exception exception) {
 						logger.error("Exception in row "
 								+ reader.getCurrentRecord() + " ("

@@ -297,7 +297,7 @@ public class Region implements Regions, PreTickAction {
 	public void perceiveSocialNetwork() {
 		if (this.getNetwork() != null) {
 
-			logger.info("Perceive social network.");
+			logger.info("Perceive social network in " + this);
 
 			for (Agent a : this.getAgents()) {
 				if (a instanceof SocialAgent) {

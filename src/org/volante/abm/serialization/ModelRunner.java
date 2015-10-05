@@ -24,6 +24,8 @@ package org.volante.abm.serialization;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
+import mpi.MPI;
+
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -38,6 +40,7 @@ import org.volante.abm.visualisation.ScheduleControls;
 import org.volante.abm.visualisation.TimeDisplay;
 
 import de.cesr.more.basic.MManager;
+import de.cesr.more.util.MVersionInfo;
 import de.cesr.parma.core.PmParameterManager;
 
 
@@ -62,8 +65,20 @@ public class ModelRunner
 
 	public static void main( String[] args ) throws Exception
 	{
+		logger.info("Start CRAFTY CoBRA");
+
+		String[] realArgs = null;
+		try {
+			Class.forName("mpi.MPI");
+			realArgs = MPI.Init(args);
+
+		} catch (ClassNotFoundException e) {
+			logger.error("No MPI in classpath!");
+			realArgs = args;
+		}
+
 		CommandLineParser parser = new BasicParser();
-		CommandLine cmd = parser.parse(manageOptions(), args);
+		CommandLine cmd = parser.parse(manageOptions(), realArgs);
 
 		if (cmd.hasOption('h')) {
 			HelpFormatter formatter = new HelpFormatter();
@@ -92,8 +107,11 @@ public class ModelRunner
 		clog("StartTick", "" + (start == Integer.MIN_VALUE ? "<ScenarioFile>" : start));
 		clog("EndTick", "" + (end == Integer.MIN_VALUE ? "<ScenarioFile>" : end));
 
-		clog("CRAFY_SocialRevision", CVersionInfo.REVISION_NUMBER);
-		clog("CRAFY_SocialBuildDate", CVersionInfo.TIMESTAMP);
+		clog("CRAFY_CoBRA Revision", CVersionInfo.REVISION_NUMBER);
+		clog("CRAFY_CoBRA BuildDate", CVersionInfo.TIMESTAMP);
+		
+		clog("MoRe Revision", MVersionInfo.revisionNumber);
+		clog("MoRe BuildDate", MVersionInfo.timeStamp);
 
 		if (end < start) {
 			logger.error("End tick must not be larger than start tick!");
@@ -131,6 +149,17 @@ public class ModelRunner
 				}
 			}
 		}
+
+		try {
+			Class.forName("mpi.MPI");
+			MPI.Finalize();
+		} catch (ClassNotFoundException e) {
+			logger.error("No MPI in classpath!");
+		} catch (Exception exception) {
+			logger.error("Error during MPI finilization: "
+					+ exception.getMessage());
+			exception.printStackTrace();
+		}
 	}
 
 	public static void doRun(String filename, int start,
@@ -142,7 +171,6 @@ public class ModelRunner
 		} else {
 			noninteractiveRun(loader, start == Integer.MIN_VALUE ? loader.startTick : start,
 					end == Integer.MIN_VALUE ? loader.endTick : end);
-
 			finalActions(rInfo);
 		}
 	}
@@ -289,5 +317,6 @@ public class ModelRunner
 	protected static void finalActions(RunInfo rInfo) {
 		rInfo.getOutputs().removeClosingOutputThreads();
 		PmParameterManager.reset();
+		MManager.reset();
 	}
 }
