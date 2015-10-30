@@ -68,6 +68,15 @@ public abstract class AbstractGlobalInstitution implements GlobalInstitution {
 	}
 
 	/**
+	 * @see org.volante.abm.institutions.Institution#isAllowed(org.volante.abm.agent.fr.FunctionalRole,
+	 *      org.volante.abm.data.Cell)
+	 */
+	@Override
+	public boolean isAllowed(FunctionalRole fr, Cell location) {
+		return true;
+	}
+
+	/**
 	 * @see org.volante.abm.institutions.Institution#update()
 	 */
 	@Override

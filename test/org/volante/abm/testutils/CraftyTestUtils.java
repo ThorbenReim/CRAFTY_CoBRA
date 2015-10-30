@@ -23,7 +23,6 @@
  */
 package org.volante.abm.testutils;
 
-import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.fr.AbstractFC;
 import org.volante.abm.agent.fr.AbstractFR;
 import org.volante.abm.agent.fr.FunctionalComponent;
@@ -53,7 +52,7 @@ public class CraftyTestUtils {
 		 * @see org.volante.abm.agent.fr.FunctionalRole#getNewFunctionalComp(org.volante.abm.agent.Agent)
 		 */
 		@Override
-		public FunctionalComponent getNewFunctionalComp(Agent agent) {
+		public FunctionalComponent getNewFunctionalComp() {
 			return new AbstractFC(this, this.production) {
 			};
 		}

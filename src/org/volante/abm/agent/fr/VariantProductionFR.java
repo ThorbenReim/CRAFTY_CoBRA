@@ -52,6 +52,8 @@ public class VariantProductionFR extends AbstractFR {
 	 */
 	static private Logger logger = Logger.getLogger(VariantProductionFR.class);
 
+	protected ModelData data = null;
+
 	@Element(required = false)
 	Distribution givingUpDistribution = null;
 	@Element(required = false)
@@ -99,6 +101,7 @@ public class VariantProductionFR extends AbstractFR {
 	public void initialise(ModelData data, RunInfo info, Region r)
 			throws Exception {
 		super.initialise(data, info, r);
+		this.data = data;
 
 		if (givingUpDistribution != null) {
 			this.givingUpDistribution.init(r.getRandom().getURService(),
@@ -157,7 +160,7 @@ public class VariantProductionFR extends AbstractFR {
 	 */
 	@Override
 	public Agent assignNewFunctionalComp(Agent agent) {
-		agent.setFC(getNewFunctionalComp(agent));
+		agent.setFC(getNewFunctionalComp());
 		agent.setProperty(AgentPropertyIds.GIVING_IN_THRESHOLD,
 				getSampledGivingInThreshold());
 		agent.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD,
@@ -194,15 +197,15 @@ public class VariantProductionFR extends AbstractFR {
 		}
 
 		return ((SimpleProductionModel) production).copyWithNoise(
-				r.getModelData(),
+this.data,
 				serviceLevelNoise, capitalImportanceNoise);
 	}
 
 	/**
-	 * @see org.volante.abm.agent.fr.FunctionalRole#getNewFunctionalComp(org.volante.abm.agent.Agent)
+	 * @see org.volante.abm.agent.fr.FunctionalRole#getNewFunctionalComp()
 	 */
 	@Override
-	public FunctionalComponent getNewFunctionalComp(Agent agent) {
+	public FunctionalComponent getNewFunctionalComp() {
 		return new VariantProductionFC(this, productionModel(production,
 				this.region));
 	}

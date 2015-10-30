@@ -79,6 +79,9 @@ public class WorldLoader {
 	String socNetColumn = "Social Network";
 
 	@Attribute(required=false)
+	String initialisersColumn = "Initialisers";
+
+	@Attribute(required = false)
 	String agentColumn = "Agent Initialisers";
 
 	@Attribute(required = false)
@@ -179,6 +182,9 @@ public class WorldLoader {
 		if (!reader.get(this.skipInitialAllocationColumn).equals("")) {
 			rl.skipInitialAllocation = Boolean.parseBoolean(reader
 					.get(this.skipInitialAllocationColumn));
+		}
+		if (!reader.get(this.initialisersColumn).equals("")) {
+			rl.initialiserFiles.add(reader.get(this.initialisersColumn));
 		}
 		return rl;
 	}

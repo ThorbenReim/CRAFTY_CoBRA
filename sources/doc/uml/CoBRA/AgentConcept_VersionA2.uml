@@ -24,52 +24,19 @@
         <ownedOperation xmi:type="uml:Operation" xmi:id="_ejQxIFOZEeS6V7KP5IUdlQ" name="setFR">
           <ownedParameter xmi:type="uml:Parameter" xmi:id="_l_3FkFOZEeS6V7KP5IUdlQ" name="fr" type="_QcgygFOREeS6V7KP5IUdlQ"/>
         </ownedOperation>
-        <ownedOperation xmi:type="uml:Operation" xmi:id="_QcgyoVOREeS6V7KP5IUdlQ" name="getGivingUp" visibility="public">
-          <ownedParameter xmi:type="uml:Parameter" xmi:id="_QcgyolOREeS6V7KP5IUdlQ" visibility="public" direction="return">
-            <type xmi:type="uml:PrimitiveType" href="AgentConcept_VersionA.uml#_b7jltlONEeSrtM8PK3JNEQ"/>
-            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Qcgyo1OREeS6V7KP5IUdlQ" value="1"/>
-            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_QcgypFOREeS6V7KP5IUdlQ" value="1"/>
-          </ownedParameter>
-        </ownedOperation>
-        <ownedOperation xmi:type="uml:Operation" xmi:id="_QcgypVOREeS6V7KP5IUdlQ" name="getGivingIn" visibility="public">
-          <ownedParameter xmi:type="uml:Parameter" xmi:id="_QcgyplOREeS6V7KP5IUdlQ" visibility="public" direction="return">
-            <type xmi:type="uml:PrimitiveType" href="AgentConcept_VersionA.uml#_b7jltlONEeSrtM8PK3JNEQ"/>
-            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Qcgyp1OREeS6V7KP5IUdlQ"/>
-            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_QcgyqFOREeS6V7KP5IUdlQ" value="1"/>
-          </ownedParameter>
-        </ownedOperation>
-        <ownedOperation xmi:type="uml:Operation" xmi:id="_QcgymVOREeS6V7KP5IUdlQ" name="getID" visibility="public">
-          <ownedParameter xmi:type="uml:Parameter" xmi:id="_QcgymlOREeS6V7KP5IUdlQ" visibility="public" direction="return">
-            <type xmi:type="uml:Class" href="AgentConcept_VersionA.uml#_b7jo1VONEeSrtM8PK3JNEQ"/>
-            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Qcgym1OREeS6V7KP5IUdlQ"/>
-            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_QcgynFOREeS6V7KP5IUdlQ" value="1"/>
-          </ownedParameter>
-        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_QcgyoVOREeS6V7KP5IUdlQ" name="getGivingUp" visibility="public"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_QcgypVOREeS6V7KP5IUdlQ" name="getGivingIn" visibility="public"/>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_QcgymVOREeS6V7KP5IUdlQ" name="getID" visibility="public"/>
         <ownedOperation xmi:type="uml:Operation" xmi:id="_sFaDUJptEeSKRKAHHT_jag" name="getProperty">
           <ownedParameter xmi:type="uml:Parameter" xmi:id="_7-I2kJptEeSKRKAHHT_jag" name="key"/>
         </ownedOperation>
         <ownedOperation xmi:type="uml:Operation" xmi:id="_X4KpQNPZEeSE-_d1G8nrQA" name="setHomeCell"/>
       </packagedElement>
-      <packagedElement xmi:type="uml:Interface" xmi:id="_QcgygFOREeS6V7KP5IUdlQ" name="FunctionalRole" isAbstract="true">
+      <packagedElement xmi:type="uml:Interface" xmi:id="_QcgygFOREeS6V7KP5IUdlQ" name="FunctionalRole">
         <generalization xmi:type="uml:Generalization" xmi:id="_QcgygVOREeS6V7KP5IUdlQ">
           <general xmi:type="uml:Interface" href="AgentConcept_VersionA.uml#_b7gm9FONEeSrtM8PK3JNEQ"/>
         </generalization>
-        <ownedAttribute xmi:type="uml:Property" xmi:id="_QcgyglOREeS6V7KP5IUdlQ" name="UNKNOWN_SERIAL" visibility="public" isStatic="true">
-          <type xmi:type="uml:PrimitiveType" href="AgentConcept_VersionA.uml#_b7jls1ONEeSrtM8PK3JNEQ"/>
-          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Qcgyg1OREeS6V7KP5IUdlQ"/>
-          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_QcgyhFOREeS6V7KP5IUdlQ" value="1"/>
-        </ownedAttribute>
-        <ownedAttribute xmi:type="uml:Property" xmi:id="_QcgyhVOREeS6V7KP5IUdlQ" name="NOT_MANAGED_TYPE" visibility="public" isStatic="true" type="_QcgygFOREeS6V7KP5IUdlQ">
-          <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_QcgyhlOREeS6V7KP5IUdlQ"/>
-          <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Qcgyh1OREeS6V7KP5IUdlQ" value="1"/>
-        </ownedAttribute>
-        <ownedOperation xmi:type="uml:Operation" xmi:id="_QcgynVOREeS6V7KP5IUdlQ" name="getSerialID" visibility="public">
-          <ownedParameter xmi:type="uml:Parameter" xmi:id="_QcgynlOREeS6V7KP5IUdlQ" visibility="public" direction="return">
-            <type xmi:type="uml:PrimitiveType" href="AgentConcept_VersionA.uml#_b7jls1ONEeSrtM8PK3JNEQ"/>
-            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Qcgyn1OREeS6V7KP5IUdlQ"/>
-            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_QcgyoFOREeS6V7KP5IUdlQ" value="1"/>
-          </ownedParameter>
-        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_QcgynVOREeS6V7KP5IUdlQ" name="getSerialID" visibility="public"/>
         <ownedOperation xmi:type="uml:Operation" xmi:id="_XH3ZYM1lEeSMfpizDKt4Yg" name="getLabel"/>
         <ownedOperation xmi:type="uml:Operation" xmi:id="_W9aHsM4nEeSMfpizDKt4Yg" name="getNewFunctionalComp"/>
         <ownedOperation xmi:type="uml:Operation" xmi:id="_jrX58M7pEeSsxcKDfSA0lg" name="getPotentialSupply"/>
@@ -215,19 +182,8 @@
         </ownedEnd>
       </packagedElement>
       <packagedElement xmi:type="uml:Interface" xmi:id="_Uozo0M4cEeSMfpizDKt4Yg" name="FunctionalComponent">
-        <ownedOperation xmi:type="uml:Operation" xmi:id="_QcgyqVOREeS6V7KP5IUdlQ" name="getProduction" visibility="public">
-          <ownedParameter xmi:type="uml:Parameter" xmi:id="_QcgyqlOREeS6V7KP5IUdlQ" visibility="public" direction="return">
-            <type xmi:type="uml:Interface" href="AgentConcept_VersionA.uml#_b7fUmVONEeSrtM8PK3JNEQ"/>
-            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_Qcgyq1OREeS6V7KP5IUdlQ"/>
-            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_QcgyrFOREeS6V7KP5IUdlQ" value="1"/>
-          </ownedParameter>
-        </ownedOperation>
+        <ownedOperation xmi:type="uml:Operation" xmi:id="_QcgyqVOREeS6V7KP5IUdlQ" name="getProduction" visibility="public"/>
         <ownedOperation xmi:type="uml:Operation" xmi:id="_QcgyiFOREeS6V7KP5IUdlQ" name="getPotentialSupply" visibility="public">
-          <ownedParameter xmi:type="uml:Parameter" xmi:id="_QcgyiVOREeS6V7KP5IUdlQ" name="NumberMap" visibility="public" direction="return">
-            <type xmi:type="uml:Interface" href="AgentConcept_VersionA.uml#_b7kQClONEeSrtM8PK3JNEQ"/>
-            <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_QcgyilOREeS6V7KP5IUdlQ"/>
-            <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_Qcgyi1OREeS6V7KP5IUdlQ" value="1"/>
-          </ownedParameter>
           <ownedParameter xmi:type="uml:Parameter" xmi:id="_QcgyjFOREeS6V7KP5IUdlQ" name="cell" visibility="public" type="_b7c5o1ONEeSrtM8PK3JNEQ">
             <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_QcgyjVOREeS6V7KP5IUdlQ"/>
             <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_QcgyjlOREeS6V7KP5IUdlQ" value="1"/>
@@ -283,10 +239,10 @@
       <packagedElement xmi:type="uml:Realization" xmi:id="_2hPrcM4zEeSMfpizDKt4Yg" client="_QcgygFOREeS6V7KP5IUdlQ" supplier="_sWqt0M4zEeSMfpizDKt4Yg"/>
       <packagedElement xmi:type="uml:Class" xmi:id="_d0PwwM40EeSMfpizDKt4Yg" name="AbstractAgent" isAbstract="true">
         <ownedAttribute xmi:type="uml:Property" xmi:id="_fMWcQFRbEeSJuNiBAIbXiQ" name="preferences">
-          <type xmi:type="uml:Interface" href="LARA_Base.uml#_LUgVhJWOEeSFg43eNhcUlQ"/>
+          <type xmi:type="uml:Interface" href="LARA_Base.uml#_33DeFLbhEeS2tauHXM4ixg"/>
         </ownedAttribute>
         <ownedAttribute xmi:type="uml:Property" xmi:id="_R6RPUJWPEeSFg43eNhcUlQ" name="properties">
-          <type xmi:type="uml:Interface" href="LARA_Base.uml#_LUgVhJWOEeSFg43eNhcUlQ"/>
+          <type xmi:type="uml:Interface" href="LARA_Base.uml#_33DeFLbhEeS2tauHXM4ixg"/>
         </ownedAttribute>
         <ownedAttribute xmi:type="uml:Property" xmi:id="_MGatMFRbEeSJuNiBAIbXiQ" name="functionalComp" type="_QcgygFOREeS6V7KP5IUdlQ"/>
         <ownedAttribute xmi:type="uml:Property" xmi:id="_OjksIFRbEeSJuNiBAIbXiQ" name="behaviouralComp"/>

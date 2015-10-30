@@ -42,7 +42,7 @@ public interface FunctionalRole extends Initialisable {
 
 	public Agent assignNewFunctionalComp(Agent agent);
 
-	public FunctionalComponent getNewFunctionalComp(Agent agent);
+	public FunctionalComponent getNewFunctionalComp();
 
 	public String getLabel();
 

@@ -24,6 +24,9 @@
 package org.volante.abm.agent.property;
 
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 import org.volante.abm.example.AgentPropertyIds;
 
@@ -39,18 +42,31 @@ public class AgentPropertyRegistry {
 	 */
 	static private Logger logger = Logger.getLogger(AgentPropertyRegistry.class);
 
+
+	protected static Set<Class<? extends AgentPropertyId>> enumClasses = new HashSet<>();
+
+	static {
+		enumClasses.add(AgentPropertyIds.class);
+	}
+	
 	/**
-	 * TODO allow extensions of AgentProperties!
-	 * 
 	 * @param id
 	 * @return AgentPropertyId
 	 */
 	public static AgentPropertyId get(String id) {
-		try {
-			return AgentPropertyIds.valueOf(id);
-		} catch (IllegalArgumentException e) {
-			logger.error("No AgentProperty called " + id + "! Returning null.");
-		}
-		return null;
+		for (Class<? extends AgentPropertyId> agentPropertyIdEnum : enumClasses) {
+	        for (AgentPropertyId prop : agentPropertyIdEnum.getEnumConstants()) {
+				if (id.equals(prop.toString())) {
+	                return prop;
+	            }
+	        }
+	    }
+	    logger.error("No AgentProperty called " + id + "! Returning null.");
+	    return null;
+	}
+	
+
+	public static void registerPropertiesEnum(Class<? extends AgentPropertyId> enumeration) {
+		enumClasses.add(enumeration);
 	}
 }

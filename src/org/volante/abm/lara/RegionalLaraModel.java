@@ -34,6 +34,7 @@ import org.volante.abm.data.Region;
 import org.volante.abm.schedule.FinishAction;
 import org.volante.abm.schedule.PreTickAction;
 import org.volante.abm.schedule.RunInfo;
+import org.volante.abm.serialization.BatchModeParseFilter;
 
 import de.cesr.lara.components.agents.impl.LAbstractAgent;
 import de.cesr.lara.components.decision.LaraDecisionConfiguration;
@@ -52,6 +53,7 @@ import de.cesr.lara.components.model.impl.LAbstractModel;
 import de.cesr.lara.components.model.impl.LModel;
 import de.cesr.lara.components.util.impl.LDecisionConfigRegistry;
 import de.cesr.lara.components.util.impl.LPreferenceRegistry;
+import de.cesr.lara.toolbox.config.xml.LPersister;
 import de.cesr.lara.toolbox.config.xml.LXmlModelConfigurator;
 import de.cesr.lara.toolbox.param.LXmlConfigPa;
 import de.cesr.parma.core.PmParameterDefinition;
@@ -158,6 +160,11 @@ public class RegionalLaraModel extends LAbstractModel {
 
 		prefRegistry = new LPreferenceRegistry();
 		dConfigRegistry = new LDecisionConfigRegistry();
+
+		// create new LARA persister with CRAFTY CoBRA specific filter:
+		BatchModeParseFilter filter = new BatchModeParseFilter();
+		filter.setRunInfo(this.rInfo);
+		LPersister.getPersister(filter, id);
 	}
 
 	/**

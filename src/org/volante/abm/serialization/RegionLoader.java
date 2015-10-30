@@ -153,6 +153,11 @@ public class RegionLoader {
 	@ElementList(inline = true, required = false, entry = "institutionFile")
 	List<String> institutionFiles = new ArrayList<String>();
 
+	@ElementList(inline = true, required = false, entry = "initialiser")
+	List<Initialisable> initialisers = new ArrayList<Initialisable>();
+	@ElementList(inline = true, required = false, entry = "initialiserFile")
+	List<String> initialiserFiles = new ArrayList<String>();
+
 	@Element(required = false)
 	String regionalLaraModelFile = null;
 
@@ -247,6 +252,8 @@ public class RegionLoader {
 
 		readPmParameters();
 
+		initInitialisers();
+
 		initLaraModel();
 
 		loadFunctionalRoles();
@@ -268,21 +275,26 @@ public class RegionLoader {
 	 * 
 	 */
 	private void initLaraModel() throws Exception {
-		if (regionalLaraModel == null && regionalLaraModelFile != null && !regionalLaraModelFile.equals("")) {
-			// <- LOGGING
-			log.info("LaraModel file: " + regionalLaraModelFile);
-			// LOGGING ->
+		// <- LOGGING
+		log.info("LaraModel file: " + regionalLaraModelFile);
+		// LOGGING ->
 
-			regionalLaraModel =
-					persister.readXML(RegionalLaraModel.class, regionalLaraModelFile,
-							this.region.getPeristerContextExtra());
+		if (regionalLaraModel == null) {
+			if (regionalLaraModelFile != null && !regionalLaraModelFile.equals("")) {
+				regionalLaraModel =
+						persister.readXML(RegionalLaraModel.class, regionalLaraModelFile,
+								this.region.getPeristerContextExtra());
+			} else {
+				log.warn("LARA model could not be loaded in RegionLoader (regionalLaraModelFile: "
+						+ regionalLaraModelFile + ")!");
+			}
 		}
 
 		if (this.regionalLaraModel != null) {
 			this.regionalLaraModel.initialise(this.modelData, this.runInfo,
 					this.region);
 		} else {
-			log.warn("LARA model could not be initialised in RegionLoader (LARA model not initialised)!");
+			log.warn("LARA model could not be initialised in RegionLoader!");
 		}
 	}
 
@@ -347,7 +359,7 @@ public class RegionLoader {
 					this.region.getPeristerContextExtra()).fRoles);
 		}
 		for (FunctionalRole fr : fRoles.fRoles) {
-			log.info("Initialise funcitonal role: " + fr.getLabel());
+			log.info("Initialise functional role: " + fr.getLabel());
 			fr.initialise(modelData, runInfo, region);
 			storeAgentParameters(fr);
 		}
@@ -360,6 +372,11 @@ public class RegionLoader {
 
 		if (pa.getProduction() instanceof SimpleProductionModel) {
 			for (Service s : modelData.services) {
+				// initialise production weights:
+				Cell c = new Cell();
+				c.initialise(modelData, runInfo, region);
+				pa.getProduction().production(c, this.modelData.serviceMap());
+					
 				this.runInfo.getParamRepos().addParameter(
 						region,
 						"AFT" + pa.getSerialID() + "_" + s + "_Productivity",
@@ -393,6 +410,19 @@ public class RegionLoader {
 			runInfo.getSchedule().register((TickAction) competition);
 		}
 		runInfo.getSchedule().register(region);
+	}
+
+	/**
+	 * 
+	 */
+	private void initInitialisers() throws Exception {
+		for (String initialiserFile : initialiserFiles) {
+			initialisers.add(persister.readXML(Initialisable.class, initialiserFile,
+					this.region.getPeristerContextExtra()));
+		}
+		for (Initialisable i : initialisers) {
+			i.initialise(modelData, runInfo, region);
+		}
 	}
 
 	private void loadUpdaters() throws Exception {
@@ -439,6 +469,9 @@ public class RegionLoader {
 					this.region.getPeristerContextExtra()));
 		}
 		for (CellInitialiser ci : cellInitialisers) {
+			if (ci instanceof Initialisable) {
+				((Initialisable) ci).initialise(modelData, runInfo, region);
+			}
 			ci.initialise(this);
 		}
 		region.cellsCreated();

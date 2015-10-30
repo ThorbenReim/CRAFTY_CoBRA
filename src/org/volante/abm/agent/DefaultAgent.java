@@ -33,6 +33,7 @@ import org.volante.abm.data.Service;
 import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.models.ProductionModel;
 import org.volante.abm.models.nullmodel.NullProductionModel;
+import org.volante.abm.param.RandomPa;
 
 import com.moseph.modelutils.fastdata.DoubleMap;
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
@@ -118,7 +119,17 @@ public class DefaultAgent extends AbstractAgent {
 
 		if (this.getProperty(AgentPropertyIds.COMPETITIVENESS) < this
 				.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)) {
-			giveUp();
+
+			if (this.region.getRandom().getURService().nextDouble(RandomPa.RANDOM_SEED_RUN_GIVINGUP.name()) < this
+					.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)) {
+				giveUp();
+			} else {
+				// <- LOGGING
+				if (logger.isDebugEnabled()) {
+					logger.debug(this + "> GivingUp rejected!");
+				}
+				// LOGGING ->
+			}
 		}
 	}
 

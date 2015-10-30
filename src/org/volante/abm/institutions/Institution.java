@@ -66,6 +66,15 @@ public interface Institution extends Initialisable {
 	public boolean isAllowed(FunctionalComponent agent, Cell location);
 
 	/**
+	 * Determines whether this agent is forbidden from occupying that cell according to this institution
+	 * 
+	 * @param fr
+	 * @param location
+	 * @return true if the agent is allowed to occupy the given cell
+	 */
+	public boolean isAllowed(FunctionalRole fr, Cell location);
+
+	/**
 	 * Called at the start of each tick to allow this institution to perform any
 	 * internal updates necessary.
 	 */

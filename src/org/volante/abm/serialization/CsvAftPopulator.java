@@ -71,6 +71,9 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 	String	csvFile		= "";
 	
 	@Element(required = false)
+	String csvCapitalFactorFile = null;
+
+	@Element(required = false)
 	String agentIdColumnName = "AgentID";
 
 	@Element(required = false)
@@ -104,8 +107,10 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 	String homeCellColumnName = "Homecell";
 
 	@Element(required = false)
-	String manageHomeCellColumnName = null;
+	String manageHomeCellColumnName = "manageHomecell";
 
+	@Element(required = false)
+	String unmanagedIdentifier = "";
 
 	@Element(required = false)
 	String trueIdentifier = "1";
@@ -117,7 +122,10 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 	@Element(required=false)
 	boolean shuffleCellsBeforeAssembling = true;
 	
-	Logger	logger			= Logger.getLogger(getClass());
+	/**
+	 * Logger
+	 */
+	static private Logger logger = Logger.getLogger(CsvAftPopulator.class);
 
 	Set<String> agentPropertyColumns = new HashSet<String>();
 
@@ -146,6 +154,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 
 		Map<String, Map<AgentPropertyId, Double>> agentProperties = new HashMap<String, Map<AgentPropertyId, Double>>();
 
+
 		// Basic CSV file validation:
 		if (!rLoader.persister.csvFileOK("RegionLoader", csvFile, rLoader
 				.getRegion()
@@ -158,6 +167,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 		CsvReader reader = rLoader.persister.getCSVReader(csvFile, rLoader
 				.getRegion()
 				.getPeristerContextExtra());
+
 		List<String> columns = Arrays.asList(reader.getHeaders());
 		agentPropertyColumns.addAll(columns);
 
@@ -173,6 +183,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 		}
 		if (!columns.contains(homeCellColumnName)) {
 			singleCellAgentMode = true;
+		} else {
 			agentPropertyColumns.remove(homeCellColumnName);
 		}
 
@@ -256,7 +267,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 			Cell c = rLoader.getCell(x, y);
 			for (Capital cap : data.capitals) {
 				String s = reader.get(cap.getName());
-				if (s != null) {
+				if (!s.equals("")) {
 					try {
 						DoubleMap<Capital> adjusted = data.capitalMap();
 						c.getBaseCapitals().copyInto(adjusted);
@@ -284,13 +295,15 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 						reader, c, agentId, reader.get(btColumnName),
 						reader.get(frColumnName));
 
-				for (String agentPropertyColumn : agentPropertyColumns) {
-					agent.setProperty(AgentPropertyRegistry.get(agentPropertyColumn),
-							Double.parseDouble(reader.get(agentPropertyColumn)));
-				}
+				if (agent != Agent.NOT_MANAGED) {
+					for (String agentPropertyColumn : agentPropertyColumns) {
+						agent.setProperty(AgentPropertyRegistry.get(agentPropertyColumn),
+								Double.parseDouble(reader.get(agentPropertyColumn)));
+					}
 
-				if (homeCellMode == HomeCellMode.MANAGE_EVERY) {
-					rLoader.region.setInitialOwnership(agent, c);
+					if (homeCellMode == HomeCellMode.MANAGE_EVERY) {
+						rLoader.region.setInitialOwnership(agent, c);
+					}
 				}
 
 			} else if (!(singleCellAgentMode && homeCellMode == HomeCellMode.UNMANAGED)) {
@@ -342,6 +355,8 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 			}
 		}
 
+		this.applyCapitalFactors(rLoader);
+
 		// shuffle cells before assembling (requires caching of
 		// home-cells/agents)
 		List<String> agentIdSet = new ArrayList<String>(agentHomeCells.keySet());
@@ -388,16 +403,19 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 			boolean assignFR, CsvReader reader, Cell c, String agentId,
 			String btValue, String frValue)
 			throws IOException {
-		int btId, frId;
 
+		if (frValue.equals(unmanagedIdentifier)) {
+			return Agent.NOT_MANAGED;
+		}
+
+		int btId, frId;
 		if (assignBT) {
 			if (btValue.matches("\\d+")) {
 				btId = Integer.parseInt(btValue);
 			} else {
 				if (!rLoader.region.getBehaviouralTypeMapByLabel().containsKey(
 						btValue)) {
-					logger.warn("Couldn't find BehaviouralType by label: "
-							+ reader.get(btColumnName) + ". Assigning default!");
+					logger.warn("Couldn't find BehaviouralType by label: " + btValue + ". Assigning default!");
 					btId = Integer.MIN_VALUE;
 				} else {
 					btId = rLoader.region.getBehaviouralTypeMapByLabel()
@@ -458,6 +476,54 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 		agentCellMap.get(agentId).add(c);
 	}
 	
+	/**
+	 * Uses same column names as defined for the 'main' CSV file.
+	 * 
+	 * TODO test
+	 * 
+	 * @param rLoader
+	 * @throws Exception
+	 */
+	protected void applyCapitalFactors(RegionLoader rLoader) throws Exception {
+		if (this.csvCapitalFactorFile != null) {
+			logger.info("Loading capital factor CSV from " + csvCapitalFactorFile);
+
+			ModelData data = rLoader.modelData;
+			CsvReader capitalFactorReader =
+					rLoader.persister.getCSVReader(csvCapitalFactorFile, rLoader.getRegion().getPeristerContextExtra());
+
+			while (capitalFactorReader.readRecord()) {
+
+				int x = Integer.parseInt(capitalFactorReader.get(xColumn));
+				if (xTransformer != null) {
+					x = xTransformer.transform(x);
+				}
+
+				int y = Integer.parseInt(capitalFactorReader.get(yColumn));
+				if (yTransformer != null) {
+					y = yTransformer.transform(y);
+				}
+
+				Cell c = rLoader.getCell(x, y);
+				for (Capital cap : data.capitals) {
+					String s = capitalFactorReader.get(cap.getName());
+					if (!s.equals("")) {
+						try {
+							DoubleMap<Capital> adjusted = data.capitalMap();
+							c.getBaseCapitals().copyInto(adjusted);
+							adjusted.putDouble(cap, adjusted.get(cap) * Double.parseDouble(s));
+							c.setBaseCapitals(adjusted);
+
+						} catch (Exception exception) {
+							logger.error("Exception in row " + capitalFactorReader.getCurrentRecord() + " ("
+									+ exception.getMessage() + ") for capital " + cap.getName());
+						}
+					}
+				}
+			}
+		}
+	}
+
 	@Override
 	public String toString() {
 		return "CsvAftPopulator for " + csvFile;

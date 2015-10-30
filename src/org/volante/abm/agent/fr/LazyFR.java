@@ -23,7 +23,6 @@
  */
 package org.volante.abm.agent.fr;
 
-import org.volante.abm.agent.Agent;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -71,10 +70,10 @@ public class LazyFR extends AbstractFR implements FunctionalComponent {
 	}
 
 	/**
-	 * @see org.volante.abm.agent.fr.FunctionalRole#getNewFunctionalComp(org.volante.abm.agent.Agent)
+	 * @see org.volante.abm.agent.fr.FunctionalRole#getNewFunctionalComp()
 	 */
 	@Override
-	public FunctionalComponent getNewFunctionalComp(Agent agent) {
+	public FunctionalComponent getNewFunctionalComp() {
 		return this;
 	}
 

@@ -58,7 +58,8 @@ public class DoublePropertyProviderComp implements DoublePropertyProvider {
 		if (!properties.containsKey(property)) {
 			// <- LOGGING
 			logger.warn("This DoublePropertyProvider does not contain an entry for key '"
-					+ property + "'! Returning NaN.");
+ + property
+					+ "'! Returning NaN.", new IllegalStateException());
 			// LOGGING ->
 			return Double.NaN;
 		} else {

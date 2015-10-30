@@ -57,9 +57,9 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 	 */
 	static private Logger			logger				= Logger.getLogger(SimpleProductionModel.class);
 
-	DoubleMatrix<Capital, Service> capitalWeights = 
+	protected DoubleMatrix<Capital, Service> capitalWeights =
 			new DoubleMatrix<Capital, Service>( simpleCapitals, simpleServices );
-	DoubleMap<Service> productionWeights = new DoubleMap<Service>( simpleServices, 1 );
+	protected DoubleMap<Service> productionWeights = new DoubleMap<Service>(simpleServices, 1);
 	
 	@Attribute(required=false)
 	String csvFile = null;

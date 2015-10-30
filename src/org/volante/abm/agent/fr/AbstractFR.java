@@ -65,6 +65,9 @@ public abstract class AbstractFR implements FunctionalRole {
 	@Attribute(required = true)
 	protected double givingInMean = -Double.MAX_VALUE;
 
+	@Attribute(required = false)
+	protected double givingUpProbability = 1.0;
+
 	protected Set<FunctionalRoleProductionObserver> productionObserver = new HashSet<>();
 
 	public AbstractFR(String id, ProductionModel production) {
@@ -95,7 +98,7 @@ public abstract class AbstractFR implements FunctionalRole {
 	 */
 	@Override
 	public Agent assignNewFunctionalComp(Agent agent) {
-		agent.setFC(this.getNewFunctionalComp(agent));
+		agent.setFC(this.getNewFunctionalComp());
 
 		if (!agent.isProvided(AgentPropertyIds.FORBID_GIVING_IN_THRESHOLD_OVERWRITE)
 				|| Double.isNaN(agent.getProperty(AgentPropertyIds.FORBID_GIVING_IN_THRESHOLD_OVERWRITE))
@@ -109,6 +112,8 @@ public abstract class AbstractFR implements FunctionalRole {
 						.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD) < this.givingUpMean)) {
 			agent.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, this.givingUpMean);
 		}
+		agent.setProperty(AgentPropertyIds.GIVING_UP_PROB, this.givingUpProbability);
+
 		return agent;
 	}
 

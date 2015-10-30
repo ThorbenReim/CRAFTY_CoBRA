@@ -37,7 +37,7 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
  * @author dmrust
  *
  */
-public class AbstractInstitution implements Institution
+public abstract class AbstractInstitution implements Institution
 {
 	protected ModelData	modelData	= null;
 	protected RunInfo	rInfo	= null;
@@ -54,6 +54,11 @@ public class AbstractInstitution implements Institution
 
 	@Override
 	public boolean isAllowed( FunctionalComponent agent, Cell location ) { return true; }
+	@Override
+	public boolean isAllowed(FunctionalRole fr, Cell location) {
+		return true;
+	}
+
 	@Override
 	public void update() {}
 

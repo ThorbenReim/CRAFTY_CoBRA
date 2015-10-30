@@ -27,7 +27,7 @@ package org.volante.abm.data;
  * @author Sascha Holzhauer
  *
  */
-public interface PreTickRegionHelper {
+public interface PreTickRegionHelper extends RegionHelper {
 
 	/**
 	 * Executed by the region this helper is registered at the beginning of {@link Region#preTick()}

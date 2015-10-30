@@ -37,8 +37,7 @@ import com.moseph.modelutils.fastdata.DoubleMap;
 
 
 /**
- * Reads information from a csv file into the given region Does not consider
- * agent column!
+ * Reads information from a csv file into the given region. Does not consider agent column!
  * 
  * @author dmrust
  * 

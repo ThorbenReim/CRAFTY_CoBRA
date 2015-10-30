@@ -26,7 +26,6 @@ package org.volante.abm.agent.fr;
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
-import org.volante.abm.agent.Agent;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.example.SimpleProductionModel;
@@ -60,7 +59,10 @@ public class DefaultFR extends AbstractFR {
 		super(label, serialId, production, givingUp, givingIn);
 	}
 
-	public FunctionalComponent getNewFunctionalComp(Agent agent) {
+	/**
+	 * @see org.volante.abm.agent.fr.FunctionalRole#getNewFunctionalComp()
+	 */
+	public FunctionalComponent getNewFunctionalComp() {
 		return new DefaultFC(this, production);
 	}
 

@@ -37,6 +37,7 @@ import org.apache.log4j.Logger;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.SocialAgent;
 import org.volante.abm.agent.bt.BehaviouralType;
+import org.volante.abm.agent.fr.FunctionalComponent;
 import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.institutions.Institutions;
@@ -579,41 +580,69 @@ public class Region implements Regions, PreTickAction {
 	 * Gets the competitiveness of the given services on the given cell for the
 	 * current demand model and level of demand
 	 * 
-	 * @param agent
+	 * @param fr
 	 * @param c
 	 * @return competitiveness for the given potential agent on the given cell
 	 */
-	public double getCompetitiveness(FunctionalRole agent, Cell c) {
+	public double getCompetitiveness(FunctionalRole fr, Cell c) {
 		if (hasCompetitivenessAdjustingInstitution()) {
-			UnmodifiableNumberMap<Service> provision = agent.getExpectedSupply(c);
+			UnmodifiableNumberMap<Service> provision = fr.getExpectedSupply(c);
 			// same as getUnadjustedCompetitiveness() but this way omits
 			// calculating provision twice:
 			double comp = competition.getCompetitiveness(demand, provision, c);
 			// same as getUnadjustedCompetitiveness() but this way omits
 			// calculating provision twice:
-			return institutions.adjustCompetitiveness(agent, c, provision, comp);
+			return institutions.adjustCompetitiveness(fr, c, provision, comp);
 		} else {
-			return getUnadjustedCompetitiveness(agent, c);
+			return getUnadjustedCompetitiveness(fr, c);
 		}
 	}
 
-
 	/**
-	 * Just used for displays and checking to see the effect without
-	 * institutions
+	 * Gets the competitiveness of the given services on the given cell for the current demand model and level of demand
 	 * 
-	 * @param agent
+	 * @param fc
 	 * @param c
-	 * @return unadjusted competitiveness for the given potential agent on the
-	 *         given cell
+	 * @return competitiveness for the given potential agent on the given cell
 	 */
-	public double getUnadjustedCompetitiveness(FunctionalRole agent, Cell c) {
-		return competition.getCompetitiveness(demand, agent.getExpectedSupply(c), c);
+	public double getCompetitiveness(FunctionalComponent fc, Cell c) {
+		if (hasCompetitivenessAdjustingInstitution()) {
+			UnmodifiableNumberMap<Service> provision = fc.getExpectedSupply(c);
+			// same as getUnadjustedCompetitiveness() but this way omits
+			// calculating provision twice:
+			double comp = competition.getCompetitiveness(demand, provision, c);
+			// same as getUnadjustedCompetitiveness() but this way omits
+			// calculating provision twice:
+			return institutions.adjustCompetitiveness(fc.getFR(), c, provision, comp);
+		} else {
+			return getUnadjustedCompetitiveness(fc, c);
+		}
 	}
 
 	/**
-	 * Gets the competitiveness of the cell's current production for the current
-	 * demand model and levels of demand
+	 * Just used for displays and checking to see the effect without institutions
+	 * 
+	 * @param fr
+	 * @param c
+	 * @return unadjusted competitiveness for the given potential agent on the given cell
+	 */
+	public double getUnadjustedCompetitiveness(FunctionalRole fr, Cell c) {
+		return competition.getCompetitiveness(demand, fr.getExpectedSupply(c), c);
+	}
+
+	/**
+	 * Just used for displays and checking to see the effect without institutions
+	 * 
+	 * @param agent
+	 * @param c
+	 * @return unadjusted competitiveness for the given potential agent on the given cell
+	 */
+	public double getUnadjustedCompetitiveness(FunctionalComponent fc, Cell c) {
+		return competition.getCompetitiveness(demand, fc.getExpectedSupply(c), c);
+	}
+
+	/**
+	 * Gets the competitiveness of the cell's current production for the current demand model and levels of demand
 	 * 
 	 * @param c
 	 * @return get competitiveness of given cell

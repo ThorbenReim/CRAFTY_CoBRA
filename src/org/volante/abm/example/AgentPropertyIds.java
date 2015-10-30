@@ -40,6 +40,7 @@ public enum AgentPropertyIds implements AgentPropertyId {
 	COMPETITIVENESS,
 	GIVING_IN_THRESHOLD,
 	GIVING_UP_THRESHOLD,
+ GIVING_UP_PROB,
 
 	/**
 	 * If set (not {@link Double#NaN}) and above 1,
@@ -47,7 +48,7 @@ public enum AgentPropertyIds implements AgentPropertyId {
 	 * below 1 only by a higher value.
 	 */
 	FORBID_GIVING_IN_THRESHOLD_OVERWRITE,
-	
+
 	/**
 	 * If set (not {@link Double#NaN}) and above 1,
 	 * {@link AgentPropertyIds#GIVING_UP_THRESHOLD} may not be overwritten,

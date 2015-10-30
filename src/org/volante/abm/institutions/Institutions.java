@@ -79,6 +79,16 @@ public class Institutions implements Institution, PreTickAction {
 	}
 
 	@Override
+	public boolean isAllowed(FunctionalRole fr, Cell c) {
+		for (Institution i : institutions) {
+			if (!i.isAllowed(fr, c)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
 	public void adjustCapitals(Cell c) {
 		for (Institution i : institutions) {
 			i.adjustCapitals(c);

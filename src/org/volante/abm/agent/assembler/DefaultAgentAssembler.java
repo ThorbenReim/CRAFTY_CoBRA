@@ -111,6 +111,7 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 				.assignNewFunctionalComp(agent);
 		} else if (this.defaultFrId == Integer.MIN_VALUE) {
 			LazyFR.getInstance().assignNewFunctionalComp(agent);
+			logger.warn("Requested FunctionalRole (" + frId + ") not found. Using LazyFR!");
 		} else {
 			logger.error("Couldn't find FunctionalRole by id: " + frId);
 		}

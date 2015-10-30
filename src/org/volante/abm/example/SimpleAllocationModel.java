@@ -66,10 +66,10 @@ public class SimpleAllocationModel implements AllocationModel,
 	static private Logger	logger	= Logger.getLogger(SimpleAllocationModel.class);
 
 
-	Set<CellVolatilityObserver> cellVolatilityObserver = new HashSet<CellVolatilityObserver>();
+	protected Set<CellVolatilityObserver> cellVolatilityObserver = new HashSet<CellVolatilityObserver>();
 
 	@Element(required = false)
-	AgentFinder agentFinder = new DefaultSocialAgentAssembler();
+	protected AgentFinder agentFinder = new DefaultSocialAgentAssembler();
 
 	/**
 	 * @param agentFinder

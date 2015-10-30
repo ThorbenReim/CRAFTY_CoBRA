@@ -23,7 +23,6 @@
  */
 package org.volante.abm.agent.fr;
 
-import org.volante.abm.agent.Agent;
 import org.volante.abm.example.SimpleProductionModel;
 import org.volante.abm.models.ProductionModel;
 
@@ -44,10 +43,10 @@ public class IndividualProductionFR extends AbstractFR {
 	}
 
 	/**
-	 * @see org.volante.abm.agent.fr.FunctionalRole#getNewFunctionalComp(org.volante.abm.agent.Agent)
+	 * @see org.volante.abm.agent.fr.FunctionalRole#getNewFunctionalComp()
 	 */
 	@Override
-	public FunctionalComponent getNewFunctionalComp(Agent agent) {
+	public FunctionalComponent getNewFunctionalComp() {
 		ProductionModel pmodel = null;
 		if (this.production instanceof SimpleProductionModel) {
 			pmodel = ((SimpleProductionModel) production).copyExact();
