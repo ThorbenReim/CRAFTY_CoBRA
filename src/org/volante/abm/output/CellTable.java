@@ -39,6 +39,7 @@ import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Regions;
 import org.volante.abm.data.Service;
+import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.example.SimpleProductionModel;
 import org.volante.abm.output.PreAllocationStorageCleanupRegionHelper.PreAllocData;
 import org.volante.abm.schedule.RunInfo;
@@ -250,7 +251,7 @@ public class CellTable extends TableOutputter<Cell> implements GloballyInitialis
 
 		@Override
 		public String getValue(Cell t, ModelData data, RunInfo info, Regions r) {
-			return t.getOwnerID();
+			return t.getOwnersFrLabel();
 		}
 	}
 
@@ -262,7 +263,7 @@ public class CellTable extends TableOutputter<Cell> implements GloballyInitialis
 
 		@Override
 		public String getValue(Cell t, ModelData data, RunInfo info, Regions r) {
-			return "" + (t.getOwner() != null ? t.getOwner().getType().getSerialID() : "None");
+			return "" + (t.getOwner() != null ? t.getOwner().getFC().getFR().getSerialID() : "None");
 		}
 	}
 
@@ -274,7 +275,7 @@ public class CellTable extends TableOutputter<Cell> implements GloballyInitialis
 
 		@Override
 		public String getValue(Cell t, ModelData data, RunInfo info, Regions r) {
-			return t.getOwnerID();
+			return t.getOwnersFrLabel();
 		}
 	}
 
@@ -346,7 +347,7 @@ public class CellTable extends TableOutputter<Cell> implements GloballyInitialis
 
 		@Override
 		public String getValue(Cell t, ModelData data, RunInfo info, Regions r) {
-			return doubleFmt.format(t.getOwner().getCompetitiveness());
+			return doubleFmt.format(t.getOwner().getProperty(AgentPropertyIds.COMPETITIVENESS));
 		}
 	}
 
@@ -385,7 +386,7 @@ public class CellTable extends TableOutputter<Cell> implements GloballyInitialis
 
 		@Override
 		public String getValue(Cell t, ModelData data, RunInfo info, Regions r) {
-			return doubleFmt.format(t.getOwner().getGivingIn());
+			return doubleFmt.format(t.getOwner().getProperty(AgentPropertyIds.GIVING_IN_THRESHOLD));
 		}
 	}
 

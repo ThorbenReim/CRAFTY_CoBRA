@@ -26,14 +26,13 @@ package org.volante.abm.serialization;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-import org.volante.abm.example.BasicTestsUtils;
 import org.volante.abm.schedule.RunInfo;
 
 /**
  * @author Sascha Holzhauer
  *
  */
-public class CsvBatchRunParserTest extends BasicTestsUtils {
+public class CsvBatchRunParserTest {
 
 	final String	CSV_FILENAME		= "csv/CsvBatchRunParserTest.csv";
 	final String	CSV_FILENAME_SEC	= "csv/CsvBatchRunParserSecondaryTest.csv";
@@ -114,7 +113,7 @@ public class CsvBatchRunParserTest extends BasicTestsUtils {
 						+ ", ColC)", rInfo),
 				0.01);
 	}
-
+	
 	@Test
 	public void testLinks() {
 		RunInfo rInfo = new RunInfo();

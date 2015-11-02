@@ -22,7 +22,6 @@
  */
 package org.volante.abm.update;
 
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -31,7 +30,7 @@ import java.util.Map.Entry;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementMap;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
@@ -44,54 +43,55 @@ import com.csvreader.CsvReader;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-
 /**
  * Updates the capitals on a cell using a function for each agent
  * 
  * @author dmrust
  * 
  */
-public class AgentTypeUpdater extends AbstractUpdater
-{
-	Multimap<PotentialAgent, CapitalUpdateFunction>	functions		= HashMultimap.create();
+public class AgentTypeUpdater extends AbstractUpdater {
+	Multimap<FunctionalRole, CapitalUpdateFunction> functions = HashMultimap
+			.create();
 
 	@ElementMap(inline = true, required = false, attribute = true, key = "agent", entry = "agentUpdate", value = "function")
-	Map<String, CapitalUpdateFunction>				serialFunctions	= new LinkedHashMap<String, AgentTypeUpdater.CapitalUpdateFunction>();
+	Map<String, CapitalUpdateFunction> serialFunctions = new LinkedHashMap<String, AgentTypeUpdater.CapitalUpdateFunction>();
 
 	/**
-	 * Points to a csv file with capitals along the top and agents down the side First column should
-	 * be the same as the "agentColumn" attribute, defaults to "Agent"
+	 * Points to a csv file with capitals along the top and agents down the side
+	 * First column should be the same as the "agentColumn" attribute, defaults
+	 * to "Agent"
 	 */
 	@ElementList(required = false, inline = true, entry = "csvFile")
-	ArrayList<String>								csvFiles		= new ArrayList<String>();
+	ArrayList<String> csvFiles = new ArrayList<String>();
 
 	@Attribute(required = false)
-	String											agentColumn		= "Agent";
+	String agentColumn = "Agent";
 
 	// Used internally to get agents by name
-	Map<String, PotentialAgent>						agents			= new LinkedHashMap<String, PotentialAgent>();
+	Map<String, FunctionalRole> fRoles = new LinkedHashMap<String, FunctionalRole>();
 
 	@Override
-	public void prePreTick()
-	{
+	public void prePreTick() {
 		for (Cell cell : region.getAllCells()) {
-			for (CapitalUpdateFunction f : functions.get(cell.getOwner().getType())) {
+			for (CapitalUpdateFunction f : functions.get(cell.getOwner()
+					.getFC().getFR())) {
 				f.apply(cell);
 			}
 		}
 	}
 
 	@Override
-	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception
-	{
+	public void initialise(ModelData data, RunInfo info, Region extent)
+			throws Exception {
 		super.initialise(data, info, extent);
-		for (PotentialAgent a : extent.getAllPotentialAgents()) {
-			agents.put(a.getID(), a);
-		}
+
+		fRoles = extent.getFunctionalRoleMapByLabel();
+
 		// Load in the serialised stuff
-		for (Entry<String, CapitalUpdateFunction> e : serialFunctions.entrySet()) {
-			if (agents.containsKey(e.getKey())) {
-				functions.put(agents.get(e.getKey()), e.getValue());
+		for (Entry<String, CapitalUpdateFunction> e : serialFunctions
+				.entrySet()) {
+			if (fRoles.containsKey(e.getKey())) {
+				functions.put(fRoles.get(e.getKey()), e.getValue());
 			}
 		}
 
@@ -106,25 +106,22 @@ public class AgentTypeUpdater extends AbstractUpdater
 		}
 	}
 
-	public void readCSVFile(String CSVFile) throws Exception
-	{
+	public void readCSVFile(String CSVFile) throws Exception {
 		ABMPersister pers = info.getPersister();
 		if (CSVFile != null
-				&& pers.csvFileOK(getClass(), CSVFile, region.getPeristerContextExtra(),
-						agentColumn))
-		{
-			CsvReader reader = pers.getCSVReader(CSVFile, region.getPeristerContextExtra());
-			while (reader.readRecord())
-			{
+				&& pers.csvFileOK(getClass(), CSVFile,
+						region.getPeristerContextExtra(), agentColumn)) {
+			CsvReader reader = pers.getCSVReader(CSVFile,
+					region.getPeristerContextExtra());
+			while (reader.readRecord()) {
 				String agent = reader.get(agentColumn);
-				if (agent != null && agent != "" && agents.containsKey(agent))
-				{
-					PotentialAgent ag = agents.get(agent);
-					for (Capital c : data.capitals)
-					{
+				if (agent != null && agent != "" && fRoles.containsKey(agent)) {
+					FunctionalRole ag = fRoles.get(agent);
+					for (Capital c : data.capitals) {
 						String val = reader.get(c.getName());
 						if (val != null && val != "") {
-							functions.put(ag, getCSVFunction(c, Double.parseDouble(val)));
+							functions.put(ag,
+									getCSVFunction(c, Double.parseDouble(val)));
 						}
 					}
 				}
@@ -133,15 +130,15 @@ public class AgentTypeUpdater extends AbstractUpdater
 	}
 
 	/**
-	 * Creates a new function for the value from a csv file. Defaults to proportional change
-	 * functions. Override to use a different kind of function
+	 * Creates a new function for the value from a csv file. Defaults to
+	 * proportional change functions. Override to use a different kind of
+	 * function
 	 * 
 	 * @param c
 	 * @param value
-	 * @return capital update function
+	 * @return
 	 */
-	public CapitalUpdateFunction getCSVFunction(Capital c, double value)
-	{
+	public CapitalUpdateFunction getCSVFunction(Capital c, double value) {
 		return new ProportionalChangeFunction(c, value);
 	}
 
@@ -154,4 +151,5 @@ public class AgentTypeUpdater extends AbstractUpdater
 	public static interface CapitalUpdateFunction extends Initialisable {
 		public void apply(Cell c);
 	}
+
 }

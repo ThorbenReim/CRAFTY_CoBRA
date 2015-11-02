@@ -1,0 +1,5 @@
+<globalInstitutions>
+	<globalInstitution class="org.volante.abm.institutions.global.GlobalSubsidyInstitution"> 
+		<serviceSubsidy service="FOOD">2.0</serviceSubsidy>
+	</globalInstitution>
+</globalInstitutions>

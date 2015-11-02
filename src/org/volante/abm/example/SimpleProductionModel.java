@@ -57,12 +57,12 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 	 */
 	static private Logger			logger				= Logger.getLogger(SimpleProductionModel.class);
 
-	DoubleMatrix<Capital, Service> capitalWeights = 
+	protected DoubleMatrix<Capital, Service> capitalWeights =
 			new DoubleMatrix<Capital, Service>( simpleCapitals, simpleServices );
-	DoubleMap<Service> productionWeights = new DoubleMap<Service>( simpleServices, 1 );
+	protected DoubleMap<Service> productionWeights = new DoubleMap<Service>(simpleServices, 1);
 	
 	@Attribute(required=false)
-	String							csvFile				= "";
+	String csvFile = null;
 	
 	
 	public SimpleProductionModel() {}
@@ -82,6 +82,13 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 		this.productionWeights.put( productionWeights );
 	}
 	
+	/**
+	 * Initialises capital weights and production weights only when not already
+	 * compliant with model data.
+	 * 
+	 * @see org.volante.abm.serialization.Initialisable#initialise(org.volante.abm.data.ModelData,
+	 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Region)
+	 */
 	@Override
 	public void initialise( ModelData data, RunInfo info, Region r ) throws Exception
 	{
@@ -89,8 +96,15 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 			initWeightsFromCSV(data, info, r);
 		} else
 		{
-			capitalWeights = new DoubleMatrix<Capital, Service>( data.capitals, data.services );
-			productionWeights = new DoubleMap<Service>( data.services );
+			if (!capitalWeights.rows().equals(data.services)
+					|| !capitalWeights.cols().equals(data.capitals)) {
+				capitalWeights = new DoubleMatrix<Capital, Service>(
+						data.capitals, data.services);
+			}
+
+			if (!productionWeights.getKeySet().equals(data.services)) {
+				productionWeights = new DoubleMap<Service>(data.services);
+			}
 		}
 	}
 	
@@ -179,13 +193,14 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 	}
 
 	/**
-	 * Creates a copy of this model, but with noise added to either the production weights or the
-	 * importance weights. Either or both distributions can be null for zero noise
+	 * Creates a copy of this model, but with noise added to either the
+	 * production weights or the importance weights. Either or both
+	 * distributions can be null for zero noise
 	 * 
 	 * @param data
 	 * @param production
 	 * @param importance
-	 * @return production model
+	 * @return new production model
 	 */
 	public SimpleProductionModel copyWithNoise(ModelData data, Distribution production,
 			Distribution importance)

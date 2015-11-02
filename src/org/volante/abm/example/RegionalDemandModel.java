@@ -55,37 +55,41 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
  *
  */
 public class RegionalDemandModel implements DemandModel, PreTickAction, PostTickAction {
-	Region							region;
+
+	Logger log = Logger.getLogger(getClass());
+
+	protected Region region;
 	
 	/**
 	 * If true, the demand will be updated every time an agent changes as owner of a cell.
 	 */
 	@Attribute(required = false)
-	boolean							updateOnAgentChange	= true;
-	Map<Cell, DoubleMap<Service>>	supply				= new HashMap<Cell, DoubleMap<Service>>();
-	DoubleMap<Service>				totalSupply			= null;
-	DoubleMap<Service>				residual			= null;
-	DoubleMap<Service>				perCellResidual		= null;
-	DoubleMap<Service>				demand				= null;
-	DoubleMap<Service>				perCellDemand		= null;
-	RunInfo							runInfo				= null;
-	ModelData						modelData			= null;
+	protected boolean updateOnAgentChange = true;
+	/**
+	 * Required to update totalSupply in case of agent change.
+	 */
+	protected Map<Cell, DoubleMap<Service>> supply = new HashMap<Cell, DoubleMap<Service>>();
+	protected DoubleMap<Service> totalSupply = null;
+	protected DoubleMap<Service> residual = null;
+	protected DoubleMap<Service> perCellResidual = null;
+	protected DoubleMap<Service> demand = null;
+	protected DoubleMap<Service> perCellDemand = null;
+	protected RunInfo runInfo = null;
+	protected ModelData modelData = null;
 
 	/**
 	 * Name of CSV file that contains per-year demand levels
 	 */
 	@Attribute(required = false)
-	String							demandCSV			= null;
+	protected String demandCSV = null;
 	
 	/**
 	 * Name of column in CSV file that specifies the year a row belongs to
 	 */
 	@Attribute(required = false)
-	String							yearCol				= "Year";
+	protected String yearCol = "Year";
 
-	Logger							log					= Logger.getLogger(getClass());
-
-	Map<Service, Curve>				demandCurves		= new HashMap<Service, Curve>();
+	protected Map<Service, Curve> demandCurves = new HashMap<Service, Curve>();
 
 	@Override
 	public void initialise(ModelData data, RunInfo info, Region r) throws Exception {

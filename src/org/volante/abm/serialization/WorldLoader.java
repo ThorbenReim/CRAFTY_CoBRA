@@ -28,6 +28,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import mpi.MPI;
+
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
@@ -54,6 +56,8 @@ public class WorldLoader {
 	List<String> regionCSV = new ArrayList<String>();
 	
 	@Attribute(required=false)
+	String					pidColumn			= "pid";
+	@Attribute(required = false)
 	String idColumn = "ID";
 	@Attribute(required=false)
 	String competitionColumn = "Competition";
@@ -61,14 +65,27 @@ public class WorldLoader {
 	String allocationColumn = "Allocation";
 	@Attribute(required=false)
 	String demandColumn = "Demand";
+
+	@Attribute(required = false)
+	String btColumn = "Behavioural Types";
 	@Attribute(required=false)
-	String potentialColumn = "Agents";
+	String frColumn = "Functional Roles";
+
 	@Attribute(required=false)
 	String institutionsColumn = "Institutions";
 	@Attribute(required = false)
 	String cellColumn = "Cell Initialisers";
 	@Attribute(required=false)
+	String socNetColumn = "Social Network";
+
+	@Attribute(required=false)
+	String initialisersColumn = "Initialisers";
+
+	@Attribute(required = false)
 	String agentColumn = "Agent Initialisers";
+
+	@Attribute(required = false)
+	String laraModelColumn = "LARA Model";
 
 	ABMPersister persister = ABMPersister.getInstance();
 	ModelData modelData = new ModelData();
@@ -97,7 +114,22 @@ public class WorldLoader {
 	{
 		RegionSet rs = new RegionSet();
 		for( RegionLoader rl : loaders ) {
-			rs.addRegion( loadRegion( rl ) );
+			try {
+				Class.forName("mpi.MPI");
+				if (MPI.COMM_WORLD.Rank() == rl.getUid()) {
+					Region r = loadRegion(rl);
+
+					logger.info("Run region " + r + " on rank " + MPI.COMM_WORLD.Rank());
+
+					rs.addRegion(r);
+				}
+			} catch (ClassNotFoundException exception) {
+				Region r = loadRegion(rl);
+
+				logger.info("No MPI. Region " + r + " loaded.");
+
+				rs.addRegion(r);
+			}
 		}
 		return rs;
 	}
@@ -130,14 +162,23 @@ public class WorldLoader {
 	RegionLoader loaderFromCSV( CsvReader reader ) throws IOException
 	{
 		RegionLoader rl = new RegionLoader(
+((reader.getIndex(pidColumn) == -1) ? "-1" : BatchRunParser.parseString(
+						reader.get(pidColumn), info)),
 				BatchRunParser.parseString(reader.get(idColumn), info),
 				BatchRunParser.parseString(reader.get(competitionColumn), info),
 				BatchRunParser.parseString(reader.get(allocationColumn), info),
 				BatchRunParser.parseString(reader.get(demandColumn), info),
-				BatchRunParser.parseString(reader.get(potentialColumn), info),
+				BatchRunParser.parseString(reader.get(btColumn), info), 
+				BatchRunParser.parseString(reader.get(frColumn), info),
 				BatchRunParser.parseString(reader.get(cellColumn), info),
 				null,
-				BatchRunParser.parseString(reader.get(institutionsColumn), info));
+				BatchRunParser.parseString(reader.get(socNetColumn), info),
+				BatchRunParser.parseString(reader.get(institutionsColumn), info),
+				BatchRunParser.parseString(reader.get(laraModelColumn), info));
+
+		if (!reader.get(this.initialisersColumn).equals("")) {
+			rl.initialiserFiles.add(reader.get(this.initialisersColumn));
+		}
 		return rl;
 	}
 	

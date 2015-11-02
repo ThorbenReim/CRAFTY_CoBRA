@@ -1,0 +1,24 @@
+<decisonConfigurations>
+	<dConfig>
+		<id>FrSelection</id>
+		<preference>Competitiveness</preference>
+		<preference>NeighbourApproval</preference>
+		<preference>SocialApproval</preference>
+		<singleSelectedBoExpected>true</singleSelectedBoExpected>
+	</dConfig>
+	<dConfig>
+		<id>DecisionA</id>
+		<preference>PreferenceB</preference>
+		<preference>PreferenceC</preference>
+	</dConfig>
+	<dConfig>
+		<id>DecisionB</id>
+		<preference>PreferenceA</preference>
+		<preference>PreferenceC</preference>
+	</dConfig>
+	<dConfig>
+		<id>Innovation</id>
+		<preference>PreferenceA</preference>
+		<preference>PreferenceB</preference>
+	</dConfig>
+</decisonConfigurations>

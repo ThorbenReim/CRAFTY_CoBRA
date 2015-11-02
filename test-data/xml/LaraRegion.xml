@@ -1,0 +1,18 @@
+<region id="Region">
+  <!-- Initialise cells from a CSV file -->
+	<cellInitialiser class="org.volante.abm.serialization.CellCSVReader" csvFile="csv/SmallWorldRegion1.csv" />
+	
+	<!--  all the models use default settings, an are inline -->
+	<competition class="org.volante.abm.example.SimpleCompetitivenessModel" />
+	<allocation class="org.volante.abm.example.GiveUpGiveInAllocationModel"/>
+	<demand class="org.volante.abm.example.RegionalDemandModel" demandCSV="csv/Region1Demand.csv"/>
+	
+	<frFile>xml/FunctionalRoles_SmallWorld.xml</frFile>
+	<btFile>xml/BehaviouralTypes.xml</btFile>
+	
+	<regionalLaraModel>
+		<Boolean param="de.cesr.lara.components.param.LBasicPa:EVENTBUS_FORCE_SEQUENTIAL">true</Boolean>
+		<String param="de.cesr.lara.toolbox.param.LXmlConfigPa:XML_PATH_PREFERENCES">xml/LaraPreferences.xml</String>
+		<String param="de.cesr.lara.toolbox.param.LXmlConfigPa:XML_PATH_DCONFIG">xml/LaraDecisionConfigurations.xml</String>
+	</regionalLaraModel>
+</region>

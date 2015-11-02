@@ -24,12 +24,16 @@ package org.volante.abm.agent;
 
 
 import org.apache.log4j.Logger;
+import org.volante.abm.agent.fr.DefaultFR;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
+import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.models.ProductionModel;
 import org.volante.abm.models.nullmodel.NullProductionModel;
+import org.volante.abm.param.RandomPa;
 
 import com.moseph.modelutils.fastdata.DoubleMap;
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
@@ -49,44 +53,42 @@ public class DefaultAgent extends AbstractAgent {
 	static private Logger	logger	= Logger.getLogger(DefaultAgent.class);
 
 
-	/*
-	 * Characteristic fields (define an agent)
-	 */
-	protected ProductionModel	production	= NullProductionModel.INSTANCE;
-	protected double			givingUp	= -Double.MAX_VALUE;
-	protected double			givingIn	= Double.MAX_VALUE;
-	protected PotentialAgent	type		= null;
-
-	public DefaultAgent() {
-	}
-
 	public DefaultAgent(String id, ModelData data) {
-		this(null, id, data, null, NullProductionModel.INSTANCE, -Double.MAX_VALUE,
+		this(DefaultFR.UNMANAGED_FR, id, data, null,
+				NullProductionModel.INSTANCE, -Double.MAX_VALUE,
 				Double.MAX_VALUE);
 	}
 
-	public DefaultAgent(PotentialAgent type, ModelData data, Region r, ProductionModel prod,
+	public DefaultAgent(FunctionalRole fRole, ModelData data, Region r,
+			ProductionModel prod,
 			double givingUp, double givingIn) {
-		this(type, "NA", data, r, prod, givingUp, givingIn);
+		this(fRole, "NA", data, r, prod, givingUp, givingIn);
 	}
 
-	public DefaultAgent(PotentialAgent type, String id, ModelData data, Region r,
-			ProductionModel prod, double givingUp, double givingIn) {
-		this.id = id;
-		this.type = type;
-		this.region = r;
-		this.production = prod;
-		this.givingUp = givingUp;
-		this.givingIn = givingIn;
+	public DefaultAgent(FunctionalRole fRole, String id, ModelData data,
+			Region r) {
+		this(fRole, id, data, r, fRole.getProduction(), fRole
+				.getMeanGivingUpThreshold(),
+				fRole.getMeanGivingInThreshold());
+	}
 
+	public DefaultAgent(FunctionalRole fRole, String id, ModelData data,
+			Region r, ProductionModel prod, double givingUp, double givingIn) {
+		super(r);
+		this.id = id;
+		this.propertyProvider.setProperty(
+				AgentPropertyIds.GIVING_UP_THRESHOLD, givingUp);
+		this.propertyProvider.setProperty(
+				AgentPropertyIds.GIVING_IN_THRESHOLD, givingIn);
+		fRole.assignNewFunctionalComp(this);
 		productivity = new DoubleMap<Service>(data.services);
 	}
 
 	@Override
 	public void updateSupply() {
-		productivity.clear();
+		this.productivity.clear();
 		for (Cell c : cells) {
-			production.production(c, c.getModifiableSupply());
+			this.getProductionModel().production(c, c.getModifiableSupply());
 
 			if (logger.isDebugEnabled()) {
 				logger.debug(this + "(cell " + c.getX() + "|" + c.getY() + "): " + c.getModifiableSupply().prettyPrint());
@@ -100,61 +102,80 @@ public class DefaultAgent extends AbstractAgent {
 	 */
 	@Override
 	public ProductionModel getProductionModel() {
-		return this.production;
+		return this.getFC().getProduction();
 	}
 
 	@Override
 	public void considerGivingUp() {
-		if (currentCompetitiveness < givingUp) {
-			giveUp();
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug(this + "> Consider giving up: "
+					+ this.getProperty(AgentPropertyIds.COMPETITIVENESS)
+					+ " (competitiveness) < "
+					+ this.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)
+					+ " (threshold)?");
+		}
+		// LOGGING ->
+
+		if (this.getProperty(AgentPropertyIds.COMPETITIVENESS) < this
+				.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)) {
+
+			if (this.region.getRandom().getURService().nextDouble(RandomPa.RANDOM_SEED_RUN_GIVINGUP.name()) < this
+					.getProperty(AgentPropertyIds.GIVING_UP_PROB)) {
+				giveUp();
+			} else {
+				// <- LOGGING
+				if (logger.isDebugEnabled()) {
+					logger.debug(this + "> GivingUp rejected!");
+				}
+				// LOGGING ->
+			}
 		}
 	}
 
 	@Override
 	public boolean canTakeOver(Cell c, double incoming) {
-		return incoming > (getCompetitiveness() + givingIn);
+		return incoming > (this.getProperty(AgentPropertyIds.COMPETITIVENESS) + this
+				.getProperty(AgentPropertyIds.GIVING_IN_THRESHOLD));
 	}
 
 	@Override
 	public UnmodifiableNumberMap<Service> supply(Cell c) {
 		DoubleMap<Service> prod = productivity.duplicate();
-		production.production(c, prod);
+		this.getFC().getProduction().production(c, prod);
 		return prod;
 	}
 
 	public void setProductionFunction(ProductionModel f) {
-		this.production = f;
+		this.getFC().setProductionFunction(f);
 	}
 
 	public ProductionModel getProductionFunction() {
-		return production;
-	}
-
-	public void setGivingUp(double g) {
-		this.givingUp = g;
-	}
-
-	public void setGivingIn(double g) {
-		this.givingIn = g;
-	}
-
-	@Override
-	public double getGivingUp() {
-		return givingUp;
-	}
-
-	@Override
-	public double getGivingIn() {
-		return givingIn;
-	}
-
-	@Override
-	public PotentialAgent getType() {
-		return type;
+		return this.getFC().getProduction();
 	}
 
 	@Override
 	public String infoString() {
-		return "Giving up: " + givingUp + ", Giving in: " + givingIn + ", nCells: " + cells.size();
+		return "Giving up: "
+				+ this.propertyProvider
+						.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)
+				+ ", Giving in: "
+				+ this.propertyProvider
+						.getProperty(AgentPropertyIds.GIVING_IN_THRESHOLD)
+				+ ", nCells: " + cells.size();
+	}
+
+	@Override
+	public void receiveNotification(
+			de.cesr.more.basic.agent.MoreObservingNetworkAgent.NetworkObservation observation,
+			Agent object) {
+	}
+
+	/**
+	 * @see org.volante.abm.agent.Agent#die()
+	 */
+	@Override
+	public void die() {
+		// nothing to do
 	}
 }

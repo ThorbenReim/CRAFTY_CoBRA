@@ -10,7 +10,7 @@
 	
 <target name="CRAFTY-Jar-Creation" description="Creates a jar file from CRAFTY">
 	<echo>"Destination: ${dir_target}/CRAFTY.jar"</echo>
-    <jar destfile="${dir_target}/CRAFTY.jar"
+    <jar destfile="${dir_target}/CRAFTY-CoBRA.jar"
         update="false"
         compress="true"
         duplicate="add">

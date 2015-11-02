@@ -24,6 +24,8 @@ package org.volante.abm.serialization;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
+import mpi.MPI;
+
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -37,6 +39,8 @@ import org.volante.abm.schedule.ScheduleThread;
 import org.volante.abm.visualisation.ScheduleControls;
 import org.volante.abm.visualisation.TimeDisplay;
 
+import de.cesr.more.basic.MManager;
+import de.cesr.more.util.MVersionInfo;
 import de.cesr.parma.core.PmParameterManager;
 
 
@@ -61,8 +65,20 @@ public class ModelRunner
 
 	public static void main( String[] args ) throws Exception
 	{
+		logger.info("Start CRAFTY CoBRA");
+
+		String[] realArgs = null;
+		try {
+			Class.forName("mpi.MPI");
+			realArgs = MPI.Init(args);
+
+		} catch (ClassNotFoundException e) {
+			logger.error("No MPI in classpath!");
+			realArgs = args;
+		}
+
 		CommandLineParser parser = new BasicParser();
-		CommandLine cmd = parser.parse(manageOptions(), args);
+		CommandLine cmd = parser.parse(manageOptions(), realArgs);
 
 		if (cmd.hasOption('h')) {
 			HelpFormatter formatter = new HelpFormatter();
@@ -73,7 +89,8 @@ public class ModelRunner
 		boolean interactive = cmd.hasOption("i");
 
 		String filename = cmd.hasOption("f") ? cmd.getOptionValue('f') : "xml/test-scenario.xml";
-		String directory = cmd.hasOption("d") ? cmd.getOptionValue('d') : "test-data";
+		String directory = cmd.hasOption("d") ? cmd.getOptionValue('d')
+				: "data";
 
 		int start = cmd.hasOption("s") ? Integer.parseInt(cmd.getOptionValue('s'))
 				: Integer.MIN_VALUE;
@@ -90,8 +107,11 @@ public class ModelRunner
 		clog("StartTick", "" + (start == Integer.MIN_VALUE ? "<ScenarioFile>" : start));
 		clog("EndTick", "" + (end == Integer.MIN_VALUE ? "<ScenarioFile>" : end));
 
-		clog("CRAFY_SocialRevision", CVersionInfo.REVISION_NUMBER);
-		clog("CRAFY_SocialBuildDate", CVersionInfo.TIMESTAMP);
+		clog("CRAFY_CoBRA Revision", CVersionInfo.REVISION_NUMBER);
+		clog("CRAFY_CoBRA BuildDate", CVersionInfo.TIMESTAMP);
+		
+		clog("MoRe Revision", MVersionInfo.revisionNumber);
+		clog("MoRe BuildDate", MVersionInfo.timeStamp);
 
 		if (end < start) {
 			logger.error("End tick must not be larger than start tick!");
@@ -129,12 +149,23 @@ public class ModelRunner
 				}
 			}
 		}
+
+		try {
+			Class.forName("mpi.MPI");
+			MPI.Finalize();
+		} catch (ClassNotFoundException e) {
+			logger.error("No MPI in classpath!");
+		} catch (Exception exception) {
+			logger.error("Error during MPI finilization: "
+					+ exception.getMessage());
+			exception.printStackTrace();
+		}
 	}
 
 	public static void doRun(String filename, int start,
 			int end, RunInfo rInfo, boolean interactive) throws Exception
 	{
-		ScenarioLoader loader = setupRun(filename, rInfo);
+		ScenarioLoader loader = setupRun(filename, start, end, rInfo);
 		if (interactive) {
 			interactiveRun(loader);
 		} else {
@@ -144,7 +175,7 @@ public class ModelRunner
 		}
 	}
 
-	public static void noninteractiveRun(ScenarioLoader loader, int start, int end)
+	public static void noninteractiveRun( ScenarioLoader loader, int start, int end )
 	{
 		logger.info(String.format("Running from %s to %s\n",
 				(start == Integer.MIN_VALUE ? "<ScenarioFile>" : start + ""),
@@ -185,7 +216,8 @@ public class ModelRunner
 		controls.setVisible( true );
 	}
 
-	public static ScenarioLoader setupRun(String filename, RunInfo rInfo) throws Exception
+	public static ScenarioLoader setupRun(String filename,
+			int start, int end, RunInfo rInfo) throws Exception
 	{
 		// TODO override persister method
 		ScenarioLoader loader = ABMPersister.getInstance().readXML(ScenarioLoader.class, filename,
@@ -285,5 +317,6 @@ public class ModelRunner
 	protected static void finalActions(RunInfo rInfo) {
 		rInfo.getOutputs().removeClosingOutputThreads();
 		PmParameterManager.reset();
+		MManager.reset();
 	}
 }

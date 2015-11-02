@@ -32,6 +32,7 @@ import org.volante.abm.agent.Agent;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.CleanupRegionHelper;
 import org.volante.abm.data.Region;
+import org.volante.abm.example.AgentPropertyIds;
 
 
 /**
@@ -60,14 +61,20 @@ public class PreAllocationStorageCleanupRegionHelper implements CleanupRegionHel
 	public void cleanUp(Region region, Set<Agent> agentsToRemove) {
 		for (Cell c : region.getAllCells()) {
 			if (!c.getOwner().equals(Agent.NOT_MANAGED)){
-				preAllocDataMap.put(c, new PreAllocData(c.getOwner().getType().getSerialID(), 
-						c.getOwner().getCompetitiveness(), c.getOwner().getGivingUp()));
+				preAllocDataMap.put(
+						c,
+						new PreAllocData(c.getOwner().getFC().getFR().getSerialID(), c.getOwner().getProperty(
+								AgentPropertyIds.COMPETITIVENESS), c.getOwner().getProperty(
+								AgentPropertyIds.GIVING_UP_THRESHOLD)));
 			}
 		}
 		for (Agent a : agentsToRemove) {
 			for (Cell c : a.getCells()) {
-				preAllocDataMap.put(c, new PreAllocData(a.getType().getSerialID(),
-						a.getCompetitiveness(), a.getGivingUp()));
+				preAllocDataMap.put(
+						c,
+						new PreAllocData(a.getFC().getFR().getSerialID(), a
+								.getProperty(AgentPropertyIds.COMPETITIVENESS), a
+								.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)));
 			}
 		}
 	}

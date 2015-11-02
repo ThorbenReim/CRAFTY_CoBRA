@@ -1,0 +1,26 @@
+<bType label="TriggerBT" serialID="33" class="org.volante.abm.agent.bt.CognitiveBT">
+	<triggers>
+		<trigger class="org.volante.abm.decision.FrCheckThresholdDecisionTrigger" 
+		id="CompetitionThresholdTrigger" competitivenessThreshold="0.2">
+			<dcId>FrSelection</dcId>
+		</trigger>
+	</triggers>
+	<laraAgentConfigurator class="de.cesr.lara.toolbox.config.xml.LXmlAgentConfigurator">
+		<bofile>./pas/FRCheckThresholdCompIndicatorPa.xml</bofile>
+		
+		<preferenceWeight pref="Competitiveness">1.0</preferenceWeight>
+		<preferenceWeight pref="SocialApproval">2.0</preferenceWeight>
+		
+		<preprocessorConfigurator>
+			<selectorEntry>
+				<dConfig>FrSelection</dConfig>
+				<selector class="org.volante.abm.lara.FrCheckDecisionModeSelector">
+					<imitatingDeciderFactory class="org.volante.abm.lara.decider.CapitalBasedImitatingFrDeciderFactory">
+						<diffFunction class="com.moseph.modelutils.curve.PowerCurve" exponent="2.0">
+						</diffFunction>
+					</imitatingDeciderFactory>
+				</selector>
+			</selectorEntry>
+		</preprocessorConfigurator>
+	</laraAgentConfigurator>
+</bType>

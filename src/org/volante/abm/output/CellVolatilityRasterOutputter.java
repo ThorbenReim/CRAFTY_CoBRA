@@ -46,7 +46,7 @@ import org.volante.abm.serialization.GloballyInitialisable;
  * @author Sascha Holzhauer
  * 
  */
-public class CellVolatilityRasterOutputter extends RasterOutputter implements GloballyInitialisable{
+public class CellVolatilityRasterOutputter extends RasterOutputter implements GloballyInitialisable {
 
 	/**
 	 * Used to record cells volatility, i.e. how often land use and/or agent

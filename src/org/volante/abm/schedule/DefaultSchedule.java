@@ -23,20 +23,25 @@ package org.volante.abm.schedule;
 
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.DefaultSocialAgent;
+import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.RegionSet;
+import org.volante.abm.example.RegionalDemandModel;
+import org.volante.abm.models.WorldSynchronisationModel;
 import org.volante.abm.output.Outputs;
 import org.volante.abm.schedule.ScheduleStatusEvent.ScheduleStage;
 
 
-public class DefaultSchedule implements Schedule {
-
+public class DefaultSchedule implements WorldSyncSchedule {
 	static int						idCounter		= 0;
 
 	protected int					id				= idCounter++;
@@ -51,11 +56,14 @@ public class DefaultSchedule implements Schedule {
 	List<PrePreTickAction>			prePreTickActions	= new ArrayList<PrePreTickAction>();
 	List<PreTickAction>				preTickActions	= new ArrayList<PreTickAction>();
 	List<PostTickAction>			postTickActions	= new ArrayList<PostTickAction>();
+	List<FinishAction> finishActions = new ArrayList<FinishAction>();
 
 	Outputs							output			= new Outputs();
 	private RunInfo					info			= null;
 
 	List<ScheduleStatusListener>	listeners		= new ArrayList<ScheduleStatusListener>();
+
+	WorldSynchronisationModel		worldSyncModel;
 
 	/*
 	 * Constructors
@@ -76,6 +84,11 @@ public class DefaultSchedule implements Schedule {
 	}
 
 	@Override
+	public void setWorldSyncModel(WorldSynchronisationModel worldSyncModel) {
+		this.worldSyncModel = worldSyncModel;
+	}
+
+	@Override
 	public void tick() {
 		log.info(this + ">\n********************\nStart of tick " + tick + "\n********************");
 		fireScheduleStatus(new ScheduleStatusEvent(tick, ScheduleStage.PRE_TICK, true));
@@ -88,7 +101,20 @@ public class DefaultSchedule implements Schedule {
 			c.initEffectiveCapitals();
 		}
 
+		// check and register for decisions (which are performed at
+		// preTickUpdates)
+		Set<Agent> allAgents = new LinkedHashSet<Agent>();
+		for (Region region : regions.getAllRegions()) {
+			allAgents.addAll(region.getAllAllocatedAgents());
+			allAgents.addAll(region.getAllAmbulantAgents());
+		}
+
+		for (Agent a : allAgents) {
+			a.tickStartUpdate();
+		}
+
 		preTickUpdates();
+		// e.g. update institutions
 
 		fireScheduleStatus(new ScheduleStatusEvent(tick,
 				ScheduleStage.MAIN_LOOP, true));
@@ -100,32 +126,32 @@ public class DefaultSchedule implements Schedule {
 			}
 		}
 
-		for (Agent a : regions.getAllAgents()) {
-			a.tickStartUpdate();
+		// perceive social network if existent:
+		for (Region r : regions.getAllRegions()) {
+			r.perceiveSocialNetwork();
 		}
-		
+
+		// Recalculate agent competitiveness and give up
 		if (this.getCurrentTick() > this.getStartTick()) {
 			log.info("Update agents' competitiveness and consider giving up ...");
-			for (Agent a : regions.getAllAgents()) {
+			for (Agent a : regions.getAllAllocatedAgents()) {
+				if (a instanceof InnovativeBC) {
+					((InnovativeBC) a).considerInnovationsNextStep();
+				}
+	
 				a.updateCompetitiveness();
 				a.considerGivingUp();
 			}
-
-			// Remove any unneeded agents
-			for (Region r : regions.getAllRegions()) {
-				r.cleanupAgents();
-			}
-
+	
 			// Allocate land
-			log.info("Allocate unmanged cells ...");
 			for (Region r : regions.getAllRegions()) {
 				r.getAllocationModel().allocateLand(r);
 			}
 		}
-
+		
 		// Calculate supply
 		log.info("Update agents' supply...");
-		for (Agent a : regions.getAllAgents()) {
+		for (Agent a : regions.getAllAllocatedAgents()) {
 			a.updateSupply();
 		}
 
@@ -134,13 +160,36 @@ public class DefaultSchedule implements Schedule {
 			r.getDemandModel().updateSupply();
 		}
 
-		for (Agent a : regions.getAllAgents()) {
+		// in order to recalculate residuals (which is done during updateSupply()) and to calculate
+		// competitiveness, the market-level residuals must be known:
+		if (worldSyncModel != null) {
+			this.worldSyncModel.synchronizeNumOfCells(regions);
+			this.worldSyncModel.synchronizeDemand(regions);
+			this.worldSyncModel.synchronizeSupply(regions);
+		}
+
+		for (Region r : regions.getAllRegions()) {
+			if (r.getDemandModel() instanceof RegionalDemandModel) {
+				((RegionalDemandModel) r.getDemandModel())
+						.recalculateResidual();
+			}
+		}
+
+		for (Agent a : regions.getAllAllocatedAgents()) {
 			a.updateCompetitiveness();
+			a.tickEndUpdate();
+		}
+		// iterate ambulant agents:
+		for (Agent a : regions.getAllAmbulantAgents()) {
 			a.tickEndUpdate();
 		}
 
 		fireScheduleStatus(new ScheduleStatusEvent(tick, ScheduleStage.POST_TICK, true));
 		postTickUpdates();
+
+
+		log.info("Number of Agents in total: "
+				+ DefaultSocialAgent.numberAgents);
 
 		output();
 		log.info("\n********************\nEnd of tick " + tick + "\n********************");
@@ -151,6 +200,7 @@ public class DefaultSchedule implements Schedule {
 	@Override
 	public void finish() {
 		output.finished();
+		this.finishUpdates();
 		fireScheduleStatus(new ScheduleStatusEvent(tick, ScheduleStage.FINISHING, true));
 	}
 
@@ -281,6 +331,18 @@ public class DefaultSchedule implements Schedule {
 		}
 	}
 
+	private void finishUpdates() {
+		log.info("Finish\t\t (DefaultSchedule ID " + id + ")");
+
+		// copy to prevent concurrent modifications:
+		List<FinishAction> finishActionsCopy = new ArrayList<FinishAction>(
+				finishActions);
+
+		for (FinishAction p : finishActionsCopy) {
+			p.afterLastTick();
+		}
+	}
+
 	@Override
 	public void register(TickAction o) {
 		if (o instanceof PrePreTickAction && !prePreTickActions.contains(o)) {
@@ -291,6 +353,9 @@ public class DefaultSchedule implements Schedule {
 		}
 		if (o instanceof PostTickAction && !postTickActions.contains(o)) {
 			postTickActions.add((PostTickAction) o);
+		}
+		if (o instanceof FinishAction && !finishActions.contains(o)) {
+			finishActions.add((FinishAction) o);
 		}
 	}
 
@@ -340,10 +405,5 @@ public class DefaultSchedule implements Schedule {
 		for (ScheduleStatusListener l : listeners) {
 			l.scheduleStatus(e);
 		}
-	}
-
-	@Override
-	public void addStatusListener(ScheduleStatusListener l) {
-		listeners.add(l);
 	}
 }

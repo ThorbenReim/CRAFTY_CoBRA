@@ -23,16 +23,17 @@
 package org.volante.abm.example;
 
 import static org.volante.abm.agent.Agent.NOT_MANAGED_COMPETITION;
-import static org.volante.abm.agent.Agent.NOT_MANAGED_ID;
+import static org.volante.abm.agent.Agent.NOT_MANAGED_FR_ID;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.DefaultFR;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
-import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.RegionSet;
 import org.volante.abm.models.ProductionModel;
@@ -63,76 +64,100 @@ public class IntegratedTest extends BasicTestsUtils
 			{0, 0, 0, 0, 0, 0, 0}, //Food
 			{0, 0, 0, 0, 0, 0, 0} //Recreation
 	};
+
 	ProductionModel farmingProdModel = new SimpleProductionModel( farmingCapital, farmingProduction );
 	ProductionModel forestProdModel = new SimpleProductionModel( forestCapital, forestProduction );
 	
-	ModelData data = new ModelData();
-	Cell c1 = new Cell();
-	Cell c2 = new Cell();
-	Cell c3 = new Cell();
-	Cell c4 = new Cell();
-	Set<Cell> cells = new HashSet<Cell>( Arrays.asList( c1, c2, c3, c4 ) );
-	SimpleAllocationModel allocation = new SimpleAllocationModel();
-	StaticPerCellDemandModel demand = new StaticPerCellDemandModel();
-	SimpleCompetitivenessModel competition = new SimpleCompetitivenessModel();
-	SimplePotentialAgent farming = new SimplePotentialAgent("Farming", data, farmingProdModel, 1, 1 );
-	SimplePotentialAgent forest = new SimplePotentialAgent("Forest", data, forestProdModel, 1, 1 );
-	Set<PotentialAgent> agents = new HashSet<PotentialAgent>( Arrays.asList( farming, forest ) );
+	Cell c1, c2, c3, c4;
+	Set<Cell> cells;
+
+	StaticPerCellDemandModel demand;
+
+	DefaultFR farming;
+	DefaultFR forest;
+	Set<FunctionalRole> fRoles;
 	
-	Region r1 = new Region( allocation, competition, demand, agents, c1, c2, c3, c4 );
+	Region r1;
 	RegionSet w;
 
-	public IntegratedTest() {
+	@Before
+	public void setupBasicTestEnvironment() {
+		super.setupBasicTestEnvironment();
+
+		farmingProdModel = new SimpleProductionModel(farmingCapital,
+				farmingProduction);
+		forestProdModel = new SimpleProductionModel(forestCapital,
+				forestProduction);
+
+		demand = new StaticPerCellDemandModel();
+		c1 = new Cell(1, 1);
+		c2 = new Cell(1, 2);
+		c3 = new Cell(1, 3);
+		c4 = new Cell(1, 4);
+
+		cells = new HashSet<Cell>(Arrays.asList(c1, c2, c3, c4));
+
+		farming = new DefaultFR("Farming", 1, farmingProdModel, 1, 1);
+		forest = new DefaultFR("Forest", 2, forestProdModel, 1, 1);
+
+		fRoles = new HashSet<FunctionalRole>(Arrays.asList(farming, forest));
+
+		r1 = new Region(allocation, competition, demand, behaviouralTypes,
+				fRoles, c1, c2, c3, c4);
+
 		w = new RegionSet(r1);
 		try {
-			w.initialise(data, new RunInfo(), null);
+			w.initialise(modelData, new RunInfo(), null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
+	public IntegratedTest() {
+	}
+
 	@Test
 	public void integratedTest() throws Exception
 	{
-		competition.setRemoveCurrentLevel( true );
+		((SimpleCompetitivenessModel) competition).setRemoveCurrentLevel(true);
 		for( Cell c : cells ) {
 			c.setBaseCapitals( capitals( 1, 1, 1, 1, 1, 1, 1 ) );
 		}
 		DefaultSchedule sched = new DefaultSchedule( w );
 		sched.initialise( modelData, runInfo, null );
-		sched.tick();
+		sched.tick(); // Tick 0
 		assertUnmanaged( c1, c2, c3, c4  );
 		
 		demand.setDemand( c1, services( 0, 0, 10, 0 ));
 		demand.updateSupply();
-		assertEqualMaps( services(0,0,1,0), farming.getPotentialSupply( c1 ));
+		assertEqualMaps( services(0,0,1,0), farming.getExpectedSupply( c1 ));
 		assertEqualMaps( demand.getDemand( c1 ), services(0,0,10,0));
 		assertEqualMaps( demand.getResidualDemand( c1 ), services(0,0,10,0));
-		sched.tick();
+		sched.tick(); // Tick 1
 		print(services(0,0,10,0).prettyPrint());
 		assertUnmanaged(  c2, c3, c4  );
-		assertAgent( "Farming", 10, c1 );
+		assertFunctionalRole( "Farming", 10, c1 );
 		
 		demand.setDemand( c1, services( 0, 0, 5, 0 ));
-		sched.tick();
-		assertAgent( "Farming", 5, c1 );
+		sched.tick(); // Tick 2
+		assertFunctionalRole( "Farming", 5, c1 );
 
 		demand.setDemand( c1, services( 0, 0, 0.5, 0 ));
-		sched.tick();
+		sched.tick(); // Tick 3
 		assertUnmanaged( c1, c2, c3, c4  );
-		assertAgent( NOT_MANAGED_ID, NOT_MANAGED_COMPETITION, c1 );
+		assertFunctionalRole(NOT_MANAGED_FR_ID, NOT_MANAGED_COMPETITION, c1);
 
 		demand.setDemand( c1, services( 0, 5, 0, 0 ));
 		demand.setDemand( c2, services( 0, 5, 0, 0 ));
-		sched.tick();
+		sched.tick(); // Tick 5
 		assertUnmanaged(  c3, c4  );
-		assertAgent( "Forest", 5, c1, c2 );
+		assertFunctionalRole( "Forest", 5, c1, c2 );
 		
 		demand.setDemand( c1, services( 0, 0, 5, 0 ));
-		sched.tick();
+		sched.tick(); // Tick 6
 		assertUnmanaged(  c3, c4  );
-		assertAgent( "Forest", 5, c2 );
-		assertAgent( "Farming", 5, c1 );
+		assertFunctionalRole( "Forest", 5, c2 );
+		assertFunctionalRole( "Farming", 5, c1 );
 	}
 
 }

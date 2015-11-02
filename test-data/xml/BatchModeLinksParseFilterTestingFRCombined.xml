@@ -1,0 +1,8 @@
+<agent class="org.volante.abm.agent.fr.DefaultFR" 
+	givingUpMean="${@(csv/CsvBatchRunParserTest.csv ~ @@(csv; secondA)/CsvBatchRunParserSecondaryTest.csv, givingUp)}" 
+	givingInMean="${@(csv/CsvBatchRunParserTest.csv ~ @@(csv; secondB)/CsvBatchRunParserSecondaryTest.csv, givingIn)}" 
+		label="${@@(id; AgentID)_TestAgent_@(Runs.csv, agentID)}" 
+		serialID="1">
+	<production class="org.volante.abm.example.SimpleProductionModel" 
+			csvFile="csv/LowIntensityArable.csv" />
+</agent>

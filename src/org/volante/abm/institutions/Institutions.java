@@ -22,12 +22,14 @@
  */
 package org.volante.abm.institutions;
 
+
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Root;
-import org.volante.abm.agent.PotentialAgent;
+import org.volante.abm.agent.fr.FunctionalComponent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -38,22 +40,48 @@ import org.volante.abm.schedule.RunInfo;
 
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
 
+
 @Root
 public class Institutions implements Institution, PreTickAction {
+
 	Set<Institution> institutions = new HashSet<Institution>();
-	Region				region			= null;
-	ModelData			data			= null;
-	RunInfo				info			= null;
+
+	Region region = null;
+	ModelData data = null;
+	RunInfo info = null;
 	Logger log = Logger.getLogger(getClass());
 
 	public void addInstitution(Institution i) {
 		institutions.add(i);
+		try {
+			i.initialise(data, info, region);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+	}
+
+	/**
+	 * @param i
+	 * @return true if the given institution was registered at this Institutions
+	 */
+	public boolean hasInstitution(Institution i) {
+		return institutions.contains(i);
 	}
 
 	@Override
-	public boolean isAllowed(PotentialAgent a, Cell c) {
+	public boolean isAllowed(FunctionalComponent a, Cell c) {
 		for (Institution i : institutions) {
 			if (!i.isAllowed(a, c)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean isAllowed(FunctionalRole fr, Cell c) {
+		for (Institution i : institutions) {
+			if (!i.isAllowed(fr, c)) {
 				return false;
 			}
 		}
@@ -68,17 +96,15 @@ public class Institutions implements Institution, PreTickAction {
 	}
 
 	/**
-	 * @see org.volante.abm.institutions.Institution#adjustCompetitiveness(org.volante.abm.agent.PotentialAgent,
-	 *      org.volante.abm.data.Cell,
-	 *      com.moseph.modelutils.fastdata.UnmodifiableNumberMap, double)
+	 * @see org.volante.abm.institutions.Institution#adjustCompetitiveness(org.volante.abm.agent.fr.FunctionalRole,
+	 *      org.volante.abm.data.Cell, com.moseph.modelutils.fastdata.UnmodifiableNumberMap, double)
 	 */
 	@Override
-	public double adjustCompetitiveness(PotentialAgent agent, Cell location,
-			UnmodifiableNumberMap<Service> provision, double competitiveness) {
+	public double adjustCompetitiveness(FunctionalRole fComp, Cell location, UnmodifiableNumberMap<Service> provision,
+			double competitiveness) {
 		double result = competitiveness;
 		for (Institution i : institutions) {
-			result = i.adjustCompetitiveness(agent, location,
-					provision, result);
+			result = i.adjustCompetitiveness(fComp, location, provision, result);
 		}
 		return result;
 	}
@@ -101,14 +127,10 @@ public class Institutions implements Institution, PreTickAction {
 	}
 
 	@Override
-	public void initialise(ModelData data, RunInfo info, Region extent)
-			throws Exception {
+	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
 		this.data = data;
 		this.info = info;
 		this.region = extent;
-		for (Institution i : institutions) {
-			i.initialise(data, info, extent);
-		}
 	}
 
 	/**
@@ -117,5 +139,12 @@ public class Institutions implements Institution, PreTickAction {
 	@Override
 	public void preTick() {
 		update();
+	}
+
+	/**
+	 * @return true if any institution registered
+	 */
+	public boolean hasInstitutions() {
+		return !institutions.isEmpty();
 	}
 }

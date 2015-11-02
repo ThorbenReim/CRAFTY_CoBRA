@@ -116,6 +116,4 @@ public interface Schedule extends Initialisable {
 	public void runFromTo(int start, int end);
 
 	public void finish();
-
-	public void addStatusListener(ScheduleStatusListener l);
 }

@@ -1,0 +1,4 @@
+<deciderFactory class="org.volante.abm.lara.decider.CapitalBasedImitatingFrDeciderFactory">
+	<diffFunction class="com.moseph.modelutils.curve.Identity">
+	</diffFunction>
+</deciderFactory>
