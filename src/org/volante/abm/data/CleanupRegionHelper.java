@@ -26,7 +26,7 @@ package org.volante.abm.data;
 
 import java.util.Set;
 
-import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 
 
 /**
@@ -36,6 +36,6 @@ import org.volante.abm.agent.Agent;
  */
 public interface CleanupRegionHelper extends RegionHelper {
 
-	public void cleanUp(Region region, Set<Agent> agentsToRemove);
+	public void cleanUp(Region region, Set<LandUseAgent> agentsToRemove);
 
 }

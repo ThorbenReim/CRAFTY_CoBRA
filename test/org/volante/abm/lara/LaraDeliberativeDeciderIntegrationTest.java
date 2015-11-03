@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.example.BasicTestsUtils;
 import org.volante.abm.example.StaticPerCellDemandModel;
@@ -38,8 +38,8 @@ import org.volante.abm.example.StaticPerCellDemandModel;
  */
 public class LaraDeliberativeDeciderIntegrationTest extends BasicTestsUtils {
 
-	Agent agent = null;
-	Agent neighbour = null;
+	LandUseAgent agent = null;
+	LandUseAgent neighbour = null;
 
 	/**
 	 * @throws java.lang.Exception

@@ -50,13 +50,13 @@ import de.cesr.parma.core.PmParameterManager;
  * @author Sascha Holzhauer
  * 
  */
-public class DefaultSocialAgent extends DefaultAgent implements SocialAgent,
+public class DefaultSocialLandUseAgent extends DefaultLandUseAgent implements SocialAgent,
 		GeoAgent {
 
 	/**
 	 * Logger
 	 */
-	static private Logger										logger			= Logger.getLogger(DefaultSocialAgent.class);
+	static private Logger										logger			= Logger.getLogger(DefaultSocialLandUseAgent.class);
 
 	static public int numberAgents = 0;
 
@@ -73,7 +73,7 @@ public class DefaultSocialAgent extends DefaultAgent implements SocialAgent,
 	 * @param data
 	 *        model data
 	 */
-	public DefaultSocialAgent(String id, ModelData data) {
+	public DefaultSocialLandUseAgent(String id, ModelData data) {
 		super(id, data);
 		numberAgents++;
 	}
@@ -96,14 +96,14 @@ public class DefaultSocialAgent extends DefaultAgent implements SocialAgent,
 	 * @param givingIn
 	 *            giving in threshold
 	 */
-	public DefaultSocialAgent(FunctionalRole fRole, String id, ModelData data,
+	public DefaultSocialLandUseAgent(FunctionalRole fRole, String id, ModelData data,
 			Region r, ProductionModel prod, double givingUp, double givingIn) {
 		super(fRole, id, data, r, prod, givingUp, givingIn);
 		numberAgents++;
 	}
 
 	/**
-	 * @see org.volante.abm.agent.DefaultAgent#receiveNotification(de.cesr.more.basic.agent.MoreObservingNetworkAgent.NetworkObservation,
+	 * @see org.volante.abm.agent.DefaultLandUseAgent#receiveNotification(de.cesr.more.basic.agent.MoreObservingNetworkAgent.NetworkObservation,
 	 *      org.volante.abm.agent.Agent)
 	 */
 	@Override
@@ -157,7 +157,7 @@ public class DefaultSocialAgent extends DefaultAgent implements SocialAgent,
 	}
 
 	/**
-	 * @see org.volante.abm.agent.AbstractAgent#toString()
+	 * @see org.volante.abm.agent.AbstractLandUseAgent#toString()
 	 */
 	@Override
 	public String toString() {
@@ -171,7 +171,7 @@ public class DefaultSocialAgent extends DefaultAgent implements SocialAgent,
 	}
 
 	/**
-	 * @see org.volante.abm.agent.DefaultAgent#die()
+	 * @see org.volante.abm.agent.DefaultLandUseAgent#die()
 	 */
 	@Override
 	public void die() {

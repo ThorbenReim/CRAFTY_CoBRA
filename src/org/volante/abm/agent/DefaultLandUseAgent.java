@@ -45,34 +45,34 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
  * @author jasper
  * 
  */
-public class DefaultAgent extends AbstractAgent {
+public class DefaultLandUseAgent extends AbstractLandUseAgent {
 
 	/**
 	 * Logger
 	 */
-	static private Logger	logger	= Logger.getLogger(DefaultAgent.class);
+	static private Logger	logger	= Logger.getLogger(DefaultLandUseAgent.class);
 
 
-	public DefaultAgent(String id, ModelData data) {
+	public DefaultLandUseAgent(String id, ModelData data) {
 		this(DefaultFR.UNMANAGED_FR, id, data, null,
 				NullProductionModel.INSTANCE, -Double.MAX_VALUE,
 				Double.MAX_VALUE);
 	}
 
-	public DefaultAgent(FunctionalRole fRole, ModelData data, Region r,
+	public DefaultLandUseAgent(FunctionalRole fRole, ModelData data, Region r,
 			ProductionModel prod,
 			double givingUp, double givingIn) {
 		this(fRole, "NA", data, r, prod, givingUp, givingIn);
 	}
 
-	public DefaultAgent(FunctionalRole fRole, String id, ModelData data,
+	public DefaultLandUseAgent(FunctionalRole fRole, String id, ModelData data,
 			Region r) {
 		this(fRole, id, data, r, fRole.getProduction(), fRole
 				.getMeanGivingUpThreshold(),
 				fRole.getMeanGivingInThreshold());
 	}
 
-	public DefaultAgent(FunctionalRole fRole, String id, ModelData data,
+	public DefaultLandUseAgent(FunctionalRole fRole, String id, ModelData data,
 			Region r, ProductionModel prod, double givingUp, double givingIn) {
 		super(r);
 		this.id = id;

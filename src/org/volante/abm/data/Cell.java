@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.Initialisable;
 
@@ -59,7 +60,7 @@ public class Cell implements Initialisable {
 	DoubleMap<Service>	supply				= null;				// Current levels of spatialised
 																	// supply
 	// DoubleMap<Service> residual; //Residual demand
-	Agent owner = Agent.NOT_MANAGED;
+	LandUseAgent owner = Agent.NOT_MANAGED;
 	Region				region				= null;
 	String				id					= "";
 	int					x					= 0;
@@ -150,11 +151,11 @@ public class Cell implements Initialisable {
 	/*
 	 * Ownership
 	 */
-	public Agent getOwner() {
+	public LandUseAgent getOwner() {
 		return owner;
 	}
 
-	public void setOwner(Agent o) {
+	public void setOwner(LandUseAgent o) {
 		owner = o;
 	}
 

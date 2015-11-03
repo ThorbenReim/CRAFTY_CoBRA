@@ -31,7 +31,7 @@ import java.util.Set;
 import org.apache.commons.collections15.CollectionUtils;
 import org.apache.log4j.Logger;
 import org.junit.Test;
-import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.assembler.AgentAssembler;
 import org.volante.abm.agent.assembler.DefaultAgentAssembler;
 import org.volante.abm.agent.fr.FunctionalRole;
@@ -267,7 +267,7 @@ public class GiveUpGiveInAllocationTest extends BasicTestsUtils {
 		roles.add(vFarmer);
 		r.addfunctionalRoles(roles);
 
-		Agent vfarmerAgent = agentAssemblerR.assembleAgent(c1, "Pseudo",
+		LandUseAgent vfarmerAgent = agentAssemblerR.assembleAgent(c1, "Pseudo",
 				vFarmer.getLabel());
 		r.setOwnership(vfarmerAgent, c1);
 

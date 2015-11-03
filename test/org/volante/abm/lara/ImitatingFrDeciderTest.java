@@ -31,7 +31,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.assembler.AgentAssembler;
 import org.volante.abm.agent.assembler.DefaultAgentAssembler;
 import org.volante.abm.agent.bt.LaraBehaviouralComponent;
@@ -69,7 +69,7 @@ public class ImitatingFrDeciderTest extends BasicTestsUtils {
 	protected LaraDecisionData<LaraBehaviouralComponent, CraftyPa<?>> ddata;
 
 	protected Region r;
-	protected Agent focal;
+	protected LandUseAgent focal;
 
 	protected LaraDecisionConfiguration dConfig = new LDecisionConfiguration(
 			"TestDConfig");

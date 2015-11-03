@@ -9,7 +9,7 @@ import org.apache.commons.collections15.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultAgent;
+import org.volante.abm.agent.DefaultLandUseAgent;
 import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 
@@ -59,7 +59,7 @@ public class SimpleAllocationTest extends BasicTestsUtils
 		print(c11.getOwner().getID());
 		
 		demandR1.setResidual( c11, services(0, 0, 0, 0) );
-		((DefaultAgent) c11.getOwner()).setProperty(
+		((DefaultLandUseAgent) c11.getOwner()).setProperty(
 				AgentPropertyIds.GIVING_UP_THRESHOLD, 1);
 		c11.getOwner().updateCompetitiveness();
 		c11.getOwner().considerGivingUp();

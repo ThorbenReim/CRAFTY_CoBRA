@@ -34,7 +34,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultSocialAgent;
+import org.volante.abm.agent.DefaultSocialLandUseAgent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.agent.bt.InnovativeCognitiveBC;
 import org.volante.abm.data.ModelData;
@@ -120,11 +121,11 @@ public class RepeatingCsvInnvationTest extends InnovationTestUtils {
 
 		Service service = BasicTestsUtils.modelData.services.forName("FOOD");
 
-		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel());
-		Agent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel());
-		Agent three = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent three = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel());
 
 		double initialProductivity = ((ProductionWeightReporter) one.getProductionModel()).
@@ -154,13 +155,14 @@ public class RepeatingCsvInnvationTest extends InnovationTestUtils {
 
 		Service service = BasicTestsUtils.modelData.services.forName("FOOD");
 
-		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel(), "One");
 
-		Agent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel(), "Two");
 
-		Agent three = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent three =
+				this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel(), "Three");
 
 
@@ -188,7 +190,7 @@ public class RepeatingCsvInnvationTest extends InnovationTestUtils {
 		adoptAndCheckCsv(three, 3, false, service, initialProductivity);
 	}
 
-	protected void adoptAndCheckCsv(final Agent agent, int ticks,
+	protected void adoptAndCheckCsv(final LandUseAgent agent, int ticks,
 			boolean relToPreviousTick,
 			Service service,
 			double initialProductivity) {
@@ -230,7 +232,7 @@ public class RepeatingCsvInnvationTest extends InnovationTestUtils {
 
 	@Test
 	public void testInnovationRenewal() {
-		final Agent agent = new DefaultSocialAgent(innovativeFarming, "ID",
+		final Agent agent = new DefaultSocialLandUseAgent(innovativeFarming, "ID",
 				modelData, r1, farmingProduction.copyWithNoise(modelData, null,
 						null), 0.5, 0.5) {
 		};

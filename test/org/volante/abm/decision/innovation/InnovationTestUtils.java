@@ -35,6 +35,7 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.bt.BehaviouralType;
 import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.agent.bt.InnovativeCognitiveBC;
@@ -187,7 +188,7 @@ public class InnovationTestUtils extends BasicTestsUtils {
 	 * @param expectedProductivity
 	 * @param service
 	 */
-	public void checkCapital(Agent agent, double expectedProductivity,
+	public void checkCapital(LandUseAgent agent, double expectedProductivity,
 			Service service) {
 		double actualProductivity;
 		if (agent.getProductionModel() instanceof ProductionWeightReporter) {
@@ -202,7 +203,7 @@ public class InnovationTestUtils extends BasicTestsUtils {
 		}
 	}
 
-	public void checkCapitalChange(Agent agent, FunctionalRole fRole,
+	public void checkCapitalChange(LandUseAgent agent, FunctionalRole fRole,
 			double expectedProductivity, Service service) {
 		if (fRole.getProduction() instanceof ProductionWeightReporter) {
 			checkCapital(agent, expectedProductivity, service);

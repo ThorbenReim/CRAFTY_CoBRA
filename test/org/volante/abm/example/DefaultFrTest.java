@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultAgent;
+import org.volante.abm.agent.DefaultLandUseAgent;
 import org.volante.abm.agent.fr.DefaultFR;
 
 
@@ -39,7 +39,7 @@ public class DefaultFrTest extends BasicTestsUtils {
 	@Test
 	public void test() {
 		DefaultFR p = new DefaultFR("TestAgent", p1, 5, 3);
-		DefaultAgent ag = new DefaultAgent(p, "TestAgent", modelData, r1);
+		DefaultLandUseAgent ag = new DefaultLandUseAgent(p, "TestAgent", modelData, r1);
 		r1.setOwnership(ag, c11, c12);
 		
 		assertEquals(p1, ag.getProductionFunction());

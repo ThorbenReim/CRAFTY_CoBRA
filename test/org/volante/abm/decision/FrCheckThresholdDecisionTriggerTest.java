@@ -31,7 +31,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultSocialAgent;
+import org.volante.abm.agent.DefaultSocialLandUseAgent;
 import org.volante.abm.agent.bt.BehaviouralType;
 import org.volante.abm.agent.bt.LaraBehaviouralComponent;
 import org.volante.abm.decision.pa.CraftyPa;
@@ -119,7 +119,7 @@ public class FrCheckThresholdDecisionTriggerTest extends BasicTestsUtils {
 				BehaviouralType.class, FR_CHECK_THRESHOLD_BT_XML);
 
 		laraBT.initialise(modelData, runInfo, r1);
-		agent = new DefaultSocialAgent(farmingR1, "ID", modelData,
+		agent = new DefaultSocialLandUseAgent(farmingR1, "ID", modelData,
 				r1, farmingProduction.copyWithNoise(modelData, null, null),
 				0.5, 0.5) {
 		};

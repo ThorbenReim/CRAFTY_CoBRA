@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
-import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
@@ -103,7 +103,7 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 				.forName(CONSIDERED_CAPITAL);
 		double initialCapital = BasicTestsUtils.cellCapitalsA.get(capital);
 
-		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel(), "One");
 
 		Cell[] cells = this.r1cells.toArray(new Cell[1]);
@@ -137,7 +137,7 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 				.forName(CONSIDERED_CAPITAL);
 		double initialCapital = BasicTestsUtils.cellCapitalsA.get(capital);
 
-		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel(), "One");
 
 		Cell[] cells = this.r1cells.toArray(new Cell[1]);
@@ -167,7 +167,7 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 				.forName(CONSIDERED_CAPITAL);
 		double initialCapital = BasicTestsUtils.cellCapitalsA.get(capital);
 
-		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel(), "One");
 
 		Cell[] cells = this.r1cells.toArray(new Cell[1]);
@@ -203,13 +203,13 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 				.forName(CONSIDERED_CAPITAL);
 		Cell[] cells = this.r1cells.toArray(new Cell[1]);
 
-		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel(), "One");
 
 		cells[1].setBaseCapitals(cellCapitalsA);
 		this.r1.setOwnership(one, cells[1]);
 
-		Agent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel(), "Two");
 
 		cells[2].setBaseCapitals(cellCapitalsA);
@@ -258,7 +258,7 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 		institutions.addInstitution(institution);
 
 		// setup adopted agent:
-		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel(), "One");
 
 		Cell[] cells = this.r1cells.toArray(new Cell[1]);
@@ -303,7 +303,7 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 				cells[1].getBaseCapitals().getDouble(capital), 0.0001);
 	}
 
-	protected void checkCapitalLevel(final Agent agent, int ticks,
+	protected void checkCapitalLevel(final LandUseAgent agent, int ticks,
 			Capital capital, double initialCapitalValue) {
 
 		double expectedCapitalValue = initialCapitalValue

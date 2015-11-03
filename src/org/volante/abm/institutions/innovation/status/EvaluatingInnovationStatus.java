@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.example.AgentPropertyIds;
 
@@ -82,10 +83,10 @@ public class EvaluatingInnovationStatus extends SimpleInnovationStatus {
 	public void record() {
 		competitivenessHistory.add(this.bc
 				.getProperty(AgentPropertyIds.COMPETITIVENESS));
-		productionHistory.add(this.bc
-				.getAgent()
+		productionHistory.add(((LandUseAgent) this.bc.getAgent())
 				.supply(
-				this.bc.getAgent().getCells().iterator().next()).getDouble(
+				((LandUseAgent) this.bc.getAgent()).getCells().iterator().next())
+				.getDouble(
 				this.bc.getAgent().getRegion().getModelData().services.get(2)));
 		if (this.competitivenessHistory.size() != this.bc.getAgent()
 				.getRegion().getRinfo().getSchedule()

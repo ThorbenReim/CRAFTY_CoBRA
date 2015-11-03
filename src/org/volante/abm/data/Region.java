@@ -35,6 +35,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.SocialAgent;
 import org.volante.abm.agent.bt.BehaviouralType;
 import org.volante.abm.agent.fr.FunctionalComponent;
@@ -83,8 +84,8 @@ public class Region implements Regions, PreTickAction {
 	 * which usually involves random number generation (cells > available > allocation)
 	 */
 	Set<Cell>				cells						= new LinkedHashSet<Cell>();
-	Set<Agent> allocatedAgents = new LinkedHashSet<Agent>();
-	Set<Agent> ambulantAgents = new LinkedHashSet<Agent>();
+	Set<LandUseAgent> allocatedAgents = new LinkedHashSet<>();
+	Set<LandUseAgent> ambulantAgents = new LinkedHashSet<>();
 
 	AllocationModel			allocation;
 	CompetitivenessModel	competition;
@@ -127,7 +128,7 @@ public class Region implements Regions, PreTickAction {
 	/*
 	 * Unmodifiable versions to pass out as necessary
 	 */
-	Set<Agent> uAgents = Collections.unmodifiableSet(allocatedAgents);
+	Set<LandUseAgent> uAgents = Collections.unmodifiableSet(allocatedAgents);
 
 	Map<String, BehaviouralType> uBehaviouralTypesByLabel = Collections
 			.unmodifiableMap(behaviouralTypesByLabel);
@@ -474,7 +475,7 @@ public class Region implements Regions, PreTickAction {
 	 * 
 	 * @return collection of managing agents.
 	 */
-	public Collection<Agent> getAgents() {
+	public Collection<LandUseAgent> getAgents() {
 		return uAgents;
 	}
 
@@ -487,7 +488,7 @@ public class Region implements Regions, PreTickAction {
 	 * 
 	 * @param agent
 	 */
-	public void setAmbulant(Agent agent) {
+	public void setAmbulant(LandUseAgent agent) {
 		allocatedAgents.remove(agent);
 
 		// check whether too remove agent or make ambulant
@@ -500,7 +501,7 @@ public class Region implements Regions, PreTickAction {
 	 * 
 	 * @param agent
 	 */
-	public void removeAgent(Agent agent) {
+	public void removeAgent(LandUseAgent agent) {
 		for (Cell c : agent.getCells()) {
 			c.setOwner(Agent.NOT_MANAGED);
 			c.resetSupply();
@@ -534,8 +535,8 @@ public class Region implements Regions, PreTickAction {
 	 * @see org.volante.abm.data.Regions#getAllAllocatedAgents()
 	 */
 	@Override
-	public Collection<Agent> getAllAllocatedAgents() {
-		return new LinkedHashSet<Agent>(this.allocatedAgents);
+	public Collection<LandUseAgent> getAllAllocatedAgents() {
+		return new LinkedHashSet<LandUseAgent>(this.allocatedAgents);
 	}
 
 	/**
@@ -544,8 +545,8 @@ public class Region implements Regions, PreTickAction {
 	 * @see org.volante.abm.data.Regions#getAllAmbulantAgents()
 	 */
 	@Override
-	public Collection<Agent> getAllAmbulantAgents() {
-		return new LinkedHashSet<Agent>(this.ambulantAgents);
+	public Collection<LandUseAgent> getAllAmbulantAgents() {
+		return new LinkedHashSet<LandUseAgent>(this.ambulantAgents);
 	}
 
 	@Override
@@ -692,10 +693,10 @@ public class Region implements Regions, PreTickAction {
 	 * @param a
 	 * @param cells
 	 */
-	public void setOwnership(Agent a, Cell... cells) {
+	public void setOwnership(LandUseAgent a, Cell... cells) {
 		a.setRegion(this);
 		for (Cell c : cells) {
-			Agent cur = c.getOwner();
+			LandUseAgent cur = c.getOwner();
 			if (cur != null) {
 				log.trace(" removing agent " + cur + " from cell " + c);
 				cur.removeCell(c);
@@ -745,7 +746,7 @@ public class Region implements Regions, PreTickAction {
 	 * @param a
 	 * @param cells
 	 */
-	public void setInitialOwnership(Agent a, Cell... cells) {
+	public void setInitialOwnership(LandUseAgent a, Cell... cells) {
 		for (Cell c : cells) {
 			a.addCell(c);
 			c.setOwner(a);

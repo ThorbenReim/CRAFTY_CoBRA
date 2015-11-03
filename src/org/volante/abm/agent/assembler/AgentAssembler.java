@@ -23,7 +23,7 @@
  */
 package org.volante.abm.agent.assembler;
 
-import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.data.Cell;
 import org.volante.abm.serialization.Initialisable;
 
@@ -41,13 +41,13 @@ public interface AgentAssembler extends Initialisable {
 	 * @param frId
 	 * @return new agent
 	 */
-	public Agent assembleAgent(Cell homecell, int btId, int frId);
+	public LandUseAgent assembleAgent(Cell homecell, int btId, int frId);
 
-	public Agent assembleAgent(Cell homecell, int btId, int frId,
+	public LandUseAgent assembleAgent(Cell homecell, int btId, int frId,
 			String agentLabel);
 
-	public Agent assembleAgent(Cell homecell, String btLabel, String frLabel);
+	public LandUseAgent assembleAgent(Cell homecell, String btLabel, String frLabel);
 
-	public Agent assembleAgent(Cell homecell, String btLabel, String frLabel,
+	public LandUseAgent assembleAgent(Cell homecell, String btLabel, String frLabel,
 			String agentLabel);
 }

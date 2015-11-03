@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.CleanupRegionHelper;
 import org.volante.abm.data.Region;
@@ -58,7 +59,7 @@ public class PreAllocationStorageCleanupRegionHelper implements CleanupRegionHel
 	protected Map<Cell, PreAllocData>	preAllocDataMap	= new HashMap<>();
 
 	@Override
-	public void cleanUp(Region region, Set<Agent> agentsToRemove) {
+	public void cleanUp(Region region, Set<LandUseAgent> agentsToRemove) {
 		for (Cell c : region.getAllCells()) {
 			if (!c.getOwner().equals(Agent.NOT_MANAGED)){
 				preAllocDataMap.put(
@@ -68,7 +69,7 @@ public class PreAllocationStorageCleanupRegionHelper implements CleanupRegionHel
 								AgentPropertyIds.GIVING_UP_THRESHOLD)));
 			}
 		}
-		for (Agent a : agentsToRemove) {
+		for (LandUseAgent a : agentsToRemove) {
 			for (Cell c : a.getCells()) {
 				preAllocDataMap.put(
 						c,

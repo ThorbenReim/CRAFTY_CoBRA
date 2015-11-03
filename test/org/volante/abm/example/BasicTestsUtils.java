@@ -36,9 +36,10 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
-import org.volante.abm.agent.AbstractAgent;
+import org.volante.abm.agent.AbstractLandUseAgent;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultAgent;
+import org.volante.abm.agent.DefaultLandUseAgent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.assembler.AgentAssembler;
 import org.volante.abm.agent.assembler.DefaultAgentAssembler;
 import org.volante.abm.agent.bt.BehaviouralType;
@@ -99,7 +100,7 @@ import de.cesr.lara.toolbox.config.xml.LPersister;
  * <code>c\<Region><Number></code> per region: - {@link Region} r1 -
  * {@link Region} r2 - {@link Set} regions - {@link RegionSet} w
  * 
- * 2 Agents: - {@link AbstractAgent} a1 - {@link AbstractAgent} a2
+ * 2 Agents: - {@link AbstractLandUseAgent} a1 - {@link AbstractLandUseAgent} a2
  * 
  * - {@link ABMPersister} persister - sets for each regions cells
  * <code>r<region>cells</code>
@@ -379,8 +380,8 @@ public class BasicTestsUtils {
 			Arrays.asList(new Region[] { r1, r2 }));
 
 	public RegionSet w;
-	public Agent a1;
-	public Agent a2;
+	public LandUseAgent a1;
+	public LandUseAgent a2;
 
 	public ABMPersister persister = ABMPersister.getInstance();
 	Logger log = Logger.getLogger(getClass());
@@ -462,8 +463,8 @@ public class BasicTestsUtils {
 			e.printStackTrace();
 		}
 
-		a1 = new DefaultAgent("A1", modelData);
-		a2 = new DefaultAgent("A2", modelData);
+		a1 = new DefaultLandUseAgent("A1", modelData);
+		a2 = new DefaultLandUseAgent("A2", modelData);
 	}
 
 	/**

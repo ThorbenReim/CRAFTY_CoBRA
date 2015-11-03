@@ -33,8 +33,8 @@ import javafx.collections.transformation.SortedList;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Element;
-import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.FunctionalRoleProductionObserver;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.CellCapitalObserver;
@@ -161,7 +161,7 @@ fr.getExpectedSupply(cell1).getDouble(mainService), fr
 			if (competitiveness > fr.getMeanGivingUpThreshold()
 					&& c.getOwner().canTakeOver(c, competitiveness)) {
 
-				Agent agent = agentFinder.findAgent(c, Integer.MIN_VALUE, fr.getSerialID());
+				LandUseAgent agent = agentFinder.findAgent(c, Integer.MIN_VALUE, fr.getSerialID());
 
 				for (TakeoverObserver observer : takeoverObserver) {
 					observer.setTakeover(r, c.getOwner(), agent);

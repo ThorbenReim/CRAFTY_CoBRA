@@ -35,7 +35,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultSocialAgent;
+import org.volante.abm.agent.DefaultSocialLandUseAgent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
@@ -120,13 +121,14 @@ public class RepetitiveCapitalLevelInnovationTest extends InnovationTestUtils {
 		cells[2].setBaseCapitals(cellCapitalsA);
 		cells[3].setBaseCapitals(cellCapitalsA);
 
-		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel(), "One");
 
-		Agent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel(), "Two");
 
-		Agent three = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent three =
+				this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel(), "Three");
 
 		this.r1.setOwnership(one, cells[1]);
@@ -162,7 +164,7 @@ public class RepetitiveCapitalLevelInnovationTest extends InnovationTestUtils {
 								: 1));
 	}
 
-	protected void checkCapitalLevel(final Agent agent, int ticks,
+	protected void checkCapitalLevel(final LandUseAgent agent, int ticks,
 			Capital capital, double initialCapital) {
 		
 		double expectedValue = initialCapital;
@@ -186,7 +188,7 @@ public class RepetitiveCapitalLevelInnovationTest extends InnovationTestUtils {
 	 * @param expectedCapital
 	 * @param capital
 	 */
-	public void checkCapitalChange(Agent agent,
+	public void checkCapitalChange(LandUseAgent agent,
 			double expectedCapital,
 			Capital capital) {
 		// need to adopt here in order to enable time-delayed adoptions
@@ -215,7 +217,7 @@ public class RepetitiveCapitalLevelInnovationTest extends InnovationTestUtils {
 	 */
 	@Test
 	public void testInnovationRenewal() {
-		final Agent agent = new DefaultSocialAgent(
+		final Agent agent = new DefaultSocialLandUseAgent(
 				innovativeFarming, "ID", modelData, r1,
  farmingProduction.copyWithNoise(modelData, null,
 						null), 0.5, 0.5);

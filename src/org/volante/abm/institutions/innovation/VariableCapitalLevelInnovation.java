@@ -35,6 +35,7 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementMap;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
@@ -199,7 +200,7 @@ public class VariableCapitalLevelInnovation extends Innovation {
 		this.capitalAdjustmentAction = new PreTickAction() {
 			@Override
 			public void preTick() {
-				for (Cell c : ibc.getAgent().getCells()) {
+				for (Cell c : ((LandUseAgent) ibc.getAgent()).getCells()) {
 					DoubleMap<Capital> adjusted = modelData.capitalMap();
 					c.getEffectiveCapitals().copyInto(adjusted);
 					for (Capital capital : affectedCapitalObjects) {
@@ -223,7 +224,7 @@ public class VariableCapitalLevelInnovation extends Innovation {
 	@Override
 	public void unperform(InnovativeBC ibc) {
 		this.rInfo.getSchedule().unregister(capitalAdjustmentAction);
-		for (Cell c : ibc.getAgent().getCells()) {
+		for (Cell c : ((LandUseAgent) ibc.getAgent()).getCells()) {
 			DoubleMap<Capital> adjusted = modelData.capitalMap();
 			c.getEffectiveCapitals().copyInto(adjusted);
 			for (Capital capital : affectedCapitalObjects) {

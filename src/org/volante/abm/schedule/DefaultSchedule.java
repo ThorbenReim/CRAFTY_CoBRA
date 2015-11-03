@@ -29,7 +29,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultSocialAgent;
+import org.volante.abm.agent.DefaultSocialLandUseAgent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
@@ -134,7 +135,7 @@ public class DefaultSchedule implements WorldSyncSchedule {
 		// Recalculate agent competitiveness and give up
 		if (this.getCurrentTick() > this.getStartTick()) {
 			log.info("Update agents' competitiveness and consider giving up ...");
-			for (Agent a : regions.getAllAllocatedAgents()) {
+			for (LandUseAgent a : regions.getAllAllocatedAgents()) {
 				if (a instanceof InnovativeBC) {
 					((InnovativeBC) a).considerInnovationsNextStep();
 				}
@@ -151,7 +152,7 @@ public class DefaultSchedule implements WorldSyncSchedule {
 		
 		// Calculate supply
 		log.info("Update agents' supply...");
-		for (Agent a : regions.getAllAllocatedAgents()) {
+		for (LandUseAgent a : regions.getAllAllocatedAgents()) {
 			a.updateSupply();
 		}
 
@@ -175,7 +176,7 @@ public class DefaultSchedule implements WorldSyncSchedule {
 			}
 		}
 
-		for (Agent a : regions.getAllAllocatedAgents()) {
+		for (LandUseAgent a : regions.getAllAllocatedAgents()) {
 			a.updateCompetitiveness();
 			a.tickEndUpdate();
 		}
@@ -189,7 +190,7 @@ public class DefaultSchedule implements WorldSyncSchedule {
 
 
 		log.info("Number of Agents in total: "
-				+ DefaultSocialAgent.numberAgents);
+				+ DefaultSocialLandUseAgent.numberAgents);
 
 		output();
 		log.info("\n********************\nEnd of tick " + tick + "\n********************");

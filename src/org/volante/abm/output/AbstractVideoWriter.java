@@ -89,6 +89,18 @@ public abstract class AbstractVideoWriter implements CloseableOutput, Outputter,
 	@Attribute(required = false)
 	boolean				addTick			= true;
 
+	/**
+	 * If > 0 it's subtracted from width
+	 */
+	@Attribute(required = false)
+	protected int tickLocationX = 2;
+
+	/**
+	 * If > 0 it's subtracted from height
+	 */
+	@Attribute(required = false)
+	protected int tickLocationY = -2;
+
 	@Attribute(required = false)
 	protected int		everyNYears		= 1;
 	@Attribute(required = false)
@@ -105,11 +117,12 @@ public abstract class AbstractVideoWriter implements CloseableOutput, Outputter,
 	protected Outputs	outputs;
 	protected RunInfo	info;
 	protected ModelData	data;
+	protected Regions regions;
 
 	@Override
 	public void open() {
 		try {
-			fn = outputs.getOutputFilename(output, ".avi"); // Construct proper output filename
+			fn = outputs.getOutputFilename(output, ".avi", this.regions); // Construct proper output filename
 			File file = new File(fn);
 			Format format = new Format(MediaTypeKey, MediaType.VIDEO, //
 					EncodingKey, ENCODING_AVI_PNG,
@@ -145,8 +158,8 @@ public abstract class AbstractVideoWriter implements CloseableOutput, Outputter,
 						g.setColor(tickColor);
 						g.setFont(g.getFont().deriveFont(36.0f).deriveFont(Font.BOLD));
 						g.drawString("t=" + tickFormat.format(info.getSchedule().getCurrentTick()),
-								2,
-								height - 2);
+								tickLocationX < 0 ? width - tickLocationX : tickLocationX, tickLocationY < 0 ? height
+										- tickLocationY : tickLocationY);
 						g.dispose();
 					}
 					out.write(0, image, 1);
@@ -180,6 +193,7 @@ public abstract class AbstractVideoWriter implements CloseableOutput, Outputter,
 		outputs.registerClosableOutput(this);
 		this.info = info;
 		this.data = data;
+		this.regions = regions;
 	}
 
 	@Override

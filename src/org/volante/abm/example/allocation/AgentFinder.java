@@ -24,7 +24,7 @@
 package org.volante.abm.example.allocation;
 
 
-import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.data.Cell;
 import org.volante.abm.models.AllocationModel;
 import org.volante.abm.serialization.Initialisable;
@@ -38,6 +38,6 @@ import org.volante.abm.serialization.Initialisable;
  */
 public interface AgentFinder extends Initialisable {
 
-	public Agent findAgent(Cell homecell, int btId, int frId);
+	public LandUseAgent findAgent(Cell homecell, int btId, int frId);
 
 }

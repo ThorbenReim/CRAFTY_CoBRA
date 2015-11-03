@@ -31,6 +31,7 @@ import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementMap;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
@@ -182,7 +183,7 @@ public class RepeatingCapitalLevelInnovation extends Innovation implements
 	 */
 	@Override
 	public void perform(InnovativeBC ibc) {
-		for (Cell c : ibc.getAgent().getCells()) {
+		for (Cell c : ((LandUseAgent) ibc.getAgent()).getCells()) {
 			DoubleMap<Capital> adjusted = modelData.capitalMap();
 			c.getBaseCapitals().copyInto(adjusted);
 			adjusted.put(this.affectedCapitalObject, adjusted.get(affectedCapitalObject) * this.effectOnCapitalFactor);
@@ -195,7 +196,7 @@ public class RepeatingCapitalLevelInnovation extends Innovation implements
 	 */
 	@Override
 	public void unperform(InnovativeBC ibc) {
-		for (Cell c : ibc.getAgent().getCells()) {
+		for (Cell c : ((LandUseAgent) ibc.getAgent()).getCells()) {
 			DoubleMap<Capital> adjusted = modelData.capitalMap();
 			c.getBaseCapitals().copyInto(adjusted);
 			adjusted.put(this.affectedCapitalObject, adjusted.get(affectedCapitalObject) / this.effectOnCapitalFactor);

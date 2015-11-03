@@ -39,8 +39,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
-import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.GeoAgent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.SocialAgent;
 import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Capital;
@@ -304,7 +304,7 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 			if (competitiveness.get(c) > newAgentsGU
 					&& c.getOwner().canTakeOver(c, competitiveness.get(c))) {
 				
-				Agent agent = agentFinder.findAgent(c, Integer.MIN_VALUE,
+				LandUseAgent agent = agentFinder.findAgent(c, Integer.MIN_VALUE,
 						fr.getSerialID());
 
 				agent.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD,

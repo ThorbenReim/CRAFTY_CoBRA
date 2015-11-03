@@ -51,7 +51,7 @@ import com.moseph.modelutils.fastdata.DoubleMap;
  * @author dmrust
  * 
  */
-public abstract class AbstractAgent implements Agent {
+public abstract class AbstractLandUseAgent implements LandUseAgent {
 
 	@ElementMap(inline = true, entry = "property", attribute = true, required = false, key = "param", valueType = Double.class)
 	Map<String, Object> params = new HashMap<String, Object>();
@@ -73,7 +73,7 @@ public abstract class AbstractAgent implements Agent {
 	Set<Cell>						uCells					= Collections.unmodifiableSet(cells);
 
 
-	public AbstractAgent(Region region) {
+	public AbstractLandUseAgent(Region region) {
 		this.region = region;
 		this.propertyProvider = new DoublePropertyProviderComp();
 
@@ -226,7 +226,6 @@ public abstract class AbstractAgent implements Agent {
 
 	public void giveUp() {
 		region.removeAgent(this);
-		this.die();
 	}
 
 	/**

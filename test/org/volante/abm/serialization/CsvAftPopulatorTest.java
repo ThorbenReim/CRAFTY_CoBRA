@@ -35,6 +35,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.data.Cell;
 import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.example.BasicTestsUtils;
@@ -416,7 +417,7 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 	 * 
 	 */
 	protected void checkManagedCells(Map<String, Set<Cell>> managedCells) {
-		for (Agent agent : this.r1.getAgents()) {
+		for (LandUseAgent agent : this.r1.getAgents()) {
 			for (Cell cell : agent.getCells()) {
 				assertTrue("Check if cell shall be managed by the given agent",
 						managedCells.get(agent.getID()).contains(cell));

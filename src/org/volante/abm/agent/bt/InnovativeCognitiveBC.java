@@ -269,7 +269,7 @@ public class InnovativeCognitiveBC extends CognitiveBC implements InnovativeBC {
 	}
 
 	/**
-	 * @see org.volante.abm.agent.DefaultAgent#receiveNotification(de.cesr.more.basic.agent.MoreObservingNetworkAgent.NetworkObservation,
+	 * @see org.volante.abm.agent.DefaultLandUseAgent#receiveNotification(de.cesr.more.basic.agent.MoreObservingNetworkAgent.NetworkObservation,
 	 *      org.volante.abm.agent.Agent)
 	 */
 	@Override

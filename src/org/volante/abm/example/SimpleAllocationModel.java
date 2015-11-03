@@ -32,8 +32,8 @@ import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
-import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.GeoAgent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.SocialAgent;
 import org.volante.abm.agent.assembler.DefaultSocialAgentAssembler;
 import org.volante.abm.agent.fr.FunctionalRole;
@@ -127,7 +127,11 @@ public class SimpleAllocationModel implements AllocationModel,
 		}
 	}
 
-	private void createBestAgentForCell(Region r, Cell c) {
+	/**
+	 * @param r
+	 * @param c
+	 */
+	protected void createBestAgentForCell(Region r, Cell c) {
 		List<FunctionalRole> fComps = new ArrayList<FunctionalRole>();
 		for (FunctionalRole fRole : r.getFunctionalRoleMapByLabel().values()) {
 			fComps.add(fRole);
@@ -164,7 +168,7 @@ public class SimpleAllocationModel implements AllocationModel,
 
 		if (bestFr != null) {
 			// acquire an agent with requested FR (and undefined BT):
-			Agent agent = agentFinder.findAgent(c, Integer.MIN_VALUE, bestFr.getSerialID());
+			LandUseAgent agent = agentFinder.findAgent(c, Integer.MIN_VALUE, bestFr.getSerialID());
 
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {

@@ -25,8 +25,8 @@ package org.volante.abm.agent.assembler;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Element;
-import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultAgent;
+import org.volante.abm.agent.DefaultLandUseAgent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.fr.LazyFR;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
@@ -80,7 +80,7 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 	 * @see org.volante.abm.agent.assembler.AgentAssembler#assembleAgent(org.volante.abm.data.Cell, int, int)
 	 */
 	@Override
-	public Agent assembleAgent(Cell homecell, int btIdInitial, int frIdInitial,
+	public LandUseAgent assembleAgent(Cell homecell, int btIdInitial, int frIdInitial,
 			String id) {
 		if (region == null) {
 			throw new IllegalStateException(
@@ -101,7 +101,8 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 			frId = frIdInitial;
 		}
 
-		Agent agent = new DefaultAgent((id != null ? id : "Agent_"
+		LandUseAgent agent =
+				new DefaultLandUseAgent((id != null ? id : "Agent_"
 				+ (homecell == null ? "" : homecell.toString())), mData);
 		agent.setRegion(this.region);
 		this.region.setAmbulant(agent);
@@ -128,7 +129,7 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 	}
 	
 	
-	public Agent assembleAgent(Cell homecell, String btLabel, String frLabel,
+	public LandUseAgent assembleAgent(Cell homecell, String btLabel, String frLabel,
 			String agentLabel) {
 
 		if (region == null) {
@@ -164,7 +165,7 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 	 *      int, int, java.lang.String)
 	 */
 	@Override
-	public Agent assembleAgent(Cell homecell, int btId, int frId) {
+	public LandUseAgent assembleAgent(Cell homecell, int btId, int frId) {
 		return this.assembleAgent(homecell, btId, frId, null);
 	}
 
@@ -173,7 +174,7 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 	 *      java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Agent assembleAgent(Cell homecell, String btLabel, String frLabel) {
+	public LandUseAgent assembleAgent(Cell homecell, String btLabel, String frLabel) {
 		return assembleAgent(homecell, btLabel, frLabel, null);
 	}
 
@@ -181,7 +182,7 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 	 * @see org.volante.abm.example.allocation.AgentFinder#findAgent(org.volante.abm.data.Cell, int, int)
 	 */
 	@Override
-	public Agent findAgent(Cell homecell, int btId, int frId) {
+	public LandUseAgent findAgent(Cell homecell, int btId, int frId) {
 		return this.assembleAgent(homecell, btId, frId);
 	}
 }

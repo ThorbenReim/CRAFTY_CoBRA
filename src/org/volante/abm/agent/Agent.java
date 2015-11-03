@@ -23,8 +23,6 @@
 package org.volante.abm.agent;
 
 
-import java.util.Set;
-
 import org.volante.abm.agent.bt.BehaviouralComponent;
 import org.volante.abm.agent.bt.PseudoBT;
 import org.volante.abm.agent.fr.FunctionalComponent;
@@ -51,12 +49,6 @@ import de.cesr.more.basic.agent.MoreObservingNetworkAgent;
 public interface Agent extends DoublePropertyProvider,
 		MoreObservingNetworkAgent<Agent> {
 
-	/**
-	 * Returns all the cells the agent manages
-	 *
-	 * @return cells the agent manages
-	 */
-	public Set<Cell> getCells();
 
 	/**
 	 * @return the cell that is considered as the agent's base cell
@@ -71,57 +63,6 @@ public interface Agent extends DoublePropertyProvider,
 	 */
 	public void setHomeCell(Cell homecell);
 
-	/**
-	 * Removes the cell from the set the agent manages
-	 *
-	 * @param c
-	 */
-	public void removeCell(Cell c);
-
-
-	/**
-	 * Returns the production model of this agent (refers to the FR).
-	 * 
-	 * @return production model
-	 */
-	public ProductionModel getProductionModel();
-
-	/**
-	 * Updates the agent's competitiveness, in response to demand changes etc.
-	 */
-	public void updateCompetitiveness();
-
-	/**
-	 * Recalculates the services this agent can supply
-	 */
-	public void updateSupply();
-
-	/**
-	 * Asks this agent if it wants to give up
-	 */
-	public void considerGivingUp();
-
-	/**
-	 * Returns what this agent could supply on the given cell
-	 *
-	 * @param c
-	 * @return unmodifiable supply map
-	 */
-	public UnmodifiableNumberMap<Service> supply(Cell c);
-
-	/**
-	 * Adds the cell to the cells this agent manages
-	 *
-	 * @param c
-	 */
-	public void addCell(Cell c);
-
-	/**
-	 * Returns true if this agent has lost all its cells and should be removed
-	 *
-	 * @return true if this agent is to remove
-	 */
-	public boolean notAllocated();
 
 	/**
 	 * Called to remove the agent instance from the system.
@@ -135,17 +76,6 @@ public interface Agent extends DoublePropertyProvider,
 	 */
 	public String getID();
 
-	/**
-	 * Return true if this agent is happy to cede to an agent with the given
-	 * level of competitiveness
-	 * 
-	 * @param c
-	 * @param competitiveness
-	 *            competing agents competitiveness
-	 * @return true if an agent with the given competitiveness can take over the
-	 *         given cell from this agents
-	 */
-	public boolean canTakeOver(Cell c, double competitiveness);
 
 	/**
 	 *
@@ -166,10 +96,10 @@ public interface Agent extends DoublePropertyProvider,
 	 */
 	public void tickEndUpdate();
 
-
 	public void setRegion(Region r);
 
 	public Region getRegion();
+
 
 	/**
 	 * Access Methods
@@ -182,19 +112,18 @@ public interface Agent extends DoublePropertyProvider,
 	 */
 	public BehaviouralComponent getBC();
 
-	public FunctionalComponent getFC();
-
 	public void setBC(BehaviouralComponent bt);
 
-	public void setFC(FunctionalComponent fr);
+	public FunctionalComponent getFC();
 
+	public void setFC(FunctionalComponent fr);
 
 	public static String NOT_MANAGED_AGENT_ID = "NOT_MANAGED";
 	public static String NOT_MANAGED_FR_ID = "Lazy FR";
 	public static double	NOT_MANAGED_COMPETITION	= -Double.MAX_VALUE;
 	
 	
-	public static Agent NOT_MANAGED = new AbstractAgent(null) {
+	public static LandUseAgent NOT_MANAGED = new AbstractLandUseAgent(null) {
 
 		{
 			id = NOT_MANAGED_AGENT_ID;
@@ -248,7 +177,7 @@ public interface Agent extends DoublePropertyProvider,
 		}
 
 		/**
-		 * @see org.volante.abm.agent.AbstractAgent#toString()
+		 * @see org.volante.abm.agent.AbstractLandUseAgent#toString()
 		 */
 		public String toString() {
 			return NOT_MANAGED_AGENT_ID;

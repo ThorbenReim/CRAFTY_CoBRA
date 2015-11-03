@@ -24,7 +24,7 @@ public class DefaultAgentTest extends BasicTestsUtils
 	 */
 	static private Logger	logger	= Logger.getLogger(DefaultAgentTest.class);
 
-	DefaultAgent farmer;
+	DefaultLandUseAgent farmer;
 	AgentAssembler assembler;
 
 	@Before
@@ -33,7 +33,7 @@ public class DefaultAgentTest extends BasicTestsUtils
 		assembler = new DefaultAgentAssembler();
 		assembler.initialise(modelData, runInfo, r1);
 
-		farmer = (DefaultAgent) assembler.assembleAgent(c11, "Cognitor",
+		farmer = (DefaultLandUseAgent) assembler.assembleAgent(c11, "Cognitor",
 				"C_Cereal");
 		r1.setOwnership(farmer, c11);
 		farmer.setProductionFunction(farmingProduction);
@@ -123,7 +123,7 @@ public class DefaultAgentTest extends BasicTestsUtils
 
 		assembler = new DefaultAgentAssembler();
 		assembler.initialise(modelData, runInfo, r);
-		farmer = (DefaultAgent) assembler.assembleAgent(c, "Cognitor",
+		farmer = (DefaultLandUseAgent) assembler.assembleAgent(c, "Cognitor",
 				"C_Cereal");
 
 		farmer.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, -5);

@@ -27,7 +27,7 @@ package org.volante.abm.decision.innovation;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.Service;
 import org.volante.abm.example.BasicTestsUtils;
@@ -87,7 +87,7 @@ public class RepeatingInnvationTest extends InnovationTestUtils {
 	public void testDiscountFactor() {
 		Service service = BasicTestsUtils.modelData.services.forName("FOOD");
 
-		Agent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel());
 
 		double initialProductivity = ((ProductionWeightReporter) one
@@ -99,7 +99,7 @@ public class RepeatingInnvationTest extends InnovationTestUtils {
 		BasicTestsUtils.runInfo.getSchedule().tick();
 
 		// Tick 2
-		Agent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel());
 
 		adoptAndCheck(two, 2, service, initialProductivity);
@@ -107,7 +107,7 @@ public class RepeatingInnvationTest extends InnovationTestUtils {
 		BasicTestsUtils.runInfo.getSchedule().tick();
 
 		// Tick 4
-		Agent three = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent three = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel());
 
 		adoptAndCheck(three, 4, service, initialProductivity);
@@ -116,7 +116,7 @@ public class RepeatingInnvationTest extends InnovationTestUtils {
 	/**
 	 * @param agent
 	 */
-	protected void adoptAndCheck(Agent agent, int ticks, Service service,
+	protected void adoptAndCheck(LandUseAgent agent, int ticks, Service service,
 			double initialProductivity) {
 		// need to adopt here in order to enable time-delayed adoptions
 		((InnovativeBC) agent.getBC()).makeAware(this.currentInnovation);

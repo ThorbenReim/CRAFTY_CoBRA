@@ -31,7 +31,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultAgent;
+import org.volante.abm.agent.DefaultLandUseAgent;
 import org.volante.abm.agent.bt.CognitiveBC;
 import org.volante.abm.agent.bt.LaraBehaviouralComponent;
 import org.volante.abm.decision.pa.CraftyPa;
@@ -61,7 +61,7 @@ public class FrCheckerDecisionModeSelectorTest extends BasicTestsUtils {
 
 	static final double THRESHOLD_EXPERIENCE = 0.6;
 
-	protected class TestAgent extends DefaultAgent {
+	protected class TestAgent extends DefaultLandUseAgent {
 		public TestAgent() {
 			super("TestAgent", BasicTestsUtils.modelData);
 		}

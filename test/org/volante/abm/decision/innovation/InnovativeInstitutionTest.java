@@ -26,7 +26,7 @@ package org.volante.abm.decision.innovation;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
-import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.data.Service;
 import org.volante.abm.decision.InnovationDecisionTrigger;
 import org.volante.abm.example.BasicTestsUtils;
@@ -91,11 +91,11 @@ public class InnovativeInstitutionTest extends InnovationTestUtils {
 		Service serviceTimber = BasicTestsUtils.modelData.services
 				.forName("TIMBER");
 		
-		Agent forester = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent forester = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeForestry.getLabel());
-		Agent farmerA = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent farmerA = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel());
-		Agent farmerB = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent farmerB = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel());
 
 		r1.setOwnership(forester, c11);
@@ -159,11 +159,11 @@ public class InnovativeInstitutionTest extends InnovationTestUtils {
 		Service serviceTimber = BasicTestsUtils.modelData.services
 				.forName("TIMBER");
 
-		Agent forester = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent forester = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeForestry.getLabel());
-		Agent farmerA = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent farmerA = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel());
-		Agent farmerB = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent farmerB = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel());
 
 		double initialProductivityForesterFood = ((ProductionWeightReporter) forester
@@ -219,11 +219,14 @@ public class InnovativeInstitutionTest extends InnovationTestUtils {
 		Service serviceFood = BasicTestsUtils.modelData.services.forName("FOOD");
 		Service serviceTimber = BasicTestsUtils.modelData.services.forName("TIMBER");
 		
-		Agent forester = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent forester =
+				this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeForestry.getLabel(), "Forester");
-		Agent farmerA = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent farmerA =
+				this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel(), "FarmerA");
-		Agent farmerB = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent farmerB =
+				this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel(), "FarmerB");
 
 		r1.setOwnership(forester, c11);
@@ -283,11 +286,11 @@ public class InnovativeInstitutionTest extends InnovationTestUtils {
 		Service serviceTimber = BasicTestsUtils.modelData.services
 				.forName("TIMBER");
 		
-		Agent forester = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent forester = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeForestry.getLabel());
-		Agent farmerA = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent farmerA = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel());
-		Agent farmerB = this.agentAssemblerR1.assembleAgent(null, "Innovator",
+		LandUseAgent farmerB = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel());
 
 		r1.setOwnership(forester, c11);

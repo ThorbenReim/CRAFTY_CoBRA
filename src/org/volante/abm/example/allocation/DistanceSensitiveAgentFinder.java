@@ -23,7 +23,7 @@
  */
 package org.volante.abm.example.allocation;
 
-import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -48,7 +48,7 @@ public class DistanceSensitiveAgentFinder implements AgentFinder {
 	 * @see org.volante.abm.example.allocation.AgentFinder#findAgent(org.volante.abm.data.Cell, int, int)
 	 */
 	@Override
-	public Agent findAgent(Cell homecell, int btId, int frId) {
+	public LandUseAgent findAgent(Cell homecell, int btId, int frId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

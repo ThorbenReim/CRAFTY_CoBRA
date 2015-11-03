@@ -6,7 +6,7 @@ import static org.volante.abm.example.SimpleService.FOOD;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.volante.abm.agent.DefaultAgent;
+import org.volante.abm.agent.DefaultLandUseAgent;
 import org.volante.abm.data.Service;
 
 import com.moseph.modelutils.curve.Curve;
@@ -15,8 +15,8 @@ import com.moseph.modelutils.fastdata.DoubleMap;
 public class SimpleRegionalDemandTest extends BasicTestsUtils
 {
 	RegionalDemandModel dem = new RegionalDemandModel();
-	private DefaultAgent farmer;
-	private DefaultAgent forester;
+	private DefaultLandUseAgent farmer;
+	private DefaultLandUseAgent forester;
 
 	@Before
 	public void setupFunction() throws Exception
@@ -25,10 +25,10 @@ public class SimpleRegionalDemandTest extends BasicTestsUtils
 		r1.setDemandModel( dem );
 		
 		//Create a farmer, get it farming
-		farmer = new DefaultAgent(farmingR1, "TestFarmer", modelData, r1);
+		farmer = new DefaultLandUseAgent(farmingR1, "TestFarmer", modelData, r1);
 
 		// Create a forester, get it managing
-		forester = new DefaultAgent(forestryR1, "TestForester", modelData, r1);
+		forester = new DefaultLandUseAgent(forestryR1, "TestForester", modelData, r1);
 	}
 	
 	@Test

@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.SocialAgent;
 import org.volante.abm.agent.bt.LaraBehaviouralComponent;
 import org.volante.abm.data.Cell;
@@ -121,7 +122,7 @@ public class FrSelectionPa extends CraftyPa<FrSelectionPa> implements LaraPerfor
 		Map<LaraPreference, Double> utilities = super.getModifiableUtilities();
 		// calculate competitiveness
 		double competitiveness = 0;
-		for (Cell c : getAgent().getAgent().getCells()) {
+		for (Cell c : ((LandUseAgent) getAgent().getAgent()).getCells()) {
 			competitiveness += c.getRegion().getCompetitiveness(
 					getAgent().getAgent().getRegion()
 							.getFunctionalRoleMapByLabel().get(this.getKey()),

@@ -30,7 +30,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultAgent;
+import org.volante.abm.agent.DefaultLandUseAgent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.Region;
 import org.volante.abm.example.BasicTestsUtils;
@@ -77,8 +78,8 @@ public class GlobalAgentFinderTest extends BasicTestsUtils {
 		c11.setBaseCapitals(cellCapitalsA);
 		c12.setBaseCapitals(cellCapitalsA);
 
-		a1 = new DefaultAgent("A1", modelData);
-		a2 = new DefaultAgent("A2", modelData);
+		a1 = new DefaultLandUseAgent("A1", modelData);
+		a2 = new DefaultLandUseAgent("A2", modelData);
 		
 		// cell 1 is suitable for timber
 		demandR1.setResidual(c11, services(0, 1, 0, 0));
@@ -109,8 +110,8 @@ public class GlobalAgentFinderTest extends BasicTestsUtils {
 		// init
 		demandR1.setResidual(c12, services(0, 1, 0, 0));
 
-		Agent a1 = this.agentAssemblerR1.assembleAgent(null, Integer.MIN_VALUE, 12);
-		Agent a2 = this.agentAssemblerR1.assembleAgent(null, Integer.MIN_VALUE, 12);
+		LandUseAgent a1 = this.agentAssemblerR1.assembleAgent(null, Integer.MIN_VALUE, 12);
+		LandUseAgent a2 = this.agentAssemblerR1.assembleAgent(null, Integer.MIN_VALUE, 12);
 		r1.setAmbulant(a1);
 		r1.setAmbulant(a2);
 
@@ -130,8 +131,8 @@ public class GlobalAgentFinderTest extends BasicTestsUtils {
 	@Test
 	public void testFindAgentSuitableAmbulantAgents() {
 		// init
-		Agent a1 = this.agentAssemblerR1.assembleAgent(null, Integer.MIN_VALUE, 11);
-		Agent a2 = this.agentAssemblerR1.assembleAgent(null, Integer.MIN_VALUE, 12);
+		LandUseAgent a1 = this.agentAssemblerR1.assembleAgent(null, Integer.MIN_VALUE, 11);
+		LandUseAgent a2 = this.agentAssemblerR1.assembleAgent(null, Integer.MIN_VALUE, 12);
 		r1.setAmbulant(a1);
 		r1.setAmbulant(a2);
 

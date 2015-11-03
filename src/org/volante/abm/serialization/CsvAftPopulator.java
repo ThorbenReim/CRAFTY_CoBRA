@@ -40,6 +40,7 @@ import org.apache.log4j.Logger;
 import org.geotools.util.UnsupportedImplementationException;
 import org.simpleframework.xml.Element;
 import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.assembler.AgentAssembler;
 import org.volante.abm.agent.assembler.DefaultSocialAgentAssembler;
 import org.volante.abm.agent.property.AgentPropertyId;
@@ -291,7 +292,8 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 				}
 						
 				// assemble agent
-				Agent agent = assembleAgent(rLoader, assignBT, assignFR,
+				LandUseAgent agent =
+						assembleAgent(rLoader, assignBT, assignFR,
 						reader, c, agentId, reader.get(btColumnName),
 						reader.get(frColumnName));
 
@@ -368,7 +370,8 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 
 		for (String agentId : agentIdSet) {
 			// assemble agent
-			Agent agent = assembleAgent(rLoader, assignBT, assignFR, reader,
+			LandUseAgent agent =
+					assembleAgent(rLoader, assignBT, assignFR, reader,
 					agentHomeCells.get(agentId), agentId,
 					agentBTs.get(agentId), agentFRs.get(agentId));
 			
@@ -399,7 +402,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 	 * @return agent
 	 * @throws IOException
 	 */
-	protected Agent assembleAgent(RegionLoader rLoader, boolean assignBT,
+	protected LandUseAgent assembleAgent(RegionLoader rLoader, boolean assignBT,
 			boolean assignFR, CsvReader reader, Cell c, String agentId,
 			String btValue, String frValue)
 			throws IOException {
@@ -444,7 +447,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 			frId = Integer.MIN_VALUE;
 		}
 
-		Agent agent = agentAssembler.assembleAgent(c, btId, frId, agentId);
+		LandUseAgent agent = agentAssembler.assembleAgent(c, btId, frId, agentId);
 		return agent;
 	}
 

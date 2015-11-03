@@ -25,8 +25,8 @@ package org.volante.abm.agent.assembler;
 
 
 import org.apache.log4j.Logger;
-import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.DefaultSocialAgent;
+import org.volante.abm.agent.DefaultSocialLandUseAgent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.fr.LazyFR;
 import org.volante.abm.data.Cell;
 
@@ -43,7 +43,7 @@ public class DefaultSocialAgentAssembler extends DefaultAgentAssembler {
 	static private Logger logger = Logger.getLogger(DefaultSocialAgentAssembler.class);
 
 	@Override
-	public Agent assembleAgent(Cell homecell, int btIdInitial, int frIdInitial, String id) {
+	public LandUseAgent assembleAgent(Cell homecell, int btIdInitial, int frIdInitial, String id) {
 		if (region == null) {
 			throw new IllegalStateException("Agent assembler has not been initialised!");
 		}
@@ -62,8 +62,8 @@ public class DefaultSocialAgentAssembler extends DefaultAgentAssembler {
 			frId = frIdInitial;
 		}
 
-		Agent agent =
-				new DefaultSocialAgent((id != null ? id : "Agent_" + (homecell == null ? "" : homecell.toString())),
+		LandUseAgent agent =
+				new DefaultSocialLandUseAgent((id != null ? id : "Agent_" + (homecell == null ? "" : homecell.toString())),
 						mData);
 		agent.setRegion(this.region);
 		this.region.setAmbulant(agent);

@@ -29,7 +29,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.bt.BehaviouralType;
 import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.schedule.RunInfo;
@@ -98,11 +98,11 @@ public class RegionSet implements Regions {
 	 * @see org.volante.abm.data.Regions#getAllAmbulantAgents()
 	 */
 	@Override
-	public Iterable<Agent> getAllAmbulantAgents() {
+	public Iterable<LandUseAgent> getAllAmbulantAgents() {
 		return Iterables.concat(Iterables.transform(regions,
-				new Function<Regions, Iterable<Agent>>() {
+ new Function<Regions, Iterable<LandUseAgent>>() {
 					@Override
-					public Iterable<Agent> apply(Regions r) {
+			public Iterable<LandUseAgent> apply(Regions r) {
 						return r.getAllAmbulantAgents();
 					}
 				}));
@@ -112,11 +112,11 @@ public class RegionSet implements Regions {
 	 * @see org.volante.abm.data.Regions#getAllAllocatedAgents()
 	 */
 	@Override
-	public Iterable<Agent> getAllAllocatedAgents() {
+	public Iterable<LandUseAgent> getAllAllocatedAgents() {
 		return Iterables.concat(Iterables.transform(regions,
-				new Function<Regions, Iterable<Agent>>() {
+ new Function<Regions, Iterable<LandUseAgent>>() {
 					@Override
-					public Iterable<Agent> apply(Regions r) {
+			public Iterable<LandUseAgent> apply(Regions r) {
 						return r.getAllAllocatedAgents();
 					}
 				}));

@@ -26,7 +26,7 @@ package org.volante.abm.example.allocation;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Element;
-import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.assembler.AgentAssembler;
 import org.volante.abm.agent.assembler.DefaultSocialAgentAssembler;
 import org.volante.abm.data.Cell;
@@ -69,14 +69,14 @@ public class GlobalAgentFinder implements AgentFinder {
 	 * @see org.volante.abm.example.allocation.AgentFinder#findAgent(org.volante.abm.data.Cell, int, int)
 	 */
 	@Override
-	public Agent findAgent(Cell homecell, int btId, int frId) {
+	public LandUseAgent findAgent(Cell homecell, int btId, int frId) {
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
 			logger.debug("Find agent for FR " + frId);
 		}
 		// LOGGING ->
 
-		for (Agent a : region.getAllAmbulantAgents()) {
+		for (LandUseAgent a : region.getAllAmbulantAgents()) {
 			if (a.getFC().getFR().getSerialID() == frId) {
 				return a;
 			}

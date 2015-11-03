@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
-import org.volante.abm.agent.DefaultAgent;
+import org.volante.abm.agent.DefaultLandUseAgent;
 import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
@@ -195,7 +195,7 @@ public class InstitutionsTest extends BasicTestsUtils
 		assertEqualMaps( expected, farmingR1.getExpectedSupply( c11 ));
 		
 		//And check they're used by the agent
-		DefaultAgent agent = new DefaultAgent(farmingR1, "TestFarmer", modelData,
+		DefaultLandUseAgent agent = new DefaultLandUseAgent(farmingR1, "TestFarmer", modelData,
 				r);
 		r.setOwnership(agent, c11);
 		agent.supply( c11 );
