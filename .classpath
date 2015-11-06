@@ -3,11 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="test-data"/>
-	<classpathentry kind="con" path="org.springsource.ide.eclipse.gradle.classpathcontainer">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CRAFTY_Social/lib/jniLibs"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="src" path="config/log4j"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/org.apache.servicemix.bundles/org.apache.servicemix.bundles.collections-generic/4.01_1/c6438663fc61073af21d5a0bc8f73e5ad73afd6/org.apache.servicemix.bundles.collections-generic-4.01_1.jar" sourcepath="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/org.apache.servicemix.bundles/org.apache.servicemix.bundles.collections-generic/4.01_1/176c951ad8881f4f25fd1c8ce4e84a53fab98066/org.apache.servicemix.bundles.collections-generic-4.01_1-sources.jar"/>
@@ -24,13 +19,17 @@
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/org.geotools/gt-opengis/9.0/3946422c91614d8e3a4d5186be522d24d94900f6/gt-opengis-9.0.jar" sourcepath="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/org.geotools/gt-opengis/9.0/11a0071c467abc02c0c4430eed5adaec441de797/gt-opengis-9.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/12.0.1/b8e78b9af7bf45900e14c6f958486b6ca682195f/guava-12.0.1.jar" sourcepath="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/12.0.1/7c344cc8f5d83f40c7af2c48b2d78cccefecec4e/guava-12.0.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.m2/repository/org/opengis/org.opengis.geoapi/20050403/org.opengis.geoapi-20050403.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/ModellingUtilities.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/javax.media/jai_core/1.1.3/b179d2efb1174658483e8b41bf4ac9d2eb5de438/jai_core-1.1.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/net.sourceforge.javacsv/javacsv/2.0/8092b1ba2d4929f2ec27e58cd240502afdd6a9a7/javacsv-2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.m2/repository/com/moseph/javaRasters/1.0/javaRasters-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.m2/repository/com/moseph/modellingUtilities/1.0/modellingUtilities-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/net.sf.jchart2d/jchart2d/3.3.2/4950821eefe4c204903e68b4d45a558b5ebdd6fa/jchart2d-3.3.2.jar" sourcepath="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/net.sf.jchart2d/jchart2d/3.3.2/7e0ebeea41e05fc1d8cc46b76af71c6047abc063/jchart2d-3.3.2-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/com.jidesoft/jide-oss/2.9.4.01/8bda9c5376b3bc6c85fdc146ad9a509a546af312/jide-oss-2.9.4.01.jar" sourcepath="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/com.jidesoft/jide-oss/2.9.4.01/89e41ad42864f8e784ea5101e8ded344f36a3a32/jide-oss-2.9.4.01-sources.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/org.nuiton.thirdparty/JRI/0.9-6/f20fb2e559f8c73e66b21c70cdd72c91ffe53bf4/JRI-0.9-6.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/org.nuiton.thirdparty/JRI/0.9-6/f20fb2e559f8c73e66b21c70cdd72c91ffe53bf4/JRI-0.9-6.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CRAFTY_CoBRA_Trunk/lib/jniLibs"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/org.jscience/jscience/4.3.1/f97e69c82fd27ea668c624b667d72cfeb0e78bdd/jscience-4.3.1.jar" sourcepath="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/org.jscience/jscience/4.3.1/d94a0c8b0beaa0c6b019f452584739c0ca056b5/jscience-4.3.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/com.vividsolutions/jts/1.13/3ccfb9b60f04d71add996a666ceb8902904fd805/jts-1.13.jar" sourcepath="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/com.vividsolutions/jts/1.13/ee922fa0a39de08d193337739d336779e3dfa774/jts-1.13-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.m2/repository/net/sf/jung/jung-algorithms/2.0.1/jung-algorithms-2.0.1.jar"/>

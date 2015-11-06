@@ -176,7 +176,7 @@ public class InnovationTestUtils extends BasicTestsUtils {
 	 * @param region
 	 */
 	protected void registerInstitution(Institution institution, Region region) {
-		Institutions institutions = region.getInstitutions();
+		Institutions institutions = region.getInstitutions(runInfo);
 		institutions.addInstitution(institution);
 	}
 

@@ -43,7 +43,7 @@ public class InstitutionsTest extends BasicTestsUtils
 		assertFalse( c11.isInitialised() );
 		
 		Region r = setupBasicWorld( c11, c12, c21, c22 );
-		Institutions institutions = r.getInstitutions();
+		Institutions institutions = r.getInstitutions(runInfo);
 
 		DefaultInstitution a = getTestInstitution(1, 1, r);
 		institutions.addInstitution( a );
@@ -91,7 +91,7 @@ public class InstitutionsTest extends BasicTestsUtils
 		assertTrue( abs( farmComp ) > 0.001 ); //And make sure that its not zero, just to be sure
 		
 		DefaultInstitution a = getTestInstitution(1, 1, r);
-		Institutions inst = r.getInstitutions();
+		Institutions inst = r.getInstitutions(runInfo);
 		inst.addInstitution( a );
 
 		assertEquals( farmComp + 1, r.getCompetitiveness( farmingR1, c11 ), 0.001 ); //Check that the competition is adjusted
@@ -121,7 +121,7 @@ public class InstitutionsTest extends BasicTestsUtils
 		double baseComp = r.getCompetitionModel().getCompetitiveness( r.getDemandModel(), farmSupply );
 		assertEquals( farmComp, baseComp, 0.0001 );
 		
-		Institutions inst = r.getInstitutions();
+		Institutions inst = r.getInstitutions(runInfo);
 		DefaultInstitution a = getTestInstitution(0, 0, r);
 		inst.addInstitution( a );
 		
@@ -164,7 +164,7 @@ public class InstitutionsTest extends BasicTestsUtils
 		assertEquals( farmComp, r.getCompetitiveness( farmingR1, c11 ), 0.001 ); //Check that the competition is adjusted
 		assertEquals( forestComp, r.getCompetitiveness( forestryR1, c11 ), 0.001 ); 
 		
-		Institutions inst = r.getInstitutions();
+		Institutions inst = r.getInstitutions(runInfo);
 		DefaultInstitution a = persister.readXML(DefaultInstitution.class,
 				"xml/TestInstitution.xml",
 				r.getPeristerContextExtra());

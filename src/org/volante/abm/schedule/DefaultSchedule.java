@@ -110,12 +110,20 @@ public class DefaultSchedule implements WorldSyncSchedule {
 			allAgents.addAll(region.getAllAmbulantAgents());
 		}
 
+		// E.g. aging and trigger decision
 		for (Agent a : allAgents) {
 			a.tickStartUpdate();
 		}
 
-		preTickUpdates();
+		for (Region r : regions.getAllRegions()) {
+			if (r.hasInstitutions()) {
+				r.getInstitutions(this.info).tickStartUpdate();
+			}
+		}
+
 		// e.g. update institutions
+		preTickUpdates();
+
 
 		fireScheduleStatus(new ScheduleStatusEvent(tick,
 				ScheduleStage.MAIN_LOOP, true));
@@ -123,7 +131,7 @@ public class DefaultSchedule implements WorldSyncSchedule {
 		// Allow institutions to update capitals
 		for (Region r : regions.getAllRegions()) {
 			if (r.hasInstitutions()) {
-				r.getInstitutions().updateCapitals();
+				r.getInstitutions(this.info).updateCapitals();
 			}
 		}
 

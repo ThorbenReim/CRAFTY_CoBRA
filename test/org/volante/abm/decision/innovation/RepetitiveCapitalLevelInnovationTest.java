@@ -229,7 +229,7 @@ public class RepetitiveCapitalLevelInnovationTest extends InnovationTestUtils {
 					@Override
 					public Collection<InnovativeBC> getRecruitedAgents(
 							Collection<? extends InnovativeBC> allAgents) {
-						Collection<InnovativeBC> agents = new ArrayList<InnovativeBC>();
+						Collection<InnovativeBC> agents = new ArrayList<>();
 						agents.add((InnovativeBC) agent.getBC());
 
 						RepetitiveCapitalLevelInnovationTest.this.indicator = true;

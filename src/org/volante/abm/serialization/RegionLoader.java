@@ -453,7 +453,7 @@ public class RegionLoader {
 			}
 		}
 		if (institutions.size() > 0) {
-			Institutions in = region.getInstitutions();
+			Institutions in = region.getInstitutions(this.runInfo);
 			for (Institution i : institutions) {
 				in.addInstitution(i);
 			}

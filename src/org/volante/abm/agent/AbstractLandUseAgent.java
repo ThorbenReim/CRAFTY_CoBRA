@@ -27,12 +27,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.simpleframework.xml.ElementMap;
 import org.volante.abm.agent.bt.BehaviouralComponent;
 import org.volante.abm.agent.fr.FunctionalComponent;
 import org.volante.abm.agent.property.AgentPropertyId;
+import org.volante.abm.agent.property.AgentPropertyRegistry;
 import org.volante.abm.agent.property.DoublePropertyProvider;
 import org.volante.abm.agent.property.DoublePropertyProviderComp;
 import org.volante.abm.data.Cell;
@@ -81,6 +83,14 @@ public abstract class AbstractLandUseAgent implements LandUseAgent {
 		this.setProperty(AgentPropertyIds.AGE, 1);
 		this.setProperty(AgentPropertyIds.COMPETITIVENESS, 0.0);
 
+		for (Entry<String, Object> property : params.entrySet()) {
+			if (AgentPropertyRegistry.get(property.getKey()) != null) {
+				if (property.getValue() instanceof Number) {
+					this.propertyProvider.setProperty(AgentPropertyRegistry.get(property.getKey()),
+							(Double) property.getValue());
+				}
+			}
+		}
 		this.initHook();
 	}
 

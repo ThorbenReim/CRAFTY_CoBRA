@@ -48,59 +48,59 @@ import org.volante.abm.serialization.GloballyInitialisable;
 
 public class CellTable extends TableOutputter<Cell> implements GloballyInitialisable {
 	@Attribute(required = false)
-	boolean			addTick				= true;
+	protected boolean addTick = true;
 	
 	@Attribute(required = false)
-	boolean			addRegion			= true;
+	protected boolean addRegion = true;
 	
 	@Attribute(required = false)
-	boolean			addCellRegion		= true;
+	protected boolean addCellRegion = true;
 	
 	@Attribute(required = false)
-	boolean			addServices			= true;
+	protected boolean addServices = true;
 	
 	@Attribute(required = false)
-	boolean			addCapitals			= true;
+	protected boolean addCapitals = true;
 	
 	@Attribute(required = false)
-	boolean			addLandUse			= true;
+	protected boolean addLandUse = true;
 	
 	@Attribute(required = false)
-	boolean			addLandUseIndex		= true;
+	protected boolean addLandUseIndex = true;
 	
 	@Attribute(required = false)
-	boolean			addAgent			= true;
+	protected boolean addAgent = true;
 	
 	@Attribute(required = false)
-	boolean			addXY				= true;
+	protected boolean addXY = true;
 	
 	@Attribute(required = false)
-	boolean			addCompetitiveness	= true;
+	protected boolean addCompetitiveness = true;
 
 	@Attribute(required = false)
-	boolean			addPreAllocCompetitiveness	= false;
+	protected boolean addPreAllocCompetitiveness = false;
 
 	@Attribute(required = false)
-	boolean													addPreAllocLandUse			= false;
+	protected boolean addPreAllocLandUse = false;
 	
 	@Attribute(required = false)
-	boolean			addGiThreshold				= false;
+	protected boolean addGiThreshold = false;
 
 	@Attribute(required = false)
-	boolean			addPreAllocGuThreshold				= false;
+	protected boolean addPreAllocGuThreshold = false;
 
 	@ElementList(required = false, inline = true, entry = "addServiceProductivity")
-	List<String>											addServiceProductivities	= new ArrayList<>();
+	protected List<String> addServiceProductivities = new ArrayList<>();
 
 	@Attribute(required = false)
-	String													doubleFormat				= "0.000";
+	protected String doubleFormat = "0.000";
 
 	@Attribute(required = false)
-	int														maxIntegerDigits			= 10;
+	protected int maxIntegerDigits = 10;
 
-	DecimalFormat	doubleFmt			= null;
+	protected DecimalFormat doubleFmt = null;
 
-	Map<Region, PreAllocationStorageCleanupRegionHelper>	cleanupHelpers				= new HashMap<>();
+	protected Map<Region, PreAllocationStorageCleanupRegionHelper> cleanupHelpers = new HashMap<>();
 
 	@Override
 	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception {

@@ -46,6 +46,8 @@ import org.volante.abm.institutions.innovation.InnovationRegistry;
 import org.volante.abm.models.AllocationModel;
 import org.volante.abm.models.CompetitivenessModel;
 import org.volante.abm.models.DemandModel;
+import org.volante.abm.output.ActionObserver;
+import org.volante.abm.output.PseudoActionObserver;
 import org.volante.abm.param.GeoPa;
 import org.volante.abm.schedule.PreTickAction;
 import org.volante.abm.schedule.RunInfo;
@@ -91,6 +93,8 @@ public class Region implements Regions, PreTickAction {
 	CompetitivenessModel	competition;
 	DemandModel				demand;
 	Set<Cell>				available					= new LinkedHashSet<Cell>();
+
+	ActionObserver actionObserver = new PseudoActionObserver();
 
 	Map<String, BehaviouralType> behaviouralTypesByLabel = new LinkedHashMap<String, BehaviouralType>();
 	Map<Integer, BehaviouralType> behaviouralTypesBySerialId = new LinkedHashMap<Integer, BehaviouralType>();
@@ -838,6 +842,12 @@ public class Region implements Regions, PreTickAction {
 		return cells.size();
 	}
 
+	/**
+	 * Returns More-neighbourhood of the given cell.
+	 * 
+	 * @param c
+	 * @return set of cell belonging the the given cell's More neighbourhood
+	 */
 	public Set<Cell> getAdjacentCells(Cell c) {
 		if (cellTable == null) {
 			this.cellsCreated();
@@ -875,12 +885,18 @@ public class Region implements Regions, PreTickAction {
 		this.hasCompetitivenessAdjustingInstitution = true;
 	}
 
-	public Institutions getInstitutions() {
+	/**
+	 * RunInfo needs to be passed since the region's runinfo is not yet set when this method is called first.
+	 * 
+	 * @param rInfo
+	 * @return
+	 */
+	public Institutions getInstitutions(RunInfo rInfo) {
 		if (this.institutions == null) {
 			this.institutions = new Institutions();
 			try {
-				this.institutions.initialise(data, rinfo, this);
-				rinfo.getSchedule().register(institutions);
+				this.institutions.initialise(data, rInfo, this);
+				rInfo.getSchedule().register(institutions);
 			} catch (Exception exception) {
 				logger.error("Error while initialising Institutions");
 				exception.printStackTrace();
@@ -939,4 +955,13 @@ public class Region implements Regions, PreTickAction {
 	public Map<String, String> getPeristerContextExtra() {
 		return this.peristerContextExtra;
 	}
+
+	public ActionObserver getActionObserver() {
+		return actionObserver;
+	}
+
+	public void setActionObserver(ActionObserver actionObserver) {
+		this.actionObserver = actionObserver;
+	}
+
 }

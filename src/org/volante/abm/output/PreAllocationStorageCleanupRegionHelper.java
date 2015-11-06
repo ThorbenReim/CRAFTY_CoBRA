@@ -51,9 +51,9 @@ public class PreAllocationStorageCleanupRegionHelper implements CleanupRegionHel
 			this.guThreshold = guThreshold;
 		}
 
-		protected int		agentId;
-		protected double	competitiveness;
-		protected double	guThreshold;
+		public int agentId;
+		public double competitiveness;
+		public double guThreshold;
 	}
 
 	protected Map<Cell, PreAllocData>	preAllocDataMap	= new HashMap<>();

@@ -19,39 +19,26 @@
  *
  * School of Geoscience, University of Edinburgh, Edinburgh, UK
  * 
- * Created by Sascha Holzhauer on 3 Jun 2015
+ * Created by Sascha Holzhauer on 3 Nov 2015
  */
-package org.volante.abm.decision;
+package org.volante.abm.output;
 
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.volante.abm.agent.bt.LaraBehaviouralComponent;
+import org.volante.abm.decision.pa.CraftyPa;
 
-import de.cesr.lara.components.decision.LaraDecisionConfiguration;
-import de.cesr.lara.components.eventbus.impl.LEventbus;
 
 /**
+ * Avoids checks for null in case there is not {@link ActionObserver} registered at the {@link Region}.
+ * 
  * @author Sascha Holzhauer
- *
+ * 
  */
-public abstract class AbstractDecisionTrigger implements DecisionTrigger {
+public class PseudoActionObserver implements ActionObserver {
 
 	/**
-	 * Defines the {@link LaraDecisionConfiguration} this trigger may trigger
-	 * (needed to register the {@link LaraBehaviouralComponent} at the
-	 * {@link LEventbus}).
-	 */
-	@Element(required = true)
-	protected String dcId = null;
-
-	@Attribute(required = true)
-	protected String id = null;
-
-	/**
-	 * @see org.volante.abm.decision.DecisionTrigger#getId()
+	 * @see org.volante.abm.output.ActionObserver#observeAction(org.volante.abm.decision.pa.CraftyPa)
 	 */
 	@Override
-	public String getId() {
-		return this.id;
+	public void observeAction(CraftyPa<?> pa) {
+		// does nothing
 	}
 }

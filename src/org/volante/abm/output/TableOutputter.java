@@ -43,13 +43,13 @@ import com.csvreader.CsvWriter;
 public abstract class TableOutputter<T> extends AbstractOutputter {
 
 	@Attribute(required = false)
-	boolean					perRegion	= false;
+	protected boolean perRegion = false;
 
 	@Attribute(required = false)
-	boolean					filePerTick	= true;
+	protected boolean filePerTick = true;
 
-	List<TableColumn<T>>	columns	= new ArrayList<TableColumn<T>>();
-	Map<Regions, CsvWriter>	writers		= new HashMap<Regions, CsvWriter>();
+	protected List<TableColumn<T>> columns = new ArrayList<TableColumn<T>>();
+	protected Map<Regions, CsvWriter> writers = new HashMap<Regions, CsvWriter>();
 
 	public void addColumn(TableColumn<T> col) {
 		columns.add(col);

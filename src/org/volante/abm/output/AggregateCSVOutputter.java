@@ -40,7 +40,7 @@ public abstract class AggregateCSVOutputter extends TableOutputter<Region> {
 	@Attribute(required = false)
 	String			doubleFormat	= "0.000";
 
-	DecimalFormat	doubleFmt		= null;
+	protected DecimalFormat doubleFmt = null;
 
 	@Attribute(required = false)
 	boolean			addTick			= true;

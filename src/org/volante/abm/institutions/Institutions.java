@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Root;
+import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.fr.FunctionalComponent;
 import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
@@ -107,6 +108,14 @@ public class Institutions implements Institution, PreTickAction {
 			result = i.adjustCompetitiveness(fComp, location, provision, result);
 		}
 		return result;
+	}
+
+	public void tickStartUpdate() {
+		for (Institution i : institutions) {
+			if (i instanceof Agent) {
+				((Agent) i).tickStartUpdate();
+			}
+		}
 	}
 
 	@Override

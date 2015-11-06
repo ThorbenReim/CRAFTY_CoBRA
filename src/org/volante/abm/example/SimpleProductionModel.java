@@ -26,6 +26,8 @@ import static java.lang.Math.pow;
 import static org.volante.abm.example.SimpleCapital.simpleCapitals;
 import static org.volante.abm.example.SimpleService.simpleServices;
 
+import java.text.DecimalFormat;
+
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.volante.abm.data.Capital;
@@ -64,6 +66,8 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 	@Attribute(required=false)
 	String csvFile = null;
 	
+	@Attribute(required = false)
+	String doubleFormat = "0.000";
 	
 	public SimpleProductionModel() {}
 	/**
@@ -153,22 +157,25 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 	{
 		if (logger.isDebugEnabled() && cell != null) {
 			StringBuffer buffer = new StringBuffer();
+			DecimalFormat format = new DecimalFormat(doubleFormat);
+
 			if (cell != null) {
 				buffer.append("Cell " + cell.getX() + "|" + cell.getY() + " ");
 			}
+			buffer.append("(" + cell.getOwnersFrLabel() + ") ");
 			buffer.append("Production: ");
 
 			for( Service s : capitalWeights.rows() )
 			{
-				buffer.append(" Service " + s + "> ");
+				buffer.append(System.getProperty("line.separator") + " Service " + s + "> ");
 
 				double val = 1;
 				for( Capital c : capitalWeights.cols() ) {
-					buffer.append( " * " + capitals.getDouble( c ) + "^" + capitalWeights.get( c, s ));
+					buffer.append(format.format(capitals.getDouble(c)) + "^" + capitalWeights.get(c, s) + " * ");
 
 					val = val * pow( capitals.getDouble( c ), capitalWeights.get( c, s ) ) ;
 				}
-				buffer.append(" = " + productionWeights.get(s) * val + " ");
+				buffer.append(format.format(productionWeights.get(s)) + " = " + productionWeights.get(s) * val + " ");
 
 				production.putDouble( s, productionWeights.get(s) * val);
 			}

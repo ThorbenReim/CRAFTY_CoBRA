@@ -53,7 +53,10 @@ public abstract class AbstractInstitution implements Institution
 	{ return competitiveness; }
 
 	@Override
-	public boolean isAllowed( FunctionalComponent agent, Cell location ) { return true; }
+	public boolean isAllowed(FunctionalComponent agent, Cell location) {
+		return isAllowed(agent.getFR(), location);
+	}
+
 	@Override
 	public boolean isAllowed(FunctionalRole fr, Cell location) {
 		return true;
