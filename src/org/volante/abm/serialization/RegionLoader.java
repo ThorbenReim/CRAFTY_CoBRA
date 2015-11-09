@@ -414,8 +414,8 @@ public class RegionLoader {
 	 */
 	private void initInitialisers() throws Exception {
 		for (String initialiserFile : initialiserFiles) {
-			initialisers.add(persister.readXML(Initialisable.class, initialiserFile,
-					this.region.getPeristerContextExtra()));
+			initialisers.addAll(persister.readXML(InitialiserList.class, initialiserFile,
+					this.region.getPeristerContextExtra()).initialisers);
 		}
 		for (Initialisable i : initialisers) {
 			i.initialise(modelData, runInfo, region);

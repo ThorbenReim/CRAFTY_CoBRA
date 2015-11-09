@@ -186,7 +186,12 @@ public class RegionalDemandModel implements DemandModel, PreTickAction, PostTick
 		log.info("Loading demand from tick: " + tick);
 		for (Service s : demand.getKeys()) {
 			if (demandCurves.containsKey(s)) {
-				demand.put(s, demandCurves.get(s).sample(tick));
+				double demandvalue = demandCurves.get(s).sample(tick);
+				demand.put(s, demandvalue);
+				if (demandvalue <= 0.0) {
+					log.warn("Demand for " + s + " is set to " + demandvalue
+							+ ". This likely leads to infinite competitiveness if an FR produces " + s + "!");
+				}
 			}
 		}
 		log.info("Demand: " + demand.prettyPrint());
