@@ -99,7 +99,7 @@ public class GlobalSubsidyInstitutionTest {
 			assertTrue(institution instanceof GlobalSubsidyInstitution);
 
 			for (Region region : loader.getRegions().getAllRegions()) {
-				assertTrue(region.getInstitutions(runInfo).hasInstitution(institution));
+				assertTrue(region.getInstitutions().hasInstitution(institution));
 			}
 		}
 	}

@@ -154,6 +154,8 @@ public class Region implements Regions, PreTickAction {
 
 	Extent extent = new Extent();
 
+	boolean initialised = false;
+
 	Logger log = Logger.getLogger(getClass());
 
 	/*
@@ -333,8 +335,15 @@ public class Region implements Regions, PreTickAction {
 		logger.info("Initialise region " + this + "...");
 		// LOGGING ->
 
+
 		this.data = data;
 		this.rinfo = info;
+
+		if (this.institutions != null) {
+			this.institutions.initialise(data, info, this);
+			info.getSchedule().register(institutions);
+		}
+
 		for (Cell c : cells) {
 			c.initialise(data, info, this);
 		}
@@ -354,6 +363,8 @@ public class Region implements Regions, PreTickAction {
 		allocation.initialise(data, info, this);
 		competition.initialise(data, info, this);
 		demand.initialise(data, info, this);
+
+		this.initialised = true;
 	}
 
 	/*
@@ -886,17 +897,16 @@ public class Region implements Regions, PreTickAction {
 	}
 
 	/**
-	 * RunInfo needs to be passed since the region's runinfo is not yet set when this method is called first.
-	 * 
-	 * @param rInfo
-	 * @return
+	 * @return institutions
 	 */
-	public Institutions getInstitutions(RunInfo rInfo) {
+	public Institutions getInstitutions() {
 		if (this.institutions == null) {
 			this.institutions = new Institutions();
 			try {
-				this.institutions.initialise(data, rInfo, this);
-				rInfo.getSchedule().register(institutions);
+				if (this.initialised) {
+					this.institutions.initialise(this.data, this.rinfo, this);
+					this.rinfo.getSchedule().register(institutions);
+				}
 			} catch (Exception exception) {
 				logger.error("Error while initialising Institutions");
 				exception.printStackTrace();

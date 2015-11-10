@@ -78,7 +78,7 @@ public class CapitalDynamicsInstitutionTest extends BasicTestsUtils {
 		assertFalse(c11.isInitialised());
 
 		r = setupBasicWorld(c11, c12, c21, c22);
-		Institutions institutions = r.getInstitutions(runInfo);
+		Institutions institutions = r.getInstitutions();
 		CapitalDynamicsInstitution a = getTestInstitution();
 		institutions.addInstitution(a);
 

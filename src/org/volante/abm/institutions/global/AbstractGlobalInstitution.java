@@ -105,7 +105,7 @@ public abstract class AbstractGlobalInstitution implements GlobalInstitution {
 		// register
 		GlobalInstitutionsRegistry.getInstance().registerGlobalInstitution(this);
 		for (Region region : sloader.getRegions().getAllRegions()) {
-			region.getInstitutions(rinfo).addInstitution(this);
+			region.getInstitutions().addInstitution(this);
 		}
 	}
 }

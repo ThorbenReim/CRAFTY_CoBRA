@@ -1,0 +1,3 @@
+<institution class="org.volante.abm.update.CsvLinearCapitalUpdater">	
+	<factorsCsvFilename>csv/LinearCapitalFactorsRegion1.csv</factorsCsvFilename>
+</institution>

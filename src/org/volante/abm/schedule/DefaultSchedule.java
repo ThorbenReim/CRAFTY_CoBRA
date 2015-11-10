@@ -117,7 +117,7 @@ public class DefaultSchedule implements WorldSyncSchedule {
 
 		for (Region r : regions.getAllRegions()) {
 			if (r.hasInstitutions()) {
-				r.getInstitutions(this.info).tickStartUpdate();
+				r.getInstitutions().tickStartUpdate();
 			}
 		}
 
@@ -131,7 +131,7 @@ public class DefaultSchedule implements WorldSyncSchedule {
 		// Allow institutions to update capitals
 		for (Region r : regions.getAllRegions()) {
 			if (r.hasInstitutions()) {
-				r.getInstitutions(this.info).updateCapitals();
+				r.getInstitutions().updateCapitals();
 			}
 		}
 

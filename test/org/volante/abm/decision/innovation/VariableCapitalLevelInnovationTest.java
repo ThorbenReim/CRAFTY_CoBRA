@@ -254,7 +254,7 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 						this.r1.getPeristerContextExtra());
 		institution.initialise(modelData, runInfo, r1);
 
-		Institutions institutions = r1.getInstitutions(this.runInfo);
+		Institutions institutions = r1.getInstitutions();
 		institutions.addInstitution(institution);
 
 		// setup adopted agent:
