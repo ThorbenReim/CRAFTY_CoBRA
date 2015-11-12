@@ -16,6 +16,7 @@ import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.ABMPersister;
+import org.volante.abm.serialization.transform.IntTransformer;
 
 import com.csvreader.CsvReader;
 import com.moseph.modelutils.fastdata.DoubleMap;
@@ -53,7 +54,7 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 				DoubleMap<Capital> adjusted = r.getModelData().capitalMap();
 				c.getBaseCapitals().copyInto(adjusted);
 
-				for (Capital cap : adjusted.getKeySet()) {
+				for (Capital cap : factors.getKeySet()) {
 					adjusted.putDouble(cap, adjusted.getDouble(cap) * factors.get(cap));
 				}
 				c.setBaseCapitals(adjusted);
@@ -70,6 +71,12 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 	@Attribute(required = false)
 	String Y_COL = "Y";
 
+	@Element(required = false)
+	IntTransformer xTransformer = null;
+
+	@Element(required = false)
+	IntTransformer yTransformer = null;
+
 	Set<CellCapitalData> cellCapitalData = new HashSet<>();
 
 	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
@@ -84,15 +91,27 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 			for (Capital c : data.capitals) // Set each capital in turn
 			{
 				String cap = csvReader.get(c.getName());
-				if (cap != null) // It's possible the file doesn't have all baseCapitals in
+				if (!(cap == null || cap.equals(""))) // It's possible the file doesn't have all baseCapitals in
 				{
 					double val = Double.parseDouble(cap);
 					adjusted.putDouble(c, val);
+				} else {
+					adjusted.putDouble(c, 1.0);
 				}
 			}
-			cellCapitalData.add(new CellCapitalData(adjusted, Integer.parseInt(csvReader.get(X_COL)), Integer
-					.parseInt(csvReader.get(Y_COL))));
+			
+			// TODOD check for empty row (last one)
+			int x = Integer.parseInt(csvReader.get(X_COL));
+			if (xTransformer != null) {
+				x = xTransformer.transform(x);
+			}
 
+			int y = Integer.parseInt(csvReader.get(Y_COL));
+			if (yTransformer != null) {
+				y = yTransformer.transform(y);
+			}
+			
+			cellCapitalData.add(new CellCapitalData(adjusted, x, y));
 		}
 	}
 

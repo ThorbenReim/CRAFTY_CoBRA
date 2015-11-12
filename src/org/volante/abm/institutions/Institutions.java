@@ -52,10 +52,14 @@ public class Institutions implements Institution, PreTickAction {
 	RunInfo info = null;
 	Logger log = Logger.getLogger(getClass());
 
+	boolean initialised = false;
+
 	public void addInstitution(Institution i) {
 		institutions.add(i);
 		try {
-			i.initialise(data, info, region);
+			if (this.initialised) {
+				i.initialise(data, info, region);
+			}
 		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
@@ -140,6 +144,10 @@ public class Institutions implements Institution, PreTickAction {
 		this.data = data;
 		this.info = info;
 		this.region = extent;
+		for (Institution i : this.institutions) {
+			i.initialise(data, info, region);
+		}
+		this.initialised = true;
 	}
 
 	/**

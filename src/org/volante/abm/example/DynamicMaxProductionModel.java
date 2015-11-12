@@ -129,6 +129,7 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 				productionParser.addVariable(capital.getName(), 0);
 			}
 			productionParser.addVariable("CTICK", 0);
+			this.addVariablesHook(productionParser);
 
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {
@@ -146,6 +147,15 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 
 			maxProductionParsers.put(service, productionParser);
 		}
+	}
+
+	/**
+	 * Can be overridden to add variables to the production parser.
+	 * 
+	 * @param productionParser
+	 */
+	public void addVariablesHook(JEP productionParser) {
+		// nothing to do here
 	}
 
 	/**
