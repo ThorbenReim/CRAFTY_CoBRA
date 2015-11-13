@@ -266,15 +266,13 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 
 			// Read, initialise and set cell:
 			Cell c = rLoader.getCell(x, y);
+			DoubleMap<Capital> adjusted = data.capitalMap();
+			c.getBaseCapitals().copyInto(adjusted);
 			for (Capital cap : data.capitals) {
 				String s = reader.get(cap.getName());
 				if (!s.equals("")) {
 					try {
-						DoubleMap<Capital> adjusted = data.capitalMap();
-						c.getBaseCapitals().copyInto(adjusted);
 						adjusted.putDouble(cap, Double.parseDouble(s));
-						c.setBaseCapitals(adjusted);
-
 					} catch (Exception exception) {
 						logger.error("Exception in row "
 								+ reader.getCurrentRecord() + " ("
@@ -282,6 +280,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 					}
 				}
 			}
+			c.setBaseCapitals(adjusted);
 
 			if (singleCellAgentMode && !shuffleCellsBeforeAssembling) {
 

@@ -121,6 +121,9 @@ public class ScenarioLoader {
 	@Attribute(name = "csvParamBasedirCorrection", required = false)
 	String					csvParamBasedirCorrection	= "";
 
+	@Attribute(name = "linkCsvBasedirCorrection", required = false)
+	String linkCsvBasedirCorrection = null;
+
 	/**
 	 * startTick (int, default: 2000)
 	 */
@@ -225,6 +228,8 @@ public class ScenarioLoader {
 
 		this.persister.setBaseDir(this.persister.getBaseDir() + this.basedirAdaptation);
 		this.info.setCsvParamBasedirCorrection(this.csvParamBasedirCorrection);
+		this.info.setLinksCsvBasedirCorrection(this.linkCsvBasedirCorrection != null ? this.linkCsvBasedirCorrection
+				: this.csvParamBasedirCorrection);
 
 		if (worldLoader == null && worldLoaderFile != null) {
 			// TODO override persister method

@@ -46,6 +46,7 @@ public class RunInfo {
 	long			currentRandomSeed	= 0;
 
 	String			csvParamBasedirCorrection	= "";
+	String linksCsvBasedirCorrection = "";
 
 
 	ParameterRepository	paramRepos			= new ParameterRepository();
@@ -169,5 +170,13 @@ public class RunInfo {
 
 	public void setCsvParamBasedirCorrection(String csvParamBasedirCorrection) {
 		this.csvParamBasedirCorrection = csvParamBasedirCorrection;
+	}
+
+	public String getLinksCsvBasedirCorrection() {
+		return linksCsvBasedirCorrection;
+	}
+
+	public void setLinksCsvBasedirCorrection(String linksCsvBasedirCorrection) {
+		this.linksCsvBasedirCorrection = linksCsvBasedirCorrection;
 	}
 }

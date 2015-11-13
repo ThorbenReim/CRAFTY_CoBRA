@@ -281,7 +281,7 @@ public class CsvBatchRunParser {
 	}
 
 	protected static Map<String, Map<String, String>> readLinksFile(RunInfo rInfo) {
-		String filename = rInfo.getCsvParamBasedirCorrection() + LINKS_TABLE;
+		String filename = rInfo.getLinksCsvBasedirCorrection() + LINKS_TABLE;
 		if (cachedLinksData == null) {
 			cachedLinksData = new HashMap<String, Map<String, String>>();
 			CsvReader reader;
