@@ -123,6 +123,9 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 	@Element(required=false)
 	boolean shuffleCellsBeforeAssembling = true;
 	
+	@Element(required = false)
+	int notificationInterval = 10000;
+
 	/**
 	 * Logger
 	 */
@@ -246,6 +249,8 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 		// LOGGING ->
 
 		this.agentAssembler.initialise(data, rLoader.runInfo, rLoader.region);
+		
+		int counter = 0;
 
 		while (reader.readRecord()) {
 			// <- LOGGING
@@ -253,6 +258,14 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 				logger.debug("Read row " + reader.getCurrentRecord());
 			}
 			// LOGGING ->
+			
+			counter++;
+			
+			if (counter % notificationInterval == 0) {
+				// <- LOGGING
+				logger.info("\tNumber of read rows: " + counter);
+				// LOGGING ->
+			}
 
 			int x = Integer.parseInt(reader.get(xColumn));
 			if (xTransformer != null) {

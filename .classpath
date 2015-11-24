@@ -37,7 +37,7 @@
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/net.sf.jung/jung-graph-impl/2.0.1/37e4cbe198ca7ffd2238ebfee8c5d84d6d79e1c2/jung-graph-impl-2.0.1.jar" sourcepath="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/net.sf.jung/jung-graph-impl/2.0.1/6eaa5925da4cd168e963a6457f2cb6d506a71f17/jung-graph-impl-2.0.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.m2/repository/net/sf/jung/jung-io/2.0.1/jung-io-2.0.1.jar" sourcepath="C:/Users/sholzhau/.m2/repository/net/sf/jung/jung-io/2.0.1/jung-io-2.0.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.m2/repository/log4j/log4j/1.2.17/log4j-1.2.17.jar"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.m2/repository/org/monte/monte-cc/0.7.5/monte-cc-0.7.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.m2/repository/org/monte/monte-cc/0.7.5/monte-cc-0.7.5.jar" sourcepath="C:/Data/General/JavaLibraries/MonteMediaCC/src/main"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.m2/repository/de/cesr/more/0.9.3/more-0.9.3.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.m2/repository/de/cesr/parma/0.9.4/parma-0.9.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.m2/repository/repast/simphony/repast.simphony.binAndSrc/2.2.0/repast.simphony.binAndSrc-2.2.0.jar"/>
