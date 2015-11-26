@@ -156,19 +156,6 @@ public class DefaultSocialLandUseAgent extends DefaultLandUseAgent implements So
 		this.getRegion().getGeography().move(this, geom);
 	}
 
-	/**
-	 * @see org.volante.abm.agent.AbstractLandUseAgent#toString()
-	 */
-	@Override
-	public String toString() {
-		// TODO adapt to base cell when implemented
-		if (this.cells.size() > 0) {
-			Cell c = this.cells.iterator().next();
-			return this.id + "_" + c.getX() + "-" + c.getY();
-		} else {
-			return this.id;
-		}
-	}
 
 	/**
 	 * @see org.volante.abm.agent.DefaultLandUseAgent#die()

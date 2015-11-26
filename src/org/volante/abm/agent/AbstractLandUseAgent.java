@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.simpleframework.xml.ElementMap;
 import org.volante.abm.agent.bt.BehaviouralComponent;
 import org.volante.abm.agent.fr.FunctionalComponent;
@@ -54,6 +55,11 @@ import com.moseph.modelutils.fastdata.DoubleMap;
  * 
  */
 public abstract class AbstractLandUseAgent implements LandUseAgent {
+
+	/**
+	 * Logger
+	 */
+	static private Logger logger = Logger.getLogger(AbstractLandUseAgent.class);
 
 	@ElementMap(inline = true, entry = "property", attribute = true, required = false, key = "param", valueType = Double.class)
 	Map<String, Object> params = new HashMap<String, Object>();
@@ -201,12 +207,12 @@ public abstract class AbstractLandUseAgent implements LandUseAgent {
 	@Override
 	public String toString() {
 		return getID()
-				+ " ("
+ + " (" + this.getHomeCell() + ": "
 				+ (this.getBC() == null ? "None" : this.getBC().getType()
 						.getLabel())
 				+ "/"
 				+ (this.getFC() == null ? "None" : this.getFC().getFR()
-						.getLabel()) + "):" + hashCode();
+.getLabel()) + "): #" + hashCode();
 	}
 
 	public void setId(String id) {
@@ -245,9 +251,21 @@ public abstract class AbstractLandUseAgent implements LandUseAgent {
 	@Override
 	public void updateCompetitiveness() {
 		double comp = 0;
-		for (Cell c : cells) {
-			comp += region.getCompetitiveness(c);
+
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Update competitiveness of " + this);
 		}
+		// LOGGING ->
+
+		if (this.getFC() instanceof CompetitivenessUpdatingFC) {
+			comp = ((CompetitivenessUpdatingFC) this.getFC()).getUpdatedCompetitiveness(this);
+		} else {
+			for (Cell c : cells) {
+				comp += region.getCompetitiveness(c);
+			}
+		}
+
 		this.propertyProvider.setProperty(
 				AgentPropertyIds.COMPETITIVENESS,
 				comp / cells.size());

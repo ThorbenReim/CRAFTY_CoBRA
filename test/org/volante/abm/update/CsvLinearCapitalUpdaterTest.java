@@ -52,8 +52,8 @@ public class CsvLinearCapitalUpdaterTest extends BasicTestsUtils {
 	
 	static final String CSV_LINEAR_UPDATER_XML_FILE = "xml/CsvLinearCapitalUpdater.xml";
 
-	static final String CSV_LINEAR_UPDATER_RESULT1 = "csv/LinearCapitalFactorsRegion1_ResultTick1.csv";
-	static final String CSV_LINEAR_UPDATER_RESULT2 = "csv/LinearCapitalFactorsRegion1_ResultTick2.csv";
+	static final String CSV_LINEAR_UPDATER_RESULT1 = "csv/LinearCapitalOperandsRegion1_ResultTick1.csv";
+	static final String CSV_LINEAR_UPDATER_RESULT2 = "csv/LinearCapitalOperandsRegion1_ResultTick2.csv";
 	CsvLinearCapitalUpdater updater;
 	Region r;
 	

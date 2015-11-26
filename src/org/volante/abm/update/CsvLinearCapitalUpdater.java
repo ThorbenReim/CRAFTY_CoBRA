@@ -35,10 +35,10 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 		int y;
 
 		// Map<Capital, Double> factors;
-		DoubleMap<Capital> factors;
+		DoubleMap<Capital> operands;
 
 		public CellCapitalData(DoubleMap<Capital> factors, int x, int y) {
-			this.factors = factors;
+			this.operands = factors;
 			this.x = x;
 			this.y = y;
 		}
@@ -54,8 +54,8 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 				DoubleMap<Capital> adjusted = r.getModelData().capitalMap();
 				c.getBaseCapitals().copyInto(adjusted);
 
-				for (Capital cap : factors.getKeySet()) {
-					adjusted.putDouble(cap, adjusted.getDouble(cap) * factors.get(cap));
+				for (Capital cap : operands.getKeySet()) {
+					adjusted.putDouble(cap, adjusted.getDouble(cap) + operands.get(cap));
 				}
 				c.setBaseCapitals(adjusted);
 			}
@@ -63,7 +63,7 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 	}
 
 	@Element(required = true)
-	String factorsCsvFilename = "";
+	String operandsCsvFilename = "";
 
 	@Attribute(required = false)
 	String X_COL = "X";
@@ -82,7 +82,7 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
 		super.initialise(data, info, extent);
 		ABMPersister p = ABMPersister.getInstance();
-		CsvReader csvReader = p.getCSVReader(this.factorsCsvFilename, region.getPeristerContextExtra());
+		CsvReader csvReader = p.getCSVReader(this.operandsCsvFilename, region.getPeristerContextExtra());
 
 		// Assume we've got the CSV file, and we've read the headers in
 		while (csvReader.readRecord()) {
