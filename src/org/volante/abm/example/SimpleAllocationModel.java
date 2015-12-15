@@ -108,6 +108,13 @@ public class SimpleAllocationModel implements AllocationModel,
 				+ " cells)...");
 		// LOGGING ->
 
+		allocateAvailableCells(r);
+	}
+
+	/**
+	 * @param r
+	 */
+	protected void allocateAvailableCells(Region r) {
 		// Determine random subset of available cells:
 		Collection<Cell> cells2allocate = Utilities.sampleN(r.getAvailable(),
 				(int) (r.getAvailable().size() * proportionToAllocate), r.getRandom()

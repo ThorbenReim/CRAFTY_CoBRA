@@ -298,9 +298,9 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 				+ r.getID() + " has "
 				+ r.getNumCells() + " cells).");
 
+		double newAgentsGU = fr.getSampledGivingUpThreshold();
 		for (Cell c : sorted) {
 			// if (competitiveness.get(c) < a.getGivingUp()) return;
-			double newAgentsGU = fr.getSampledGivingUpThreshold();
 			if (competitiveness.get(c) > newAgentsGU
 					&& c.getOwner().canTakeOver(c, competitiveness.get(c))) {
 				

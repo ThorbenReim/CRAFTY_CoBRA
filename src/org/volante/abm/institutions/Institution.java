@@ -21,6 +21,9 @@
  */
 package org.volante.abm.institutions;
 
+
+import java.util.Set;
+
 import org.simpleframework.xml.Root;
 import org.volante.abm.agent.fr.FunctionalComponent;
 import org.volante.abm.agent.fr.FunctionalRole;
@@ -73,6 +76,8 @@ public interface Institution extends Initialisable {
 	 * @return true if the agent is allowed to occupy the given cell
 	 */
 	public boolean isAllowed(FunctionalRole fr, Cell location);
+
+	public Set<FunctionalRole> getFrsExludedFromGivingIn();
 
 	/**
 	 * Called at the start of each tick to allow this institution to perform any

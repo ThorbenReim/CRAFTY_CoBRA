@@ -93,6 +93,14 @@ public class Institutions implements Institution, PreTickAction {
 		return true;
 	}
 
+	public Set<FunctionalRole> getFrsExludedFromGivingIn() {
+		Set<FunctionalRole> excluded = new HashSet<>();
+		for (Institution i : institutions) {
+			excluded.addAll(i.getFrsExludedFromGivingIn());
+		}
+		return excluded;
+	}
+
 	@Override
 	public void adjustCapitals(Cell c) {
 		for (Institution i : institutions) {

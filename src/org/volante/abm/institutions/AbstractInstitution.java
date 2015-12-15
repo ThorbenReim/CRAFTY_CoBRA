@@ -21,6 +21,10 @@
  */
 package org.volante.abm.institutions;
 
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.volante.abm.agent.fr.FunctionalComponent;
 import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
@@ -60,6 +64,10 @@ public abstract class AbstractInstitution implements Institution
 	@Override
 	public boolean isAllowed(FunctionalRole fr, Cell location) {
 		return true;
+	}
+
+	public Set<FunctionalRole> getFrsExludedFromGivingIn() {
+		return new HashSet<>();
 	}
 
 	@Override
