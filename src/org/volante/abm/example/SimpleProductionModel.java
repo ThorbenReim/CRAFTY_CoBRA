@@ -213,10 +213,15 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 			Distribution importance)
 	{
 		SimpleProductionModel pout = new SimpleProductionModel();
+
+		pout.csvFile = csvFile;
+		pout.doubleFormat = doubleFormat;
+
 		pout.capitalWeights = capitalWeights.duplicate();
 		pout.productionWeights = productionWeights.duplicate();
 		for( Service s : data.services )
 		{
+			// if there is no production, it remains no production:
 			if (production == null || productionWeights.getDouble(s) == 0.0) {
 				pout.setWeight( s, productionWeights.getDouble( s ) );
 			} else {
@@ -233,6 +238,7 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 			
 			for( Capital c : data.capitals )
 			{
+				// if there is no sensitivity, it remains no sensitivity:
 				if (importance == null || capitalWeights.get(c, s) == 0.0) {
 					pout.setWeight( c, s, capitalWeights.get( c, s ) );
 				} else {

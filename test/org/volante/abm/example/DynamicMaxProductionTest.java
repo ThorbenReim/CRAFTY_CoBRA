@@ -23,20 +23,33 @@
 package org.volante.abm.example;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.volante.abm.example.SimpleCapital.HUMAN;
 import static org.volante.abm.example.SimpleService.HOUSING;
 import static org.volante.abm.example.SimpleService.simpleServices;
 
+import java.util.Map.Entry;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.volante.abm.data.Capital;
 import org.volante.abm.data.Service;
+import org.volante.abm.example.util.DeepCopyJEP;
 
+import com.moseph.modelutils.distribution.Distribution;
 import com.moseph.modelutils.fastdata.DoubleMap;
+import com.moseph.modelutils.fastdata.DoubleMatrix;
+
+import de.cesr.uranus.core.UranusRandomService;
 
 
 public class DynamicMaxProductionTest extends BasicTestsUtils {
 
 	public final String DYNAMIC_MAX_PRODUCTION_XML_FILE = "xml/DynamicMaxProduction.xml";
+
+	public final Double PRODUCTION_WEIGHT_NOISE = 99.0;
+	public final Double IMPORTANCE_NOISE = -99.0;
 
 	DynamicMaxProductionModel prodModel = null;
 
@@ -88,5 +101,76 @@ public class DynamicMaxProductionTest extends BasicTestsUtils {
 	void checkProduction(String msg, DoubleMap<Service> expected) {
 		prodModel.production(c11, production);
 		assertEqualMaps(msg, expected, production);
+	}
+
+	@Test
+	public void testCopyWithNoise() {
+		
+		// set up original PM
+		this.prodModel.allowImplicitMultiplication = true;
+		
+		// copy:
+		DynamicMaxProductionModel pmcopy = this.prodModel.copyWithNoise(modelData, new Distribution() {
+			@Override
+			public double sample() {
+				return PRODUCTION_WEIGHT_NOISE;
+			}
+			@Override
+			public void init(UranusRandomService rService, String generatorName) {
+			}
+		}, new Distribution() {
+			@Override
+			public double sample() {
+				return IMPORTANCE_NOISE;
+			}
+			
+			@Override
+			public void init(UranusRandomService rService, String generatorName) {
+			}
+		});
+		
+		assertEquals(prodModel.allowImplicitMultiplication, pmcopy.allowImplicitMultiplication);
+		checkCapitalSensitivitiesMap(prodModel.capitalWeights, pmcopy.capitalWeights, IMPORTANCE_NOISE);
+		
+		checkProductionMap(prodModel.productionWeights, pmcopy.productionWeights, PRODUCTION_WEIGHT_NOISE);
+		assertEquals(prodModel.doubleFormat, pmcopy.doubleFormat);
+		assertEquals(prodModel.csvFile, pmcopy.csvFile);
+		assertEquals(prodModel.rInfo, pmcopy.rInfo);
+		
+		for (Entry<Service, DeepCopyJEP> entry : prodModel.maxProductionParsers.entrySet()) {
+			assertEquals(entry.getValue().getValue(), pmcopy.maxProductionParsers.get(entry.getKey()).getValue(),
+					0.0001);
+			assertFalse(entry.getValue().hasError());
+		}
+	}
+
+	/**
+	 * @param productionWeights
+	 * @param productionWeights2
+	 * @param addition
+	 */
+	private void checkProductionMap(DoubleMap<Service> productionWeights, DoubleMap<Service> productionWeights2,
+			Double addition) {
+		for (Service s : productionWeights.getKeySet()) {
+			// if there is no production, it remains no production:
+			assertEquals(productionWeights.get(s) == 0.0 ? 0.0 : productionWeights.get(s) + addition,
+					productionWeights2.get(s), 0.00001);
+		}
+	}
+
+	/**
+	 * @param productionWeights
+	 * @param productionWeights2
+	 * @param pRODUCTION_WEIGHT_NOISE2
+	 */
+	private void checkCapitalSensitivitiesMap(DoubleMatrix<Capital, Service> capitalWeights,
+			DoubleMatrix<Capital, Service> capitalWeights2, Double addition) {
+		for (Capital c : capitalWeights.cols()) {
+			for (Service s : capitalWeights.getColumn(c).getKeys()) {
+				assertEquals(capitalWeights.get(c, s) == 0.0 ? 0.0 : capitalWeights.get(c, s) + addition,
+						capitalWeights2.get(c, s), 0.00001);
+			}
+
+		}
 	}
 }

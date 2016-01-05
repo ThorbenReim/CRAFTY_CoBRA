@@ -24,19 +24,24 @@
 package org.volante.abm.example;
 
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.nfunk.jep.JEP;
+import org.nfunk.jep.ParseException;
 import org.simpleframework.xml.Attribute;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
+import org.volante.abm.example.util.DeepCopyJEP;
 import org.volante.abm.schedule.RunInfo;
 
+import com.moseph.modelutils.distribution.Distribution;
 import com.moseph.modelutils.fastdata.DoubleMap;
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
 
@@ -55,9 +60,15 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	@Attribute(required = false)
 	boolean allowImplicitMultiplication = true;
 
-	protected Map<String, String> maxProductionFunctions = new HashMap<>();
-
-	protected Map<Service, JEP> maxProductionParsers = new HashMap<>();
+	protected Map<Service, DeepCopyJEP> maxProductionParsers = new HashMap<>();
+	
+	protected Region region = null;
+	
+	/**
+	 * Since productions weights are reinitialised by the functions parser regularly,
+	 * a possible noise term needs to be added explicitly after that.
+	 */
+	protected Map<Service, Double> productionNoise;
 
 	protected RunInfo rInfo;
 
@@ -65,6 +76,7 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	 * Default constructor
 	 */
 	public DynamicMaxProductionModel() {
+		productionNoise = new HashMap<>();
 	}
 
 	/**
@@ -77,6 +89,7 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	public DynamicMaxProductionModel(double[][] weights, double[] productionWeights) {
 		this.capitalWeights.putT(weights);
 		this.productionWeights.put(productionWeights);
+		productionNoise = new HashMap<>();
 	}
 
 	/**
@@ -87,6 +100,10 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 		super.initialise(data, info, r);
 		this.rInfo = info;
 		initMaxProductionFunctionFromCSV(data, info, r);
+
+		for (Service service : data.services) {
+			productionNoise.put(service, new Double(0));
+		}
 	}
 
 	/**
@@ -114,12 +131,14 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	 * @throws Exception
 	 */
 	protected void initMaxProductionFunctionFromCSV(ModelData data, RunInfo info, Region region) throws Exception {
-		maxProductionFunctions =
+		Map<String, String> maxProductionFunctions =
 				info.getPersister().csvToStringMap(csvFile, "Service", "Production",
 						region != null ? region.getPeristerContextExtra() : null);
 
+		this.region = region;
+
 		for (Service service : data.services) {
-			JEP productionParser = new JEP();
+			DeepCopyJEP productionParser = new DeepCopyJEP();
 			productionParser.addStandardFunctions();
 			productionParser.addStandardConstants();
 
@@ -181,15 +200,116 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 			for (Capital capital : capitals.getKeySet()) {
 				maxProductionParsers.get(service).addVariable(capital.getName(), capitals.getDouble(capital));
 			}
-			maxProductionParsers.get(service).addVariable("CTICK",
- rInfo.getSchedule().getCurrentTick());
+			maxProductionParsers.get(service).addVariable("CTICK", rInfo.getSchedule().getCurrentTick());
 
-			productionWeights.put(service, maxProductionParsers.get(service).getValue());
+			productionWeights.put(service, maxProductionParsers.get(service).getValue() + productionNoise.get(service));
+
 			if (maxProductionParsers.get(service).hasError()) {
 				logger.error("Error while parsing maximum production function: "
 						+ maxProductionParsers.get(service).getErrorInfo());
 				throw new IllegalStateException("Error while parsing maximum production function.");
 			}
 		}
+	}
+
+	public DynamicMaxProductionModel copyWithNoise(ModelData data, Distribution production, Distribution importance) {
+		DynamicMaxProductionModel pout = new DynamicMaxProductionModel();
+
+		fillCopyWithNoise(data, production, importance, pout);
+		return pout;
+	}
+
+	/**
+	 * @param data
+	 * @param production
+	 * @param importance
+	 * @param pout
+	 */
+	protected void fillCopyWithNoise(ModelData data, Distribution production, Distribution importance,
+			DynamicMaxProductionModel pout) {
+		pout.allowImplicitMultiplication = this.allowImplicitMultiplication;
+		pout.csvFile = this.csvFile;
+		pout.doubleFormat = this.doubleFormat;
+		pout.rInfo = this.rInfo;
+
+		pout.capitalWeights = capitalWeights.duplicate();
+		pout.productionWeights = productionWeights.duplicate();
+
+		for (Service s : data.services) {
+			// if there is no production, it remains no production:
+			if (production == null || productionWeights.getDouble(s) == 0.0) {
+				pout.productionNoise.put(s, 0.0);
+			} else {
+				double randomSample = production.sample();
+				pout.productionNoise.put(s, randomSample);
+
+				// <- LOGGING
+				if (logger.isDebugEnabled()) {
+					logger.debug("Random sample: " + randomSample);
+				}
+				// LOGGING ->
+
+			}
+
+			for (Capital c : data.capitals) {
+				// if there is no sensitivity, it remains no sensitivity:
+				if (importance == null || capitalWeights.get(c, s) == 0.0) {
+					pout.setWeight(c, s, capitalWeights.get(c, s));
+				} else {
+					double randomSample = importance.sample();
+					pout.setWeight(c, s, capitalWeights.get(c, s) + randomSample);
+
+					// <- LOGGING
+					if (logger.isDebugEnabled()) {
+						logger.debug("Random sample: " + randomSample);
+					}
+					// LOGGING ->
+				}
+			}
+
+			// copy function parsers:
+			try {
+				Map<String, String> maxProductionFunctions =
+						this.rInfo.getPersister().csvToStringMap(csvFile, "Service", "Production",
+								this.region != null ? this.region.getPeristerContextExtra() : null);
+
+				for (Entry<Service, DeepCopyJEP> entry : this.maxProductionParsers.entrySet()) {
+					DeepCopyJEP parser = entry.getValue().deepCopyJepParser();
+					if (parser.getTopNode().jjtGetNumChildren() == 0) {
+						parser.parseExpression(maxProductionFunctions.get(entry.getKey().getName()));
+					}
+					pout.maxProductionParsers.put(entry.getKey(), parser);
+
+				}
+			} catch (ParseException exception) {
+				exception.printStackTrace();
+			} catch (IOException exception) {
+				exception.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * @see org.volante.abm.example.SimpleProductionModel#copyExact()
+	 */
+	public SimpleProductionModel copyExact() {
+		DynamicMaxProductionModel pout = new DynamicMaxProductionModel();
+		pout.capitalWeights = capitalWeights.duplicate();
+		pout.productionWeights = productionWeights.duplicate();
+
+		pout.allowImplicitMultiplication = this.allowImplicitMultiplication;
+		pout.productionNoise = (Map<Service, Double>) ((HashMap) this.productionNoise).clone();
+
+		
+		// copy function parsers:
+		try {
+			for (Entry<Service, DeepCopyJEP> entry : this.maxProductionParsers.entrySet()) {
+				pout.maxProductionParsers.put(entry.getKey(), entry.getValue().deepCopyJepParser());
+			}
+		} catch (ParseException exception) {
+			exception.printStackTrace();
+			}
+
+		return pout;
 	}
 }
