@@ -95,8 +95,8 @@ public class NormalisedCurveCompetitivenessModel extends CurveCompetitivenessMod
 
 			double comp = (marginal == 0 || amount == 0 ? 0 : marginal * amount);
 
-			if (log.isTraceEnabled() || (removeNegative && comp < 0)) {
-				log.info(String.format(
+			if (log.isTraceEnabled() || (log.isDebugEnabled() && removeNegative && comp < 0)) {
+				log.debug(String.format(
 						"\t\tService %10s: Residual (%5f) > Marginal (%5f; Curve: %s) * Amount (%5f) = %5f",
 						s.getName(), res, marginal, c.toString(), amount, marginal * amount));
 			}

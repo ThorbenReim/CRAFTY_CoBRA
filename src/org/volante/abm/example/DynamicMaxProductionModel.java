@@ -60,6 +60,12 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	@Attribute(required = false)
 	boolean allowImplicitMultiplication = true;
 
+	/**
+	 * If true, the noise term is not added to production weights but multiplied when updating production weights.
+	 */
+	@Attribute(required = false)
+	boolean multiplyProductionNoise = false;
+
 	protected Map<Service, DeepCopyJEP> maxProductionParsers = new HashMap<>();
 	
 	protected Region region = null;
@@ -202,7 +208,11 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 			}
 			maxProductionParsers.get(service).addVariable("CTICK", rInfo.getSchedule().getCurrentTick());
 
-			productionWeights.put(service, maxProductionParsers.get(service).getValue() + productionNoise.get(service));
+			productionWeights.put(
+					service,
+					this.multiplyProductionNoise ? maxProductionParsers.get(service).getValue()
+							* productionNoise.get(service) : maxProductionParsers.get(service).getValue()
+							+ productionNoise.get(service));
 
 			if (maxProductionParsers.get(service).hasError()) {
 				logger.error("Error while parsing maximum production function: "

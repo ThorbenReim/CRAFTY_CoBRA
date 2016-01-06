@@ -104,10 +104,11 @@ public class DynamicMaxProductionTest extends BasicTestsUtils {
 	}
 
 	@Test
-	public void testCopyWithNoise() {
+	public void testCopyWithNoiseAdded() {
 		
 		// set up original PM
 		this.prodModel.allowImplicitMultiplication = true;
+		this.prodModel.multiplyProductionNoise = false;
 		
 		// copy:
 		DynamicMaxProductionModel pmcopy = this.prodModel.copyWithNoise(modelData, new Distribution() {
@@ -132,11 +133,54 @@ public class DynamicMaxProductionTest extends BasicTestsUtils {
 		assertEquals(prodModel.allowImplicitMultiplication, pmcopy.allowImplicitMultiplication);
 		checkCapitalSensitivitiesMap(prodModel.capitalWeights, pmcopy.capitalWeights, IMPORTANCE_NOISE);
 		
-		checkProductionMap(prodModel.productionWeights, pmcopy.productionWeights, PRODUCTION_WEIGHT_NOISE);
+		checkProductionMap(prodModel.productionWeights, pmcopy.productionWeights, PRODUCTION_WEIGHT_NOISE, 0.0);
 		assertEquals(prodModel.doubleFormat, pmcopy.doubleFormat);
 		assertEquals(prodModel.csvFile, pmcopy.csvFile);
 		assertEquals(prodModel.rInfo, pmcopy.rInfo);
 		
+		for (Entry<Service, DeepCopyJEP> entry : prodModel.maxProductionParsers.entrySet()) {
+			assertEquals(entry.getValue().getValue(), pmcopy.maxProductionParsers.get(entry.getKey()).getValue(),
+					0.0001);
+			assertFalse(entry.getValue().hasError());
+		}
+	}
+
+	@Test
+	public void testCopyWithNoiseMultiplied() {
+
+		// set up original PM
+		this.prodModel.allowImplicitMultiplication = true;
+		this.prodModel.multiplyProductionNoise = true;
+
+		// copy:
+		DynamicMaxProductionModel pmcopy = this.prodModel.copyWithNoise(modelData, new Distribution() {
+			@Override
+			public double sample() {
+				return PRODUCTION_WEIGHT_NOISE;
+			}
+
+			@Override
+			public void init(UranusRandomService rService, String generatorName) {
+			}
+		}, new Distribution() {
+			@Override
+			public double sample() {
+				return IMPORTANCE_NOISE;
+			}
+
+			@Override
+			public void init(UranusRandomService rService, String generatorName) {
+			}
+		});
+
+		assertEquals(prodModel.allowImplicitMultiplication, pmcopy.allowImplicitMultiplication);
+		checkCapitalSensitivitiesMap(prodModel.capitalWeights, pmcopy.capitalWeights, IMPORTANCE_NOISE);
+
+		checkProductionMap(prodModel.productionWeights, pmcopy.productionWeights, 0.0, PRODUCTION_WEIGHT_NOISE);
+		assertEquals(prodModel.doubleFormat, pmcopy.doubleFormat);
+		assertEquals(prodModel.csvFile, pmcopy.csvFile);
+		assertEquals(prodModel.rInfo, pmcopy.rInfo);
+
 		for (Entry<Service, DeepCopyJEP> entry : prodModel.maxProductionParsers.entrySet()) {
 			assertEquals(entry.getValue().getValue(), pmcopy.maxProductionParsers.get(entry.getKey()).getValue(),
 					0.0001);
@@ -150,10 +194,11 @@ public class DynamicMaxProductionTest extends BasicTestsUtils {
 	 * @param addition
 	 */
 	private void checkProductionMap(DoubleMap<Service> productionWeights, DoubleMap<Service> productionWeights2,
-			Double addition) {
+			double addition, double multiplication) {
 		for (Service s : productionWeights.getKeySet()) {
 			// if there is no production, it remains no production:
-			assertEquals(productionWeights.get(s) == 0.0 ? 0.0 : productionWeights.get(s) + addition,
+			assertEquals(
+					productionWeights.get(s) == 0.0 ? 0.0 : (productionWeights.get(s) + addition) * multiplication,
 					productionWeights2.get(s), 0.00001);
 		}
 	}
