@@ -66,6 +66,12 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 	@Attribute(required=false)
 	String csvFile = null;
 	
+	/**
+	 * If true, the noise term is not added to production weights but multiplied when updating production weights.
+	 */
+	@Attribute(required = false)
+	boolean multiplyProductionNoise = false;
+
 	@Attribute(required = false)
 	String doubleFormat = "0.000";
 	
@@ -226,14 +232,14 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 				pout.setWeight( s, productionWeights.getDouble( s ) );
 			} else {
 				double randomSample = production.sample();
-				pout.setWeight(s, productionWeights.getDouble(s) + randomSample);
+				pout.setWeight(s, this.multiplyProductionNoise ? this.productionWeights.getDouble(s) * randomSample
+						: this.productionWeights.getDouble(s) + randomSample);
 
 				// <- LOGGING
 				if (logger.isDebugEnabled()) {
 					logger.debug("Random sample: " + randomSample);
 				}
 				// LOGGING ->
-
 			}
 			
 			for( Capital c : data.capitals )

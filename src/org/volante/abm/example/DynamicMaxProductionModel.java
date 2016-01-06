@@ -60,12 +60,6 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	@Attribute(required = false)
 	boolean allowImplicitMultiplication = true;
 
-	/**
-	 * If true, the noise term is not added to production weights but multiplied when updating production weights.
-	 */
-	@Attribute(required = false)
-	boolean multiplyProductionNoise = false;
-
 	protected Map<Service, DeepCopyJEP> maxProductionParsers = new HashMap<>();
 	
 	protected Region region = null;
