@@ -119,6 +119,11 @@ public class DynamicMaxProductionTest extends BasicTestsUtils {
 			@Override
 			public void init(UranusRandomService rService, String generatorName) {
 			}
+
+			@Override
+			public boolean isInitialised() {
+				return true;
+			}
 		}, new Distribution() {
 			@Override
 			public double sample() {
@@ -127,6 +132,11 @@ public class DynamicMaxProductionTest extends BasicTestsUtils {
 			
 			@Override
 			public void init(UranusRandomService rService, String generatorName) {
+			}
+
+			@Override
+			public boolean isInitialised() {
+				return true;
 			}
 		});
 		
@@ -162,6 +172,11 @@ public class DynamicMaxProductionTest extends BasicTestsUtils {
 			@Override
 			public void init(UranusRandomService rService, String generatorName) {
 			}
+
+			@Override
+			public boolean isInitialised() {
+				return true;
+			}
 		}, new Distribution() {
 			@Override
 			public double sample() {
@@ -170,6 +185,11 @@ public class DynamicMaxProductionTest extends BasicTestsUtils {
 
 			@Override
 			public void init(UranusRandomService rService, String generatorName) {
+			}
+
+			@Override
+			public boolean isInitialised() {
+				return true;
 			}
 		});
 

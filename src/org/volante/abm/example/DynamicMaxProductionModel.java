@@ -60,6 +60,12 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	@Attribute(required = false)
 	boolean allowImplicitMultiplication = true;
 
+	/**
+	 * Set this true when changes to the parser on an individual bases are indented.
+	 */
+	@Attribute(required = false)
+	boolean copyProductionFunctionParser = false;
+
 	protected Map<Service, DeepCopyJEP> maxProductionParsers = new HashMap<>();
 	
 	protected Region region = null;
@@ -238,11 +244,11 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 
 	/**
 	 * @param data
-	 * @param production
-	 * @param importance
+	 * @param productionDist
+	 * @param importanceDist
 	 * @param pout
 	 */
-	protected void fillCopyWithNoise(ModelData data, Distribution production, Distribution importance,
+	protected void fillCopyWithNoise(ModelData data, Distribution productionDist, Distribution importanceDist,
 			DynamicMaxProductionModel pout) {
 		pout.allowImplicitMultiplication = this.allowImplicitMultiplication;
 		pout.csvFile = this.csvFile;
@@ -254,10 +260,10 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 
 		for (Service s : data.services) {
 			// if there is no production, it remains no production:
-			if (production == null || productionWeights.getDouble(s) == 0.0) {
+			if (productionDist == null || productionWeights.getDouble(s) == 0.0) {
 				pout.productionNoise.put(s, 0.0);
 			} else {
-				double randomSample = production.sample();
+				double randomSample = productionDist.sample();
 				pout.productionNoise.put(s, randomSample);
 
 				// <- LOGGING
@@ -265,15 +271,14 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 					logger.debug("Random sample: " + randomSample);
 				}
 				// LOGGING ->
-
 			}
 
 			for (Capital c : data.capitals) {
 				// if there is no sensitivity, it remains no sensitivity:
-				if (importance == null || capitalWeights.get(c, s) == 0.0) {
+				if (importanceDist == null || capitalWeights.get(c, s) == 0.0) {
 					pout.setWeight(c, s, capitalWeights.get(c, s));
 				} else {
-					double randomSample = importance.sample();
+					double randomSample = importanceDist.sample();
 					pout.setWeight(c, s, capitalWeights.get(c, s) + randomSample);
 
 					// <- LOGGING
@@ -286,18 +291,22 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 		}
 
 		// copy function parsers:
-		for (Entry<Service, DeepCopyJEP> entry : this.maxProductionParsers.entrySet()) {
-			DeepCopyJEP parser;
-			try {
-				parser = entry.getValue().deepCopyJepParser();
-				if (parser.getTopNode().jjtGetNumChildren() == 0) {
+		if (copyProductionFunctionParser) {
+			for (Entry<Service, DeepCopyJEP> entry : this.maxProductionParsers.entrySet()) {
+				DeepCopyJEP parser;
+				try {
+					parser = entry.getValue().deepCopyJepParser();
+					if (parser.getTopNode().jjtGetNumChildren() == 0) {
 
-					parser.parseExpression(getMaxProductionFunctions().get(entry.getKey().getName()));
+						parser.parseExpression(getMaxProductionFunctions().get(entry.getKey().getName()));
+					}
+					pout.maxProductionParsers.put(entry.getKey(), parser);
+				} catch (ParseException exception) {
+					exception.printStackTrace();
 				}
-				pout.maxProductionParsers.put(entry.getKey(), parser);
-			} catch (ParseException exception) {
-				exception.printStackTrace();
 			}
+		} else {
+			pout.maxProductionParsers = this.maxProductionParsers;
 		}
 	}
 

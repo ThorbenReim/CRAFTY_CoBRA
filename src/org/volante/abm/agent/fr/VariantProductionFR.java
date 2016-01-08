@@ -188,18 +188,17 @@ public class VariantProductionFR extends AbstractFR {
 			return production;
 		}
 
-		if (this.serviceLevelNoise != null) {
+		if (this.serviceLevelNoise != null && !this.serviceLevelNoise.isInitialised()) {
 			this.serviceLevelNoise.init(r.getRandom().getURService(),
 					RandomPa.RANDOM_SEED_INIT_AGENTS.name());
 		}
 
-		if (this.capitalImportanceNoise != null) {
+		if (this.capitalImportanceNoise != null && !this.serviceLevelNoise.isInitialised()) {
 			this.capitalImportanceNoise.init(r.getRandom().getURService(),
 					RandomPa.RANDOM_SEED_INIT_AGENTS.name());
 		}
 
-		return ((SimpleProductionModel) production).copyWithNoise(
-this.data,
+		return ((SimpleProductionModel) production).copyWithNoise(this.data,
 				serviceLevelNoise, capitalImportanceNoise);
 	}
 
