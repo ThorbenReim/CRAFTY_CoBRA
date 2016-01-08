@@ -193,7 +193,7 @@ public class VariantProductionFR extends AbstractFR {
 					RandomPa.RANDOM_SEED_INIT_AGENTS.name());
 		}
 
-		if (this.capitalImportanceNoise != null && !this.serviceLevelNoise.isInitialised()) {
+		if (this.capitalImportanceNoise != null && !this.capitalImportanceNoise.isInitialised()) {
 			this.capitalImportanceNoise.init(r.getRandom().getURService(),
 					RandomPa.RANDOM_SEED_INIT_AGENTS.name());
 		}
