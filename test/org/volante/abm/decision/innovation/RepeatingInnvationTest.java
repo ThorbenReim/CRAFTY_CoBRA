@@ -64,7 +64,7 @@ public class RepeatingInnvationTest extends InnovationTestUtils {
 					RepeatingInnovativeInstitution.class,
  persister
 							.getFullPath(REPEATING_INNOVATION_XML_FILE,
-									this.r1.getPeristerContextExtra()));
+									this.r1.getPersisterContextExtra()));
 			this.institution.initialise(modelData, runInfo, r1);
 			registerInstitution(this.institution, this.r1);
 

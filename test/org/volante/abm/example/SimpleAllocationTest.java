@@ -80,7 +80,7 @@ public class SimpleAllocationTest extends BasicTestsUtils
 		persister = runInfo.getPersister();
 		try {
 			this.allocation = persister.read(SimpleAllocationModel.class,
-				persister.getFullPath(PROPORTION_ALLOCATION_XML, this.r1.getPeristerContextExtra()));
+				persister.getFullPath(PROPORTION_ALLOCATION_XML, this.r1.getPersisterContextExtra()));
 			this.allocation.initialise(modelData, runInfo, r1);
 			r1.setAllocationModel(this.allocation);
 		} catch (Exception exception) {

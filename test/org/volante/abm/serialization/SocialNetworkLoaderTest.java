@@ -71,7 +71,7 @@ public class SocialNetworkLoaderTest extends BasicTestsUtils {
 		try {
 			loader = ABMPersister.getInstance().readXML(
 					SocialNetworkLoaderList.class, SOCIAL_NETWORK_XML_FILE,
-					region.getPeristerContextExtra()).loaders.get(0);
+					region.getPersisterContextExtra()).loaders.get(0);
 			loader.initialise(region.getModelData(), new RunInfo(), region);
 		} catch (Exception exception) {
 			exception.printStackTrace();

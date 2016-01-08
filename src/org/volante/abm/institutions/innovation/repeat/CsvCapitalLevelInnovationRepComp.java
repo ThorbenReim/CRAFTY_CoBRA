@@ -75,7 +75,7 @@ public class CsvCapitalLevelInnovationRepComp extends AbstractInnovationRepComp
 	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
 		this.rInfo = info;
 		CsvReader reader = info.getPersister().getCSVReader(
-				effectAdjustmentsCsvFile, extent.getPeristerContextExtra());
+				effectAdjustmentsCsvFile, extent.getPersisterContextExtra());
 		effects = new TreeMap<Integer, Double>();
 
 		while (reader.readRecord()) {

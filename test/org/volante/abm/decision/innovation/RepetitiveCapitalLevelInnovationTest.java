@@ -89,7 +89,7 @@ public class RepetitiveCapitalLevelInnovationTest extends InnovationTestUtils {
 			this.csvInstitution = persister.read(
 					RepeatingInnovativeInstitution.class, persister
 							.getFullPath(REPEATING_CSV_INNOVATION_XML_FILE,
-									this.r1.getPeristerContextExtra()));
+									this.r1.getPersisterContextExtra()));
 			this.csvInstitution.initialise(modelData, runInfo, r1);
 			registerInstitution(this.csvInstitution, this.r1);
 

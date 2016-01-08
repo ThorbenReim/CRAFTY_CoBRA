@@ -121,9 +121,9 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 	void initWeightsFromCSV(ModelData data, RunInfo info, Region region) throws Exception
 	{
 		capitalWeights = info.getPersister().csvToMatrix(csvFile, data.capitals, data.services,
-				region != null ? region.getPeristerContextExtra() : null);
+				region != null ? region.getPersisterContextExtra() : null);
 		productionWeights = info.getPersister().csvToDoubleMap(csvFile, data.services,
-				"Production", region != null ? region.getPeristerContextExtra() : null);
+				"Production", region != null ? region.getPersisterContextExtra() : null);
 	}
 	
 	/**

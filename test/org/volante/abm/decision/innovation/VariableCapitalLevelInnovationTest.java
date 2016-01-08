@@ -81,7 +81,7 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 		try {
 			this.institution = persister.read(InnovativeInstitution.class,
 					persister.getFullPath(INSTITUTION_XML_FILE,
-							this.r1.getPeristerContextExtra()));
+							this.r1.getPersisterContextExtra()));
 			this.institution.initialise(modelData, runInfo, r1);
 
 			registerInstitution(this.institution, this.r1);
@@ -251,7 +251,7 @@ public class VariableCapitalLevelInnovationTest extends InnovationTestUtils {
 		CapitalDynamicsInstitution institution = ABMPersister.getInstance()
 				.readXML(CapitalDynamicsInstitution.class,
 						CAPITAL_INSTITUTION_XML_FILENAME,
-						this.r1.getPeristerContextExtra());
+						this.r1.getPersisterContextExtra());
 		institution.initialise(modelData, runInfo, r1);
 
 		Institutions institutions = r1.getInstitutions();

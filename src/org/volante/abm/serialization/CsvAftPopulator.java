@@ -162,7 +162,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 		// Basic CSV file validation:
 		if (!rLoader.persister.csvFileOK("RegionLoader", csvFile, rLoader
 				.getRegion()
-				.getPeristerContextExtra(), xColumn, yColumn)) {
+				.getPersisterContextExtra(), xColumn, yColumn)) {
 			return;
 		}
 
@@ -170,7 +170,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 
 		CsvReader reader = rLoader.persister.getCSVReader(csvFile, rLoader
 				.getRegion()
-				.getPeristerContextExtra());
+				.getPersisterContextExtra());
 
 		List<String> columns = Arrays.asList(reader.getHeaders());
 		agentPropertyColumns.addAll(columns);
@@ -399,7 +399,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Finished reading CSV file "
 					+ rLoader.persister.getFullPath(csvFile, rLoader
-							.getRegion().getPeristerContextExtra()));
+							.getRegion().getPersisterContextExtra()));
 		}
 		// LOGGING ->
 	}
@@ -505,7 +505,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 
 			ModelData data = rLoader.modelData;
 			CsvReader capitalFactorReader =
-					rLoader.persister.getCSVReader(csvCapitalFactorFile, rLoader.getRegion().getPeristerContextExtra());
+					rLoader.persister.getCSVReader(csvCapitalFactorFile, rLoader.getRegion().getPersisterContextExtra());
 
 			while (capitalFactorReader.readRecord()) {
 

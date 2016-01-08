@@ -103,10 +103,10 @@ public class CSVCapitalUpdater extends AbstractUpdater
 		String fn = null;
 		String yearly = yearlyFilenames.get( info.getSchedule().getCurrentTick() );
 		if (yearly != null
-				&& p.csvFileOK(getClass(), yearly, region.getPeristerContextExtra(), X_COL, Y_COL)) {
+				&& p.csvFileOK(getClass(), yearly, region.getPersisterContextExtra(), X_COL, Y_COL)) {
 			fn = yearly;
 		} else if (yearInFilename
-				&& p.csvFileOK(getClass(), filename, region.getPeristerContextExtra(), X_COL, Y_COL)) {
+				&& p.csvFileOK(getClass(), filename, region.getPersisterContextExtra(), X_COL, Y_COL)) {
 			fn = filename;
 		} else if( reapplyPreviousFile && previousFilename != null ) {
 			fn = previousFilename;
@@ -115,7 +115,7 @@ public class CSVCapitalUpdater extends AbstractUpdater
 		if( fn != null )
 		{
 			previousFilename = fn;
-			return p.getCSVReader(fn, region.getPeristerContextExtra());
+			return p.getCSVReader(fn, region.getPersisterContextExtra());
 		}
 		return null;
 	}

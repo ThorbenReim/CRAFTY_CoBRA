@@ -221,7 +221,7 @@ public class GiveUpGiveInAllocationTest extends BasicTestsUtils {
 		// Now replace the forester with a variant forester
 		FunctionalRole vForest = runInfo.getPersister().readXML(
 				FunctionalRole.class, "xml/VariantForester1.xml",
-				r.getPeristerContextExtra());
+				r.getPersisterContextExtra());
 		vForest.initialise(modelData, runInfo, r);
 
 		roles.clear();
@@ -260,7 +260,7 @@ public class GiveUpGiveInAllocationTest extends BasicTestsUtils {
 		// forester
 		FunctionalRole vFarmer = runInfo.getPersister().readXML(
 				FunctionalRole.class, "xml/VariantFarmer1.xml",
-				r.getPeristerContextExtra());
+				r.getPersisterContextExtra());
 		vFarmer.initialise(modelData, runInfo, r);
 
 		roles.clear();

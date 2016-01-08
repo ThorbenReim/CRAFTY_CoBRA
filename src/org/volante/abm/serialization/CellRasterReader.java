@@ -54,7 +54,7 @@ public class CellRasterReader implements CellInitialiser {
 		ModelData data = rl.modelData;
 		log.info("Loading raster for " + capitalName + " from " + rasterFile);
 		Raster raster = rl.persister.readRaster(rasterFile, rl.getRegion()
-				.getPeristerContextExtra());
+				.getPersisterContextExtra());
 		Capital capital = data.capitals.forName(capitalName);
 		int cells = 0;
 		for (int x = 0; x < raster.getCols(); x++) {

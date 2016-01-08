@@ -128,7 +128,7 @@ public class ImitatingFrDeciderTest extends BasicTestsUtils {
 				.getPersister()
 				.readXML(CapitalBasedImitatingFrDeciderFactory.class,
 						XML_DECIDER_IDENTITY_FILENAME,
-						r.getPeristerContextExtra())
+						r.getPersisterContextExtra())
 				.getDecider((LaraBehaviouralComponent) this.focal.getBC(),
 						dConfig);
 	}
@@ -181,7 +181,7 @@ public class ImitatingFrDeciderTest extends BasicTestsUtils {
 		this.decider = runInfo
 				.getPersister()
 				.readXML(CapitalBasedImitatingFrDeciderFactory.class,
-						XML_DECIDER_POWER_FILENAME, r.getPeristerContextExtra())
+						XML_DECIDER_POWER_FILENAME, r.getPersisterContextExtra())
 				.getDecider((LaraBehaviouralComponent) this.focal.getBC(),
 						dConfig);
 		this.decider.decide();

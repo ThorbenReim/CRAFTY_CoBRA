@@ -59,7 +59,7 @@ public class CapitalDynamicsInstitutionTest extends BasicTestsUtils {
 	protected CapitalDynamicsInstitution getTestInstitution() throws Exception
 	{
 		CapitalDynamicsInstitution i = ABMPersister.getInstance().readXML(
-				CapitalDynamicsInstitution.class, XML_FILENAME, r.getPeristerContextExtra());
+				CapitalDynamicsInstitution.class, XML_FILENAME, r.getPersisterContextExtra());
 		i.initialise(modelData, runInfo, r);
 		return i;
 	}

@@ -247,7 +247,7 @@ public class VariableCapitalLevelInnovation extends Innovation {
 		try {
 			Map<String, LinearInterpolator> curves = rInfo.getPersister()
 					.csvVerticalToCurves(capitalFactorCsvFile, tickCol,
-							affectedCapitals, region.getPeristerContextExtra());
+							affectedCapitals, region.getPersisterContextExtra());
 			for (Capital c : modelData.capitals) {
 				if (curves.containsKey(c.getName())) {
 					capitalFactorCurves.put(c, curves.get(c.getName()));

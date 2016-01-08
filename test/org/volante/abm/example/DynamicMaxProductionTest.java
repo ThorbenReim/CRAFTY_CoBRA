@@ -72,7 +72,7 @@ public class DynamicMaxProductionTest extends BasicTestsUtils {
 		try {
 			this.prodModel =
 					persister.read(DynamicMaxProductionModel.class,
-							persister.getFullPath(DYNAMIC_MAX_PRODUCTION_XML_FILE, this.r1.getPeristerContextExtra()));
+							persister.getFullPath(DYNAMIC_MAX_PRODUCTION_XML_FILE, this.r1.getPersisterContextExtra()));
 			this.prodModel.initialise(modelData, runInfo, r1);
 		} catch (Exception exception) {
 			exception.printStackTrace();

@@ -68,7 +68,7 @@ public class RepetitiveRecruitmentTest extends InnovationTestUtils {
 					RepeatingInnovativeInstitution.class,
  persister
 							.getFullPath(REPETITIVE_RECRUITMENT_XML_FILE,
-									this.r1.getPeristerContextExtra()));
+									this.r1.getPersisterContextExtra()));
 			this.institution.initialise(modelData, runInfo, r1);
 			this.institution.update(); // institution is not registered at Institutions...
 										// initialises innovation

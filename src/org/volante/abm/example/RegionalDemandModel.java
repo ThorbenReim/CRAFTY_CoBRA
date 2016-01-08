@@ -240,7 +240,7 @@ public class RegionalDemandModel implements DemandModel, PreTickAction, PostTick
 		}
 
 		Map<String, LinearInterpolator> curves = runInfo.getPersister().csvVerticalToCurves(
-				demandCSV, yearCol, modelData.services.names(), region.getPeristerContextExtra());
+				demandCSV, yearCol, modelData.services.names(), region.getPersisterContextExtra());
 		for (Service s : modelData.services) {
 			if (curves.containsKey(s.getName())) {
 				demandCurves.put(s, curves.get(s.getName()));

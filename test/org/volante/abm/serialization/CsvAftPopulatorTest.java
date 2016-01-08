@@ -225,7 +225,7 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 		CsvAftPopulator populator = runInfo.getPersister().readXML(
 				CsvAftPopulator.class,
 				FILENAME_XML_POPULATOR_SINGLE_CELL_AGENTS,
-				rl.getRegion().getPeristerContextExtra());
+				rl.getRegion().getPersisterContextExtra());
 		populator.initialise(rl);
 
 		// check capitals
@@ -251,7 +251,7 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 				MANAGED_CELLS_MANAGE_EVERY_HOMECELL);
 		CsvAftPopulator populator = runInfo.getPersister().readXML(CsvAftPopulator.class,
 				FILENAME_XML_POPULATOR_MANAGE_EVERY_HOMECELL,
-				rl.getRegion().getPeristerContextExtra());
+				rl.getRegion().getPersisterContextExtra());
 		populator.initialise(rl);
 
 		// check capitals
@@ -278,7 +278,7 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 		CsvAftPopulator populator = runInfo.getPersister().readXML(
 				CsvAftPopulator.class,
 				FILENAME_XML_POPULATOR_UNMANAGED_HOMECELL,
-				rl.getRegion().getPeristerContextExtra());
+				rl.getRegion().getPersisterContextExtra());
 		populator.initialise(rl);
 
 		// check capitals
@@ -305,7 +305,7 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 		CsvAftPopulator populator = runInfo.getPersister().readXML(
 				CsvAftPopulator.class,
  FILENAME_XML_POPULATOR_UNMANAGED_HOMECELL_PROPERTIES,
-				rl.getRegion().getPeristerContextExtra());
+				rl.getRegion().getPersisterContextExtra());
 		populator.initialise(rl);
 
 		// check capitals
@@ -342,7 +342,7 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 				MANAGED_CELLS_TAGGED_HOMECELLS);
 		CsvAftPopulator populator = runInfo.getPersister().readXML(
 				CsvAftPopulator.class, FILENAME_XML_POPULATOR_TAGGED_HOMECELLS,
-				rl.getRegion().getPeristerContextExtra());
+				rl.getRegion().getPersisterContextExtra());
 		populator.initialise(rl);
 
 		// check capitals
@@ -369,7 +369,7 @@ public class CsvAftPopulatorTest extends BasicTestsUtils {
 		CsvAftPopulator populator = runInfo.getPersister().readXML(
 				CsvAftPopulator.class,
 				FILENAME_XML_POPULATOR_SINGLE_CELL_AGENTS_UNMANAGED,
-				rl.getRegion().getPeristerContextExtra());
+				rl.getRegion().getPersisterContextExtra());
 		populator.initialise(rl);
 
 		// check capitals

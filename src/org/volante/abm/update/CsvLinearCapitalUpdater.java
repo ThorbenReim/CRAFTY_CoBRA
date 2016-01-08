@@ -82,7 +82,7 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
 		super.initialise(data, info, extent);
 		ABMPersister p = ABMPersister.getInstance();
-		CsvReader csvReader = p.getCSVReader(this.operandsCsvFilename, region.getPeristerContextExtra());
+		CsvReader csvReader = p.getCSVReader(this.operandsCsvFilename, region.getPersisterContextExtra());
 
 		// Assume we've got the CSV file, and we've read the headers in
 		while (csvReader.readRecord()) {

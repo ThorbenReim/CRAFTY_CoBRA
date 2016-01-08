@@ -475,7 +475,7 @@ public class BasicTestsUtils {
 			r.initialise(modelData, runInfo, r);
 			runInfo.getPersister()
 					.readXML(RegionalLaraModel.class, XML_REGIONAL_LARA_MODEL,
-							r.getPeristerContextExtra())
+							r.getPersisterContextExtra())
 					.initialise(modelData, runInfo, r);
 		} catch (Exception exception) {
 			exception.printStackTrace();
@@ -759,7 +759,7 @@ public class BasicTestsUtils {
 
 		runInfo.getPersister()
 				.readXML(RegionalLaraModel.class, XML_REGIONAL_LARA_MODEL,
-						r1.getPeristerContextExtra())
+						r1.getPersisterContextExtra())
 				.initialise(modelData, runInfo, r);
 
 		loadFrPrototypes(r);
@@ -843,7 +843,7 @@ public class BasicTestsUtils {
 	public static void loadFrPrototypes(Region r) {
 		try {
 			List<FunctionalRole> frPrototypes = runInfo.getPersister().readXML(
-					FRList.class, XML_FILENAME_FR, r.getPeristerContextExtra()).fRoles;
+					FRList.class, XML_FILENAME_FR, r.getPersisterContextExtra()).fRoles;
 			for (FunctionalRole fr : frPrototypes) {
 				fr.initialise(modelData, runInfo, r);
 			}

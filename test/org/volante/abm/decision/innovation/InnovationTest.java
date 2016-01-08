@@ -113,7 +113,7 @@ public class InnovationTest extends BasicTestsUtils {
 			SingletonTestClass tclass = persister.read(SingletonTestClass.class,
  persister.getFullPath(
 							SINGLETON_INNOVATION_XML_FILE,
-							this.r1.getPeristerContextExtra()));
+							this.r1.getPersisterContextExtra()));
 			tclass.inno.initialise(modelData, runInfo, r1);
 
 			// innoAlter has not been set
@@ -137,7 +137,7 @@ public class InnovationTest extends BasicTestsUtils {
 		persister = runInfo.getPersister();
 		SingletonTestClass tclass = persister.read(SingletonTestClass.class,
 				persister.getFullPath(SINGLETON_INNOVATION_XML_FILE,
-						this.r1.getPeristerContextExtra()));
+						this.r1.getPersisterContextExtra()));
 		tclass.inno.initialise(modelData, runInfo, r1);
 		tclass.initialise(r1);
 	}

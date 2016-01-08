@@ -65,8 +65,13 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	protected Region region = null;
 	
 	/**
-	 * Since productions weights are reinitialised by the functions parser regularly,
-	 * a possible noise term needs to be added explicitly after that.
+	 * lazy initialisation: call {@link DynamicMaxProductionModel#getMaxProductionFunctions()}!
+	 */
+	protected Map<String, String> maxProductionFunctions = null;
+
+	/**
+	 * Since productions weights are reinitialised by the functions parser regularly, a possible noise term needs to be
+	 * added explicitly after that.
 	 */
 	protected Map<Service, Double> productionNoise;
 
@@ -99,11 +104,23 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	public void initialise(ModelData data, RunInfo info, Region r) throws Exception {
 		super.initialise(data, info, r);
 		this.rInfo = info;
-		initMaxProductionFunctionFromCSV(data, info, r);
-
+		this.initMaxProductionParsersFromCSV(data, info, r);
 		for (Service service : data.services) {
 			productionNoise.put(service, new Double(0));
 		}
+	}
+
+	protected Map<String, String> getMaxProductionFunctions() {
+		if (this.maxProductionFunctions == null) {
+			try {
+				this.maxProductionFunctions =
+						this.rInfo.getPersister().csvToStringMap(csvFile, "Service", "Production",
+								this.region != null ? this.region.getPersisterContextExtra() : null);
+			} catch (IOException exception) {
+				exception.printStackTrace();
+			}
+		}
+		return this.maxProductionFunctions;
 	}
 
 	/**
@@ -115,7 +132,7 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	void initWeightsFromCSV(ModelData data, RunInfo info, Region region) throws Exception {
 		capitalWeights =
 				info.getPersister().csvToMatrix(csvFile, data.capitals, data.services,
-						region != null ? region.getPeristerContextExtra() : null);
+						region != null ? region.getPersisterContextExtra() : null);
 
 		productionWeights = new DoubleMap<Service>(data.services);
 	}
@@ -130,11 +147,7 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	 * @param region
 	 * @throws Exception
 	 */
-	protected void initMaxProductionFunctionFromCSV(ModelData data, RunInfo info, Region region) throws Exception {
-		Map<String, String> maxProductionFunctions =
-				info.getPersister().csvToStringMap(csvFile, "Service", "Production",
-						region != null ? region.getPeristerContextExtra() : null);
-
+	protected void initMaxProductionParsersFromCSV(ModelData data, RunInfo info, Region region) throws Exception {
 		this.region = region;
 
 		for (Service service : data.services) {
@@ -152,12 +165,12 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {
-				logger.debug("Parse function '" + maxProductionFunctions.get(service.getName()) + "' for service "
+				logger.debug("Parse function '" + getMaxProductionFunctions().get(service.getName()) + "' for service "
 						+ service.getName() + "...");
 			}
 			// LOGGING ->
 
-			productionParser.parseExpression(maxProductionFunctions.get(service.getName()));
+			productionParser.parseExpression(getMaxProductionFunctions().get(service.getName()));
 
 			if (productionParser.hasError()) {
 				logger.error("Error while parsing maximum production function: " + productionParser.getErrorInfo());
@@ -270,24 +283,19 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 					// LOGGING ->
 				}
 			}
+		}
 
-			// copy function parsers:
+		// copy function parsers:
+		for (Entry<Service, DeepCopyJEP> entry : this.maxProductionParsers.entrySet()) {
+			DeepCopyJEP parser;
 			try {
-				Map<String, String> maxProductionFunctions =
-						this.rInfo.getPersister().csvToStringMap(csvFile, "Service", "Production",
-								this.region != null ? this.region.getPeristerContextExtra() : null);
+				parser = entry.getValue().deepCopyJepParser();
+				if (parser.getTopNode().jjtGetNumChildren() == 0) {
 
-				for (Entry<Service, DeepCopyJEP> entry : this.maxProductionParsers.entrySet()) {
-					DeepCopyJEP parser = entry.getValue().deepCopyJepParser();
-					if (parser.getTopNode().jjtGetNumChildren() == 0) {
-						parser.parseExpression(maxProductionFunctions.get(entry.getKey().getName()));
-					}
-					pout.maxProductionParsers.put(entry.getKey(), parser);
-
+					parser.parseExpression(getMaxProductionFunctions().get(entry.getKey().getName()));
 				}
+				pout.maxProductionParsers.put(entry.getKey(), parser);
 			} catch (ParseException exception) {
-				exception.printStackTrace();
-			} catch (IOException exception) {
 				exception.printStackTrace();
 			}
 		}

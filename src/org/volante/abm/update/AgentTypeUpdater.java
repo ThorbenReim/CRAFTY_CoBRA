@@ -110,9 +110,9 @@ public class AgentTypeUpdater extends AbstractUpdater {
 		ABMPersister pers = info.getPersister();
 		if (CSVFile != null
 				&& pers.csvFileOK(getClass(), CSVFile,
-						region.getPeristerContextExtra(), agentColumn)) {
+						region.getPersisterContextExtra(), agentColumn)) {
 			CsvReader reader = pers.getCSVReader(CSVFile,
-					region.getPeristerContextExtra());
+					region.getPersisterContextExtra());
 			while (reader.readRecord()) {
 				String agent = reader.get(agentColumn);
 				if (agent != null && agent != "" && fRoles.containsKey(agent)) {

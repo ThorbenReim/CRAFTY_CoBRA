@@ -64,14 +64,14 @@ public class CellCSVReader implements CellInitialiser {
 		ModelData data = rl.modelData;
 
 		if (!rl.persister.csvFileOK("RegionLoader", csvFile, rl.getRegion()
-				.getPeristerContextExtra(), xColumn, yColumn)) {
+				.getPersisterContextExtra(), xColumn, yColumn)) {
 			return;
 		}
 		log.info("Loading cell CSV from " + csvFile);
 		ModelRunner.clog("CapitalCSVFile", csvFile);
 
 		CsvReader reader = rl.persister.getCSVReader(csvFile, rl.getRegion()
-				.getPeristerContextExtra());
+				.getPersisterContextExtra());
 
 		while (reader.readRecord()) {
 			// <- LOGGING
@@ -113,7 +113,7 @@ public class CellCSVReader implements CellInitialiser {
 		// <- LOGGING
 		if (log.isDebugEnabled()) {
 			log.debug("Finished reading CSV file "
-					+ rl.persister.getFullPath(csvFile, rl.getRegion().getPeristerContextExtra()));
+					+ rl.persister.getFullPath(csvFile, rl.getRegion().getPersisterContextExtra()));
 		}
 		// LOGGING ->
 	}

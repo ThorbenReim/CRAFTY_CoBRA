@@ -203,14 +203,14 @@ public class SocialNetworkLoader {
 		if (abtNetworkParamFile != "") {
 			pm.setParam(MNetworkBuildingPa.MILIEU_NETWORK_CSV_MILIEUS,
 					info.getPersister().getFullPath(abtNetworkParamFile,
-							this.region.getPeristerContextExtra()));
+							this.region.getPersisterContextExtra()));
 			new MMilieuNetDataCsvReader(pm).initParameters();
 		}
 
 		if (abtNetworkLinkParamFile != "") {
 			pm.setParam(MNetworkBuildingPa.MILIEU_NETWORK_CSV_MILIEULINKS, info.getPersister()
 .getFullPath(abtNetworkLinkParamFile,
-							this.region.getPeristerContextExtra()));
+							this.region.getPersisterContextExtra()));
 			new MMilieuNetLinkDataCsvReader(pm).initParameters();
 		}
 

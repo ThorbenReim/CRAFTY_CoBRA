@@ -74,7 +74,7 @@ public class InnovativeInstitutionTest extends InnovationTestUtils {
 		try {
 			this.institution = persister.read(InnovativeInstitution.class,
 					persister.getFullPath(institution_xml,
-							this.r1.getPeristerContextExtra()));
+							this.r1.getPersisterContextExtra()));
 			this.institution.initialise(modelData, runInfo, r1);
 			registerInstitution(this.institution, this.r1);
 		} catch (Exception exception) {

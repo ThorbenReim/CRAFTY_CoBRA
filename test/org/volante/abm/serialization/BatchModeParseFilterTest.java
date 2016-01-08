@@ -58,7 +58,7 @@ public class BatchModeParseFilterTest extends BasicTestsUtils {
 	public void test() throws Exception {
 		ABMPersister persister = ABMPersister.getInstance();
 		DefaultFR fRole = persister.readXML(DefaultFR.class, XML_FILE,
-				region.getPeristerContextExtra());
+				region.getPersisterContextExtra());
 		fRole.initialise(modelData, rInfo, region);
 		assertEquals(0.3, fRole.getMeanGivingInThreshold(), 0.01);
 		assertEquals(0.5, fRole.getMeanGivingUpThreshold(), 0.01);
@@ -68,7 +68,7 @@ public class BatchModeParseFilterTest extends BasicTestsUtils {
 	public void testLinks() throws Exception {
 		ABMPersister persister = ABMPersister.getInstance();
 		DefaultFR fRole = persister.readXML(DefaultFR.class, XML_FILE_LINKS,
-				region.getPeristerContextExtra());
+				region.getPersisterContextExtra());
 		fRole.initialise(modelData, rInfo, region);
 		assertEquals(2.3, fRole.getMeanGivingInThreshold(), 0.01);
 		assertEquals(1.5, fRole.getMeanGivingUpThreshold(), 0.01);
@@ -79,7 +79,7 @@ public class BatchModeParseFilterTest extends BasicTestsUtils {
 		ABMPersister persister = ABMPersister.getInstance();
 		DefaultFR fRole = persister.readXML(DefaultFR.class,
 				XML_FILE_COMBINED,
-				region.getPeristerContextExtra());
+				region.getPersisterContextExtra());
 		fRole.initialise(modelData, rInfo, region);
 		assertEquals("identifier_TestAgent_99", fRole.getLabel());
 	}

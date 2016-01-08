@@ -280,7 +280,7 @@ public class RegionLoader {
 			if (regionalLaraModelFile != null && !regionalLaraModelFile.equals("")) {
 				regionalLaraModel =
 						persister.readXML(RegionalLaraModel.class, regionalLaraModelFile,
-								this.region.getPeristerContextExtra());
+								this.region.getPersisterContextExtra());
 			} else {
 				log.warn("LARA model could not be loaded in RegionLoader (regionalLaraModelFile: "
 						+ regionalLaraModelFile + ")!");
@@ -304,7 +304,7 @@ public class RegionLoader {
 			pm.setParam(
 					PmFrameworkPa.XML_PARAMETER_FILE,
 					ABMPersister.getInstance().getFullPath(pmParameterFile,
-							this.region.getPeristerContextExtra()));
+							this.region.getPersisterContextExtra()));
 			new PmXmlParameterReader(pm, PmFrameworkPa.XML_PARAMETER_FILE)
 					.initParameters();
 		}
@@ -319,7 +319,7 @@ public class RegionLoader {
 		for (String socialNetworkFile : socialNetworkFileList) {
 			socialNetworkLoaders.loaders.addAll(persister.readXML(
 					SocialNetworkLoaderList.class, socialNetworkFile,
-					this.region.getPeristerContextExtra()).loaders);
+					this.region.getPersisterContextExtra()).loaders);
 		}
 
 		for (SocialNetworkLoader l : socialNetworkLoaders.loaders) {
@@ -353,7 +353,7 @@ public class RegionLoader {
 			// LOGGING ->
 
 			fRoles.fRoles.addAll(persister.readXML(FRList.class, frFile,
-					this.region.getPeristerContextExtra()).fRoles);
+					this.region.getPersisterContextExtra()).fRoles);
 		}
 		for (FunctionalRole fr : fRoles.fRoles) {
 			log.info("Initialise functional role: " + fr.getLabel());
@@ -386,16 +386,16 @@ public class RegionLoader {
 	public void loadModels() throws Exception {
 		if (allocation == null) {
 			allocation = persister.readXML(AllocationModel.class,
-					allocationFile, this.region.getPeristerContextExtra());
+					allocationFile, this.region.getPersisterContextExtra());
 		}
 		if (demand == null) {
 			demand = persister.readXML(DemandModel.class, demandFile,
-					this.region.getPeristerContextExtra());
+					this.region.getPersisterContextExtra());
 		}
 
 		if (competition == null) {
 			competition = persister.readXML(CompetitivenessModel.class,
-					competitionFile, this.region.getPeristerContextExtra());
+					competitionFile, this.region.getPersisterContextExtra());
 		}
 		if (allocation instanceof TickAction) {
 			runInfo.getSchedule().register((TickAction) allocation);
@@ -415,7 +415,7 @@ public class RegionLoader {
 	private void initInitialisers() throws Exception {
 		for (String initialiserFile : initialiserFiles) {
 			initialisers.addAll(persister.readXML(InitialiserList.class, initialiserFile,
-					this.region.getPeristerContextExtra()).initialisers);
+					this.region.getPersisterContextExtra()).initialisers);
 		}
 		for (Initialisable i : initialisers) {
 			i.initialise(modelData, runInfo, region);
@@ -425,7 +425,7 @@ public class RegionLoader {
 	private void loadUpdaters() throws Exception {
 		for (String updaterFile : updaterFiles) {
 			updaters.add(persister.readXML(Updater.class, updaterFile,
-					this.region.getPeristerContextExtra()));
+					this.region.getPersisterContextExtra()));
 		}
 		for (Updater u : updaters) {
 			u.initialise(modelData, runInfo, region);
@@ -440,16 +440,16 @@ public class RegionLoader {
 			if (NodeBuilder.read(
 					new FileInputStream(new File(persister.getFullPath(
 							institutionFile,
-							this.region.getPeristerContextExtra())))).getName() == INSTITUTION_LIST_ELEMENT_NAME) {
+							this.region.getPersisterContextExtra())))).getName() == INSTITUTION_LIST_ELEMENT_NAME) {
 				institutions
 						.addAll(persister.readXML(InstitutionsList.class,
 								institutionFile,
-								this.region.getPeristerContextExtra()).institutions);
+								this.region.getPersisterContextExtra()).institutions);
 			} else {
 				institutions
 						.add(persister.readXML(Institution.class,
 								institutionFile,
-								this.region.getPeristerContextExtra()));
+								this.region.getPersisterContextExtra()));
 			}
 		}
 		if (institutions.size() > 0) {
@@ -463,7 +463,7 @@ public class RegionLoader {
 	public void initialiseCells() throws Exception {
 		for (String s : cellInitialiserFiles) {
 			cellInitialisers.add(persister.readXML(CellInitialiser.class, s,
-					this.region.getPeristerContextExtra()));
+					this.region.getPersisterContextExtra()));
 		}
 		for (CellInitialiser ci : cellInitialisers) {
 			if (ci instanceof Initialisable) {
@@ -479,7 +479,7 @@ public class RegionLoader {
 	public void initialiseAgents() throws Exception {
 		for (String s : agentInitialiserFiles) {
 			agentInitialisers.add(persister.readXML(AgentInitialiser.class, s,
-					this.region.getPeristerContextExtra()));
+					this.region.getPersisterContextExtra()));
 		}
 		for (AgentInitialiser ci : agentInitialisers) {
 			ci.initialise(this);

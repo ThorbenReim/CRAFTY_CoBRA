@@ -962,7 +962,7 @@ public class Region implements Regions, PreTickAction {
 		return this.helpers.get(id);
 	}
 
-	public Map<String, String> getPeristerContextExtra() {
+	public Map<String, String> getPersisterContextExtra() {
 		return this.peristerContextExtra;
 	}
 

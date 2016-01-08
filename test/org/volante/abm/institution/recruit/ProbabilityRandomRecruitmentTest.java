@@ -61,7 +61,7 @@ public class ProbabilityRandomRecruitmentTest extends InnovationTestUtils {
 			this.institution = persister.read(InnovativeInstitution.class,
 					persister.getFullPath(
 							PERCENTAL_RANDOM_RECRUITMENT_XML_FILE,
-							this.r1.getPeristerContextExtra()));
+							this.r1.getPersisterContextExtra()));
 			this.institution.initialise(modelData, runInfo, r1);
 
 			// Need to update manually since institution is not registered at

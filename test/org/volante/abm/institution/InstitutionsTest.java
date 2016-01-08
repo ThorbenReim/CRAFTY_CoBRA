@@ -167,7 +167,7 @@ public class InstitutionsTest extends BasicTestsUtils
 		Institutions inst = r.getInstitutions();
 		DefaultInstitution a = persister.readXML(DefaultInstitution.class,
 				"xml/TestInstitution.xml",
-				r.getPeristerContextExtra());
+				r.getPersisterContextExtra());
 		inst.addInstitution( a );
 		
 		//Subsidy levels set in the XML file

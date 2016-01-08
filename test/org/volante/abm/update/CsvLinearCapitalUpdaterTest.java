@@ -126,7 +126,7 @@ public class CsvLinearCapitalUpdaterTest extends BasicTestsUtils {
 	}
 
 	public void checkRegionCells(Region r, String csvFile) throws IOException {
-		CsvReader target = runInfo.getPersister().getCSVReader(csvFile, r.getPeristerContextExtra());
+		CsvReader target = runInfo.getPersister().getCSVReader(csvFile, r.getPersisterContextExtra());
 		while (target.readRecord()) {
 			Cell cell = r.getCell(Integer.parseInt(target.get("X")), Integer.parseInt(target.get("Y")));
 			for (Capital c : modelData.capitals) {
