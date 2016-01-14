@@ -67,8 +67,6 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 	@Attribute(required = false)
 	boolean										addRegion			= true;
 
-	int											maxAftID			= -1;
-
 	Map<Region, Map<FunctionalRole, Bag<Integer>>> numSearchedCells = new HashMap<>();
 
 	@Override

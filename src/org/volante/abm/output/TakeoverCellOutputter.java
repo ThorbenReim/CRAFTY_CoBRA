@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.fr.FunctionalRole;
@@ -55,8 +56,13 @@ import com.csvreader.CsvWriter;
  * this way take-overs only need to be reported in case there is a
  * {@link TakeoverObserver} registered.
  * 
- * NOTE: Assumes that AFT IDs do not leave out any number (i.e. max(AFT-ID) ==
- * length(AFTs))
+ * NOTE: There is one instance of {@link TakeoverCellOutputter} that handles all regions, even if
+ * <code>perRegion == true</code>.
+ * 
+ * NOTE: If <code>perRegion == false</code> there are columns for each AFT per region, even if
+ * regions share the same set of AFTs.
+ * 
+ * NOTE: Assumes that AFT IDs do not leave out any number (i.e. max(AFT-ID) == length(AFTs))
  * 
  * @author Sascha Holzhauer
  * 
@@ -65,15 +71,20 @@ public class TakeoverCellOutputter extends TableOutputter<RegionFunctionalRole> 
 		GloballyInitialisable,
 		TakeoverObserver {
 
+	/**
+	 * Logger
+	 */
+	static private Logger logger = Logger.getLogger(TakeoverCellOutputter.class);
+
 	@Attribute(required = false)
 	boolean					addTick			= true;
 
 	@Attribute(required = false)
 	boolean					addRegion		= true;
 
-	int						maxAftID		= -1;
-
 	Map<Region, int[][]>	numTakeOvers	= new HashMap<Region, int[][]>();
+
+	protected RunInfo rInfo = null;
 
 	/**
 	 * @see org.volante.abm.serialization.GloballyInitialisable#initialise(org.volante.abm.data.ModelData,
@@ -81,10 +92,41 @@ public class TakeoverCellOutputter extends TableOutputter<RegionFunctionalRole> 
 	 */
 	@Override
 	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception {
+		this.rInfo = info;
 		for (Region r : regions.getAllRegions()) {
+			// <- LOGGING
+			if (logger.isDebugEnabled()) {
+				logger.debug("TakeoverCellOutputter: Init (register takeover observer for) region " + r
+						+ "(allocation model: " + r.getAllocationModel()
+						+ ")");
+			}
+			// LOGGING ->
+
 			if (r.getAllocationModel() instanceof TakeoverMessenger) {
 				((TakeoverMessenger) r.getAllocationModel()).registerTakeoverOberserver(this);
 			}
+		}
+	}
+
+	/**
+	 * @param r
+	 */
+	protected void writeFile(Regions r) {
+		String filename = filePerTick() ? tickFilename(r) : filename(r);
+		try {
+			if (this.rInfo.getSchedule().getCurrentTick() > this.rInfo.getSchedule().getStartTick()) {
+				if (filePerTick()) {
+					startFile(filename, r);
+				} else if (writers.get(r) == null) {
+					startFile(filename, r);
+				}
+				writeData(getData(r), r);
+			}
+		} catch (Exception e) {
+			log.error("Couldn't write file " + filename + ": " + e.getMessage(), e);
+		}
+		if (filePerTick()) {
+			endFile(r);
 		}
 	}
 
@@ -136,16 +178,18 @@ public class TakeoverCellOutputter extends TableOutputter<RegionFunctionalRole> 
 	}
 
 	public void initTakeOvers(Region region) {
-		numTakeOvers.put(region, new int[region.getFunctionalRoles().size()][region
-				.getFunctionalRoles().size()]);
-		if (maxAftID + 1 < region.getFunctionalRoles().size()) {
-			for (int i = maxAftID + 1; i < region.getFunctionalRoles().size(); i++) {
-				for (FunctionalRole fr : region.getFunctionalRoleMapByLabel().values()) {
-					if (fr.getSerialID() == i) {
-						addColumn(new TakeOverColumn(fr.getLabel()
-								+ (this.perRegion ? "" : "[" + region.getID() + "]"), i,
-								region));
-					}
+		int maxid = -1;
+		for (FunctionalRole frole : region.getFunctionalRoles()) {
+			maxid = Math.max(maxid, frole.getSerialID());
+		}
+		maxid++; // consider UNMANAGED (-1)
+
+		numTakeOvers.put(region, new int[maxid + 1][maxid + 1]);
+		for (int i = -1; i < maxid; i++) {
+			for (FunctionalRole fr : region.getFunctionalRoleMapByLabel().values()) {
+				if (fr.getSerialID() == i) {
+					addColumn(new TakeOverColumn(fr.getLabel() + (this.perRegion ? "" : "[" + region.getID() + "]"), i,
+							region));
 				}
 			}
 		}
@@ -156,9 +200,9 @@ public class TakeoverCellOutputter extends TableOutputter<RegionFunctionalRole> 
 	 *      org.volante.abm.agent.Agent, org.volante.abm.agent.Agent)
 	 */
 	public void setTakeover(Region region, Agent previousAgent, Agent newAgent) {
-		numTakeOvers.get(region)[previousAgent.getFC().getFR().getSerialID()][newAgent
+		numTakeOvers.get(region)[previousAgent.getFC().getFR().getSerialID() + 1][newAgent
 				.getFC().getFR()
-				.getSerialID()]++;
+				.getSerialID() + 1]++;
 	}
 
 	/**
@@ -194,6 +238,12 @@ public class TakeoverCellOutputter extends TableOutputter<RegionFunctionalRole> 
 			regions.add(reg);
 		}
 
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Write data for regions " + regions);
+		}
+		// LOGGING ->
+
 		for (RegionFunctionalRole d : data) {
 			if (regions.contains(d.getRegion())) {
 				int columnnum = -1;
@@ -222,10 +272,18 @@ public class TakeoverCellOutputter extends TableOutputter<RegionFunctionalRole> 
 		
 		// reset particular region:
 		for (Region reg : r.getAllRegions()) {
-			int[][] nums = numTakeOvers.get(reg);
-			for (int i = 0; i < nums.length; i++) {
-				for (int j = 0; j < nums[i].length; j++) {
-					nums[i][j] = 0;
+			// <- LOGGING
+			if (logger.isDebugEnabled()) {
+				logger.debug("Reset region " + reg);
+			}
+			// LOGGING ->
+
+			if (numTakeOvers.containsKey(reg)) {
+				int[][] nums = numTakeOvers.get(reg);
+				for (int i = 0; i < nums.length; i++) {
+					for (int j = 0; j < nums[i].length; j++) {
+						nums[i][j] = 0;
+					}
 				}
 			}
 		}
@@ -291,11 +349,10 @@ public class TakeoverCellOutputter extends TableOutputter<RegionFunctionalRole> 
 		@Override
 		public String getValue(RegionFunctionalRole pragent, ModelData data, RunInfo info,
 				Regions rs) {
-			if (pragent.getRegion() == rs.getAllRegions().iterator().next() &&
-					numTakeOvers.containsKey(pragent.getRegion())
-					&& numTakeOvers.get(pragent.getRegion()).length > id) {
-				return "" + numTakeOvers.get(pragent.getRegion())[pragent.getFunctionalRole()
-						.getSerialID()][id];
+			if (pragent.getRegion() == rs.getAllRegions().iterator().next()
+					&& numTakeOvers.containsKey(pragent.getRegion())) {
+				return ""
+						+ numTakeOvers.get(pragent.getRegion())[pragent.getFunctionalRole().getSerialID() + 1][id + 1];
 			} else {
 				return "0";
 			}

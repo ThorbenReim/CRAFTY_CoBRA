@@ -182,7 +182,7 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 	@Override
 	public void allocateLand(final Region r) {
 		if (r.getRinfo().getSchedule().getCurrentTick() == r.getRinfo().getSchedule()
-				.getStartTick()) {
+.getStartTick() + 1) {
 			for (TakeoverObserver o : takeoverObserver) {
 				o.initTakeOvers(r);
 			}
