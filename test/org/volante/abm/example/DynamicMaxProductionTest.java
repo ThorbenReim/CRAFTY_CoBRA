@@ -109,6 +109,7 @@ public class DynamicMaxProductionTest extends BasicTestsUtils {
 		// set up original PM
 		this.prodModel.allowImplicitMultiplication = true;
 		this.prodModel.multiplyProductionNoise = false;
+		this.prodModel.preventNegativeCapitalWeights = false;
 		
 		// copy:
 		DynamicMaxProductionModel pmcopy = this.prodModel.copyWithNoise(modelData, new Distribution() {
@@ -161,6 +162,7 @@ public class DynamicMaxProductionTest extends BasicTestsUtils {
 		// set up original PM
 		this.prodModel.allowImplicitMultiplication = true;
 		this.prodModel.multiplyProductionNoise = true;
+		this.prodModel.preventNegativeCapitalWeights = false;
 
 		// copy:
 		DynamicMaxProductionModel pmcopy = this.prodModel.copyWithNoise(modelData, new Distribution() {

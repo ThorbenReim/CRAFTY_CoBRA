@@ -198,6 +198,7 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 
 	/**
 	 * Updates variables in maximum production function and puts function values in <code>productionWeights</code>.
+	 * Considers {@link SimpleProductionModel#multiplyProductionNoise} when updating production weights.
 	 * 
 	 * @see org.volante.abm.example.SimpleProductionModel#production(com.moseph.modelutils.fastdata.UnmodifiableNumberMap,
 	 *      com.moseph.modelutils.fastdata.DoubleMap, org.volante.abm.data.Cell)
@@ -212,6 +213,8 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	}
 
 	/**
+	 * Considers {@link SimpleProductionModel#multiplyProductionNoise}.
+	 * 
 	 * @param capitals
 	 */
 	protected void updateProductionWeigths(UnmodifiableNumberMap<Capital> capitals) {
@@ -243,6 +246,8 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	}
 
 	/**
+	 * Considers {@link SimpleProductionModel#preventNegativeCapitalWeights}.
+	 * 
 	 * @param data
 	 * @param productionDist
 	 * @param importanceDist
@@ -251,6 +256,9 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	protected void fillCopyWithNoise(ModelData data, Distribution productionDist, Distribution importanceDist,
 			DynamicMaxProductionModel pout) {
 		pout.allowImplicitMultiplication = this.allowImplicitMultiplication;
+		pout.multiplyProductionNoise = this.multiplyProductionNoise;
+		pout.preventNegativeCapitalWeights = this.preventNegativeCapitalWeights;
+
 		pout.csvFile = this.csvFile;
 		pout.doubleFormat = this.doubleFormat;
 		pout.rInfo = this.rInfo;
@@ -279,11 +287,19 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 					pout.setWeight(c, s, capitalWeights.get(c, s));
 				} else {
 					double randomSample = importanceDist.sample();
-					pout.setWeight(c, s, capitalWeights.get(c, s) + randomSample);
+					double noisyWeight = capitalWeights.get(c, s) + randomSample;
+					pout.setWeight(c, s, noisyWeight < 0 && this.preventNegativeCapitalWeights ? 0 : noisyWeight);
 
 					// <- LOGGING
+					if (noisyWeight > 0) {
+						logger.warn("Negative weight for capital " + c + " set! Noise term: " + randomSample);
+					}
 					if (logger.isDebugEnabled()) {
-						logger.debug("Random sample: " + randomSample);
+						logger.debug("Capital "
+								+ c
+								+ ": "
+								+ (noisyWeight < 0 && this.preventNegativeCapitalWeights ? "Capital weight set to 0."
+										: "") + "Random sample: " + randomSample);
 					}
 					// LOGGING ->
 				}

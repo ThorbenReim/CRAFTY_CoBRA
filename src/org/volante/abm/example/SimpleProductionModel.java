@@ -70,7 +70,14 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 	 * If true, the noise term is not added to production weights but multiplied when updating production weights.
 	 */
 	@Attribute(required = false)
-	boolean multiplyProductionNoise = false;
+	protected boolean multiplyProductionNoise = false;
+
+	/**
+	 * If true, prevents the introduction of negative weights via noise. In case a capital weight would become negative,
+	 * it is set to zero. Useful since negative capital weights lead to infinity when the capital is zero.
+	 */
+	@Attribute(required = false)
+	protected boolean preventNegativeCapitalWeights = true;
 
 	@Attribute(required = false)
 	String doubleFormat = "0.000";
@@ -193,6 +200,12 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 				double val = 1;
 				for( Capital c : capitalWeights.cols() ) {
 					val = val * pow( capitals.getDouble( c ), capitalWeights.get( c, s ) ) ;
+					
+					if (Double.isInfinite(val) || Double.isNaN(val)) {
+						logger.error("Production for " + s + " at cell " + cell + " (" + val
+								+ ") became Infinity or NaN after processing capital " + c + " (capital value: "
+								+ capitals.getDouble(c) + "/capital weight: " + capitalWeights.get(c, s) + "!");
+					}
 				}
 				production.putDouble( s, productionWeights.get(s) * val );
 			}
@@ -225,6 +238,9 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 
 		pout.capitalWeights = capitalWeights.duplicate();
 		pout.productionWeights = productionWeights.duplicate();
+		pout.multiplyProductionNoise = this.multiplyProductionNoise;
+		pout.preventNegativeCapitalWeights = this.preventNegativeCapitalWeights;
+
 		for( Service s : data.services )
 		{
 			// if there is no production, it remains no production:
@@ -249,11 +265,19 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 					pout.setWeight( c, s, capitalWeights.get( c, s ) );
 				} else {
 					double randomSample = importance.sample();
-					pout.setWeight(c, s, capitalWeights.get(c, s) + randomSample);
+					double noisyWeight = capitalWeights.get(c, s) + randomSample;
+					pout.setWeight(c, s, noisyWeight < 0 && this.preventNegativeCapitalWeights ? 0 : noisyWeight);
 
 					// <- LOGGING
+					if (noisyWeight > 0) {
+						logger.warn("Negative weight for capital " + c + " set! Noise term: " + randomSample);
+					}
 					if (logger.isDebugEnabled()) {
-						logger.debug("Random sample: " + randomSample);
+						logger.debug("Capital "
+								+ c
+								+ ": "
+								+ (noisyWeight < 0 && this.preventNegativeCapitalWeights ? "Capital weight set to 0."
+										: "") + "Random sample: " + randomSample);
 					}
 					// LOGGING ->
 				}
