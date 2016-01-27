@@ -62,22 +62,28 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 		}
 	}
 
+
+	@Attribute(required = false)
+	protected String X_COL = "X";
+
+	@Attribute(required = false)
+	protected String Y_COL = "Y";
+
+	@Attribute(required = false)
+	protected int startTick = Integer.MIN_VALUE;
+
 	@Element(required = true)
-	String operandsCsvFilename = "";
-
-	@Attribute(required = false)
-	String X_COL = "X";
-
-	@Attribute(required = false)
-	String Y_COL = "Y";
+	protected String operandsCsvFilename = "";
 
 	@Element(required = false)
-	IntTransformer xTransformer = null;
+	protected IntTransformer xTransformer = null;
 
 	@Element(required = false)
-	IntTransformer yTransformer = null;
+	protected IntTransformer yTransformer = null;
+
 
 	Set<CellCapitalData> cellCapitalData = new HashSet<>();
+
 
 	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
 		super.initialise(data, info, extent);
@@ -122,9 +128,11 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 	 * @throws IOException
 	 */
 	void applyFactors() {
-		// Assume we've got the CSV file, and we've read the headers in
-		for (CellCapitalData cdata : cellCapitalData) {
-			cdata.apply(this.region);
+		if (this.startTick <= this.info.getSchedule().getCurrentTick()) {
+			// Assume we've got the CSV file, and we've read the headers in
+			for (CellCapitalData cdata : cellCapitalData) {
+				cdata.apply(this.region);
+			}
 		}
 	}
 
