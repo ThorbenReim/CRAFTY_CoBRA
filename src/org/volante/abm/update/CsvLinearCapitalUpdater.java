@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.volante.abm.data.Capital;
@@ -29,6 +30,11 @@ import com.moseph.modelutils.fastdata.DoubleMap;
  * 
  */
 public class CsvLinearCapitalUpdater extends AbstractUpdater {
+
+	/**
+	 * Logger
+	 */
+	static private Logger logger = Logger.getLogger(CsvLinearCapitalUpdater.class);
 
 	protected class CellCapitalData {
 		int x;
@@ -55,7 +61,17 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 				c.getBaseCapitals().copyInto(adjusted);
 
 				for (Capital cap : operands.getKeySet()) {
-					adjusted.putDouble(cap, adjusted.getDouble(cap) + operands.get(cap));
+					double result = adjusted.getDouble(cap) + operands.get(cap);
+
+					if (result < 0) {
+						// <- LOGGING
+						logger.warn("Capital value of " + cap + " for cell " + c + " (region " + r
+								+ ") was meant to become negative and is set to 0.0!");
+
+						// LOGGING ->
+						result = 0;
+					}
+					adjusted.putDouble(cap, result);
 				}
 				c.setBaseCapitals(adjusted);
 			}

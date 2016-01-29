@@ -291,7 +291,7 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 					pout.setWeight(c, s, noisyWeight < 0 && this.preventNegativeCapitalWeights ? 0 : noisyWeight);
 
 					// <- LOGGING
-					if (noisyWeight > 0) {
+					if (noisyWeight < 0 && !this.preventNegativeCapitalWeights) {
 						logger.warn("Negative weight for capital " + c + " set! Noise term: " + randomSample);
 					}
 					if (logger.isDebugEnabled()) {

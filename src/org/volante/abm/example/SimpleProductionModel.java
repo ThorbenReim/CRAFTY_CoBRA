@@ -205,6 +205,7 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 						logger.error("Production for " + s + " at cell " + cell + " (" + val
 								+ ") became Infinity or NaN after processing capital " + c + " (capital value: "
 								+ capitals.getDouble(c) + "/capital weight: " + capitalWeights.get(c, s) + "!");
+						break;
 					}
 				}
 				production.putDouble( s, productionWeights.get(s) * val );
@@ -269,7 +270,7 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 					pout.setWeight(c, s, noisyWeight < 0 && this.preventNegativeCapitalWeights ? 0 : noisyWeight);
 
 					// <- LOGGING
-					if (noisyWeight > 0) {
+					if (noisyWeight < 0 && !this.preventNegativeCapitalWeights) {
 						logger.warn("Negative weight for capital " + c + " set! Noise term: " + randomSample);
 					}
 					if (logger.isDebugEnabled()) {
