@@ -25,7 +25,7 @@ package org.volante.abm.agent.bt;
 
 import org.volante.abm.agent.Agent;
 import org.volante.abm.data.Region;
-import org.volante.abm.decision.DecisionTrigger;
+import org.volante.abm.decision.trigger.DecisionTrigger;
 import org.volante.abm.serialization.Initialisable;
 
 /**

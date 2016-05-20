@@ -24,81 +24,20 @@
 package org.volante.abm.institutions.global;
 
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.volante.abm.agent.fr.FunctionalComponent;
-import org.volante.abm.agent.fr.FunctionalRole;
-import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
-import org.volante.abm.data.Service;
+import org.volante.abm.institutions.AbstractInstitution;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.ScenarioLoader;
 
-import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
 
 /**
+ * A {@link GlobalInstitution} requires a different initialisation method.
+ * 
  * @author Sascha Holzhauer
- *
+ * 
  */
-public abstract class AbstractGlobalInstitution implements GlobalInstitution {
-
-	/**
-	 * @see org.volante.abm.institutions.Institution#adjustCapitals(org.volante.abm.data.Cell)
-	 */
-	@Override
-	public void adjustCapitals(Cell c) {
-		// do nothing
-	}
-
-	/**
-	 * @see org.volante.abm.institutions.Institution#adjustCompetitiveness(org.volante.abm.agent.fr.FunctionalRole, org.volante.abm.data.Cell, com.moseph.modelutils.fastdata.UnmodifiableNumberMap, double)
-	 */
-	@Override
-	public double adjustCompetitiveness(FunctionalRole agent, Cell location, UnmodifiableNumberMap<Service> provision,
-			double competitiveness) {
-		// return unchanged
-		return competitiveness;
-	}
-
-	/**
-	 * @see org.volante.abm.institutions.Institution#isAllowed(org.volante.abm.agent.fr.FunctionalComponent, org.volante.abm.data.Cell)
-	 */
-	@Override
-	public boolean isAllowed(FunctionalComponent agent, Cell location) {
-		// why not?
-		return true;
-	}
-
-	/**
-	 * @see org.volante.abm.institutions.Institution#isAllowed(org.volante.abm.agent.fr.FunctionalRole,
-	 *      org.volante.abm.data.Cell)
-	 */
-	@Override
-	public boolean isAllowed(FunctionalRole fr, Cell location) {
-		return true;
-	}
-
-	public Set<FunctionalRole> getFrsExludedFromGivingIn() {
-		return new HashSet<>();
-	}
-
-	/**
-	 * @see org.volante.abm.institutions.Institution#update()
-	 */
-	@Override
-	public void update() {
-		// nothing to do
-	}
-
-	/**
-	 * @see org.volante.abm.serialization.Initialisable#initialise(org.volante.abm.data.ModelData, org.volante.abm.schedule.RunInfo, org.volante.abm.data.Region)
-	 */
-	@Override
-	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
-		// nothing to do
-	}
+public abstract class AbstractGlobalInstitution extends AbstractInstitution implements GlobalInstitution {
 
 
 	/**

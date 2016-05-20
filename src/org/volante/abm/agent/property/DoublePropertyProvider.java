@@ -27,12 +27,9 @@ package org.volante.abm.agent.property;
  * @author Sascha Holzhauer
  *
  */
-public interface DoublePropertyProvider {
+public interface DoublePropertyProvider extends PropertyProvider<Object> {
 
+	public Double getProperty(PropertyId property);
 
-	public boolean isProvided(AgentPropertyId property);
-
-	public double getProperty(AgentPropertyId property);
-
-	public void setProperty(AgentPropertyId propertyId, double value);
+	public void setProperty(PropertyId propertyId, Double value);
 }

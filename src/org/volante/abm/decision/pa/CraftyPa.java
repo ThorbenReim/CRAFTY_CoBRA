@@ -43,6 +43,7 @@ public abstract class CraftyPa<BO extends CraftyPa<BO>> extends
 	 * @param key
 	 * @param agent
 	 * @param preferenceUtilities
+	 *        Initial preference utilities
 	 */
 	public CraftyPa(String key,
 			LaraBehaviouralComponent agent,

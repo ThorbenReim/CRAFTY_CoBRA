@@ -24,7 +24,6 @@ package org.volante.abm.serialization;
 
 import org.junit.Test;
 import org.volante.abm.data.Capital;
-import org.volante.abm.data.LandUse;
 import org.volante.abm.data.Service;
 import org.volante.abm.example.BasicTestsUtils;
 import org.volante.abm.schedule.RunInfo;
@@ -50,11 +49,5 @@ public class ScenarioLoadingDataTypesTest extends BasicTestsUtils {
 		checkDataType(services, "NAT", 2);
 		checkDataType(services, "TIMBER", 1);
 		checkDataType(services, "INF", 0);
-
-		NamedIndexSet<LandUse> lus = loader.modelData.landUses;
-		checkDataType(lus, "URBAN", 3);
-		checkDataType(lus, "AGRICULTURE", 2);
-		checkDataType(lus, "FOREST", 1);
-		checkDataType(lus, "WATER", 0);
 	}
 }

@@ -54,10 +54,16 @@ public class SingleMarketWorldSynchronisationModel implements WorldSynchronisati
 	ModelData modelData = null;
 	RunInfo info = null;
 
+	DoubleMap<Service> worldDemandMap = null;
+	DoubleMap<Service> worldSupplyMap = null;
+
 	@Override
 	public void initialise(ModelData data, RunInfo info) {
 		this.modelData = data;
 		this.info = info;
+
+		worldDemandMap = this.modelData.serviceMap();
+		worldSupplyMap = this.modelData.serviceMap();
 	}
 
 	@Override
@@ -95,7 +101,7 @@ public class SingleMarketWorldSynchronisationModel implements WorldSynchronisati
 		}
 
 		double[] worldDemand = MpiUtilities.distributeWorldDemand(demand.getAll());
-		DoubleMap<Service> worldDemandMap = new DoubleMap<Service>(modelData.services, worldDemand);
+		this.worldDemandMap = new DoubleMap<Service>(modelData.services, worldDemand);
 
 		// <- LOGGING
 		logger.info("World Demand: " + worldDemandMap.prettyPrint());
@@ -129,7 +135,7 @@ public class SingleMarketWorldSynchronisationModel implements WorldSynchronisati
 		}
 
 		double[] worldSupply = MpiUtilities.distributeWorldSupply(supply.getAll());
-		DoubleMap<Service> worldSupplyMap = new DoubleMap<Service>(modelData.services, worldSupply);
+		this.worldSupplyMap = new DoubleMap<Service>(modelData.services, worldSupply);
 
 		// <- LOGGING
 		logger.info("World Supply: " + worldSupplyMap.prettyPrint());
@@ -138,5 +144,21 @@ public class SingleMarketWorldSynchronisationModel implements WorldSynchronisati
 		for (Region r : regions.getAllRegions()) {
 			((WorldDemandModel) r.getDemandModel()).setWorldSupply(worldSupplyMap);
 		}
+	}
+
+	/**
+	 * @see org.volante.abm.models.WorldSynchronisationModel#getWorldDemand()
+	 */
+	@Override
+	public DoubleMap<Service> getWorldDemand() {
+		return this.worldDemandMap.copy();
+	}
+
+	/**
+	 * @see org.volante.abm.models.WorldSynchronisationModel#getWorldSupply()
+	 */
+	@Override
+	public DoubleMap<Service> getWorldSupply() {
+		return this.worldSupplyMap.copy();
 	}
 }

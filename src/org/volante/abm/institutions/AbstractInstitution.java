@@ -51,6 +51,10 @@ public abstract class AbstractInstitution implements Institution
 	public void adjustCapitals( Cell c )
 	{}
 
+	/**
+	 * @see org.volante.abm.institutions.Institution#adjustCompetitiveness(org.volante.abm.agent.fr.FunctionalRole,
+	 *      org.volante.abm.data.Cell, com.moseph.modelutils.fastdata.UnmodifiableNumberMap, double)
+	 */
 	@Override
 	public double adjustCompetitiveness(FunctionalRole agent, Cell location,
 			UnmodifiableNumberMap<Service> provision, double competitiveness)

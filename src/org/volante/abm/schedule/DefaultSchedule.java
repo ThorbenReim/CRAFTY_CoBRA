@@ -89,6 +89,10 @@ public class DefaultSchedule implements WorldSyncSchedule {
 		this.worldSyncModel = worldSyncModel;
 	}
 
+	public WorldSynchronisationModel getWorldSyncModel() {
+		return worldSyncModel;
+	}
+
 	@Override
 	public void tick() {
 		log.info(this + ">\n********************\nStart of tick " + tick + "\n********************");
@@ -150,6 +154,11 @@ public class DefaultSchedule implements WorldSyncSchedule {
 	
 				a.updateCompetitiveness();
 				a.considerGivingUp();
+			}
+
+			// Remove any unneeded agents
+			for (Region r : regions.getAllRegions()) {
+				r.cleanupAgents();
 			}
 	
 			// Allocate land

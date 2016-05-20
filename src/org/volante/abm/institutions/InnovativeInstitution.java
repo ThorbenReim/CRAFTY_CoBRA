@@ -34,6 +34,7 @@ import org.volante.abm.agent.bt.InnovativeBC;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.institutions.innovation.Innovation;
+import org.volante.abm.institutions.innovation.status.InnovationStates;
 import org.volante.abm.institutions.recruit.InstitutionTargetRecruitment;
 import org.volante.abm.schedule.RunInfo;
 
@@ -197,8 +198,12 @@ public class InnovativeInstitution extends AbstractInstitution {
 		// LOGGING ->
 
 		for (InnovativeBC agent : innovationBCs) {
-			agent.makeAware(innovation);
-			agent.makeTrial(innovation);
+			if (agent.getState(innovation).getID() < InnovationStates.AWARE.getID()) {
+				agent.makeAware(innovation);
+			}
+			if (agent.getState(innovation).getID() < InnovationStates.TRIAL.getID()) {
+				agent.makeTrial(innovation);
+			}
 		}
 	}
 

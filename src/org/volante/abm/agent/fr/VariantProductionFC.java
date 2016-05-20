@@ -29,7 +29,7 @@ import org.volante.abm.models.ProductionModel;
  * @author Sascha Holzhauer
  *
  */
-public class VariantProductionFC extends AbstractFC {
+public class VariantProductionFC extends AbstractFC implements IndividualProductionFunctionalComponent {
 
 	/**
 	 * @param fRole

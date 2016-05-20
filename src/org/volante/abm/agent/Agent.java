@@ -28,6 +28,7 @@ import org.volante.abm.agent.bt.PseudoBT;
 import org.volante.abm.agent.fr.FunctionalComponent;
 import org.volante.abm.agent.fr.LazyFR;
 import org.volante.abm.agent.property.DoublePropertyProvider;
+import org.volante.abm.agent.property.PropertyProvider;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
@@ -46,7 +47,7 @@ import de.cesr.more.basic.agent.MoreObservingNetworkAgent;
  * @author dmrust
  *
  */
-public interface Agent extends DoublePropertyProvider,
+public interface Agent extends DoublePropertyProvider, PropertyProvider<Object>,
 		MoreObservingNetworkAgent<Agent> {
 
 

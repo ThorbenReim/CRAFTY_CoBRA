@@ -34,7 +34,7 @@ import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.institutions.global.GlobalInstitution;
 import org.volante.abm.institutions.global.GlobalInstitutionsRegistry;
-import org.volante.abm.institutions.global.GlobalSubsidyInstitution;
+import org.volante.abm.institutions.global.GlobalSubsidisingInstitution;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.ABMPersister;
 import org.volante.abm.serialization.ScenarioLoader;
@@ -54,7 +54,7 @@ public class GlobalSubsidyInstitutionTest {
 	public ABMPersister persister = ABMPersister.getInstance();
 
 	protected ScenarioLoader loader;
-	protected GlobalSubsidyInstitution globalInstitution;
+	protected GlobalSubsidisingInstitution globalInstitution;
 
 
 	@Before
@@ -78,10 +78,12 @@ public class GlobalSubsidyInstitutionTest {
 		runInfo.getSchedule().setRegions(loader.getRegions());
 
 		for (GlobalInstitution institution : GlobalInstitutionsRegistry.getInstance().getGlobalInstitutions()) {
-			if (institution instanceof GlobalSubsidyInstitution) {
-				this.globalInstitution = (GlobalSubsidyInstitution) institution;
+			if (institution instanceof GlobalSubsidisingInstitution) {
+				this.globalInstitution = (GlobalSubsidisingInstitution) institution;
 			}
 		}
+		this.globalInstitution.initialise(runInfo,
+		        loader.getRegions().getAllRegions().iterator().next().getModelData(), loader);
 		runInfo.getSchedule().tick();
 		runInfo.getSchedule().tick();
 	}
@@ -96,7 +98,7 @@ public class GlobalSubsidyInstitutionTest {
 		assertEquals(NUM_DEFINED_INSTITUTIONS, GlobalInstitutionsRegistry.getInstance().getGlobalInstitutions().size());
 
 		for (GlobalInstitution institution : GlobalInstitutionsRegistry.getInstance().getGlobalInstitutions()) {
-			assertTrue(institution instanceof GlobalSubsidyInstitution);
+			assertTrue(institution instanceof GlobalSubsidisingInstitution);
 
 			for (Region region : loader.getRegions().getAllRegions()) {
 				assertTrue(region.getInstitutions().hasInstitution(institution));
@@ -106,7 +108,7 @@ public class GlobalSubsidyInstitutionTest {
 
 	/**
 	 * Test method for
-	 * {@link org.volante.abm.institutions.global.GlobalSubsidyInstitution#adjustCompetitiveness(org.volante.abm.agent.fr.FunctionalRole, org.volante.abm.data.Cell, com.moseph.modelutils.fastdata.UnmodifiableNumberMap, double)}
+	 * {@link org.volante.abm.institutions.global.GlobalSubsidisingInstitution#adjustCompetitiveness(org.volante.abm.agent.fr.FunctionalRole, org.volante.abm.data.Cell, com.moseph.modelutils.fastdata.UnmodifiableNumberMap, double)}
 	 * .
 	 */
 	@Test

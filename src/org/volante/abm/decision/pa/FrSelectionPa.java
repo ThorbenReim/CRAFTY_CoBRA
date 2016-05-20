@@ -77,10 +77,23 @@ public class FrSelectionPa extends CraftyPa<FrSelectionPa> implements LaraPerfor
 			LaraBehaviouralComponent agent,
 			Map<LaraPreference, Double> preferenceUtilities) {
 		super(key, agent, preferenceUtilities);
+		checkFrKey(key, agent);
 	}
 
 	public FrSelectionPa(String key, LaraBehaviouralComponent agent) {
 		super(key, agent);
+		checkFrKey(key, agent);
+	}
+
+	/**
+	 * @param key
+	 * @param agent
+	 */
+	protected void checkFrKey(String key, LaraBehaviouralComponent agent) {
+		if (!agent.getAgent().getRegion().getFunctionalRoleMapByLabel().containsKey(key)) {
+			throw new IllegalStateException("There is no FR defined in region " + agent.getAgent().getRegion()
+					+ " for label " + key + "!");
+		}
 	}
 
 	/**
@@ -134,7 +147,8 @@ public class FrSelectionPa extends CraftyPa<FrSelectionPa> implements LaraPerfor
 				competitiveness);
 
 		double socialApproval = 0;
-		if (this.getAgent().getAgent() instanceof SocialAgent) {
+		if (this.getAgent().getAgent() instanceof SocialAgent
+				&& this.getAgent().getAgent().getRegion().getNetwork() != null) {
 			for (Agent partner : this.getAgent().getAgent().getRegion()
 					.getNetwork()
 					.getPredecessors((SocialAgent) this.getAgent().getAgent())) {

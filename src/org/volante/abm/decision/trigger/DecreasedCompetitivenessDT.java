@@ -21,24 +21,30 @@
  * 
  * Created by Sascha Holzhauer on 19 Mar 2015
  */
-package org.volante.abm.decision;
+package org.volante.abm.decision.trigger;
 
 import org.apache.log4j.Logger;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.bt.LaraBehaviouralComponent;
-import org.volante.abm.agent.property.AgentPropertyId;
+import org.volante.abm.agent.property.PropertyId;
 import org.volante.abm.example.AgentPropertyIds;
 
 import de.cesr.lara.components.decision.LaraDecisionConfiguration;
 import de.cesr.lara.components.model.impl.LModel;
 
-/**
- * @author Sascha Holzhauer
- *
- */
-public class FrCheckDecreaseDecisionTrigger extends AbstractDecisionTrigger {
 
-	enum FrCheckPropertyIds implements AgentPropertyId {
+/**
+ * Compares the agent's competitiveness to the last tick's and subscribes the agent for defined
+ * {@link LaraDecisionConfiguration} in case if decreased. Requires agents to provide
+ * {@link DecreasedCompetitivenessDT.FrCheckPropertyIds#LAST_RECORD_TICK} and
+ * {@link DecreasedCompetitivenessDT.FrCheckPropertyIds#LAST_COMPETITIVENESS}.
+ * 
+ * @author Sascha Holzhauer
+ * 
+ */
+public class DecreasedCompetitivenessDT extends AbstractDecisionTrigger {
+
+	protected enum FrCheckPropertyIds implements PropertyId {
 		LAST_RECORD_TICK,
 
 		LAST_COMPETITIVENESS;
@@ -48,13 +54,14 @@ public class FrCheckDecreaseDecisionTrigger extends AbstractDecisionTrigger {
 	 * Logger
 	 */
 	static private Logger logger = Logger
-			.getLogger(FrCheckDecreaseDecisionTrigger.class);
+			.getLogger(DecreasedCompetitivenessDT.class);
 
 	/**
-	 * @see org.volante.abm.decision.DecisionTrigger#check(Agent)
+	 * @see org.volante.abm.decision.trigger.DecisionTrigger#check(Agent)
 	 */
 	@Override
-	public void check(Agent agent) {
+	public boolean check(Agent agent) {
+		boolean triggered = false;
 		double currentCompetitiveness = agent
 				.getProperty(AgentPropertyIds.COMPETITIVENESS);
 
@@ -79,12 +86,12 @@ public class FrCheckDecreaseDecisionTrigger extends AbstractDecisionTrigger {
 						.getModel(agent.getRegion())
 						.getDecisionConfigRegistry().get(this.dcId);
 
-				((LaraBehaviouralComponent) agent.getBC())
-						.subscribeOnce(dConfig);
+				((LaraBehaviouralComponent) agent.getBC()).subscribeOnce(dConfig, this);
+				triggered = true;
 				
 				// <- LOGGING
 				logger.info(agent
-						+ "> Triggered Functional Role check (competition: "
+						+ "> Triggered " + this.dcId + " (competition: "
 						+ currentCompetitiveness + " - was: "
 						+ agent.getProperty(FrCheckPropertyIds.LAST_COMPETITIVENESS)
 						+ ")");
@@ -94,7 +101,9 @@ public class FrCheckDecreaseDecisionTrigger extends AbstractDecisionTrigger {
 		agent.setProperty(FrCheckPropertyIds.LAST_COMPETITIVENESS,
 				currentCompetitiveness);
 
-		agent.setProperty(FrCheckPropertyIds.LAST_RECORD_TICK, agent
-				.getRegion().getRinfo().getSchedule().getCurrentTick());
+		agent.setProperty(FrCheckPropertyIds.LAST_RECORD_TICK, new Double(agent.getRegion().getRinfo().getSchedule()
+				.getCurrentTick()));
+
+		return triggered;
 	}
 }

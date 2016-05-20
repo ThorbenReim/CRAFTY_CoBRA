@@ -53,13 +53,13 @@ import org.volante.abm.schedule.RunInfo;
  * @author Sascha Holzhauer
  *
  */
-public class RepeatingCsvInnvationTest extends InnovationTestUtils {
+public class RepeatingCsvInnovationTest extends InnovationTestUtils {
 
 	/**
 	 * Logger
 	 */
 	static private Logger logger = Logger
-			.getLogger(RepeatingCsvInnvationTest.class);
+			.getLogger(RepeatingCsvInnovationTest.class);
 
 	public final String INNOVATION_ID_CSV = "RepeatingTestInnovationCSV";
 	public final String REPEATING_CSV_INNOVATION_XML_FILE = "xml/RepeatingInnovationInstitutionCsv.xml";
@@ -73,6 +73,7 @@ public class RepeatingCsvInnvationTest extends InnovationTestUtils {
 	protected RepeatingProductivityInnovation currentCsvInnovation = null;
 
 	public boolean indicator = false;
+
 
 
 	/**
@@ -122,11 +123,11 @@ public class RepeatingCsvInnvationTest extends InnovationTestUtils {
 		Service service = BasicTestsUtils.modelData.services.forName("FOOD");
 
 		LandUseAgent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
-				innovativeFarming.getLabel());
+ innovativeFarming.getLabel());
 		LandUseAgent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
-				innovativeFarming.getLabel());
+ innovativeFarming.getLabel());
 		LandUseAgent three = this.agentAssemblerR1.assembleAgent(null, "Innovator",
-				innovativeFarming.getLabel());
+ innovativeFarming.getLabel());
 
 		double initialProductivity = ((ProductionWeightReporter) one.getProductionModel()).
 				getProductionWeights().getDouble(service);
@@ -156,14 +157,14 @@ public class RepeatingCsvInnvationTest extends InnovationTestUtils {
 		Service service = BasicTestsUtils.modelData.services.forName("FOOD");
 
 		LandUseAgent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
-				innovativeFarming.getLabel(), "One");
+ innovativeFarming.getLabel(), "One");
 
 		LandUseAgent two = this.agentAssemblerR1.assembleAgent(null, "Innovator",
-				innovativeFarming.getLabel(), "Two");
+ innovativeFarming.getLabel(), "Two");
 
 		LandUseAgent three =
 				this.agentAssemblerR1.assembleAgent(null, "Innovator",
-				innovativeFarming.getLabel(), "Three");
+ innovativeFarming.getLabel(), "Three");
 
 
 		double initialProductivity = ((ProductionWeightReporter) two

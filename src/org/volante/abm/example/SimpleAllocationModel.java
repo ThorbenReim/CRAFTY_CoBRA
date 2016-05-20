@@ -149,20 +149,20 @@ public class SimpleAllocationModel implements AllocationModel,
 		// Find FR with highest competitiveness above his GU threshold:
 		for (FunctionalRole fr : fComps)
 		{
-			// TODO Check institutions for allowance
+			if (r.getInstitutions().isAllowed(fr, c)) {
 
-			double s = r.getCompetitiveness(fr, c);
-			// <- LOGGING
-			if (logger.isDebugEnabled()) {
-				logger.debug(fr + "> competitiveness: " + s);
-			}
-			// LOGGING ->
+				double s = r.getCompetitiveness(fr, c);
+				// <- LOGGING
+				if (logger.isDebugEnabled()) {
+					logger.debug(fr + "> competitiveness: " + s);
+				}
+				// LOGGING ->
 
-			if( s > max )
-			{
-				if (s > fr.getMeanGivingUpThreshold()) {
-					max = s;
-					bestFr = fr;
+				if (s > max) {
+					if (s > fr.getMeanGivingUpThreshold()) {
+						max = s;
+						bestFr = fr;
+					}
 				}
 			}
 		}

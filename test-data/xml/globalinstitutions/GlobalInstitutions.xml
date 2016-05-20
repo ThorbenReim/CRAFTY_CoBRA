@@ -1,5 +1,12 @@
 <globalInstitutions>
-	<globalInstitution class="org.volante.abm.institutions.global.GlobalSubsidyInstitution"> 
-		<serviceSubsidy service="FOOD">2.0</serviceSubsidy>
+	<globalInstitution class="org.volante.abm.institutions.global.GlobalSubsidisingInstitution" id="GlobalSubsidising">
+		<btLabel>CognitiveInst</btLabel>
+		<serviceTrigger service = "FOOD">
+			<trigger class="org.volante.abm.decision.trigger.UnmetDemandDT" id="UnmetDemandMeat">
+				<consideredService>FOOD</consideredService>
+				<dcId>NN</dcId>
+			</trigger>
+		</serviceTrigger>
+		<serviceSubsidyFactor service="FOOD">2.0</serviceSubsidyFactor>
 	</globalInstitution>
 </globalInstitutions>

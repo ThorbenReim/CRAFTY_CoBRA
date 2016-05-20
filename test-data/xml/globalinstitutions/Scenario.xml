@@ -2,8 +2,7 @@
 		regionalisation = "regionalisation">
 	<capitals class="org.volante.abm.serialization.CSVCapitalLoader" file="csv/TestCapitals.csv" indexed="true"/>
 	<services class="org.volante.abm.serialization.CSVServiceLoader" file="csv/TestServices.csv" indexed="true"/>
-	<landUses class="org.volante.abm.serialization.CSVLandUseLoader" file="csv/TestLandUses.csv" indexed="true"/>
-
+	<globalBtReposFile>xml/globalinstitutions/GlobalInstitutionsBts.xml</globalBtReposFile>
 	<globalInstitutionFile>xml/globalinstitutions/GlobalInstitutions.xml</globalInstitutionFile>
 	
 	<worldLoaderFile>xml/globalinstitutions/World.xml</worldLoaderFile>

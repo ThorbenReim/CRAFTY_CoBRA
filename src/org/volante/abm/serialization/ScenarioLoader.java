@@ -34,11 +34,11 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.volante.abm.data.Capital;
-import org.volante.abm.data.LandUse;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.RegionSet;
 import org.volante.abm.data.Service;
+import org.volante.abm.example.GlobalBtRepository;
 import org.volante.abm.example.SerialSingleMarketSynchronisationModel;
 import org.volante.abm.institutions.global.GlobalInstitution;
 import org.volante.abm.institutions.global.GlobalInstitutionsList;
@@ -148,9 +148,6 @@ public class ScenarioLoader {
 	@Element(name = "services", required = false)
 	DataTypeLoader<Service>	services		= null;
 
-	@Element(name = "landUses", required = false)
-	DataTypeLoader<LandUse>	landUses		= null;
-
 	@ElementList(required = false, inline = true, entry = "region")
 	List<RegionLoader> regionList = new ArrayList<RegionLoader>();
 	@ElementList(required = false, inline = true, entry = "regionFile")
@@ -158,6 +155,9 @@ public class ScenarioLoader {
 
 	@ElementList(inline = true, required = false, entry = "globalInstitutionFile")
 	List<String> globalInstitutionFiles = new ArrayList<String>();
+
+	@Element(required = false)
+	String globalBtReposFile = null;
 
 	@Element(required = false)
 	WorldLoader worldLoader = null;
@@ -217,11 +217,6 @@ public class ScenarioLoader {
 			modelData.services = services.getDataTypes(persister);
 		}
 		log.info("Services: " + modelData.services);
-		if (landUses != null) {
-			log.info("Loading LandUses");
-			modelData.landUses = landUses.getDataTypes(persister);
-		}
-		log.info("LandUses: " + modelData.landUses);
 
 		info.setScenario(scenario);
 		info.setRunID(runID);
@@ -290,6 +285,11 @@ public class ScenarioLoader {
 		log.info("About to initialise global institutions");
 		Set<GlobalInstitution> institutions = new HashSet<GlobalInstitution>();
 
+		if (this.globalBtReposFile != null) {
+			GlobalBtRepository repos = persister.readXML(GlobalBtRepository.class, this.globalBtReposFile, null);
+			repos.initialise(modelData, info, getRegions());
+		}
+		
 		for (String institutionsFile : globalInstitutionFiles) {
 			institutions.addAll(persister.readXML(GlobalInstitutionsList.class, institutionsFile, null)
 					.getGlobalInstitutions());

@@ -42,6 +42,17 @@ public class IndividualProductionFR extends AbstractFR {
 		super(id, production);
 	}
 
+	public IndividualProductionFR(String id, ProductionModel production, double givingUp, double givingIn) {
+		this(id, UNKNOWN_SERIAL, production, givingUp, givingIn);
+	}
+
+	public IndividualProductionFR(String id, int serialId, ProductionModel production, double givingUp, double givingIn) {
+		this(id, production);
+		this.givingInMean = givingIn;
+		this.givingUpMean = givingUp;
+		this.serialID = serialId;
+	}
+
 	/**
 	 * @see org.volante.abm.agent.fr.FunctionalRole#getNewFunctionalComp()
 	 */

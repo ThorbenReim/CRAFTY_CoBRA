@@ -21,7 +21,7 @@
  * 
  * Created by Sascha Holzhauer on 19 Mar 2015
  */
-package org.volante.abm.decision;
+package org.volante.abm.decision.trigger;
 
 import org.simpleframework.xml.Attribute;
 import org.volante.abm.agent.Agent;
@@ -42,23 +42,25 @@ import de.cesr.lara.components.model.impl.LModel;
  * @author Sascha Holzhauer
  * 
  */
-public class FrCheckThresholdDecisionTrigger extends AbstractDecisionTrigger {
+public class ThresholdCompetitivenessDT extends AbstractDecisionTrigger {
 
 	@Attribute(name = "competitivenessThreshold", required = true)
 	protected double competitivenessThreshold = Double.NaN;
 
 	/**
-	 * @see org.volante.abm.decision.DecisionTrigger#check(Agent)
+	 * @see org.volante.abm.decision.trigger.DecisionTrigger#check(Agent)
 	 */
 	@Override
-	public void check(Agent agent) {
+	public boolean check(Agent agent) {
 		if (agent.getProperty(AgentPropertyIds.COMPETITIVENESS) < this.competitivenessThreshold) {
 
 			LaraDecisionConfiguration dConfig = LModel
 					.getModel(agent.getRegion()).getDecisionConfigRegistry()
 					.get(this.dcId);
 
-			((LaraBehaviouralComponent) agent.getBC()).subscribeOnce(dConfig);
+			((LaraBehaviouralComponent) agent.getBC()).subscribeOnce(dConfig, this);
+			return true;
 		}
+		return false;
 	}
 }

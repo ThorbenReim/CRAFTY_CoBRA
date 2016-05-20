@@ -202,8 +202,12 @@ public class CellTable extends TableOutputter<Cell> implements GloballyInitialis
 
 	public void writeData(Iterable<Cell> data, Regions r) throws IOException {
 		super.writeData(data, r);
-		for (PreAllocationStorageCleanupRegionHelper helper : cleanupHelpers.values()) {
-			helper.clear();
+		if (this.perRegion & cleanupHelpers.containsKey(r)) {
+			cleanupHelpers.get(r).clear();
+		} else {
+			for (PreAllocationStorageCleanupRegionHelper helper : cleanupHelpers.values()) {
+				helper.clear();
+			}
 		}
 	}
 

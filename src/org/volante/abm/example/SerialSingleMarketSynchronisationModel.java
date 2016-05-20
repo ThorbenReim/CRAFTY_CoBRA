@@ -44,6 +44,9 @@ import com.moseph.modelutils.fastdata.DoubleMap;
  */
 public class SerialSingleMarketSynchronisationModel implements WorldSynchronisationModel {
 
+	DoubleMap<Service> worldDemandMap = null;
+	DoubleMap<Service> worldSupplyMap = null;
+
 	/**
 	 * Logger
 	 */
@@ -58,6 +61,8 @@ public class SerialSingleMarketSynchronisationModel implements WorldSynchronisat
 	@Override
 	public void initialise(ModelData data, RunInfo info) {
 		this.modelData = data;
+		worldDemandMap = this.modelData.serviceMap();
+		worldSupplyMap = this.modelData.serviceMap();
 	}
 
 	/**
@@ -97,6 +102,8 @@ public class SerialSingleMarketSynchronisationModel implements WorldSynchronisat
 			}
 		}
 
+		this.worldDemandMap = demand;
+
 		// <- LOGGING
 		logger.info("World Demand: " + demand.prettyPrint());
 		// LOGGING ->
@@ -128,8 +135,26 @@ public class SerialSingleMarketSynchronisationModel implements WorldSynchronisat
 			}
 		}
 
+		this.worldSupplyMap = supply;
+
 		for (Region r : regions.getAllRegions()) {
 			((WorldDemandModel) r.getDemandModel()).setWorldSupply(supply);
 		}
+	}
+
+	/**
+	 * @see org.volante.abm.models.WorldSynchronisationModel#getWorldDemand()
+	 */
+	@Override
+	public DoubleMap<Service> getWorldDemand() {
+		return this.worldDemandMap.copy();
+	}
+
+	/**
+	 * @see org.volante.abm.models.WorldSynchronisationModel#getWorldSupply()
+	 */
+	@Override
+	public DoubleMap<Service> getWorldSupply() {
+		return this.worldSupplyMap.copy();
 	}
 }

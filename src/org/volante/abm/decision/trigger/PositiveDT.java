@@ -21,25 +21,26 @@
  * 
  * Created by Sascha Holzhauer on 3 Jun 2015
  */
-package org.volante.abm.decision;
+package org.volante.abm.decision.trigger;
 
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.bt.LaraBehaviouralComponent;
 
-import de.cesr.lara.components.eventbus.events.LAgentPreprocessEvent;
-import de.cesr.lara.components.eventbus.impl.LDcSpecificEventbus;
 import de.cesr.lara.components.model.impl.LModel;
 
+
 /**
+ * The check is always positive and the decision configuration gets triggered.
+ * 
  * @author Sascha Holzhauer
- *
+ * 
  */
-public class InnovationDecisionTrigger extends AbstractDecisionTrigger {
+public class PositiveDT extends AbstractDecisionTrigger {
 
 	/**
 	 * 
 	 */
-	public InnovationDecisionTrigger() {
+	public PositiveDT() {
 	}
 
 	/**
@@ -47,21 +48,18 @@ public class InnovationDecisionTrigger extends AbstractDecisionTrigger {
 	 * 
 	 * @param dcId
 	 */
-	public InnovationDecisionTrigger(String dcId) {
+	public PositiveDT(String dcId) {
 		this.dcId = dcId;
 	}
 
 	/**
-	 * @see org.volante.abm.decision.DecisionTrigger#check(Agent)
+	 * @see org.volante.abm.decision.trigger.DecisionTrigger#check(Agent)
 	 */
 	@Override
-	public void check(Agent agent) {
-		((LDcSpecificEventbus) LModel.getModel(agent.getRegion())
-				.getLEventbus())
-.subscribeOnce(
-				(LaraBehaviouralComponent) agent.getBC(),
-				LAgentPreprocessEvent.class,
- LModel.getModel(agent.getRegion())
-						.getDecisionConfigRegistry().get(dcId));
+	public boolean check(Agent agent) {
+		((LaraBehaviouralComponent) agent.getBC()).subscribeOnce(LModel.getModel(agent.getRegion())
+				.getDecisionConfigRegistry()
+				.get(dcId), this);
+		return true;
 	}
 }

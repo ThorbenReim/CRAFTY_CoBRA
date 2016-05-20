@@ -24,10 +24,10 @@
 package org.volante.abm.agent.bt;
 
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.property.AgentPropertyId;
 import org.volante.abm.agent.property.DoublePropertyProvider;
 import org.volante.abm.agent.property.DoublePropertyProviderComp;
-import org.volante.abm.decision.DecisionTrigger;
+import org.volante.abm.agent.property.PropertyId;
+import org.volante.abm.decision.trigger.DecisionTrigger;
 
 /**
  * @author Sascha Holzhauer
@@ -45,27 +45,27 @@ public abstract class AbstractBC implements BehaviouralComponent {
 	}
 
 	/**
-	 * @see org.volante.abm.agent.property.DoublePropertyProvider#isProvided(org.volante.abm.agent.property.AgentPropertyId)
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#isProvided(org.volante.abm.agent.property.PropertyId)
 	 */
 	@Override
-	public boolean isProvided(AgentPropertyId property) {
+	public boolean isProvided(PropertyId property) {
 		return this.propertyProvider.isProvided(property);
 	}
 
 	/**
-	 * @see org.volante.abm.agent.property.DoublePropertyProvider#getProperty(org.volante.abm.agent.property.AgentPropertyId)
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#getProperty(org.volante.abm.agent.property.PropertyId)
 	 */
 	@Override
-	public double getProperty(AgentPropertyId property) {
+	public Double getProperty(PropertyId property) {
 		return this.propertyProvider.getProperty(property);
 	}
 
 	/**
-	 * @see org.volante.abm.agent.property.DoublePropertyProvider#setProperty(org.volante.abm.agent.property.AgentPropertyId, double)
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#setProperty(org.volante.abm.agent.property.PropertyId, double)
 	 */
 	@Override
-	public void setProperty(AgentPropertyId propertyId, double value) {
-		this.setProperty(propertyId, value);
+	public void setProperty(PropertyId propertyId, Double value) {
+		this.propertyProvider.setProperty(propertyId, value);
 	}
 
 	/**
@@ -74,6 +74,23 @@ public abstract class AbstractBC implements BehaviouralComponent {
 	@Override
 	public BehaviouralType getType() {
 		return this.bType;
+	}
+
+	/**
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#getProperty(org.volante.abm.agent.property.PropertyId)
+	 */
+	@Override
+	public Object getObjectProperty(PropertyId property) {
+		return this.propertyProvider.getObjectProperty(property);
+	}
+
+	/**
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#setProperty(org.volante.abm.agent.property.PropertyId,
+	 *      double)
+	 */
+	@Override
+	public void setObjectProperty(PropertyId propertyId, Object value) {
+		this.propertyProvider.setObjectProperty(propertyId, value);
 	}
 
 	/**

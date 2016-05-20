@@ -90,10 +90,10 @@ public class DefaultAgentTest extends BasicTestsUtils
 	@Test
 	public void testAging()
 	{
-		farmer.setProperty(AgentPropertyIds.AGE, 20);
-		assertEquals(20, (int) farmer.getProperty(AgentPropertyIds.AGE));
+		farmer.setProperty(AgentPropertyIds.AGE, 20.0);
+		assertEquals(20, farmer.getProperty(AgentPropertyIds.AGE).intValue());
 		farmer.tickStartUpdate();
-		assertEquals(21, (int) farmer.getProperty(AgentPropertyIds.AGE));
+		assertEquals(21, farmer.getProperty(AgentPropertyIds.AGE).intValue());
 	}
 	
 	@Test
@@ -105,8 +105,8 @@ public class DefaultAgentTest extends BasicTestsUtils
 		r.setOwnership(farmer, c);
 
 		// Make sure he doesn't give up!
-		farmer.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, -5);
-		farmer.setProperty(AgentPropertyIds.AGE, 20);
+		farmer.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, -5.0);
+		farmer.setProperty(AgentPropertyIds.AGE, 20.0);
 
 		for (Agent a : r.getAllAllocatedAgents()) {
 			logger.info("Agent: " + a );
@@ -115,22 +115,22 @@ public class DefaultAgentTest extends BasicTestsUtils
 		Schedule s = runInfo.getSchedule();
 		s.setRegions(new RegionSet(r));
 
-		assertEquals(20, (int) farmer.getProperty(AgentPropertyIds.AGE));
+		assertEquals(20, farmer.getProperty(AgentPropertyIds.AGE).intValue());
 		s.tick();
-		assertEquals(21, (int) farmer.getProperty(AgentPropertyIds.AGE));
+		assertEquals(21, farmer.getProperty(AgentPropertyIds.AGE).intValue());
 		s.tick();
-		assertEquals(22, (int) farmer.getProperty(AgentPropertyIds.AGE));
+		assertEquals(22, farmer.getProperty(AgentPropertyIds.AGE).intValue());
 
 		assembler = new DefaultAgentAssembler();
 		assembler.initialise(modelData, runInfo, r);
 		farmer = (DefaultLandUseAgent) assembler.assembleAgent(c, "Cognitor",
 				"C_Cereal");
 
-		farmer.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, -5);
-		farmer.setProperty(AgentPropertyIds.AGE, 10);
+		farmer.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, -5.0);
+		farmer.setProperty(AgentPropertyIds.AGE, 10.0);
 		
-		assertEquals(10, (int) farmer.getProperty(AgentPropertyIds.AGE));
+		assertEquals(10, farmer.getProperty(AgentPropertyIds.AGE).intValue());
 		s.tick();
-		assertEquals(11, (int) farmer.getProperty(AgentPropertyIds.AGE));
+		assertEquals(11, farmer.getProperty(AgentPropertyIds.AGE).intValue());
 	}
 }

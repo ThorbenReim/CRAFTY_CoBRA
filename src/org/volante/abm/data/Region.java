@@ -38,6 +38,7 @@ import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.SocialAgent;
 import org.volante.abm.agent.bt.BehaviouralType;
+import org.volante.abm.agent.bt.BehaviouralTypeMap;
 import org.volante.abm.agent.fr.FunctionalComponent;
 import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.example.AgentPropertyIds;
@@ -46,8 +47,7 @@ import org.volante.abm.institutions.innovation.InnovationRegistry;
 import org.volante.abm.models.AllocationModel;
 import org.volante.abm.models.CompetitivenessModel;
 import org.volante.abm.models.DemandModel;
-import org.volante.abm.output.ActionObserver;
-import org.volante.abm.output.PseudoActionObserver;
+import org.volante.abm.output.ActionReporter;
 import org.volante.abm.param.GeoPa;
 import org.volante.abm.schedule.PreTickAction;
 import org.volante.abm.schedule.RunInfo;
@@ -87,6 +87,10 @@ public class Region implements Regions, PreTickAction {
 	 */
 	Set<Cell>				cells						= new LinkedHashSet<Cell>();
 	Set<LandUseAgent> allocatedAgents = new LinkedHashSet<>();
+
+	/**
+	 * Agents which are currently not allocated to any cell.
+	 */
 	Set<LandUseAgent> ambulantAgents = new LinkedHashSet<>();
 
 	AllocationModel			allocation;
@@ -94,10 +98,8 @@ public class Region implements Regions, PreTickAction {
 	DemandModel				demand;
 	Set<Cell>				available					= new LinkedHashSet<Cell>();
 
-	ActionObserver actionObserver = new PseudoActionObserver();
-
-	Map<String, BehaviouralType> behaviouralTypesByLabel = new LinkedHashMap<String, BehaviouralType>();
-	Map<Integer, BehaviouralType> behaviouralTypesBySerialId = new LinkedHashMap<Integer, BehaviouralType>();
+	Map<String, BehaviouralType> behaviouralTypesByLabel = new BehaviouralTypeMap<>(this);
+	Map<Integer, BehaviouralType> behaviouralTypesBySerialId = new BehaviouralTypeMap<>(this);
 
 	Map<String, FunctionalRole> functionalRolesByLabel = new LinkedHashMap<String, FunctionalRole>();
 	Map<Integer, FunctionalRole> functionalRolesBySerialId = new LinkedHashMap<Integer, FunctionalRole>();
@@ -107,6 +109,8 @@ public class Region implements Regions, PreTickAction {
 	Institutions institutions = null;
 	String					id							= "UnknownRegion";
 	Map<String, String>			peristerContextExtra					= new HashMap<String, String>();
+
+	Set<ActionReporter> registeredPaReporter = new HashSet<>();
 
 	boolean requiresEffectiveCapitalData = false;
 	boolean hasCompetitivenessAdjustingInstitution = false;
@@ -534,7 +538,22 @@ public class Region implements Regions, PreTickAction {
 				((PopulationRegionHelper) helper).agentRemoved(agent);
 			}
 		}
+
+		for (RegionHelper helper : this.helpers.values()) {
+			if (helper instanceof CleanupRegionHelper) {
+				((CleanupRegionHelper) helper).cleanUpAgent(this, agent);
+			}
+		}
 	}
+
+	public void cleanupAgents() {
+		for (RegionHelper helper : this.helpers.values()) {
+			if (helper instanceof CleanupRegionHelper) {
+				((CleanupRegionHelper) helper).cleanUp(this);
+			}
+		}
+	}
+
 
 	/*
 	 * Regions methods
@@ -748,10 +767,16 @@ public class Region implements Regions, PreTickAction {
 			if (log.isTraceEnabled()) {
 				log.trace(" owner is now " + a);
 			}
-
-			allocatedAgents.add(a);
-			ambulantAgents.remove(a);
 		}
+
+		if (!this.allocatedAgents.contains(a) && !this.ambulantAgents.contains(a)) {
+			for (ActionReporter reporter : this.registeredPaReporter) {
+				reporter.registerAtAgent(a);
+			}
+		}
+		
+		allocatedAgents.add(a);
+		ambulantAgents.remove(a);
 	}
 
 	/**
@@ -966,12 +991,20 @@ public class Region implements Regions, PreTickAction {
 		return this.peristerContextExtra;
 	}
 
-	public ActionObserver getActionObserver() {
-		return actionObserver;
-	}
+	/**
+	 * Let the given {@link ActionReporter} register at institutions and agents.
+	 * 
+	 * @param reporter
+	 */
+	public void registerPaReporter(ActionReporter reporter) {
+		this.registeredPaReporter.add(reporter);
 
-	public void setActionObserver(ActionObserver actionObserver) {
-		this.actionObserver = actionObserver;
-	}
+		if (this.institutions != null) {
+			this.institutions.registerPaReporter(reporter);
+		}
 
+		for (Agent agent : this.getAgents()) {
+			reporter.registerAtAgent(agent);
+		}
+	}
 }

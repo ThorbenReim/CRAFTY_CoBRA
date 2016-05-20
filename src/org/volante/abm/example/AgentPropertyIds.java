@@ -23,7 +23,7 @@
  */
 package org.volante.abm.example;
 
-import org.volante.abm.agent.property.AgentPropertyId;
+import org.volante.abm.agent.property.PropertyId;
 
 /**
  * Common agent property IDs
@@ -31,7 +31,7 @@ import org.volante.abm.agent.property.AgentPropertyId;
  * @author Sascha Holzhauer
  *
  */
-public enum AgentPropertyIds implements AgentPropertyId {
+public enum AgentPropertyIds implements PropertyId {
 
 	AGE,
 	EDUCATION,
@@ -40,7 +40,11 @@ public enum AgentPropertyIds implements AgentPropertyId {
 	COMPETITIVENESS,
 	GIVING_IN_THRESHOLD,
 	GIVING_UP_THRESHOLD,
- GIVING_UP_PROB,
+
+	/**
+	 * Probability of giving up in case the competitiveness falls below the giving-up thresholds.
+	 */
+	GIVING_UP_PROB,
 
 	/**
 	 * If set (not {@link Double#NaN}) and above 1,

@@ -42,6 +42,7 @@ import org.volante.abm.agent.bt.InnovativeCognitiveBC;
 import org.volante.abm.agent.bt.InnovativeCognitiveBT;
 import org.volante.abm.agent.fr.DefaultFR;
 import org.volante.abm.agent.fr.FunctionalRole;
+import org.volante.abm.agent.fr.IndividualProductionFR;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
@@ -73,12 +74,15 @@ public class InnovationTestUtils extends BasicTestsUtils {
 	public void setupBasicTestEnvironment() {
 		super.setupBasicTestEnvironment();
 
-		innovativeForestry = new DefaultFR("Forestry",
+		innovativeForestry =
+				new DefaultFR("InnoForestry", 111,
 				BasicTestsUtils.forestryProduction.copyWithNoise(modelData,
 						null, null), BasicTestsUtils.forestryGivingUp,
 				BasicTestsUtils.forestryGivingIn);
 
-		innovativeFarming = new DefaultFR("Farming",
+
+		innovativeFarming =
+				new IndividualProductionFR("InnoFarming", 112,
 				BasicTestsUtils.farmingProduction.copyWithNoise(modelData,
 						null, null), BasicTestsUtils.farmingGivingUp,
 				BasicTestsUtils.farmingGivingIn);
@@ -86,6 +90,8 @@ public class InnovationTestUtils extends BasicTestsUtils {
 		potentialAgents = new HashSet<FunctionalRole>(
 				Arrays.asList(new FunctionalRole[] { innovativeForestry,
 						innovativeFarming }));
+		// this.r1.clearFunctionalRoles();
+		this.r1.addfunctionalRoles(potentialAgents);
 
 		innoFarmingA = this.agentAssemblerR1.assembleAgent(null, "Innovator",
 				innovativeFarming.getLabel());

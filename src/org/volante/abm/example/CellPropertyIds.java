@@ -3,7 +3,7 @@
  * 
  * CRAFTY - Competition for Resources between Agent Functional TYpes
  *
- * Copyright (C) 2014 School of GeoScience, University of Edinburgh, Edinburgh, UK
+ * Copyright (C) 2016 School of GeoScience, University of Edinburgh, Edinburgh, UK
  * 
  * CRAFTY is free software: You can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software 
@@ -17,21 +17,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * School of GeoScience, University of Edinburgh, Edinburgh, UK
+ * School of Geoscience, University of Edinburgh, Edinburgh, UK
+ * 
+ * Created by Sascha Holzhauer on 13 May 2016
  */
-package org.volante.abm.output;
+package org.volante.abm.example;
 
-
-import org.volante.abm.decision.pa.CraftyPa;
+import org.volante.abm.agent.property.PropertyId;
 
 /**
- * For outputters that record informations on the performance of {@link CraftyPa}s.
- *
  * @author Sascha Holzhauer
  *
  */
-public interface ActionObserver {
-
-	public void observeAction(CraftyPa<?> pa);
-
+public enum CellPropertyIds implements PropertyId {
+	RESTRICTED;
 }

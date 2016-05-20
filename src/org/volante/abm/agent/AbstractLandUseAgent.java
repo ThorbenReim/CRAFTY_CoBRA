@@ -34,10 +34,10 @@ import org.apache.log4j.Logger;
 import org.simpleframework.xml.ElementMap;
 import org.volante.abm.agent.bt.BehaviouralComponent;
 import org.volante.abm.agent.fr.FunctionalComponent;
-import org.volante.abm.agent.property.AgentPropertyId;
-import org.volante.abm.agent.property.AgentPropertyRegistry;
+import org.volante.abm.agent.property.PropertyRegistry;
 import org.volante.abm.agent.property.DoublePropertyProvider;
 import org.volante.abm.agent.property.DoublePropertyProviderComp;
+import org.volante.abm.agent.property.PropertyId;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
@@ -86,13 +86,13 @@ public abstract class AbstractLandUseAgent implements LandUseAgent {
 		this.propertyProvider = new DoublePropertyProviderComp();
 
 		// initialise important agent properties:
-		this.setProperty(AgentPropertyIds.AGE, 1);
+		this.setProperty(AgentPropertyIds.AGE, 1.0);
 		this.setProperty(AgentPropertyIds.COMPETITIVENESS, 0.0);
 
 		for (Entry<String, Object> property : params.entrySet()) {
-			if (AgentPropertyRegistry.get(property.getKey()) != null) {
+			if (PropertyRegistry.get(property.getKey()) != null) {
 				if (property.getValue() instanceof Number) {
-					this.propertyProvider.setProperty(AgentPropertyRegistry.get(property.getKey()),
+					this.propertyProvider.setProperty(PropertyRegistry.get(property.getKey()),
 							(Double) property.getValue());
 				}
 			}
@@ -105,28 +105,45 @@ public abstract class AbstractLandUseAgent implements LandUseAgent {
 	}
 
 	/**
-	 * @see org.volante.abm.agent.property.DoublePropertyProvider#isProvided(org.volante.abm.agent.property.AgentPropertyId)
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#isProvided(org.volante.abm.agent.property.PropertyId)
 	 */
 	@Override
-	public boolean isProvided(AgentPropertyId property) {
+	public boolean isProvided(PropertyId property) {
 		return this.propertyProvider.isProvided(property);
 	}
 
 	/**
-	 * @see org.volante.abm.agent.property.DoublePropertyProvider#getProperty(org.volante.abm.agent.property.AgentPropertyId)
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#getProperty(org.volante.abm.agent.property.PropertyId)
 	 */
 	@Override
-	public double getProperty(AgentPropertyId property) {
+	public Double getProperty(PropertyId property) {
 		return this.propertyProvider.getProperty(property);
 	}
 
 	/**
-	 * @see org.volante.abm.agent.property.DoublePropertyProvider#setProperty(org.volante.abm.agent.property.AgentPropertyId,
-	 *      double)
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#setProperty(org.volante.abm.agent.property.PropertyId,
+	 *      Double)
 	 */
 	@Override
-	public void setProperty(AgentPropertyId propertyId, double value) {
+	public void setProperty(PropertyId propertyId, Double value) {
 		this.propertyProvider.setProperty(propertyId, value);
+	}
+
+	/**
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#getProperty(org.volante.abm.agent.property.PropertyId)
+	 */
+	@Override
+	public Object getObjectProperty(PropertyId property) {
+		return this.propertyProvider.getObjectProperty(property);
+	}
+
+	/**
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#setProperty(org.volante.abm.agent.property.PropertyId,
+	 *      Double)
+	 */
+	@Override
+	public void setObjectProperty(PropertyId propertyId, Object value) {
+		this.propertyProvider.setObjectProperty(propertyId, value);
 	}
 
 	/**
@@ -207,12 +224,9 @@ public abstract class AbstractLandUseAgent implements LandUseAgent {
 	@Override
 	public String toString() {
 		return getID()
- + " (" + this.getHomeCell() + ": "
-				+ (this.getBC() == null ? "None" : this.getBC().getType()
-						.getLabel())
-				+ "/"
-				+ (this.getFC() == null ? "None" : this.getFC().getFR()
-.getLabel()) + "): #" + hashCode();
+ + " (" + (this.getBC() == null ? "None" : this.getBC().getType().getLabel()) + "/"
+				+ (this.getFC() == null ? "None" : this.getFC().getFR().getLabel())
+				+ (this.getHomeCell() != null ? "@" + this.getHomeCell() : "") + ") #" + hashCode();
 	}
 
 	public void setId(String id) {

@@ -24,10 +24,9 @@
 package org.volante.abm.agent.bt;
 
 import org.volante.abm.agent.Agent;
-import org.volante.abm.decision.pa.CraftyPa;
+import org.volante.abm.decision.trigger.DecisionTrigger;
 import org.volante.abm.lara.CobraLAgentComp;
 
-import de.cesr.lara.components.agents.LaraAgentComponent;
 import de.cesr.lara.components.decision.LaraDecisionConfiguration;
 import de.cesr.lara.components.eventbus.events.LaraEvent;
 import de.cesr.lara.components.model.impl.LModel;
@@ -59,7 +58,7 @@ public class CognitiveBC extends AbstractIndividualBC implements
 	 * @see de.cesr.lara.components.agents.LaraAgent#getLaraComp()
 	 */
 	@Override
-	public LaraAgentComponent<LaraBehaviouralComponent, CraftyPa<?>> getLaraComp() {
+	public CobraLAgentComp getLaraComp() {
 		return this.laraComp;
 	}
 
@@ -76,6 +75,18 @@ public class CognitiveBC extends AbstractIndividualBC implements
 	 */
 	@Override
 	public void subscribeOnce(LaraDecisionConfiguration dc) {
-		((CobraLAgentComp) this.getLaraComp()).subscribeOnce(dc);
+		this.getLaraComp().subscribeOnce(dc);
+	}
+
+	/**
+	 * @see org.volante.abm.agent.bt.LaraBehaviouralComponent#subscribeOnce(de.cesr.lara.components.decision.LaraDecisionConfiguration)
+	 */
+	@Override
+	public void subscribeOnce(LaraDecisionConfiguration dc, DecisionTrigger trigger) {
+		this.getLaraComp().subscribeOnce(dc, trigger);
+	}
+
+	public String toString() {
+		return "CogBC [" + agent + "]";
 	}
 }

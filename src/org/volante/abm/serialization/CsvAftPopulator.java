@@ -43,8 +43,8 @@ import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.assembler.AgentAssembler;
 import org.volante.abm.agent.assembler.DefaultSocialAgentAssembler;
-import org.volante.abm.agent.property.AgentPropertyId;
-import org.volante.abm.agent.property.AgentPropertyRegistry;
+import org.volante.abm.agent.property.PropertyId;
+import org.volante.abm.agent.property.PropertyRegistry;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
@@ -156,7 +156,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 		Map<String, String> agentBTs = new LinkedHashMap<String, String>();
 		Map<String, String> agentFRs = new LinkedHashMap<String, String>();
 
-		Map<String, Map<AgentPropertyId, Double>> agentProperties = new HashMap<String, Map<AgentPropertyId, Double>>();
+		Map<String, Map<PropertyId, Double>> agentProperties = new HashMap<String, Map<PropertyId, Double>>();
 
 
 		// Basic CSV file validation:
@@ -311,7 +311,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 
 				if (agent != Agent.NOT_MANAGED) {
 					for (String agentPropertyColumn : agentPropertyColumns) {
-						agent.setProperty(AgentPropertyRegistry.get(agentPropertyColumn),
+						agent.setProperty(PropertyRegistry.get(agentPropertyColumn),
 								Double.parseDouble(reader.get(agentPropertyColumn)));
 					}
 
@@ -355,9 +355,9 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 					agentBTs.put(agentId, reader.get(btColumnName));
 					agentFRs.put(agentId, reader.get(frColumnName));
 
-					Map<AgentPropertyId, Double> agentPropertyMap = new HashMap<AgentPropertyId, Double>();
+					Map<PropertyId, Double> agentPropertyMap = new HashMap<PropertyId, Double>();
 					for (String agentPropertyColumn : agentPropertyColumns) {
-						agentPropertyMap.put(AgentPropertyRegistry.get(agentPropertyColumn),
+						agentPropertyMap.put(PropertyRegistry.get(agentPropertyColumn),
 								Double.parseDouble(reader.get(agentPropertyColumn)));
 					}
 					agentProperties.put(agentId, agentPropertyMap);
@@ -390,7 +390,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 			rLoader.region.setInitialOwnership(agent, agentCellMap.get(agentId)
 					.toArray(new Cell[1]));
 
-			for (Entry<AgentPropertyId, Double> property : agentProperties.get(agentId).entrySet()) {
+			for (Entry<PropertyId, Double> property : agentProperties.get(agentId).entrySet()) {
 				agent.setProperty(property.getKey(), property.getValue());
 			}
 		}

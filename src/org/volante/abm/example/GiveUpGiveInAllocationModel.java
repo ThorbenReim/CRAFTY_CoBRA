@@ -302,7 +302,8 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 		for (Cell c : sorted) {
 			// if (competitiveness.get(c) < a.getGivingUp()) return;
 			if (competitiveness.get(c) > newAgentsGU
-					&& c.getOwner().canTakeOver(c, competitiveness.get(c))) {
+ && c.getOwner().canTakeOver(c, competitiveness.get(c))
+					&& r.getInstitutions().isAllowed(fr, c)) {
 				
 				LandUseAgent agent = agentFinder.findAgent(c, Integer.MIN_VALUE,
 						fr.getSerialID());

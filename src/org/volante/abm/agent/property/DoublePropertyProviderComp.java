@@ -23,16 +23,13 @@
  */
 package org.volante.abm.agent.property;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 
 /**
  * @author Sascha Holzhauer
  *
  */
-public class DoublePropertyProviderComp implements DoublePropertyProvider {
+public class DoublePropertyProviderComp extends PropertyProviderComp<Object> implements DoublePropertyProvider {
 
 	/**
 	 * Logger
@@ -40,22 +37,13 @@ public class DoublePropertyProviderComp implements DoublePropertyProvider {
 	static private Logger logger = Logger
 			.getLogger(DoublePropertyProviderComp.class);
 
-	Map<AgentPropertyId, Double> properties = new HashMap<AgentPropertyId, Double>();
 
 	/**
-	 * @see org.volante.abm.agent.property.DoublePropertyProvider#isProvided(org.volante.abm.agent.property.AgentPropertyId)
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#getProperty(org.volante.abm.agent.property.PropertyId)
 	 */
 	@Override
-	public boolean isProvided(AgentPropertyId property) {
-		return properties.containsKey(property);
-	}
-
-	/**
-	 * @see org.volante.abm.agent.property.DoublePropertyProvider#getProperty(org.volante.abm.agent.property.AgentPropertyId)
-	 */
-	@Override
-	public double getProperty(AgentPropertyId property) {
-		if (!properties.containsKey(property)) {
+	public Double getProperty(PropertyId property) {
+		if (!properties.containsKey(property) || !(properties.get(property) instanceof Double)) {
 			// <- LOGGING
 			logger.warn("This DoublePropertyProvider does not contain an entry for key '"
  + property
@@ -63,15 +51,16 @@ public class DoublePropertyProviderComp implements DoublePropertyProvider {
 			// LOGGING ->
 			return Double.NaN;
 		} else {
-			return properties.get(property);
+			return (Double) properties.get(property);
 		}
 	}
 
 	/**
-	 * @see org.volante.abm.agent.property.DoublePropertyProvider#setProperty(org.volante.abm.agent.property.AgentPropertyId, double)
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#setProperty(org.volante.abm.agent.property.PropertyId,
+	 *      java.lang.Double)
 	 */
 	@Override
-	public void setProperty(AgentPropertyId propertyId, double value) {
-		this.properties.put(propertyId, value);
+	public void setProperty(PropertyId propertyId, Double value) {
+		this.setObjectProperty(propertyId, value);
 	}
 }

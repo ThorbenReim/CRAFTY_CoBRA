@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.data.Service;
-import org.volante.abm.decision.InnovationDecisionTrigger;
+import org.volante.abm.decision.trigger.PositiveDT;
 import org.volante.abm.example.BasicTestsUtils;
 import org.volante.abm.institutions.InnovativeInstitution;
 import org.volante.abm.models.utils.ProductionWeightReporter;
@@ -120,7 +120,7 @@ public class InnovativeInstitutionTest extends InnovationTestUtils {
 
 		// trigger innovation decisions at agents:
 		forester.getBC().getType()
-				.addDecisionTrigger(new InnovationDecisionTrigger("Innovation"));
+				.addDecisionTrigger(new PositiveDT("Innovation"));
 
 		// initialise innovation and spread
 		BasicTestsUtils.runInfo.getSchedule().tick();
@@ -185,7 +185,7 @@ public class InnovativeInstitutionTest extends InnovationTestUtils {
 		// trigger innovation decisions at agents:
 		forester.getBC()
 				.getType()
-				.addDecisionTrigger(new InnovationDecisionTrigger("Innovation"));
+				.addDecisionTrigger(new PositiveDT("Innovation"));
 
 		// initialise innovation and spread
 		BasicTestsUtils.runInfo.getSchedule().tick();

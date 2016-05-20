@@ -35,15 +35,15 @@ import org.volante.abm.example.AgentPropertyIds;
  * @author Sascha Holzhauer
  *
  */
-public class AgentPropertyRegistry {
+public class PropertyRegistry {
 
 	/**
 	 * Logger
 	 */
-	static private Logger logger = Logger.getLogger(AgentPropertyRegistry.class);
+	static private Logger logger = Logger.getLogger(PropertyRegistry.class);
 
 
-	protected static Set<Class<? extends AgentPropertyId>> enumClasses = new HashSet<>();
+	protected static Set<Class<? extends PropertyId>> enumClasses = new HashSet<>();
 
 	static {
 		enumClasses.add(AgentPropertyIds.class);
@@ -53,9 +53,9 @@ public class AgentPropertyRegistry {
 	 * @param id
 	 * @return AgentPropertyId
 	 */
-	public static AgentPropertyId get(String id) {
-		for (Class<? extends AgentPropertyId> agentPropertyIdEnum : enumClasses) {
-	        for (AgentPropertyId prop : agentPropertyIdEnum.getEnumConstants()) {
+	public static PropertyId get(String id) {
+		for (Class<? extends PropertyId> agentPropertyIdEnum : enumClasses) {
+	        for (PropertyId prop : agentPropertyIdEnum.getEnumConstants()) {
 				if (id.equals(prop.toString())) {
 	                return prop;
 	            }
@@ -66,7 +66,7 @@ public class AgentPropertyRegistry {
 	}
 	
 
-	public static void registerPropertiesEnum(Class<? extends AgentPropertyId> enumeration) {
+	public static void registerPropertiesEnum(Class<? extends PropertyId> enumeration) {
 		enumClasses.add(enumeration);
 	}
 }

@@ -43,8 +43,8 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 		// Map<Capital, Double> factors;
 		DoubleMap<Capital> operands;
 
-		public CellCapitalData(DoubleMap<Capital> factors, int x, int y) {
-			this.operands = factors;
+		public CellCapitalData(DoubleMap<Capital> operands, int x, int y) {
+			this.operands = operands;
 			this.x = x;
 			this.y = y;
 		}
@@ -118,7 +118,7 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 					double val = Double.parseDouble(cap);
 					adjusted.putDouble(c, val);
 				} else {
-					adjusted.putDouble(c, 1.0);
+					adjusted.putDouble(c, 0.0);
 				}
 			}
 			

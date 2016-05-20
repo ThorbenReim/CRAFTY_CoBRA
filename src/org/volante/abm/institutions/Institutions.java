@@ -35,6 +35,7 @@ import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
+import org.volante.abm.output.ActionReporter;
 import org.volante.abm.schedule.DefaultSchedule;
 import org.volante.abm.schedule.PreTickAction;
 import org.volante.abm.schedule.RunInfo;
@@ -42,6 +43,10 @@ import org.volante.abm.schedule.RunInfo;
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
 
 
+/**
+ * @author Sascha Holzhauer
+ * 
+ */
 @Root
 public class Institutions implements Institution, PreTickAction {
 
@@ -73,6 +78,10 @@ public class Institutions implements Institution, PreTickAction {
 		return institutions.contains(i);
 	}
 
+	/**
+	 * @see org.volante.abm.institutions.Institution#isAllowed(org.volante.abm.agent.fr.FunctionalComponent,
+	 *      org.volante.abm.data.Cell)
+	 */
 	@Override
 	public boolean isAllowed(FunctionalComponent a, Cell c) {
 		for (Institution i : institutions) {
@@ -83,6 +92,10 @@ public class Institutions implements Institution, PreTickAction {
 		return true;
 	}
 
+	/**
+	 * @see org.volante.abm.institutions.Institution#isAllowed(org.volante.abm.agent.fr.FunctionalRole,
+	 *      org.volante.abm.data.Cell)
+	 */
 	@Override
 	public boolean isAllowed(FunctionalRole fr, Cell c) {
 		for (Institution i : institutions) {
@@ -93,6 +106,9 @@ public class Institutions implements Institution, PreTickAction {
 		return true;
 	}
 
+	/**
+	 * @see org.volante.abm.institutions.Institution#getFrsExludedFromGivingIn()
+	 */
 	public Set<FunctionalRole> getFrsExludedFromGivingIn() {
 		Set<FunctionalRole> excluded = new HashSet<>();
 		for (Institution i : institutions) {
@@ -101,6 +117,9 @@ public class Institutions implements Institution, PreTickAction {
 		return excluded;
 	}
 
+	/**
+	 * @see org.volante.abm.institutions.Institution#adjustCapitals(org.volante.abm.data.Cell)
+	 */
 	@Override
 	public void adjustCapitals(Cell c) {
 		for (Institution i : institutions) {
@@ -122,6 +141,9 @@ public class Institutions implements Institution, PreTickAction {
 		return result;
 	}
 
+	/**
+	 * Delegates to {@link Agent#tickStartUpdate()} in case the institutions is an {@link Agent}.
+	 */
 	public void tickStartUpdate() {
 		for (Institution i : institutions) {
 			if (i instanceof Agent) {
@@ -171,5 +193,16 @@ public class Institutions implements Institution, PreTickAction {
 	 */
 	public boolean hasInstitutions() {
 		return !institutions.isEmpty();
+	}
+	
+	/**
+	 * @param reporter
+	 */
+	public void registerPaReporter(ActionReporter reporter) {
+		for (Institution institution : this.institutions) {
+			if (institution instanceof Agent) {
+				reporter.registerAtAgent((Agent) institution);
+			}
+		}
 	}
 }

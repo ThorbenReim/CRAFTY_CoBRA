@@ -28,6 +28,9 @@ import java.util.Set;
 
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.LandUseAgent;
+import org.volante.abm.agent.property.PropertyId;
+import org.volante.abm.agent.property.PropertyProvider;
+import org.volante.abm.agent.property.PropertyProviderComp;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.Initialisable;
 
@@ -43,7 +46,7 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
  * @author dmrust
  * 
  */
-public class Cell implements Initialisable {
+public class Cell implements Initialisable, PropertyProvider<Object> {
 	private static final String	UNKNOWN				= "Unknown";			//$NON-NLS-1$
 
 	/*
@@ -56,6 +59,7 @@ public class Cell implements Initialisable {
 																			// (including
 																			// institutional
 																			// effects)
+
 	// DoubleMap<Service> demand; //Current levels of spatialised demand
 	DoubleMap<Service>	supply				= null;				// Current levels of spatialised
 																	// supply
@@ -68,6 +72,9 @@ public class Cell implements Initialisable {
 	boolean				initialised			= false;
 
 	Set<CellCapitalObserver> cellCapitalObservers = new HashSet<CellCapitalObserver>();
+
+	PropertyProviderComp<Object> propertyProvider = null;
+
 
 	public Cell() {
 	}
@@ -229,5 +236,41 @@ public class Cell implements Initialisable {
 
 	public void removeCellCapitalObserver(CellCapitalObserver observer) {
 		this.cellCapitalObservers.remove(observer);
+	}
+
+	/**
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#isProvided(org.volante.abm.agent.property.PropertyId)
+	 */
+	@Override
+	public boolean isProvided(PropertyId property) {
+		if (this.propertyProvider != null) {
+			return this.propertyProvider.isProvided(property);
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#getProperty(org.volante.abm.agent.property.PropertyId)
+	 */
+	@Override
+	public Object getObjectProperty(PropertyId property) {
+		if (this.propertyProvider != null) {
+			return this.propertyProvider.getObjectProperty(property);
+		} else {
+			throw new IllegalStateException("There is not property provided initialised!");
+		}
+	}
+
+	/**
+	 * @see org.volante.abm.agent.property.PropertyProvider#setProperty(org.volante.abm.agent.property.PropertyId,
+	 *      java.lang.Object)
+	 */
+	@Override
+	public void setObjectProperty(PropertyId propertyId, Object value) {
+		if (this.propertyProvider == null) {
+			this.propertyProvider = new PropertyProviderComp<>();
+		}
+		this.propertyProvider.setObjectProperty(propertyId, value);
 	}
 }

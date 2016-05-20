@@ -26,24 +26,31 @@ package org.volante.abm.example;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.RegionSet;
+import org.volante.abm.data.Service;
 import org.volante.abm.models.WorldDemandModel;
 import org.volante.abm.models.WorldSynchronisationModel;
 import org.volante.abm.schedule.RunInfo;
 
+import com.moseph.modelutils.fastdata.DoubleMap;
+
+
 /**
- * Gives the region's values back to the region as if it were world level measures.
- *
+ * Gives the region's values back to the region as if it were world level measures. Return an service double map with
+ * initial values (usually 0) as world demand and supply.
+ * 
  * @author sholzhau
- *
+ * 
  */
 public class PseudoSynchronisationModel implements WorldSynchronisationModel {
+
+	ModelData mData = null;
 
 	/**
 	 * @see org.volante.abm.models.WorldSynchronisationModel#initialise(org.volante.abm.data.ModelData, org.volante.abm.schedule.RunInfo)
 	 */
 	@Override
-	public void initialise(ModelData data, RunInfo info) {
-		// nothing to do
+	public void initialise(ModelData modelData, RunInfo info) {
+		this.mData = modelData;
 	}
 
 	/**
@@ -74,5 +81,21 @@ public class PseudoSynchronisationModel implements WorldSynchronisationModel {
 		for (Region r : regions.getAllRegions()) {
 			((WorldDemandModel) r.getDemandModel()).setWorldSupply( ((WorldDemandModel) r.getDemandModel()).getRegionalSupply());
 		}
+	}
+
+	/**
+	 * @see org.volante.abm.models.WorldSynchronisationModel#getWorldDemand()
+	 */
+	@Override
+	public DoubleMap<Service> getWorldDemand() {
+		return this.mData.serviceMap();
+	}
+
+	/**
+	 * @see org.volante.abm.models.WorldSynchronisationModel#getWorldSupply()
+	 */
+	@Override
+	public DoubleMap<Service> getWorldSupply() {
+		return this.mData.serviceMap();
 	}
 }

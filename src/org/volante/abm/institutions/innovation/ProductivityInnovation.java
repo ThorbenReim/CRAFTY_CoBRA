@@ -34,6 +34,7 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementMap;
 import org.volante.abm.agent.bt.InnovativeBC;
+import org.volante.abm.agent.fr.IndividualProductionFunctionalComponent;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
@@ -75,7 +76,7 @@ public class ProductivityInnovation extends Innovation implements PostTickAction
 	protected Boolean				normaliseProductivity	= false;
 
 	/**
-	 * Inrease of productivity in case of adoption.
+	 * Increase of productivity in case of adoption.
 	 */
 	@Element(name = "effectOnProductivityFactor", required = false)
 	protected double				effectOnProductivityFactor	= 1.002;
@@ -188,6 +189,12 @@ public class ProductivityInnovation extends Innovation implements PostTickAction
 	@Override
 	public void perform(InnovativeBC ibc) {
 		ProductionModel pModel = ibc.getAgent().getFC().getProduction();
+
+		if (!(ibc.getAgent().getFC() instanceof IndividualProductionFunctionalComponent)) {
+			logger.warn("The affected functional role is not an IndividualProductionFunctionalComponent, and changes are likely to"
+					+ " have side effects on other agents!");
+		}
+
 		if (pModel instanceof SimpleProductionModel) {
 			for (Service service : this.affectedServiceSet) {
 				((SimpleProductionModel) pModel).setWeight(service,

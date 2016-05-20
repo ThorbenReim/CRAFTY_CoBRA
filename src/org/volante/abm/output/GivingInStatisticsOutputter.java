@@ -32,6 +32,7 @@ import java.util.Set;
 
 import org.apache.commons.collections15.Bag;
 import org.apache.commons.collections15.bag.HashBag;
+import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.ModelData;
@@ -57,6 +58,11 @@ import com.csvreader.CsvWriter;
 public class GivingInStatisticsOutputter extends TableOutputter<Integer> implements
 		GloballyInitialisable, GivingInStatisticsObserver {
 
+	/**
+	 * Logger
+	 */
+	static private Logger logger = Logger.getLogger(GivingInStatisticsOutputter.class);
+
 	@Attribute(required = false)
 	boolean										addTick				= true;
 
@@ -71,6 +77,10 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 
 	@Override
 	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception {
+		if (this.startYear <= info.getSchedule().getStartTick()) {
+			logger.warn("This outputter's start year must be after the initial simulation year!");
+		}
+
 		for (Region r : regions.getAllRegions()) {
 			if (r.getAllocationModel() instanceof GivingInStatisticsMessenger) {
 				((GivingInStatisticsMessenger) r.getAllocationModel())
@@ -98,8 +108,8 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 	}
 
 	public void initGivingInStatistic(Region region) {
-		for (FunctionalRole pa : region.getFunctionalRoles()) {
-			addColumn(new SearchedCellsAftColumn(pa.getLabel(), pa, region));
+		for (FunctionalRole fr : region.getFunctionalRoles()) {
+			addColumn(new SearchedCellsAftColumn(fr.getLabel(), fr, region));
 		}
 	}
 
@@ -158,7 +168,7 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 			outputShort[i] = headers[i];
 		}
 
-		writers.get(regions).writeRecord(headers);
+		writers.get(regions).writeRecord(outputShort);
 	}
 
 	/**

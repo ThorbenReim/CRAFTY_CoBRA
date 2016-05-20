@@ -24,18 +24,20 @@
 package org.volante.abm.data;
 
 
-import java.util.Set;
-
 import org.volante.abm.agent.LandUseAgent;
 
 
 /**
+ * Helps the clean up components after updating competitiveness and before allocation (cleanUp) and when an agents is
+ * removed from the region (cleanUpAgent; {@link Region#removeAgent(LandUseAgent)} called).
  * 
  * @author Sascha Holzhauer
  * 
  */
 public interface CleanupRegionHelper extends RegionHelper {
 
-	public void cleanUp(Region region, Set<LandUseAgent> agentsToRemove);
+	public void cleanUp(Region region);
+
+	public void cleanUpAgent(Region region, LandUseAgent agentToRemove);
 
 }

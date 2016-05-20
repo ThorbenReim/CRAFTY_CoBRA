@@ -23,6 +23,9 @@
  */
 package org.volante.abm.lara.decider;
 
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +36,7 @@ import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.bt.LaraBehaviouralComponent;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
+import org.volante.abm.decision.pa.CraftyPa;
 import org.volante.abm.decision.pa.FrSelectionPa;
 
 import com.moseph.modelutils.curve.Curve;
@@ -119,5 +123,15 @@ public class CapitalBasedImitatingFrDecider extends AbstractImitatingFrDecider {
 		// assign the cell's FR with least difference sum to selectedPo
 		this.selectedPo = new FrSelectionPa(sorted_map.lastKey()
 				.getOwnersFrLabel(), agent);
+	}
+
+	/**
+	 * @see de.cesr.lara.components.decision.LaraDecider#getSelectableBos()
+	 */
+	@Override
+	public Collection<CraftyPa<?>> getSelectableBos() {
+		ArrayList<CraftyPa<?>> list = new ArrayList<>();
+		list.add(this.selectedPo);
+		return list;
 	}
 }

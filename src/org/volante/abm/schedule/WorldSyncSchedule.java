@@ -12,4 +12,6 @@ import org.volante.abm.models.WorldSynchronisationModel;
 public interface WorldSyncSchedule extends Schedule {
 
 	public void setWorldSyncModel(WorldSynchronisationModel worldSyncModel);
+
+	public WorldSynchronisationModel getWorldSyncModel();
 }

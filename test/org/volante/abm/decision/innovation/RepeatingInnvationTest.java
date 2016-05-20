@@ -88,7 +88,7 @@ public class RepeatingInnvationTest extends InnovationTestUtils {
 		Service service = BasicTestsUtils.modelData.services.forName("FOOD");
 
 		LandUseAgent one = this.agentAssemblerR1.assembleAgent(null, "Innovator",
-				innovativeFarming.getLabel());
+ innovativeFarming.getLabel());
 
 		double initialProductivity = ((ProductionWeightReporter) one
 				.getProductionModel()).getProductionWeights()

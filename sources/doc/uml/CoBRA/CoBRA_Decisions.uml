@@ -2294,6 +2294,7 @@
             <packagedElement xmi:type="uml:Class" xmi:id="__EuaUL0aEeS1t5-qQcLeig" name="AllocationModel"/>
             <packagedElement xmi:type="uml:Class" xmi:id="__EuaUr0aEeS1t5-qQcLeig" name="CompetitivenessModel"/>
             <packagedElement xmi:type="uml:Class" xmi:id="__EvBYL0aEeS1t5-qQcLeig" name="DemandModel"/>
+            <packagedElement xmi:type="uml:Class" xmi:id="_fbMGcPHZEeWydpOhWIZnvQ" name="WorldSynchronisationModel"/>
           </packagedElement>
           <packagedElement xmi:type="uml:Package" xmi:id="_-lbPMr0aEeS1t5-qQcLeig" name="data">
             <packagedElement xmi:type="uml:Class" xmi:id="_-lbPM70aEeS1t5-qQcLeig" name="Cell">
@@ -3150,10 +3151,564 @@
               <packagedElement xmi:type="uml:Interface" xmi:id="__FZvw70aEeS1t5-qQcLeig" name="CellInitialiser"/>
             </packagedElement>
             <packagedElement xmi:type="uml:Class" xmi:id="__FaW0b0aEeS1t5-qQcLeig" name="RegionLoader"/>
+            <packagedElement xmi:type="uml:Class" xmi:id="_g1BAIPHZEeWydpOhWIZnvQ" name="ABMPersister"/>
           </packagedElement>
           <packagedElement xmi:type="uml:Package" xmi:id="_-7PuMr0aEeS1t5-qQcLeig" name="schedule">
-            <packagedElement xmi:type="uml:Class" xmi:id="_-7PuM70aEeS1t5-qQcLeig" name="RunInfo"/>
-            <packagedElement xmi:type="uml:Interface" xmi:id="__EslIb0aEeS1t5-qQcLeig" name="PreTickAction"/>
+            <packagedElement xmi:type="uml:Class" xmi:id="_-7PuM70aEeS1t5-qQcLeig" name="RunInfo" visibility="public">
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_g1BnMPHZEeWydpOhWIZnvQ" name="persister" type="_g1BAIPHZEeWydpOhWIZnvQ" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_g1BnMfHZEeWydpOhWIZnvQ" name="schedule" type="_hRZaIPHZEeWydpOhWIZnvQ" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_g1COQPHZEeWydpOhWIZnvQ" name="outputs" type="_fbJDIPHZEeWydpOhWIZnvQ" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_g1COQfHZEeWydpOhWIZnvQ" name="scenario" type="_-lIURr0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_g1C1UPHZEeWydpOhWIZnvQ" name="runID" type="_-lIURr0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_g1C1UfHZEeWydpOhWIZnvQ" name="numRuns" type="_-lCNpL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_g1DcYPHZEeWydpOhWIZnvQ" name="currentRun" type="_-lCNpL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_g1EDcPHZEeWydpOhWIZnvQ" name="numRandomVariations" type="_-lCNpL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_g1EDcfHZEeWydpOhWIZnvQ" name="currentRandomSeed" type="_BmSYIb0bEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_g1EDcvHZEeWydpOhWIZnvQ" name="csvParamBasedirCorrection" type="_-lIURr0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_g1EqgPHZEeWydpOhWIZnvQ" name="linksCsvBasedirCorrection" type="_-lIURr0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_g1FRkfHZEeWydpOhWIZnvQ" name="paramRepos" type="_g1FRkPHZEeWydpOhWIZnvQ" isUnique="false"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1FRkvHZEeWydpOhWIZnvQ" name="getPersister" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1FRk_HZEeWydpOhWIZnvQ" type="_g1BAIPHZEeWydpOhWIZnvQ" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1F4oPHZEeWydpOhWIZnvQ" name="setPersister" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1F4ofHZEeWydpOhWIZnvQ" name="persister" type="_g1BAIPHZEeWydpOhWIZnvQ"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1F4ovHZEeWydpOhWIZnvQ" name="getSchedule" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1GfsPHZEeWydpOhWIZnvQ" type="_hRZaIPHZEeWydpOhWIZnvQ" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1GfsfHZEeWydpOhWIZnvQ" name="setSchedule" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1HGwPHZEeWydpOhWIZnvQ" name="schedule" type="_hRZaIPHZEeWydpOhWIZnvQ"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1Ht0PHZEeWydpOhWIZnvQ" name="getOutputs" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1Ht0fHZEeWydpOhWIZnvQ" type="_fbJDIPHZEeWydpOhWIZnvQ" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1Ht0vHZEeWydpOhWIZnvQ" name="setOutputs" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1Ht0_HZEeWydpOhWIZnvQ" name="outputs" type="_fbJDIPHZEeWydpOhWIZnvQ"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1IU4PHZEeWydpOhWIZnvQ" name="getScenario" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1IU4fHZEeWydpOhWIZnvQ" type="_-lIURr0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1IU4vHZEeWydpOhWIZnvQ" name="setScenario" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1IU4_HZEeWydpOhWIZnvQ" name="scenario" type="_-lIURr0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1I78PHZEeWydpOhWIZnvQ" name="getRunID" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1I78fHZEeWydpOhWIZnvQ" type="_-lIURr0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1I78vHZEeWydpOhWIZnvQ" name="setRunID" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1I78_HZEeWydpOhWIZnvQ" name="runID" type="_-lIURr0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1JjAPHZEeWydpOhWIZnvQ" name="getNumRuns" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_g1JjAfHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @return the numRuns
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1JjAvHZEeWydpOhWIZnvQ" type="_-lCNpL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1JjA_HZEeWydpOhWIZnvQ" name="setNumRuns" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_g1JjBPHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @param numRuns
+	 *        the numRuns to set
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1KKEPHZEeWydpOhWIZnvQ" name="numRuns" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1KKEfHZEeWydpOhWIZnvQ" name="getCurrentRun" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_g1KKEvHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @return the currentRun
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1KxIPHZEeWydpOhWIZnvQ" type="_-lCNpL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1KxIfHZEeWydpOhWIZnvQ" name="setCurrentRun" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_g1KxIvHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @param currentRun
+	 *        the currentRun to set (starting by 0)
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1KxI_HZEeWydpOhWIZnvQ" name="currentRun" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1LYMPHZEeWydpOhWIZnvQ" name="getNumRandomVariations" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_g1LYMfHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @return the numRandomVariations
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1LYMvHZEeWydpOhWIZnvQ" type="_-lCNpL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1LYM_HZEeWydpOhWIZnvQ" name="setNumRandomVariations" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_g1L_QPHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @param numRandomVariations
+	 *        the numRandomVariations to set
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1L_QfHZEeWydpOhWIZnvQ" name="numRandomVariations" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1L_QvHZEeWydpOhWIZnvQ" name="getCurrentRandomSeed" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_g1L_Q_HZEeWydpOhWIZnvQ">
+                  <body>
+	 * @return the currentRandomSeed
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1MmUPHZEeWydpOhWIZnvQ" type="_BmSYIb0bEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1MmUfHZEeWydpOhWIZnvQ" name="setCurrentRandomSeed" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_g1MmUvHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @param currentRandomSeed
+	 *        the currentRandomSeed to set
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1MmU_HZEeWydpOhWIZnvQ" name="currentRandomSeed" type="_BmSYIb0bEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1NNYPHZEeWydpOhWIZnvQ" name="getParamRepos" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_g1NNYfHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @return the paramRepos
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1NNYvHZEeWydpOhWIZnvQ" type="_g1FRkPHZEeWydpOhWIZnvQ" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1NNY_HZEeWydpOhWIZnvQ" name="getCsvParamBasedirCorrection" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1NNZPHZEeWydpOhWIZnvQ" type="_-lIURr0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1N0cPHZEeWydpOhWIZnvQ" name="setCsvParamBasedirCorrection" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1N0cfHZEeWydpOhWIZnvQ" name="csvParamBasedirCorrection" type="_-lIURr0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1N0cvHZEeWydpOhWIZnvQ" name="getLinksCsvBasedirCorrection" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1ObgPHZEeWydpOhWIZnvQ" type="_-lIURr0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g1ObgfHZEeWydpOhWIZnvQ" name="setLinksCsvBasedirCorrection" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_g1ObgvHZEeWydpOhWIZnvQ" name="linksCsvBasedirCorrection" type="_-lIURr0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Interface" xmi:id="__EslIb0aEeS1t5-qQcLeig" name="PreTickAction" visibility="public">
+              <generalization xmi:type="uml:Generalization" xmi:id="_h_gdUPHZEeWydpOhWIZnvQ" general="_h_f2QPHZEeWydpOhWIZnvQ"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g0teIPHZEeWydpOhWIZnvQ" name="preTick" visibility="public"/>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_faj0UPHZEeWydpOhWIZnvQ" name="CraftyMoreSchedule" visibility="public">
+              <ownedComment xmi:type="uml:Comment" xmi:id="_falCcPHZEeWydpOhWIZnvQ">
+                <body>&#xD;
+ * Extends {@link MSchedule} and triggers its step method by an&#xD;
+ * {@link PostTickAction} registered at the given {@link Schedule}.&#xD;
+ * &#xD;
+ * @author Sascha Holzhauer&#xD;
+ * &#xD;
+ </body>
+              </ownedComment>
+              <generalization xmi:type="uml:Generalization" xmi:id="_falpgPHZEeWydpOhWIZnvQ" general="_lFeRI8ctEeSMfpizDKt4Yg"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_faoFwPHZEeWydpOhWIZnvQ" name="schedule" type="_hRZaIPHZEeWydpOhWIZnvQ" isUnique="false"/>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Interface" xmi:id="_hRZaIPHZEeWydpOhWIZnvQ" name="Schedule" visibility="public">
+              <generalization xmi:type="uml:Generalization" xmi:id="_hRaBMPHZEeWydpOhWIZnvQ" general="_-65v8b0aEeS1t5-qQcLeig"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRaoQPHZEeWydpOhWIZnvQ" name="tick" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_hRaoQfHZEeWydpOhWIZnvQ">
+                  <body>
+	 * Runs the simulation a single tick.
+	 </body>
+                </ownedComment>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRaoQvHZEeWydpOhWIZnvQ" name="setTargetToNextTick" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_hRaoQ_HZEeWydpOhWIZnvQ">
+                  <body>
+	 * Sets the simulation's target tick to the current tick (which is the next tick that is
+	 * performed).
+	 </body>
+                </ownedComment>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRbPUPHZEeWydpOhWIZnvQ" name="getCurrentTick" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_hRbPUfHZEeWydpOhWIZnvQ">
+                  <body>
+	 * Returns the current tick (which is the next tick that is performed)
+	 * 
+	 * @return current tick
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRbPUvHZEeWydpOhWIZnvQ" type="_-lCNpL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRb2YPHZEeWydpOhWIZnvQ" name="register" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_hRb2YfHZEeWydpOhWIZnvQ">
+                  <body>
+	 * Registers the object in case any actions are going to be called on it e.g. before/after
+	 * ticks.
+	 * 
+	 * @param o
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRb2YvHZEeWydpOhWIZnvQ" name="o" type="_h_f2QPHZEeWydpOhWIZnvQ"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRcdcPHZEeWydpOhWIZnvQ" name="unregister" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_hRcdcfHZEeWydpOhWIZnvQ">
+                  <body>
+	 * Removes the given {@link TickAction} from this schedule to prevent the
+	 * action from being performed in future.
+	 * 
+	 * @param o
+	 *            tick action
+	 * @return true if the given tick action could be unregistered, false
+	 *         otherwise.
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRcdcvHZEeWydpOhWIZnvQ" type="_-lEp4L0aEeS1t5-qQcLeig" direction="return"/>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRdEgPHZEeWydpOhWIZnvQ" name="o" type="_h_f2QPHZEeWydpOhWIZnvQ"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRdEgfHZEeWydpOhWIZnvQ" name="setRegions" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRdrkPHZEeWydpOhWIZnvQ" name="set" type="__FHb4L0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRdrkfHZEeWydpOhWIZnvQ" name="setStartTick" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_hRdrkvHZEeWydpOhWIZnvQ">
+                  <body>
+	 * Sets the simulation's start tick.
+	 * 
+	 * @param start
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hReSoPHZEeWydpOhWIZnvQ" name="start" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hReSofHZEeWydpOhWIZnvQ" name="setTargetTick" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_hRe5sPHZEeWydpOhWIZnvQ">
+                  <body>
+	 * Sets and (intermediate) target tick.
+	 * 
+	 * @param target
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRfgwPHZEeWydpOhWIZnvQ" name="target" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRfgwfHZEeWydpOhWIZnvQ" name="setEndTick" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_hRgH0PHZEeWydpOhWIZnvQ">
+                  <body>
+	 * Sets the simualtion's final tick.
+	 * 
+	 * @param end
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRgH0fHZEeWydpOhWIZnvQ" name="end" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRgH0vHZEeWydpOhWIZnvQ" name="getTargetTick" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRgH0_HZEeWydpOhWIZnvQ" type="_-lCNpL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRgu4PHZEeWydpOhWIZnvQ" name="getStartTick" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRgu4fHZEeWydpOhWIZnvQ" type="_-lCNpL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRgu4vHZEeWydpOhWIZnvQ" name="getEndTick" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRgu4_HZEeWydpOhWIZnvQ" type="_-lCNpL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRhV8PHZEeWydpOhWIZnvQ" name="run" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_hRhV8fHZEeWydpOhWIZnvQ">
+                  <body>
+	 * Runs the simulation from predefined start to predefined end tick.
+	 </body>
+                </ownedComment>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRhV8vHZEeWydpOhWIZnvQ" name="runUntil" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_hRhV8_HZEeWydpOhWIZnvQ">
+                  <body>
+	 * Runs the simulation until the (intermediate) target tick.
+	 * 
+	 * @param end
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRh9APHZEeWydpOhWIZnvQ" name="end" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRh9AfHZEeWydpOhWIZnvQ" name="runFromTo" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_hRh9AvHZEeWydpOhWIZnvQ">
+                  <body>
+	 * Runs the simulation from given start to end tick. Overwrites previously set values for start
+	 * and end ticks.
+	 * 
+	 * @param start
+	 * @param end
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRh9A_HZEeWydpOhWIZnvQ" name="start" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRikEPHZEeWydpOhWIZnvQ" name="end" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRikEfHZEeWydpOhWIZnvQ" name="finish" visibility="public"/>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_fa6ZoPHZEeWydpOhWIZnvQ" name="DefaultSchedule" visibility="public">
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fa9c8PHZEeWydpOhWIZnvQ" name="idCounter" isStatic="true" type="_-lCNpL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fa-EAPHZEeWydpOhWIZnvQ" name="id" visibility="protected" type="_-lCNpL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fa-rEPHZEeWydpOhWIZnvQ" name="log" type="_-lBmlL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fa_SIPHZEeWydpOhWIZnvQ" name="regions" type="__FHb4L0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fa_5MPHZEeWydpOhWIZnvQ" name="tick" type="_-lCNpL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fbAgQPHZEeWydpOhWIZnvQ" name="targetTick" type="_-lCNpL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fbBHUPHZEeWydpOhWIZnvQ" name="startTick" type="_-lCNpL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fbBuYPHZEeWydpOhWIZnvQ" name="endTick" type="_-lCNpL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fbC8gPHZEeWydpOhWIZnvQ" name="prePreTickActions" type="_g0rB4PHZEeWydpOhWIZnvQ" isUnique="false">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_fbDjkPHZEeWydpOhWIZnvQ"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_fbDjkfHZEeWydpOhWIZnvQ" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fbEKoPHZEeWydpOhWIZnvQ" name="preTickActions" type="__EslIb0aEeS1t5-qQcLeig" isUnique="false">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_fbExsPHZEeWydpOhWIZnvQ"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_fbExsfHZEeWydpOhWIZnvQ" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fbFYwfHZEeWydpOhWIZnvQ" name="postTickActions" type="_gZVJsPHZEeWydpOhWIZnvQ" isUnique="false">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_fbF_0PHZEeWydpOhWIZnvQ"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_fbF_0fHZEeWydpOhWIZnvQ" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fbHN8fHZEeWydpOhWIZnvQ" name="finishActions" type="_f6LvkPHZEeWydpOhWIZnvQ" isUnique="false">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_fbH1APHZEeWydpOhWIZnvQ"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_fbH1AfHZEeWydpOhWIZnvQ" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fbJDIfHZEeWydpOhWIZnvQ" name="output" type="_fbJDIPHZEeWydpOhWIZnvQ" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fbJqMPHZEeWydpOhWIZnvQ" name="info" visibility="private" type="_-7PuM70aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fbK4UPHZEeWydpOhWIZnvQ" name="listeners" type="_hr6L4PHZEeWydpOhWIZnvQ" isUnique="false">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_fbLfYPHZEeWydpOhWIZnvQ"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_fbLfYfHZEeWydpOhWIZnvQ" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_fbMtgPHZEeWydpOhWIZnvQ" name="worldSyncModel" type="_fbMGcPHZEeWydpOhWIZnvQ" isUnique="false"/>
+              <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_fa8O0PHZEeWydpOhWIZnvQ" name="DefaultSchedule implements WorldSyncSchedule" client="_fa6ZoPHZEeWydpOhWIZnvQ" supplier="_fa7AsPHZEeWydpOhWIZnvQ" contract="_fa7AsPHZEeWydpOhWIZnvQ"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbNUkPHZEeWydpOhWIZnvQ" name="initialise" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbOisPHZEeWydpOhWIZnvQ" name="data" type="_-7PuMb0aEeS1t5-qQcLeig"/>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbPJwPHZEeWydpOhWIZnvQ" name="info" type="_-7PuM70aEeS1t5-qQcLeig"/>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbPw0PHZEeWydpOhWIZnvQ" name="extent" type="_-lmOU70aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbQX4PHZEeWydpOhWIZnvQ" name="setWorldSyncModel" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbQX4fHZEeWydpOhWIZnvQ" name="worldSyncModel" type="_fbMGcPHZEeWydpOhWIZnvQ"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbQ-8PHZEeWydpOhWIZnvQ" name="tick" visibility="public"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbQ-8fHZEeWydpOhWIZnvQ" name="finish" visibility="public"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbRmAPHZEeWydpOhWIZnvQ" name="runFromTo" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_fbRmAfHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @see org.volante.abm.schedule.Schedule#runFromTo(int, int)
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbSNEPHZEeWydpOhWIZnvQ" name="start" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbSNEfHZEeWydpOhWIZnvQ" name="end" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbS0IPHZEeWydpOhWIZnvQ" name="runUntil" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_fbS0IfHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @see org.volante.abm.schedule.Schedule#runUntil(int)
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbTbMPHZEeWydpOhWIZnvQ" name="target" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbUCQPHZEeWydpOhWIZnvQ" name="run" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_fbUCQfHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @see org.volante.abm.schedule.Schedule#run()
+	 </body>
+                </ownedComment>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbUCQvHZEeWydpOhWIZnvQ" name="setTargetTick" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_fbUpUPHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @see org.volante.abm.schedule.Schedule#setTargetTick(int)
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbUpUfHZEeWydpOhWIZnvQ" name="target" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbVQYPHZEeWydpOhWIZnvQ" name="setEndTick" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_fbVQYfHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @see org.volante.abm.schedule.Schedule#setEndTick(int)
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbV3cPHZEeWydpOhWIZnvQ" name="end" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbWegPHZEeWydpOhWIZnvQ" name="getEndTick" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbXFkPHZEeWydpOhWIZnvQ" type="_-lCNpL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbXFkfHZEeWydpOhWIZnvQ" name="getTargetTick" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbXsoPHZEeWydpOhWIZnvQ" type="_-lCNpL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbXsofHZEeWydpOhWIZnvQ" name="getStartTick" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbYTsPHZEeWydpOhWIZnvQ" type="_-lCNpL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbYTsfHZEeWydpOhWIZnvQ" name="setTargetToNextTick" visibility="public"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbYTsvHZEeWydpOhWIZnvQ" name="prePreTickUpdates" visibility="private"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbY6wPHZEeWydpOhWIZnvQ" name="preTickUpdates" visibility="private"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbY6wfHZEeWydpOhWIZnvQ" name="postTickUpdates" visibility="private"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbZh0PHZEeWydpOhWIZnvQ" name="finishUpdates" visibility="private"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbaI4PHZEeWydpOhWIZnvQ" name="register" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbaI4fHZEeWydpOhWIZnvQ" name="o" type="_h_f2QPHZEeWydpOhWIZnvQ"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbbXAPHZEeWydpOhWIZnvQ" name="unregister" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_fbbXAfHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @see org.volante.abm.schedule.Schedule#unregister(org.volante.abm.schedule.TickAction)
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbbXAvHZEeWydpOhWIZnvQ" type="_-lEp4L0aEeS1t5-qQcLeig" direction="return"/>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbb-EPHZEeWydpOhWIZnvQ" name="o" type="_h_f2QPHZEeWydpOhWIZnvQ"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbb-EfHZEeWydpOhWIZnvQ" name="output" visibility="private"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbclIPHZEeWydpOhWIZnvQ" name="setStartTick" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_fbclIfHZEeWydpOhWIZnvQ">
+                  <body>
+	 * @see org.volante.abm.schedule.Schedule#setStartTick(int)
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbdMMPHZEeWydpOhWIZnvQ" name="tick" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbdMMfHZEeWydpOhWIZnvQ" name="getCurrentTick" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbdzQPHZEeWydpOhWIZnvQ" type="_-lCNpL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbdzQfHZEeWydpOhWIZnvQ" name="setRegions" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbeaUPHZEeWydpOhWIZnvQ" name="regions" type="__FHb4L0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_fbeaUvHZEeWydpOhWIZnvQ" name="fireScheduleStatus">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_fbfBYPHZEeWydpOhWIZnvQ" name="e" type="_fbeaUfHZEeWydpOhWIZnvQ"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_h_jgoPHZEeWydpOhWIZnvQ" name="setWorldSyncModel"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_iIezIPHZEeWydpOhWIZnvQ" name="setWorldSyncModel">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_iIfaMPHZEeWydpOhWIZnvQ">
+                  <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_iIgBQPHZEeWydpOhWIZnvQ" value="1"/>
+                  <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_iIgBQfHZEeWydpOhWIZnvQ" value="1"/>
+                </ownedParameter>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_iIsOgPHZEeWydpOhWIZnvQ" name="setWorldSyncModel">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_iIsOgfHZEeWydpOhWIZnvQ" name="worldSyncModel">
+                  <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_iIs1kPHZEeWydpOhWIZnvQ" value="1"/>
+                  <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_iIs1kfHZEeWydpOhWIZnvQ" value="1"/>
+                </ownedParameter>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Interface" xmi:id="_fa7AsPHZEeWydpOhWIZnvQ" name="WorldSyncSchedule" visibility="public">
+              <ownedComment xmi:type="uml:Comment" xmi:id="_h_i5kPHZEeWydpOhWIZnvQ">
+                <body>&#xD;
+ * @author Sascha Holzhauer&#xD;
+ *&#xD;
+ </body>
+              </ownedComment>
+              <generalization xmi:type="uml:Generalization" xmi:id="_h_i5kfHZEeWydpOhWIZnvQ" general="_hRZaIPHZEeWydpOhWIZnvQ"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_h_i5kvHZEeWydpOhWIZnvQ" name="setWorldSyncModel" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_iIeMEPHZEeWydpOhWIZnvQ" name="worldSyncModel" type="_fbMGcPHZEeWydpOhWIZnvQ"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Interface" xmi:id="_g0rB4PHZEeWydpOhWIZnvQ" name="PrePreTickAction" visibility="public">
+              <ownedComment xmi:type="uml:Comment" xmi:id="_g0rB4fHZEeWydpOhWIZnvQ">
+                <body>
+ * Executed before {@link PreTickAction}s. Introduced for {@link Updater}s.
+ * 
+ * @author Sascha Holzhauer
+ * 
+ </body>
+              </ownedComment>
+              <generalization xmi:type="uml:Generalization" xmi:id="_h_gdUfHZEeWydpOhWIZnvQ" general="_h_f2QPHZEeWydpOhWIZnvQ"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_g0ro8fHZEeWydpOhWIZnvQ" name="prePreTick" visibility="public"/>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Interface" xmi:id="_gZVJsPHZEeWydpOhWIZnvQ" name="PostTickAction" visibility="public">
+              <generalization xmi:type="uml:Generalization" xmi:id="_h_hEYPHZEeWydpOhWIZnvQ" general="_h_f2QPHZEeWydpOhWIZnvQ"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_gZW-4PHZEeWydpOhWIZnvQ" name="postTick" visibility="public"/>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Interface" xmi:id="_f6LvkPHZEeWydpOhWIZnvQ" name="FinishAction" visibility="public">
+              <generalization xmi:type="uml:Generalization" xmi:id="_h_hEYfHZEeWydpOhWIZnvQ" general="_h_f2QPHZEeWydpOhWIZnvQ"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_f6M9sPHZEeWydpOhWIZnvQ" name="afterLastTick" visibility="public"/>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Interface" xmi:id="_hr6L4PHZEeWydpOhWIZnvQ" name="ScheduleStatusListener" visibility="public">
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hr6y8PHZEeWydpOhWIZnvQ" name="scheduleStatus" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hr6y8fHZEeWydpOhWIZnvQ" name="e" type="_fbeaUfHZEeWydpOhWIZnvQ"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Interface" xmi:id="_h_f2QPHZEeWydpOhWIZnvQ" name="TickAction" visibility="public">
+              <ownedComment xmi:type="uml:Comment" xmi:id="_h_hEYvHZEeWydpOhWIZnvQ">
+                <body>&#xD;
+ * marker interface for pre- and post tick actions.&#xD;
+ * &#xD;
+ * @author Sascha Holzhauer&#xD;
+ * &#xD;
+ </body>
+              </ownedComment>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_fbeaUfHZEeWydpOhWIZnvQ" name="ScheduleStatusEvent" visibility="public">
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_hRkZQPHZEeWydpOhWIZnvQ" name="running" type="_-lEp4L0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_hRlAUPHZEeWydpOhWIZnvQ" name="tick" type="_-lCNpL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_hRlAUvHZEeWydpOhWIZnvQ" name="stage" type="_hRlAUfHZEeWydpOhWIZnvQ" isUnique="false"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRlnYPHZEeWydpOhWIZnvQ" name="isRunning" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRlnYfHZEeWydpOhWIZnvQ" type="_-lEp4L0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRlnYvHZEeWydpOhWIZnvQ" name="getTick" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRlnY_HZEeWydpOhWIZnvQ" type="_-lCNpL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hRlnZPHZEeWydpOhWIZnvQ" name="getStage" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hRlnZfHZEeWydpOhWIZnvQ" type="_hRlAUfHZEeWydpOhWIZnvQ" direction="return"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_f6cOQPHZEeWydpOhWIZnvQ" name="MpiUtilities" visibility="public">
+              <ownedComment xmi:type="uml:Comment" xmi:id="_f6cOQfHZEeWydpOhWIZnvQ">
+                <body>&#xD;
+ * @author Sascha Holzhauer&#xD;
+ *&#xD;
+ </body>
+              </ownedComment>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_f6c1UPHZEeWydpOhWIZnvQ" name="MPI_TAG_DEMAND_SEND" visibility="public" isLeaf="true" isStatic="true" type="_-lCNpL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_f6eqgPHZEeWydpOhWIZnvQ" name="MPI_TAG_DEMAND_BROADCAST" visibility="public" isLeaf="true" isStatic="true" type="_-lCNpL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_f6fRkPHZEeWydpOhWIZnvQ" name="MPI_TAG_SUPPLY_SEND" visibility="public" isLeaf="true" isStatic="true" type="_-lCNpL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_f6fRkfHZEeWydpOhWIZnvQ" name="MPI_TAG_SUPPLY_BROADCAST" visibility="public" isLeaf="true" isStatic="true" type="_-lCNpL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_f6gfsPHZEeWydpOhWIZnvQ" name="logger" visibility="private" isStatic="true" type="_-lBmlL0aEeS1t5-qQcLeig" isUnique="false">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_f6gfsfHZEeWydpOhWIZnvQ">
+                  <body>&#xD;
+	 * Logger&#xD;
+	 </body>
+                </ownedComment>
+              </ownedAttribute>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_f6gfsvHZEeWydpOhWIZnvQ" name="sendRegionDemand" visibility="public" isStatic="true">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_f6hGwPHZEeWydpOhWIZnvQ" name="demand" type="_-lTTYL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_f6hGwfHZEeWydpOhWIZnvQ" name="collectRegionsDemand" visibility="public" isStatic="true">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_f6hGwvHZEeWydpOhWIZnvQ" type="_-lTTYL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_f6hGw_HZEeWydpOhWIZnvQ" name="broadcastWorldDemand" visibility="public" isStatic="true">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_f6ht0PHZEeWydpOhWIZnvQ" name="demand" type="_-lTTYL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_f6ht0fHZEeWydpOhWIZnvQ" name="distributeNumOfCells" visibility="public" isStatic="true">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_f6iU4PHZEeWydpOhWIZnvQ" type="_-lCNpL0aEeS1t5-qQcLeig" direction="return"/>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_f6i78PHZEeWydpOhWIZnvQ" name="numRegionalCells" type="_-lCNpL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_f6i78fHZEeWydpOhWIZnvQ" name="distributeWorldDemand" visibility="public" isStatic="true">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_f6i78vHZEeWydpOhWIZnvQ" type="_-lTTYL0aEeS1t5-qQcLeig" direction="return">
+                  <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_f6jjAPHZEeWydpOhWIZnvQ"/>
+                  <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_f6jjAfHZEeWydpOhWIZnvQ" value="*"/>
+                </ownedParameter>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_f6jjAvHZEeWydpOhWIZnvQ" name="demand" type="_-lTTYL0aEeS1t5-qQcLeig">
+                  <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_f6jjA_HZEeWydpOhWIZnvQ"/>
+                  <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_f6l_QPHZEeWydpOhWIZnvQ" value="*"/>
+                </ownedParameter>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_f6l_QfHZEeWydpOhWIZnvQ" name="receiveWorldDemand" visibility="public" isStatic="true">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_f6l_QvHZEeWydpOhWIZnvQ" type="_-lTTYL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_f6l_Q_HZEeWydpOhWIZnvQ" name="sendRegionSupply" visibility="public" isStatic="true">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_f6mmUPHZEeWydpOhWIZnvQ" name="supply" type="_-lTTYL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_f6mmUfHZEeWydpOhWIZnvQ" name="getWorldSupply" visibility="public" isStatic="true">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_f6mmUvHZEeWydpOhWIZnvQ" type="_-lTTYL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_f6mmU_HZEeWydpOhWIZnvQ" name="broadcastWorldSupply" visibility="public" isStatic="true">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_f6nNYPHZEeWydpOhWIZnvQ" name="supply" type="_-lTTYL0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_f6nNYfHZEeWydpOhWIZnvQ" name="distributeWorldSupply" visibility="public" isStatic="true">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_f6n0cPHZEeWydpOhWIZnvQ" type="_-lTTYL0aEeS1t5-qQcLeig" direction="return">
+                  <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_f6obgPHZEeWydpOhWIZnvQ"/>
+                  <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_f6obgfHZEeWydpOhWIZnvQ" value="*"/>
+                </ownedParameter>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_f6obgvHZEeWydpOhWIZnvQ" name="supply" type="_-lTTYL0aEeS1t5-qQcLeig">
+                  <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_f6obg_HZEeWydpOhWIZnvQ"/>
+                  <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_f6obhPHZEeWydpOhWIZnvQ" value="*"/>
+                </ownedParameter>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_f6pCkPHZEeWydpOhWIZnvQ" name="receiveWorldSupply" visibility="public" isStatic="true">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_f6pCkfHZEeWydpOhWIZnvQ" type="_-lTTYL0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_hRlAUfHZEeWydpOhWIZnvQ" name="ScheduleStage"/>
+            <packagedElement xmi:type="uml:Class" xmi:id="_hr9PMPHZEeWydpOhWIZnvQ" name="ScheduleThread" visibility="public">
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_hr92QfHZEeWydpOhWIZnvQ" name="schedule" type="_hRZaIPHZEeWydpOhWIZnvQ" isUnique="false"/>
+              <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_hr92QPHZEeWydpOhWIZnvQ" name="ScheduleThread implements Runnable" client="_hr9PMPHZEeWydpOhWIZnvQ" supplier="_l-F7McctEeSMfpizDKt4Yg" contract="_l-F7McctEeSMfpizDKt4Yg"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hr-dUPHZEeWydpOhWIZnvQ" name="start" visibility="public"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hr-dUfHZEeWydpOhWIZnvQ" name="run" visibility="public"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_hr-dUvHZEeWydpOhWIZnvQ" name="shouldRun" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_hr_EYPHZEeWydpOhWIZnvQ" type="_-lEp4L0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+            </packagedElement>
           </packagedElement>
           <packagedElement xmi:type="uml:Package" xmi:id="__FWFYL0aEeS1t5-qQcLeig" name="decision">
             <packagedElement xmi:type="uml:Package" xmi:id="__FWFYb0aEeS1t5-qQcLeig" name="bo">
@@ -3193,6 +3748,206 @@
             </packagedElement>
             <packagedElement xmi:type="uml:Package" xmi:id="_pzjW5gLjEeWVWswo8qANFQ" name="po">
               <packagedElement xmi:type="uml:Class" xmi:id="_pzjW5wLjEeWVWswo8qANFQ" name="CraftyPo"/>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_10dZEPHaEeWydpOhWIZnvQ" name="AbstractDecisionTrigger" visibility="public" isAbstract="true">
+              <ownedComment xmi:type="uml:Comment" xmi:id="_10eAIPHaEeWydpOhWIZnvQ">
+                <body>&#xD;
+ * @author Sascha Holzhauer&#xD;
+ *&#xD;
+ </body>
+              </ownedComment>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_10enMfHaEeWydpOhWIZnvQ" name="dcId" visibility="protected" type="_-lIURr0aEeS1t5-qQcLeig" isUnique="false">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_10fOQPHaEeWydpOhWIZnvQ">
+                  <body>&#xD;
+	 * Defines the {@link LaraDecisionConfiguration} this trigger may trigger&#xD;
+	 * (needed to register the {@link LaraBehaviouralComponent} at the&#xD;
+	 * {@link LEventbus}).&#xD;
+	 </body>
+                </ownedComment>
+              </ownedAttribute>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_10fOQfHaEeWydpOhWIZnvQ" name="id" visibility="protected" type="_-lIURr0aEeS1t5-qQcLeig" isUnique="false"/>
+              <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_10enMPHaEeWydpOhWIZnvQ" name="AbstractDecisionTrigger implements DecisionTrigger" client="_10dZEPHaEeWydpOhWIZnvQ" supplier="_10eAIfHaEeWydpOhWIZnvQ" contract="_10eAIfHaEeWydpOhWIZnvQ"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_10fOQvHaEeWydpOhWIZnvQ" name="getId" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_10fOQ_HaEeWydpOhWIZnvQ">
+                  <body>&#xD;
+	 * @see org.volante.abm.decision.trigger.DecisionTrigger#getId()&#xD;
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_10f1UPHaEeWydpOhWIZnvQ" type="_-lIURr0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_10iRkPHaEeWydpOhWIZnvQ" name="getId"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_10z-YfHaEeWydpOhWIZnvQ" name="getId">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_100lcPHaEeWydpOhWIZnvQ">
+                  <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_100lcfHaEeWydpOhWIZnvQ" value="1"/>
+                  <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_100lcvHaEeWydpOhWIZnvQ" value="1"/>
+                </ownedParameter>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Interface" xmi:id="_10eAIfHaEeWydpOhWIZnvQ" name="DecisionTrigger" visibility="public">
+              <ownedComment xmi:type="uml:Comment" xmi:id="_10hqgPHaEeWydpOhWIZnvQ">
+                <body>&#xD;
+ * @author Sascha Holzhauer&#xD;
+ *&#xD;
+ </body>
+              </ownedComment>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_10hqgfHaEeWydpOhWIZnvQ" name="getId" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_10z-YPHaEeWydpOhWIZnvQ" type="_-lIURr0aEeS1t5-qQcLeig" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_11Ww8PHaEeWydpOhWIZnvQ" name="check" visibility="public">
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_11hwEPHaEeWydpOhWIZnvQ" name="agent" type="_-kJc0b0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_12FJsPHaEeWydpOhWIZnvQ" name="FrCheckDecreaseDecisionTrigger" visibility="public">
+              <ownedComment xmi:type="uml:Comment" xmi:id="_12FwwPHaEeWydpOhWIZnvQ">
+                <body>&#xD;
+ * Compares the agent's competitiveness to the last tick's and subscribes the agent for defined&#xD;
+ * {@link LaraDecisionConfiguration} in case if decreased. Requires agents to provide&#xD;
+ * {@link FrCheckDecreaseDecisionTrigger.FrCheckPropertyIds#LAST_RECORD_TICK} and&#xD;
+ * {@link FrCheckDecreaseDecisionTrigger.FrCheckPropertyIds#LAST_COMPETITIVENESS}.&#xD;
+ * &#xD;
+ * @author Sascha Holzhauer&#xD;
+ * &#xD;
+ </body>
+              </ownedComment>
+              <generalization xmi:type="uml:Generalization" xmi:id="_12FwwfHaEeWydpOhWIZnvQ" general="_10dZEPHaEeWydpOhWIZnvQ"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_12FwwvHaEeWydpOhWIZnvQ" name="logger" visibility="private" isStatic="true" type="_-lBmlL0aEeS1t5-qQcLeig" isUnique="false">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_12GX0PHaEeWydpOhWIZnvQ">
+                  <body>&#xD;
+	 * Logger&#xD;
+	 </body>
+                </ownedComment>
+              </ownedAttribute>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_12GX0fHaEeWydpOhWIZnvQ" name="check" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_12GX0vHaEeWydpOhWIZnvQ">
+                  <body>&#xD;
+	 * @see org.volante.abm.decision.trigger.DecisionTrigger#check(Agent)&#xD;
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_12G-4PHaEeWydpOhWIZnvQ" name="agent" type="_-kJc0b0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_12LQUPHaEeWydpOhWIZnvQ" name="FrCheckThresholdDecisionTrigger" visibility="public">
+              <ownedComment xmi:type="uml:Comment" xmi:id="_12LQUfHaEeWydpOhWIZnvQ">
+                <body>&#xD;
+ * Subscribes the {@link BehaviouralComponent} at the {@link LEventbus} for&#xD;
+ * {@link LAgentPreprocessEvent} when its&#xD;
+ * {@link AgentPropertyIds#COMPETITIVENESS} falls below the defined threshold.&#xD;
+ * &#xD;
+ * @author Sascha Holzhauer&#xD;
+ * &#xD;
+ </body>
+              </ownedComment>
+              <generalization xmi:type="uml:Generalization" xmi:id="_12L3YPHaEeWydpOhWIZnvQ" general="_10dZEPHaEeWydpOhWIZnvQ"/>
+              <ownedAttribute xmi:type="uml:Property" xmi:id="_12L3YfHaEeWydpOhWIZnvQ" name="competitivenessThreshold" visibility="protected" type="_-lTTYL0aEeS1t5-qQcLeig" isUnique="false"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_12MecPHaEeWydpOhWIZnvQ" name="check" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_12MecfHaEeWydpOhWIZnvQ">
+                  <body>&#xD;
+	 * @see org.volante.abm.decision.trigger.DecisionTrigger#check(Agent)&#xD;
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_12NFgPHaEeWydpOhWIZnvQ" name="agent" type="_-kJc0b0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_12QI0PHaEeWydpOhWIZnvQ" name="InnovationDecisionTrigger" visibility="public">
+              <ownedComment xmi:type="uml:Comment" xmi:id="_12Qv4PHaEeWydpOhWIZnvQ">
+                <body>&#xD;
+ * @author Sascha Holzhauer&#xD;
+ *&#xD;
+ </body>
+              </ownedComment>
+              <generalization xmi:type="uml:Generalization" xmi:id="_12RW8PHaEeWydpOhWIZnvQ" general="_10dZEPHaEeWydpOhWIZnvQ"/>
+              <ownedOperation xmi:type="uml:Operation" xmi:id="_12RW8fHaEeWydpOhWIZnvQ" name="check" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_12RW8vHaEeWydpOhWIZnvQ">
+                  <body>&#xD;
+	 * @see org.volante.abm.decision.trigger.DecisionTrigger#check(Agent)&#xD;
+	 </body>
+                </ownedComment>
+                <ownedParameter xmi:type="uml:Parameter" xmi:id="_12R-APHaEeWydpOhWIZnvQ" name="agent" type="_-kJc0b0aEeS1t5-qQcLeig"/>
+              </ownedOperation>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Package" xmi:id="_12TMIPHaEeWydpOhWIZnvQ" name="pa">
+              <packagedElement xmi:type="uml:Class" xmi:id="_12UaQPHaEeWydpOhWIZnvQ" name="CraftyPa" visibility="public" isAbstract="true">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_12UaQfHaEeWydpOhWIZnvQ">
+                  <body>&#xD;
+ * @author Sascha Holzhauer&#xD;
+ * @param &lt;BO>&#xD;
+ * &#xD;
+ *            &lt;BO extends CraftyPo&lt;BO>>&#xD;
+ </body>
+                </ownedComment>
+                <generalization xmi:type="uml:Generalization" xmi:id="_12VBUPHaEeWydpOhWIZnvQ" general="_VVmbYL0bEeS1t5-qQcLeig"/>
+              </packagedElement>
+              <packagedElement xmi:type="uml:Class" xmi:id="_12ZSwPHaEeWydpOhWIZnvQ" name="FrSelectionPa" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_12Z50PHaEeWydpOhWIZnvQ">
+                  <body>&#xD;
+ * Assigns the FR identified by this PO's key to this PO's agent.&#xD;
+ * &#xD;
+ * @author Sascha Holzhauer&#xD;
+ * &#xD;
+ </body>
+                </ownedComment>
+                <generalization xmi:type="uml:Generalization" xmi:id="_12Z50fHaEeWydpOhWIZnvQ" general="_12UaQPHaEeWydpOhWIZnvQ"/>
+                <ownedAttribute xmi:type="uml:Property" xmi:id="_12bH8PHaEeWydpOhWIZnvQ" name="logger" visibility="private" isStatic="true" type="_-lBmlL0aEeS1t5-qQcLeig" isUnique="false">
+                  <ownedComment xmi:type="uml:Comment" xmi:id="_12bvAPHaEeWydpOhWIZnvQ">
+                    <body>&#xD;
+	 * Logger&#xD;
+	 </body>
+                  </ownedComment>
+                </ownedAttribute>
+                <interfaceRealization xmi:type="uml:InterfaceRealization" xmi:id="_12ag4fHaEeWydpOhWIZnvQ" name="FrSelectionPa implements LaraPerformableBo" client="_12ZSwPHaEeWydpOhWIZnvQ" supplier="_12ag4PHaEeWydpOhWIZnvQ" contract="_12ag4PHaEeWydpOhWIZnvQ"/>
+                <ownedOperation xmi:type="uml:Operation" xmi:id="_12cWEPHaEeWydpOhWIZnvQ" name="perform" visibility="public">
+                  <ownedComment xmi:type="uml:Comment" xmi:id="_12cWEfHaEeWydpOhWIZnvQ">
+                    <body>&#xD;
+	 * @see de.cesr.lara.components.LaraPerformableBo#perform()&#xD;
+	 </body>
+                  </ownedComment>
+                </ownedOperation>
+                <ownedOperation xmi:type="uml:Operation" xmi:id="_12cWEvHaEeWydpOhWIZnvQ" name="getModifiedBO" visibility="public">
+                  <ownedComment xmi:type="uml:Comment" xmi:id="_12cWE_HaEeWydpOhWIZnvQ">
+                    <body>&#xD;
+	 * @see de.cesr.lara.components.LaraBehaviouralOption#getModifiedBO(de.cesr.lara.components.agents.LaraAgent,&#xD;
+	 *      java.util.Map)&#xD;
+	 </body>
+                  </ownedComment>
+                  <ownedParameter xmi:type="uml:Parameter" xmi:id="_12c9IPHaEeWydpOhWIZnvQ" type="_12UaQPHaEeWydpOhWIZnvQ" direction="return"/>
+                  <ownedParameter xmi:type="uml:Parameter" xmi:id="_12c9IfHaEeWydpOhWIZnvQ" name="agent" type="_THxgMARcEeWNcaXjF4GGLg"/>
+                  <ownedParameter xmi:type="uml:Parameter" xmi:id="_12dkMPHaEeWydpOhWIZnvQ" name="preferenceUtilities" type="_-lDbwL0aEeS1t5-qQcLeig"/>
+                </ownedOperation>
+                <ownedOperation xmi:type="uml:Operation" xmi:id="_12eLQPHaEeWydpOhWIZnvQ" name="getSituationalUtilities" visibility="public">
+                  <ownedComment xmi:type="uml:Comment" xmi:id="_12eLQfHaEeWydpOhWIZnvQ">
+                    <body>&#xD;
+	 * @see de.cesr.lara.components.LaraBehaviouralOption#getSituationalUtilities(de.cesr.lara.components.decision.LaraDecisionConfiguration)&#xD;
+	 </body>
+                  </ownedComment>
+                  <ownedParameter xmi:type="uml:Parameter" xmi:id="_12eyUPHaEeWydpOhWIZnvQ" type="_-lDbwL0aEeS1t5-qQcLeig" direction="return"/>
+                  <ownedParameter xmi:type="uml:Parameter" xmi:id="_12eyUfHaEeWydpOhWIZnvQ" name="dConfig" type="_Vq6kEL0bEeS1t5-qQcLeig"/>
+                </ownedOperation>
+              </packagedElement>
+              <packagedElement xmi:type="uml:Class" xmi:id="_12icsPHaEeWydpOhWIZnvQ" name="InnovationPa" visibility="public">
+                <ownedComment xmi:type="uml:Comment" xmi:id="_12jDwPHaEeWydpOhWIZnvQ">
+                  <body>&#xD;
+ * &#xD;
+ * @author Sascha Holzhauer&#xD;
+ * &#xD;
+ </body>
+                </ownedComment>
+                <generalization xmi:type="uml:Generalization" xmi:id="_12jDwfHaEeWydpOhWIZnvQ" general="_12UaQPHaEeWydpOhWIZnvQ"/>
+                <ownedOperation xmi:type="uml:Operation" xmi:id="_12jDwvHaEeWydpOhWIZnvQ" name="getModifiedBO" visibility="public">
+                  <ownedComment xmi:type="uml:Comment" xmi:id="_12jDw_HaEeWydpOhWIZnvQ">
+                    <body>&#xD;
+	 * @see de.cesr.lara.components.LaraBehaviouralOption#getModifiedBO(de.cesr.lara.components.agents.LaraAgent,&#xD;
+	 *      java.util.Map)&#xD;
+	 </body>
+                  </ownedComment>
+                  <ownedParameter xmi:type="uml:Parameter" xmi:id="_12jq0PHaEeWydpOhWIZnvQ" type="_12icsPHaEeWydpOhWIZnvQ" direction="return"/>
+                  <ownedParameter xmi:type="uml:Parameter" xmi:id="_12kR4PHaEeWydpOhWIZnvQ" name="comp" type="_THxgMARcEeWNcaXjF4GGLg"/>
+                  <ownedParameter xmi:type="uml:Parameter" xmi:id="_12k48PHaEeWydpOhWIZnvQ" name="preferenceUtilities" type="_-lDbwL0aEeS1t5-qQcLeig"/>
+                </ownedOperation>
+                <ownedOperation xmi:type="uml:Operation" xmi:id="_12lgAPHaEeWydpOhWIZnvQ" name="getSituationalUtilities" visibility="public">
+                  <ownedParameter xmi:type="uml:Parameter" xmi:id="_12lgAfHaEeWydpOhWIZnvQ" type="_-lDbwL0aEeS1t5-qQcLeig" direction="return"/>
+                  <ownedParameter xmi:type="uml:Parameter" xmi:id="_12mHEPHaEeWydpOhWIZnvQ" name="dBuilder" type="_Vq6kEL0bEeS1t5-qQcLeig"/>
+                </ownedOperation>
+              </packagedElement>
             </packagedElement>
           </packagedElement>
           <packagedElement xmi:type="uml:Package" xmi:id="__Fa94L0aEeS1t5-qQcLeig" name="example"/>
@@ -3398,6 +4153,12 @@
             </packagedElement>
             <packagedElement xmi:type="uml:Class" xmi:id="_p0vpsgLjEeWVWswo8qANFQ" name="T"/>
           </packagedElement>
+          <packagedElement xmi:type="uml:Package" xmi:id="_fbIcEPHZEeWydpOhWIZnvQ" name="output">
+            <packagedElement xmi:type="uml:Class" xmi:id="_fbJDIPHZEeWydpOhWIZnvQ" name="Outputs"/>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Package" xmi:id="_g1EqgfHZEeWydpOhWIZnvQ" name="param">
+            <packagedElement xmi:type="uml:Class" xmi:id="_g1FRkPHZEeWydpOhWIZnvQ" name="ParameterRepository"/>
+          </packagedElement>
         </packagedElement>
       </packagedElement>
       <packagedElement xmi:type="uml:Package" xmi:id="_-lBmkr0aEeS1t5-qQcLeig" name="apache">
@@ -3456,6 +4217,7 @@
             <packagedElement xmi:type="uml:Package" xmi:id="_pxLYVQLjEeWVWswo8qANFQ" name="model">
               <packagedElement xmi:type="uml:Class" xmi:id="_pxLYVgLjEeWVWswo8qANFQ" name="LaraModel"/>
             </packagedElement>
+            <packagedElement xmi:type="uml:Interface" xmi:id="_12ag4PHaEeWydpOhWIZnvQ" name="LaraPerformableBo"/>
           </packagedElement>
           <packagedElement xmi:type="uml:Package" xmi:id="_S_ef0ARcEeWNcaXjF4GGLg" name="toolbox">
             <packagedElement xmi:type="uml:Package" xmi:id="_S_ef0QRcEeWNcaXjF4GGLg" name="config">
@@ -9987,9 +10749,6 @@
     </packagedElement>
   </packagedElement>
   <packagedElement xmi:type="uml:Interaction" xmi:id="_WtzvAL0cEeS1t5-qQcLeig" name="DecisionMaking">
-    <ownedComment xmi:type="uml:Comment" xmi:id="_4JKq0AnkEeWfeb3R_JIRcQ">
-      <body>Agent</body>
-    </ownedComment>
     <ownedComment xmi:type="uml:Comment" xmi:id="_y2niYAoAEeWfeb3R_JIRcQ">
       <body>RegionalLaraModel registers PreTickAction&#xD;
 </body>
@@ -10007,17 +10766,20 @@
     <ownedAttribute xmi:type="uml:Property" xmi:id="_OKp-YccxEeSMfpizDKt4Yg" name="" type="_VV1E4L0bEeS1t5-qQcLeig"/>
     <ownedAttribute xmi:type="uml:Property" xmi:id="_yG-loQLjEeWVWswo8qANFQ" name="" type="_pxBnUALjEeWVWswo8qANFQ"/>
     <ownedAttribute xmi:type="uml:Property" xmi:id="_tO9rgARcEeWNcaXjF4GGLg" name="" type="_S2gKAARcEeWNcaXjF4GGLg"/>
-    <lifeline xmi:type="uml:Lifeline" xmi:id="_SlRYQMcgEeSMfpizDKt4Yg" name="" represents="_SlRYQccgEeSMfpizDKt4Yg" coveredBy="_eVI64ccvEeSMfpizDKt4Yg _eVI64McvEeSMfpizDKt4Yg _xcsakccvEeSMfpizDKt4Yg _Ejly8ccwEeSMfpizDKt4Yg _Ejly8McwEeSMfpizDKt4Yg _Iy0zgccwEeSMfpizDKt4Yg _NKPfsccwEeSMfpizDKt4Yg _PqYhMccwEeSMfpizDKt4Yg _PqYhMMcwEeSMfpizDKt4Yg _Vjb_QccwEeSMfpizDKt4Yg _s1XYMMcxEeSMfpizDKt4Yg _kJ8DsccyEeSMfpizDKt4Yg _kJ8DsMcyEeSMfpizDKt4Yg _rX-XsccyEeSMfpizDKt4Yg _tVEWgccyEeSMfpizDKt4Yg _tVEWgMcyEeSMfpizDKt4Yg _xNINMccyEeSMfpizDKt4Yg _59nk4MdSEeSMfpizDKt4Yg _PC5VgMdTEeSMfpizDKt4Yg"/>
-    <lifeline xmi:type="uml:Lifeline" xmi:id="_aoxCsMciEeSMfpizDKt4Yg" name="" represents="_aoxCscciEeSMfpizDKt4Yg" coveredBy="_DyiJcccwEeSMfpizDKt4Yg _NKQGwMcwEeSMfpizDKt4Yg _Vjb_QMcwEeSMfpizDKt4Yg _rX-XsMcyEeSMfpizDKt4Yg _xNINMMcyEeSMfpizDKt4Yg _Es_z0ACaEeWCLKO1syvGyg _EtBB8ACaEeWCLKO1syvGyg _HTi_UACaEeWCLKO1syvGyg _Ql7wsACaEeWCLKO1syvGyg"/>
-    <lifeline xmi:type="uml:Lifeline" xmi:id="_i4hc8McjEeSMfpizDKt4Yg" name="" represents="_YdNToMcuEeSMfpizDKt4Yg" coveredBy="_sTpvEcctEeSMfpizDKt4Yg _sTpvEMctEeSMfpizDKt4Yg _hNy_gMcuEeSMfpizDKt4Yg _Ef-T4ARdEeWNcaXjF4GGLg"/>
-    <lifeline xmi:type="uml:Lifeline" xmi:id="_n0CJIMctEeSMfpizDKt4Yg" name="Schedule" represents="_n0CwMMctEeSMfpizDKt4Yg" coveredBy="_r0dRoMctEeSMfpizDKt4Yg _r0cqkcctEeSMfpizDKt4Yg _hNyYcccuEeSMfpizDKt4Yg _BZ3o8McwEeSMfpizDKt4Yg _BZ4QAccwEeSMfpizDKt4Yg _BZ4QAMcwEeSMfpizDKt4Yg _Iy0zgMcwEeSMfpizDKt4Yg"/>
-    <lifeline xmi:type="uml:Lifeline" xmi:id="_4rgnIMcuEeSMfpizDKt4Yg" name="" represents="_4rgnIccuEeSMfpizDKt4Yg" coveredBy="_LqNs0ccvEeSMfpizDKt4Yg _LqNs0McvEeSMfpizDKt4Yg _eHkbcQLkEeWVWswo8qANFQ _9zYgEARcEeWNcaXjF4GGLg _LVgoUARdEeWNcaXjF4GGLg"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_t2LT4PHaEeWydpOhWIZnvQ" name="" type="_hRZaIPHZEeWydpOhWIZnvQ"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_5SowIPHaEeWydpOhWIZnvQ" name="" type="_10eAIfHaEeWydpOhWIZnvQ"/>
+    <ownedAttribute xmi:type="uml:Property" xmi:id="_BJ4HQPHdEeWydpOhWIZnvQ" name="" type="_p0mfwALjEeWVWswo8qANFQ"/>
+    <lifeline xmi:type="uml:Lifeline" xmi:id="_SlRYQMcgEeSMfpizDKt4Yg" name="" represents="_SlRYQccgEeSMfpizDKt4Yg" coveredBy="_eVI64ccvEeSMfpizDKt4Yg _eVI64McvEeSMfpizDKt4Yg _xcsakccvEeSMfpizDKt4Yg _Ejly8ccwEeSMfpizDKt4Yg _Ejly8McwEeSMfpizDKt4Yg _Iy0zgccwEeSMfpizDKt4Yg _NKPfsccwEeSMfpizDKt4Yg _PqYhMccwEeSMfpizDKt4Yg _PqYhMMcwEeSMfpizDKt4Yg _Vjb_QccwEeSMfpizDKt4Yg _s1XYMMcxEeSMfpizDKt4Yg _kJ8DsccyEeSMfpizDKt4Yg _kJ8DsMcyEeSMfpizDKt4Yg _rX-XsccyEeSMfpizDKt4Yg _tVEWgccyEeSMfpizDKt4Yg _tVEWgMcyEeSMfpizDKt4Yg _xNINMccyEeSMfpizDKt4Yg _59nk4MdSEeSMfpizDKt4Yg _PC5VgMdTEeSMfpizDKt4Yg _MoG6kPHcEeWydpOhWIZnvQ _UJRJcPHdEeWydpOhWIZnvQ _hvDpsfHdEeWydpOhWIZnvQ _hvDpsPHdEeWydpOhWIZnvQ"/>
+    <lifeline xmi:type="uml:Lifeline" xmi:id="_aoxCsMciEeSMfpizDKt4Yg" name="" represents="_BJ4HQPHdEeWydpOhWIZnvQ" coveredBy="_DyiJcccwEeSMfpizDKt4Yg _NKQGwMcwEeSMfpizDKt4Yg _Vjb_QMcwEeSMfpizDKt4Yg _rX-XsMcyEeSMfpizDKt4Yg _xNINMMcyEeSMfpizDKt4Yg _Es_z0ACaEeWCLKO1syvGyg _EtBB8ACaEeWCLKO1syvGyg _HTi_UACaEeWCLKO1syvGyg _Ql7wsACaEeWCLKO1syvGyg"/>
+    <lifeline xmi:type="uml:Lifeline" xmi:id="_i4hc8McjEeSMfpizDKt4Yg" name="Agent" represents="_YdNToMcuEeSMfpizDKt4Yg" coveredBy="_sTpvEcctEeSMfpizDKt4Yg _sTpvEMctEeSMfpizDKt4Yg _hNy_gMcuEeSMfpizDKt4Yg _Ef-T4ARdEeWNcaXjF4GGLg"/>
+    <lifeline xmi:type="uml:Lifeline" xmi:id="_n0CJIMctEeSMfpizDKt4Yg" name="Schedule" represents="_t2LT4PHaEeWydpOhWIZnvQ" coveredBy="_r0dRoMctEeSMfpizDKt4Yg _r0cqkcctEeSMfpizDKt4Yg _hNyYcccuEeSMfpizDKt4Yg _BZ3o8McwEeSMfpizDKt4Yg _BZ4QAccwEeSMfpizDKt4Yg _BZ4QAMcwEeSMfpizDKt4Yg _Iy0zgMcwEeSMfpizDKt4Yg"/>
+    <lifeline xmi:type="uml:Lifeline" xmi:id="_4rgnIMcuEeSMfpizDKt4Yg" name="" represents="_5SowIPHaEeWydpOhWIZnvQ" coveredBy="_LqNs0ccvEeSMfpizDKt4Yg _LqNs0McvEeSMfpizDKt4Yg _eHkbcQLkEeWVWswo8qANFQ _9zYgEARcEeWNcaXjF4GGLg _LVgoUARdEeWNcaXjF4GGLg"/>
     <lifeline xmi:type="uml:Lifeline" xmi:id="_lm0s0MgAEeSMfpizDKt4Yg" name="LaraPerformableBo" coveredBy="_n_ZGsMgAEeSMfpizDKt4Yg _n_YfoMgAEeSMfpizDKt4Yg _iCBl0cf_EeSMfpizDKt4Yg"/>
-    <lifeline xmi:type="uml:Lifeline" xmi:id="_yG-loALjEeWVWswo8qANFQ" name="" represents="_yG-loQLjEeWVWswo8qANFQ" coveredBy="_6xKHgALjEeWVWswo8qANFQ _6xA9kQLjEeWVWswo8qANFQ _s1X_QMcxEeSMfpizDKt4Yg _-FT_4ALjEeWVWswo8qANFQ _-wTdogLjEeWVWswo8qANFQ _-wTdoQLjEeWVWswo8qANFQ _59nk4cdSEeSMfpizDKt4Yg _PC5VgcdTEeSMfpizDKt4Yg _iCBl0Mf_EeSMfpizDKt4Yg _FpuMggLkEeWVWswo8qANFQ _FpuMgQLkEeWVWswo8qANFQ _LDefcQLkEeWVWswo8qANFQ _LDnpYALkEeWVWswo8qANFQ _ZwxaUQLkEeWVWswo8qANFQ _xcsakMcvEeSMfpizDKt4Yg _eHkbcgLkEeWVWswo8qANFQ"/>
+    <lifeline xmi:type="uml:Lifeline" xmi:id="_yG-loALjEeWVWswo8qANFQ" name="" represents="_yG-loQLjEeWVWswo8qANFQ" coveredBy="_6xKHgALjEeWVWswo8qANFQ _6xA9kQLjEeWVWswo8qANFQ _s1X_QMcxEeSMfpizDKt4Yg _-FT_4ALjEeWVWswo8qANFQ _-wTdogLjEeWVWswo8qANFQ _-wTdoQLjEeWVWswo8qANFQ _59nk4cdSEeSMfpizDKt4Yg _PC5VgcdTEeSMfpizDKt4Yg _iCBl0Mf_EeSMfpizDKt4Yg _FpuMggLkEeWVWswo8qANFQ _FpuMgQLkEeWVWswo8qANFQ _LDefcQLkEeWVWswo8qANFQ _LDnpYALkEeWVWswo8qANFQ _ZwxaUQLkEeWVWswo8qANFQ _xcsakMcvEeSMfpizDKt4Yg _eHkbcgLkEeWVWswo8qANFQ _JDBDMPHcEeWydpOhWIZnvQ _MoGTgPHcEeWydpOhWIZnvQ"/>
     <lifeline xmi:type="uml:Lifeline" xmi:id="_tO7PQARcEeWNcaXjF4GGLg" name="" represents="_tO9rgARcEeWNcaXjF4GGLg" coveredBy="_BsGeEARdEeWNcaXjF4GGLg _BsF3AARdEeWNcaXjF4GGLg _Ef_iAARdEeWNcaXjF4GGLg _LVfaMARdEeWNcaXjF4GGLg"/>
     <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_hNyYcccuEeSMfpizDKt4Yg" name="tickStartUpdate_MessageSend" covered="_n0CJIMctEeSMfpizDKt4Yg" message="_hNyYcMcuEeSMfpizDKt4Yg"/>
-    <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_r0cqkcctEeSMfpizDKt4Yg" name="ActionExecSpec" covered="_n0CJIMctEeSMfpizDKt4Yg" finish="_r0dRoMctEeSMfpizDKt4Yg" start="_hNyYcccuEeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_sTpvEMctEeSMfpizDKt4Yg" name="ActionExecSpec0" covered="_i4hc8McjEeSMfpizDKt4Yg" finish="_sTpvEcctEeSMfpizDKt4Yg" start="_hNy_gMcuEeSMfpizDKt4Yg"/>
+    <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_r0cqkcctEeSMfpizDKt4Yg" name="ActionExecSpec" covered="_n0CJIMctEeSMfpizDKt4Yg" finish="_r0dRoMctEeSMfpizDKt4Yg" start="_hNyYcccuEeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_hNy_gMcuEeSMfpizDKt4Yg" name="tickStartUpdate_MessageRecv" covered="_i4hc8McjEeSMfpizDKt4Yg" message="_hNyYcMcuEeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_Ef-T4ARdEeWNcaXjF4GGLg" name="triggerDecisions_MessageSend" covered="_i4hc8McjEeSMfpizDKt4Yg" message="_Ef6CcARdEeWNcaXjF4GGLg"/>
     <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_BsF3AARdEeWNcaXjF4GGLg" name="ActionExecSpec25" covered="_tO7PQARcEeWNcaXjF4GGLg" finish="_BsGeEARdEeWNcaXjF4GGLg" start="_Ef_iAARdEeWNcaXjF4GGLg"/>
@@ -10028,26 +10790,32 @@
     <fragment xmi:type="uml:ExecutionOccurrenceSpecification" xmi:id="_sTpvEcctEeSMfpizDKt4Yg" name="ActionExecSpec0Finish" covered="_i4hc8McjEeSMfpizDKt4Yg" execution="_sTpvEMctEeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:ExecutionOccurrenceSpecification" xmi:id="_r0dRoMctEeSMfpizDKt4Yg" name="ActionExecSpecFinish" covered="_n0CJIMctEeSMfpizDKt4Yg" execution="_r0cqkcctEeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_eHkbcQLkEeWVWswo8qANFQ" name="subscribeOnce_MessageSend" covered="_4rgnIMcuEeSMfpizDKt4Yg" message="_eHkbcALkEeWVWswo8qANFQ"/>
-    <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_ZwxaUQLkEeWVWswo8qANFQ" name="ActionExecSpec24" covered="_yG-loALjEeWVWswo8qANFQ" finish="_xcsakMcvEeSMfpizDKt4Yg" start="_eHkbcgLkEeWVWswo8qANFQ"/>
+    <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_ZwxaUQLkEeWVWswo8qANFQ" name="ActionExecSpec24" covered="_yG-loALjEeWVWswo8qANFQ" finish="_JDBDMPHcEeWydpOhWIZnvQ" start="_eHkbcgLkEeWVWswo8qANFQ"/>
     <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_eHkbcgLkEeWVWswo8qANFQ" name="subscribeOnce_MessageRecv" covered="_yG-loALjEeWVWswo8qANFQ" message="_eHkbcALkEeWVWswo8qANFQ"/>
+    <fragment xmi:type="uml:ExecutionOccurrenceSpecification" xmi:id="_UJRJcPHdEeWydpOhWIZnvQ" name="ActionExecSpec4Start" covered="_SlRYQMcgEeSMfpizDKt4Yg" execution="_eVI64McvEeSMfpizDKt4Yg"/>
+    <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_eVI64McvEeSMfpizDKt4Yg" name="ActionExecSpec4" covered="_SlRYQMcgEeSMfpizDKt4Yg" finish="_eVI64ccvEeSMfpizDKt4Yg" start="_UJRJcPHdEeWydpOhWIZnvQ"/>
     <fragment xmi:type="uml:ExecutionOccurrenceSpecification" xmi:id="_BsGeEARdEeWNcaXjF4GGLg" name="ActionExecSpec25Finish" covered="_tO7PQARcEeWNcaXjF4GGLg" execution="_BsF3AARdEeWNcaXjF4GGLg"/>
     <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_xcsakMcvEeSMfpizDKt4Yg" name="subscripeOnce(agent, decisionEvent)_MessageSend" covered="_yG-loALjEeWVWswo8qANFQ" message="_xcrzgMcvEeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_xcsakccvEeSMfpizDKt4Yg" name="subscripeOnce(agent, decisionEvent)_MessageRecv" covered="_SlRYQMcgEeSMfpizDKt4Yg" message="_xcrzgMcvEeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:ExecutionOccurrenceSpecification" xmi:id="_9zYgEARcEeWNcaXjF4GGLg" name="ActionExecSpec3Start" covered="_4rgnIMcuEeSMfpizDKt4Yg" execution="_LqNs0McvEeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:ExecutionOccurrenceSpecification" xmi:id="_LqNs0ccvEeSMfpizDKt4Yg" name="ActionExecSpec3Finish" covered="_4rgnIMcuEeSMfpizDKt4Yg" execution="_LqNs0McvEeSMfpizDKt4Yg"/>
-    <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_eVI64McvEeSMfpizDKt4Yg" name="ActionExecSpec4" covered="_SlRYQMcgEeSMfpizDKt4Yg" finish="_eVI64ccvEeSMfpizDKt4Yg" start="_xcsakccvEeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:ExecutionOccurrenceSpecification" xmi:id="_eVI64ccvEeSMfpizDKt4Yg" name="ActionExecSpec4Finish" covered="_SlRYQMcgEeSMfpizDKt4Yg" execution="_eVI64McvEeSMfpizDKt4Yg"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_MoGTgPHcEeWydpOhWIZnvQ" name="subscripeOnce(agent, decisionEvent)_MessageSend0" covered="_yG-loALjEeWVWswo8qANFQ" message="_Mn9JkPHcEeWydpOhWIZnvQ"/>
+    <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_hvDpsPHdEeWydpOhWIZnvQ" name="ActionExecSpec26" covered="_SlRYQMcgEeSMfpizDKt4Yg" finish="_hvDpsfHdEeWydpOhWIZnvQ" start="_MoG6kPHcEeWydpOhWIZnvQ"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_MoG6kPHcEeWydpOhWIZnvQ" name="subscripeOnce(agent, decisionEvent)_MessageRecv0" covered="_SlRYQMcgEeSMfpizDKt4Yg" message="_Mn9JkPHcEeWydpOhWIZnvQ"/>
+    <fragment xmi:type="uml:ExecutionOccurrenceSpecification" xmi:id="_hvDpsfHdEeWydpOhWIZnvQ" name="ActionExecSpec26Finish" covered="_SlRYQMcgEeSMfpizDKt4Yg" execution="_hvDpsPHdEeWydpOhWIZnvQ"/>
+    <fragment xmi:type="uml:ExecutionOccurrenceSpecification" xmi:id="_JDBDMPHcEeWydpOhWIZnvQ" name="ActionExecSpec24Finish" covered="_yG-loALjEeWVWswo8qANFQ" execution="_ZwxaUQLkEeWVWswo8qANFQ"/>
     <fragment xmi:type="uml:ExecutionOccurrenceSpecification" xmi:id="_BZ3o8McwEeSMfpizDKt4Yg" name="ActionExecSpec5Start" covered="_n0CJIMctEeSMfpizDKt4Yg" execution="_BZ4QAMcwEeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_BZ4QAMcwEeSMfpizDKt4Yg" name="ActionExecSpec5" covered="_n0CJIMctEeSMfpizDKt4Yg" finish="_BZ4QAccwEeSMfpizDKt4Yg" start="_BZ3o8McwEeSMfpizDKt4Yg"/>
-    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_Iy0zgMcwEeSMfpizDKt4Yg" name="publish(ModelStep)_MessageSend" covered="_n0CJIMctEeSMfpizDKt4Yg" message="_IyzlYMcwEeSMfpizDKt4Yg"/>
-    <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_Ejly8McwEeSMfpizDKt4Yg" name="ActionExecSpec7" covered="_SlRYQMcgEeSMfpizDKt4Yg" finish="_Ejly8ccwEeSMfpizDKt4Yg" start="_Iy0zgccwEeSMfpizDKt4Yg"/>
-    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_Iy0zgccwEeSMfpizDKt4Yg" name="publish(ModelStep)_MessageRecv" covered="_SlRYQMcgEeSMfpizDKt4Yg" message="_IyzlYMcwEeSMfpizDKt4Yg"/>
-    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_NKPfsccwEeSMfpizDKt4Yg" name="onEvent_MessageSend" covered="_SlRYQMcgEeSMfpizDKt4Yg" message="_NKPfsMcwEeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_NKQGwMcwEeSMfpizDKt4Yg" name="onEvent_MessageRecv" covered="_aoxCsMciEeSMfpizDKt4Yg" message="_Ql4GUACaEeWCLKO1syvGyg"/>
     <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_DyiJcccwEeSMfpizDKt4Yg" name="ActionExecSpec6" covered="_aoxCsMciEeSMfpizDKt4Yg" finish="_HTi_UACaEeWCLKO1syvGyg" start="_NKQGwMcwEeSMfpizDKt4Yg"/>
-    <fragment xmi:type="uml:ExecutionOccurrenceSpecification" xmi:id="_Ejly8ccwEeSMfpizDKt4Yg" name="ActionExecSpec7Finish" covered="_SlRYQMcgEeSMfpizDKt4Yg" execution="_Ejly8McwEeSMfpizDKt4Yg"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_Iy0zgMcwEeSMfpizDKt4Yg" name="publish(ModelStep)_MessageSend" covered="_n0CJIMctEeSMfpizDKt4Yg" message="_IyzlYMcwEeSMfpizDKt4Yg"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_NKPfsccwEeSMfpizDKt4Yg" name="onEvent_MessageSend" covered="_SlRYQMcgEeSMfpizDKt4Yg" message="_NKPfsMcwEeSMfpizDKt4Yg"/>
+    <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_Ejly8McwEeSMfpizDKt4Yg" name="ActionExecSpec7" covered="_SlRYQMcgEeSMfpizDKt4Yg" finish="_Ejly8ccwEeSMfpizDKt4Yg" start="_Iy0zgccwEeSMfpizDKt4Yg"/>
+    <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_Iy0zgccwEeSMfpizDKt4Yg" name="publish(ModelStep)_MessageRecv" covered="_SlRYQMcgEeSMfpizDKt4Yg" message="_IyzlYMcwEeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:ExecutionOccurrenceSpecification" xmi:id="_Es_z0ACaEeWCLKO1syvGyg" name="ActionExecSpec19Start" covered="_aoxCsMciEeSMfpizDKt4Yg" execution="_EtBB8ACaEeWCLKO1syvGyg"/>
     <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_EtBB8ACaEeWCLKO1syvGyg" name="ActionExecSpec19" covered="_aoxCsMciEeSMfpizDKt4Yg" finish="_xNINMMcyEeSMfpizDKt4Yg" start="_Es_z0ACaEeWCLKO1syvGyg"/>
+    <fragment xmi:type="uml:ExecutionOccurrenceSpecification" xmi:id="_Ejly8ccwEeSMfpizDKt4Yg" name="ActionExecSpec7Finish" covered="_SlRYQMcgEeSMfpizDKt4Yg" execution="_Ejly8McwEeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_Vjb_QMcwEeSMfpizDKt4Yg" name="publish(Preprocess)_MessageSend" covered="_aoxCsMciEeSMfpizDKt4Yg" message="_VjbYMMcwEeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_Ql7wsACaEeWCLKO1syvGyg" name="forEveryDecision_MessageRecv" covered="_aoxCsMciEeSMfpizDKt4Yg" message="_Ql4GUACaEeWCLKO1syvGyg"/>
     <fragment xmi:type="uml:ActionExecutionSpecification" xmi:id="_PqYhMMcwEeSMfpizDKt4Yg" name="ActionExecSpec8" covered="_SlRYQMcgEeSMfpizDKt4Yg" finish="_PqYhMccwEeSMfpizDKt4Yg" start="_Vjb_QccwEeSMfpizDKt4Yg"/>
@@ -10083,7 +10851,7 @@
     <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_iCBl0Mf_EeSMfpizDKt4Yg" name="perform_MessageSend" covered="_yG-loALjEeWVWswo8qANFQ" message="_iCA-wMf_EeSMfpizDKt4Yg"/>
     <fragment xmi:type="uml:ExecutionOccurrenceSpecification" xmi:id="_n_ZGsMgAEeSMfpizDKt4Yg" name="ActionExecSpec18Finish" covered="_lm0s0MgAEeSMfpizDKt4Yg" execution="_n_YfoMgAEeSMfpizDKt4Yg"/>
     <message xmi:type="uml:Message" xmi:id="_hNyYcMcuEeSMfpizDKt4Yg" name="tickStartUpdate" receiveEvent="_hNy_gMcuEeSMfpizDKt4Yg" sendEvent="_hNyYcccuEeSMfpizDKt4Yg"/>
-    <message xmi:type="uml:Message" xmi:id="_xcrzgMcvEeSMfpizDKt4Yg" name="subscribeOnce(agent, decisionEvent)" messageSort="asynchCall" receiveEvent="_xcsakccvEeSMfpizDKt4Yg" sendEvent="_xcsakMcvEeSMfpizDKt4Yg" signature="_xb-B0McvEeSMfpizDKt4Yg"/>
+    <message xmi:type="uml:Message" xmi:id="_xcrzgMcvEeSMfpizDKt4Yg" name="subscribeOnce(agent, decision)" messageSort="asynchCall" receiveEvent="_xcsakccvEeSMfpizDKt4Yg" sendEvent="_xcsakMcvEeSMfpizDKt4Yg" signature="_xb-B0McvEeSMfpizDKt4Yg"/>
     <message xmi:type="uml:Message" xmi:id="_IyzlYMcwEeSMfpizDKt4Yg" name="publish(ModelStep)" receiveEvent="_Iy0zgccwEeSMfpizDKt4Yg" sendEvent="_Iy0zgMcwEeSMfpizDKt4Yg" signature="_IyGawMcwEeSMfpizDKt4Yg"/>
     <message xmi:type="uml:Message" xmi:id="_NKPfsMcwEeSMfpizDKt4Yg" name="onEvent" receiveEvent="_NKQGwMcwEeSMfpizDKt4Yg" sendEvent="_NKPfsccwEeSMfpizDKt4Yg"/>
     <message xmi:type="uml:Message" xmi:id="_VjbYMMcwEeSMfpizDKt4Yg" name="publish(Preprocess)" messageSort="asynchCall" receiveEvent="_Vjb_QccwEeSMfpizDKt4Yg" sendEvent="_Vjb_QMcwEeSMfpizDKt4Yg" signature="_Vis_cMcwEeSMfpizDKt4Yg"/>
@@ -10098,6 +10866,7 @@
     <message xmi:type="uml:Message" xmi:id="_eHkbcALkEeWVWswo8qANFQ" name="subscribeOnce" receiveEvent="_eHkbcgLkEeWVWswo8qANFQ" sendEvent="_eHkbcQLkEeWVWswo8qANFQ" signature="_pxeTQALjEeWVWswo8qANFQ"/>
     <message xmi:type="uml:Message" xmi:id="_Ef6CcARdEeWNcaXjF4GGLg" name="triggerDecisions" receiveEvent="_Ef_iAARdEeWNcaXjF4GGLg" sendEvent="_Ef-T4ARdEeWNcaXjF4GGLg" signature="_S2newwRcEeWNcaXjF4GGLg"/>
     <message xmi:type="uml:Message" xmi:id="_LVc98ARdEeWNcaXjF4GGLg" name="check" receiveEvent="_LVgoUARdEeWNcaXjF4GGLg" sendEvent="_LVfaMARdEeWNcaXjF4GGLg"/>
+    <message xmi:type="uml:Message" xmi:id="_Mn9JkPHcEeWydpOhWIZnvQ" name="subscripeOnce(agent, perform)" messageSort="asynchCall" receiveEvent="_MoG6kPHcEeWydpOhWIZnvQ" sendEvent="_MoGTgPHcEeWydpOhWIZnvQ" signature="_xb-B0McvEeSMfpizDKt4Yg"/>
   </packagedElement>
   <packagedElement xmi:type="uml:Model" xmi:id="_acaeMMchEeSMfpizDKt4Yg" name="CoBRA">
     <packagedElement xmi:type="uml:Package" xmi:id="_acbsUMchEeSMfpizDKt4Yg" name="org"/>

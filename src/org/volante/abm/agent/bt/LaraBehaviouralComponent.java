@@ -25,8 +25,11 @@ package org.volante.abm.agent.bt;
 
 import org.volante.abm.agent.AgentAccessible;
 import org.volante.abm.decision.pa.CraftyPa;
+import org.volante.abm.decision.trigger.DecisionTrigger;
+import org.volante.abm.lara.CobraLaraAgentComponent;
 
 import de.cesr.lara.components.agents.LaraAgent;
+import de.cesr.lara.components.agents.LaraAgentComponent;
 import de.cesr.lara.components.decision.LaraDecisionConfiguration;
 
 /**
@@ -39,9 +42,25 @@ public interface LaraBehaviouralComponent extends
 		AgentAccessible {
 
 	/**
-	 * Subscribes once for the given {@link LaraDecisionConfiguration}.
+	 * Returns the {@link LaraAgentComponent} of this agent.
+	 * 
+	 * @return component Lara agent component
+	 */
+	public CobraLaraAgentComponent getLaraComp();
+
+	/**
+	 * Subscribes once for the given {@link LaraDecisionConfiguration}. Syntactic sugar: forwards to
+	 * {@link LaraAgentComponent}.
 	 * 
 	 * @param dc
 	 */
 	public void subscribeOnce(LaraDecisionConfiguration dc);
+
+	/**
+	 * Subscribes once for the given {@link LaraDecisionConfiguration}. Syntactic sugar: forwards to
+	 * {@link LaraAgentComponent}.
+	 * 
+	 * @param dc
+	 */
+	public void subscribeOnce(LaraDecisionConfiguration dc, DecisionTrigger trigger);
 }

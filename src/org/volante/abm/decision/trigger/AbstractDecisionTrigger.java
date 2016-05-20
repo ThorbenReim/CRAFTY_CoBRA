@@ -21,7 +21,7 @@
  * 
  * Created by Sascha Holzhauer on 3 Jun 2015
  */
-package org.volante.abm.decision;
+package org.volante.abm.decision.trigger;
 
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -48,7 +48,7 @@ public abstract class AbstractDecisionTrigger implements DecisionTrigger {
 	protected String id = null;
 
 	/**
-	 * @see org.volante.abm.decision.DecisionTrigger#getId()
+	 * @see org.volante.abm.decision.trigger.DecisionTrigger#getId()
 	 */
 	@Override
 	public String getId() {

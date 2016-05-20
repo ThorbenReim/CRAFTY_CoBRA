@@ -48,6 +48,9 @@ public class AggregateAFTCompositionCSVOutputter extends AggregateCSVOutputter {
 
 	protected boolean					initialised	= false;
 
+	/**
+	 * Output absolute numbers instead of proportions.
+	 */
 	@Attribute(name = "outputSums", required = false)
 	protected boolean					outputSums	= false;
 

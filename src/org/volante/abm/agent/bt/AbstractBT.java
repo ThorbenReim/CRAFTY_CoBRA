@@ -34,11 +34,13 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.ElementMap;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.property.AgentPropertyRegistry;
+import org.volante.abm.agent.property.PropertyRegistry;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
-import org.volante.abm.decision.DecisionTrigger;
+import org.volante.abm.decision.trigger.DecisionTrigger;
 import org.volante.abm.schedule.RunInfo;
+import org.volante.abm.serialization.GloballyInitialisable;
+import org.volante.abm.serialization.Initialisable;
 
 /**
  * @author Sascha Holzhauer
@@ -76,6 +78,12 @@ public abstract class AbstractBT implements BehaviouralType {
 			throws Exception {
 		this.region = extent;
 		this.initialised = true;
+
+		for (DecisionTrigger trigger : this.triggerSet) {
+			if (trigger instanceof GloballyInitialisable || trigger instanceof Initialisable) {
+				((GloballyInitialisable) trigger).initialise(data, info, extent);
+			}
+		}
 	}
 
 	public Agent assignNewBehaviouralComp(Agent agent) {
@@ -89,7 +97,7 @@ public abstract class AbstractBT implements BehaviouralType {
 			// LOGGING ->
 		}
 		for (Entry<String, Double> entry : agentProperties2Set.entrySet()) {
-			agent.setProperty(AgentPropertyRegistry.get(entry.getKey()), entry
+			agent.setProperty(PropertyRegistry.get(entry.getKey()), entry
 					.getValue().doubleValue());
 		}
 		return agent;
@@ -119,7 +127,7 @@ public abstract class AbstractBT implements BehaviouralType {
 	}
 
 	/**
-	 * @see org.volante.abm.agent.bt.BehaviouralType#addDecisionTrigger(org.volante.abm.decision.DecisionTrigger)
+	 * @see org.volante.abm.agent.bt.BehaviouralType#addDecisionTrigger(org.volante.abm.decision.trigger.DecisionTrigger)
 	 */
 	public void addDecisionTrigger(DecisionTrigger trigger) {
 		this.triggerSet.add(trigger);

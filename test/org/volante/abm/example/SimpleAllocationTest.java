@@ -60,7 +60,7 @@ public class SimpleAllocationTest extends BasicTestsUtils
 		
 		demandR1.setResidual( c11, services(0, 0, 0, 0) );
 		((DefaultLandUseAgent) c11.getOwner()).setProperty(
-				AgentPropertyIds.GIVING_UP_THRESHOLD, 1);
+AgentPropertyIds.GIVING_UP_THRESHOLD, 1.0);
 		c11.getOwner().updateCompetitiveness();
 		c11.getOwner().considerGivingUp();
 		

@@ -23,12 +23,22 @@
  */
 package org.volante.abm.lara;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.volante.abm.agent.bt.LaraBehaviouralComponent;
+import org.volante.abm.data.ModelData;
 import org.volante.abm.decision.pa.CraftyPa;
+import org.volante.abm.decision.trigger.DecisionTrigger;
+import org.volante.abm.output.ActionReporter;
 
 import de.cesr.lara.components.agents.impl.LDefaultAgentComp;
+import de.cesr.lara.components.decision.LaraDecider;
 import de.cesr.lara.components.decision.LaraDecisionConfiguration;
+import de.cesr.lara.components.decision.LaraScoreReportingDecider;
 import de.cesr.lara.components.environment.LaraEnvironment;
 import de.cesr.lara.components.eventbus.events.LAgentDecideEvent;
 import de.cesr.lara.components.eventbus.events.LAgentExecutionEvent;
@@ -47,14 +57,25 @@ import de.cesr.parma.core.PmParameterManager;
  * 
  */
 public class CobraLAgentComp extends
-		LDefaultAgentComp<LaraBehaviouralComponent, CraftyPa<?>> {
+ LDefaultAgentComp<LaraBehaviouralComponent, CraftyPa<?>> implements
+		CobraLaraAgentComponent {
+
+	Collection<ActionReporter> paReporters = new HashSet<>();
+
+	ModelData mdata = null;
 
 	/**
-	 * @param agent
+	 * Storage of {@link DecisionTrigger}s is required to report {@link CraftyPa}.
+	 */
+	protected Map<LaraDecisionConfiguration, DecisionTrigger> decisionTriggers = new HashMap<>();
+
+	/**
+	 * @param lbc
 	 * @param env
 	 */
-	public CobraLAgentComp(LaraBehaviouralComponent agent, LaraEnvironment env) {
-		super(agent, env);
+	public CobraLAgentComp(LaraBehaviouralComponent lbc, LaraEnvironment env) {
+		super(lbc, env);
+		this.mdata = lbc.getAgent().getRegion().getModelData();
 	}
 
 	/**
@@ -65,6 +86,7 @@ public class CobraLAgentComp extends
 	public CobraLAgentComp(LaraModel model, LaraBehaviouralComponent lbc,
 			LaraEnvironment env) {
 		super(model, lbc, env);
+		this.mdata = lbc.getAgent().getRegion().getModelData();
 	}
 
 	/**
@@ -85,10 +107,19 @@ public class CobraLAgentComp extends
 
 	}
 
+	public void subscribeOnce(LaraDecisionConfiguration dc) {
+		this.subscribeOnce(dc, null);
+	}
+
 	/**
 	 * @param dc
 	 */
-	public void subscribeOnce(LaraDecisionConfiguration dc) {
+	public void subscribeOnce(LaraDecisionConfiguration dc, DecisionTrigger trigger) {
+
+		if (trigger != null) {
+			decisionTriggers.put(dc, trigger);
+		}
+
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
 			logger.debug(this.agent + "> Subscribe once for " + dc);
@@ -109,5 +140,62 @@ public class CobraLAgentComp extends
 		LEventbus.getNewInstance(this.agent, PmParameterManager
 				.getInstance(this.agent.getAgent().getRegion()));
 		super.onInternalEvent(event);
+	}
+
+	protected void perform(LaraEvent event) {
+		super.perform(event);
+
+		// inform PaReporter:
+		LaraDecisionConfiguration dConfig = ((LAgentExecutionEvent) event).getDecisionConfiguration();
+		
+		
+		LaraDecider<CraftyPa<?>> decider = this.getDecisionData(((LAgentExecutionEvent) event)
+				.getDecisionConfiguration()).getDecider();
+		if (decider.getNumSelectableBOs() > 0) {
+			CraftyPa<?> pa = decider.getSelectedBo();
+
+			for (ActionReporter paReporter : paReporters) {
+				paReporter.setActionInfos(
+						this.agent.getAgent(),
+						decisionTriggers.get(dConfig),
+						dConfig,
+						pa,
+						decider instanceof LaraScoreReportingDecider ? ((LaraScoreReportingDecider) decider)
+								.getScore(pa) : Double.NaN);
+			}
+			
+			for (CraftyPa<?> paction : decider.getSelectableBos()) {
+				if (paction != pa) {
+					for (ActionReporter paReporter : paReporters) {
+						paReporter.setActionInfos(
+								this.agent.getAgent(),
+								decisionTriggers.get(dConfig),
+								dConfig,
+								paction,
+								decider instanceof LaraScoreReportingDecider ? ((LaraScoreReportingDecider) decider)
+										.getScore(paction) : Double.NaN, false);
+					}
+				}
+			}
+		}
+	}
+
+	public void addPaReporter(ActionReporter paReporter) {
+		this.paReporters.add(paReporter);
+	}
+
+	public boolean removePaReporter(ActionReporter paReporter) {
+		return this.paReporters.remove(paReporter);
+	}
+
+	public ModelData getModelData() {
+		return this.mdata;
+	}
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() + " (" + this.agent + ")";
 	}
 }

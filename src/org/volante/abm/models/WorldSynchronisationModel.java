@@ -6,7 +6,10 @@ package org.volante.abm.models;
 
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.RegionSet;
+import org.volante.abm.data.Service;
 import org.volante.abm.schedule.RunInfo;
+
+import com.moseph.modelutils.fastdata.DoubleMap;
 
 
 /**
@@ -22,4 +25,8 @@ public interface WorldSynchronisationModel {
 	public void synchronizeDemand(RegionSet regions);
 
 	public void synchronizeSupply(RegionSet regions);
+
+	public DoubleMap<Service> getWorldDemand();
+
+	public DoubleMap<Service> getWorldSupply();
 }

@@ -1,6 +1,6 @@
 <bType label="TriggerBT" serialID="33" class="org.volante.abm.agent.bt.CognitiveBT">
 	<triggers>
-		<trigger class="org.volante.abm.decision.FrCheckThresholdDecisionTrigger" 
+		<trigger class="org.volante.abm.decision.trigger.ThresholdCompetitivenessDT" 
 		id="CompetitionThresholdTrigger" competitivenessThreshold="0.2">
 			<dcId>FrSelection</dcId>
 		</trigger>

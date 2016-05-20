@@ -3,7 +3,7 @@
  * 
  * CRAFTY - Competition for Resources between Agent Functional TYpes
  *
- * Copyright (C) 2015 School of GeoScience, University of Edinburgh, Edinburgh, UK
+ * Copyright (C) 2016 School of GeoScience, University of Edinburgh, Edinburgh, UK
  * 
  * CRAFTY is free software: You can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software 
@@ -19,26 +19,18 @@
  *
  * School of Geoscience, University of Edinburgh, Edinburgh, UK
  * 
- * Created by Sascha Holzhauer on 3 Nov 2015
+ * Created by Sascha Holzhauer on 19 Apr 2016
  */
-package org.volante.abm.output;
-
-import org.volante.abm.decision.pa.CraftyPa;
+package org.volante.abm.agent.fr;
 
 
 /**
- * Avoids checks for null in case there is not {@link ActionObserver} registered at the {@link Region}.
+ * Marker interface for {@link FunctionalComponent}s that assign individual production models to new instances rather
+ * than sharing a single production model amongst multiple FCs.
  * 
  * @author Sascha Holzhauer
  * 
  */
-public class PseudoActionObserver implements ActionObserver {
+public interface IndividualProductionFunctionalComponent extends FunctionalComponent {
 
-	/**
-	 * @see org.volante.abm.output.ActionObserver#observeAction(org.volante.abm.decision.pa.CraftyPa)
-	 */
-	@Override
-	public void observeAction(CraftyPa<?> pa) {
-		// does nothing
-	}
 }

@@ -336,10 +336,10 @@ public class CsvBatchRunParser {
 	 */
 	protected static boolean checkLinkData(String defaultPath, String id) {
 		if (!cachedLinksData.containsKey(defaultPath)) {
-			logger.debug("CSV Link file does not contain key >" + defaultPath + "<. Using default!");
+			logger.info("CSV Link file does not contain key >" + defaultPath + "<. Using default!");
 			return false;
 		} else if (!cachedLinksData.get(defaultPath).containsKey(id)) {
-			logger.debug("CSV Link file does not contain id >" +
+			logger.info("CSV Link file does not contain id >" +
 					id + "< for defaultPath >" + defaultPath + "<. Using default!");
 			return false;
 		} else

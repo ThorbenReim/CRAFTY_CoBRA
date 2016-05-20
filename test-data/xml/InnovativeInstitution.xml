@@ -5,7 +5,7 @@
 		<effectOnProductivityFactor>2</effectOnProductivityFactor>
 		
 		<affectiveAFTs>all</affectiveAFTs>
-		<affectedAFTs>Farming</affectedAFTs>
+		<affectedAFTs>InnoFarming</affectedAFTs>
 		<affectedServices>FOOD</affectedServices>		
 		<normaliseProductivity>false</normaliseProductivity>
 	</innovation>

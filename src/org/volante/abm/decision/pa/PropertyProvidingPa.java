@@ -3,7 +3,7 @@
  * 
  * CRAFTY - Competition for Resources between Agent Functional TYpes
  *
- * Copyright (C) 2015 School of GeoScience, University of Edinburgh, Edinburgh, UK
+ * Copyright (C) 2016 School of GeoScience, University of Edinburgh, Edinburgh, UK
  * 
  * CRAFTY is free software: You can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software 
@@ -19,14 +19,21 @@
  *
  * School of Geoscience, University of Edinburgh, Edinburgh, UK
  * 
- * Created by Sascha Holzhauer on 12 Jan 2015
+ * Created by Sascha Holzhauer on 14 May 2016
  */
-package org.volante.abm.agent.property;
+package org.volante.abm.decision.pa;
+
+
+import java.util.Map;
+
+import org.volante.abm.agent.property.PropertyId;
 
 /**
  * @author Sascha Holzhauer
  *
  */
-public interface AgentPropertyId {
+public interface PropertyProvidingPa {
+
+	public Map<PropertyId, Object> getProperties();
 
 }

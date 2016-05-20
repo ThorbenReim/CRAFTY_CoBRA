@@ -3,7 +3,7 @@
  * 
  * CRAFTY - Competition for Resources between Agent Functional TYpes
  *
- * Copyright (C) 2014 School of GeoScience, University of Edinburgh, Edinburgh, UK
+ * Copyright (C) 2016 School of GeoScience, University of Edinburgh, Edinburgh, UK
  * 
  * CRAFTY is free software: You can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software 
@@ -17,34 +17,50 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
- * School of GeoScience, University of Edinburgh, Edinburgh, UK
+ * School of Geoscience, University of Edinburgh, Edinburgh, UK
+ * 
+ * Created by Sascha Holzhauer on 12 Feb 2016
  */
 package org.volante.abm.output;
 
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.ElementList;
+import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.bt.LaraBehaviouralComponent;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Regions;
 import org.volante.abm.decision.pa.CraftyPa;
+import org.volante.abm.decision.trigger.DecisionTrigger;
+import org.volante.abm.institutions.global.GlobalInstitution;
+import org.volante.abm.institutions.global.GlobalInstitutionsRegistry;
+import org.volante.abm.lara.CobraLAgentComp;
+import org.volante.abm.output.ActionCSVOutputter.TableEntry;
 import org.volante.abm.schedule.PrePreTickAction;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.GloballyInitialisable;
 
+import de.cesr.lara.components.decision.LaraDecisionConfiguration;
+
 
 /**
+ * Outputs {@link CraftyPa} with additional information (trigger, score) for {@link Agent}s whose ID matches the given
+ * <code>agentpattern</code>. Registers at {@link CobraLAgentComp}.
+ * 
  * @author Sascha Holzhauer
- *
+ * 
  */
-public class ActionCSVOutputter extends TableOutputter<CraftyPa<?>> implements GloballyInitialisable, ActionObserver,
+public class ActionCSVOutputter extends TableOutputter<TableEntry> implements ActionReporter, GloballyInitialisable,
 		PrePreTickAction {
-
 
 	@Attribute(required = false)
 	boolean addTick = true;
@@ -52,21 +68,63 @@ public class ActionCSVOutputter extends TableOutputter<CraftyPa<?>> implements G
 	@Attribute(required = false)
 	boolean addBtLabel = true;
 
+	@ElementList(required = false, entry = "column", inline = true)
+	List<TableColumn<TableEntry>> additionalColumns = new ArrayList<>();
+
+	/**
+	 * Applied to {@link Agent#getID()}
+	 */
+	@Attribute(required = false)
+	protected String agentpattern = ".*";
+
 	/**
 	 * Only considered when <code>perRegion==false</code> (otherwise, regions are considered in column headers).
 	 */
 	@Attribute(required = false)
 	boolean addRegion = true;
 
-	Map<Region, Set<CraftyPa<?>>> actions = new HashMap<>();
+	Map<Region, Set<TableEntry>> actions = new HashMap<>();
 
+	public class TableEntry {
+		protected Agent agent;
+		protected DecisionTrigger trigger;
+		protected LaraDecisionConfiguration dConfig;
+		protected CraftyPa<?> pa;
+		protected double score;
+		protected boolean selected;
 
+		protected TableEntry(Agent agent, DecisionTrigger trigger, LaraDecisionConfiguration dConfig, CraftyPa<?> pa,
+				double score, boolean selected) {
+			this.agent = agent;
+			this.trigger = trigger;
+			this.dConfig = dConfig;
+			this.pa = pa;
+			this.score = score;
+			this.selected = selected;
+		}
+
+		public CraftyPa<?> getPa() {
+			return this.pa;
+		}
+	}
+
+	/**
+	 * Register at agents, regional institutions, and global institutions.
+	 * 
+	 * @see org.volante.abm.serialization.GloballyInitialisable#initialise(org.volante.abm.data.ModelData,
+	 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Regions)
+	 */
 	@Override
 	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception {
-		for (Region r : regions.getAllRegions()) {
-			r.setActionObserver(this);
-		}
 		info.getSchedule().register(this);
+		for (Region r : regions.getAllRegions()) {
+			r.registerPaReporter(this);
+		}
+		for (GlobalInstitution institution : GlobalInstitutionsRegistry.getInstance().getGlobalInstitutions()) {
+			if (institution instanceof Agent) {
+				this.registerAtAgent((Agent) institution);
+			}
+		}
 	}
 
 	/**
@@ -74,7 +132,7 @@ public class ActionCSVOutputter extends TableOutputter<CraftyPa<?>> implements G
 	 */
 	@Override
 	public String getDefaultOutputName() {
-		return "ActionCSVOutputter";
+		return "Actions";
 	}
 
 	/**
@@ -85,11 +143,11 @@ public class ActionCSVOutputter extends TableOutputter<CraftyPa<?>> implements G
 		super.setOutputManager(outputs);
 
 		if (addTick) {
-			addColumn(new TickColumn<CraftyPa<?>>());
+			addColumn(new TickColumn<TableEntry>());
 		}
 
 		if (addRegion && perRegion) {
-			addColumn(new RegionsColumn<CraftyPa<?>>());
+			addColumn(new RegionsColumn<TableEntry>());
 		}
 
 		if (addBtLabel) {
@@ -97,15 +155,22 @@ public class ActionCSVOutputter extends TableOutputter<CraftyPa<?>> implements G
 		}
 
 		addColumn(new AgentColumn());
+		addColumn(new TriggerColumn());
 		addColumn(new ActionColumn());
+		addColumn(new ScoreColumn());
+		addColumn(new SelectedColumn());
+
+		for (TableColumn<TableEntry> column : this.additionalColumns) {
+			addColumn(column);
+		}
 	}
 
-	public void writeData(Iterable<CraftyPa<?>> data, Regions r) throws IOException {
+	public void writeData(Iterable<TableEntry> data, Regions r) throws IOException {
 		super.writeData(data, r);
 
 	}
 
-	public class BtLabelColumn implements TableColumn<CraftyPa<?>> {
+	public class BtLabelColumn implements TableColumn<TableEntry> {
 
 		public BtLabelColumn() {
 		}
@@ -116,12 +181,12 @@ public class ActionCSVOutputter extends TableOutputter<CraftyPa<?>> implements G
 		}
 
 		@Override
-		public String getValue(CraftyPa<?> pa, ModelData data, RunInfo info, Regions rs) {
-			return pa.getAgent().getType().getLabel();
+		public String getValue(TableEntry te, ModelData data, RunInfo info, Regions rs) {
+			return te.agent.getFC().getFR().getLabel();
 		}
 	}
 
-	public class AgentColumn implements TableColumn<CraftyPa<?>> {
+	public class AgentColumn implements TableColumn<TableEntry> {
 
 		public AgentColumn() {
 		}
@@ -132,12 +197,31 @@ public class ActionCSVOutputter extends TableOutputter<CraftyPa<?>> implements G
 		}
 
 		@Override
-		public String getValue(CraftyPa<?> pa, ModelData data, RunInfo info, Regions rs) {
-			return pa.getAgent().getAgent().getID();
+		public String getValue(TableEntry te, ModelData data, RunInfo info, Regions rs) {
+			return te.agent.getID();
 		}
 	}
 
-	public class ActionColumn implements TableColumn<CraftyPa<?>> {
+	public class TriggerColumn implements TableColumn<TableEntry> {
+
+		public TriggerColumn() {
+		}
+
+		@Override
+		public String getHeader() {
+			return ("Trigger");
+		}
+
+		/**
+		 * @see org.volante.abm.output.TableColumn#getValue(java.lang.Object, org.volante.abm.data.ModelData,
+		 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Regions)
+		 */
+		public String getValue(TableEntry te, ModelData data, RunInfo info, Regions rs) {
+			return te.trigger.toString();
+		}
+	}
+
+	public class ActionColumn implements TableColumn<TableEntry> {
 
 		public ActionColumn() {
 		}
@@ -151,35 +235,94 @@ public class ActionCSVOutputter extends TableOutputter<CraftyPa<?>> implements G
 		 * @see org.volante.abm.output.TableColumn#getValue(java.lang.Object, org.volante.abm.data.ModelData,
 		 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Regions)
 		 */
-		public String getValue(CraftyPa<?> pa, ModelData data, RunInfo info, Regions rs) {
-			return pa.getKey();
+		public String getValue(TableEntry te, ModelData data, RunInfo info, Regions rs) {
+			return te.pa.getKey();
+		}
+	}
+
+	public class ScoreColumn implements TableColumn<TableEntry> {
+
+		public ScoreColumn() {
+		}
+
+		@Override
+		public String getHeader() {
+			return ("Score");
+		}
+
+		/**
+		 * @see org.volante.abm.output.TableColumn#getValue(java.lang.Object, org.volante.abm.data.ModelData,
+		 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Regions)
+		 */
+		public String getValue(TableEntry te, ModelData data, RunInfo info, Regions rs) {
+			return "" + te.score;
+		}
+	}
+
+	public class SelectedColumn implements TableColumn<TableEntry> {
+
+		public SelectedColumn() {
+		}
+
+		@Override
+		public String getHeader() {
+			return ("Selected");
+		}
+
+		/**
+		 * @see org.volante.abm.output.TableColumn#getValue(java.lang.Object, org.volante.abm.data.ModelData,
+		 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Regions)
+		 */
+		public String getValue(TableEntry te, ModelData data, RunInfo info, Regions rs) {
+			return te.selected ? "1" : "0";
+		}
+	}
+
+	public void registerAtAgent(Agent agent) {
+		if (agent.getID().matches(agentpattern) && agent.getBC() instanceof LaraBehaviouralComponent) {
+			((CobraLAgentComp) ((LaraBehaviouralComponent) agent.getBC()).getLaraComp()).addPaReporter(this);
 		}
 	}
 
 	/**
-	 * @see org.volante.abm.output.ActionObserver#observeAction(org.volante.abm.agent.Agent,
-	 *      org.volante.abm.decision.pa.CraftyPa)
+	 * @see org.volante.abm.output.ActionReporter#setActionInfos(org.volante.abm.agent.Agent,
+	 *      org.volante.abm.decision.trigger.DecisionTrigger,
+	 *      de.cesr.lara.components.decision.LaraDecisionConfiguration, org.volante.abm.decision.pa.CraftyPa, double)
 	 */
 	@Override
-	public void observeAction(CraftyPa<?> pa) {
+	public void setActionInfos(Agent agent, DecisionTrigger trigger, LaraDecisionConfiguration dConfig, CraftyPa<?> pa,
+			double score, boolean selected) {
 		if (!this.actions.containsKey(pa.getAgent().getAgent().getRegion())) {
-			this.actions.put(pa.getAgent().getAgent().getRegion(), new HashSet<CraftyPa<?>>());
+			this.actions.put(pa.getAgent().getAgent().getRegion(), new HashSet<TableEntry>());
 		}
-		this.actions.get(pa.getAgent().getAgent().getRegion()).add(pa);
+		this.actions.get(pa.getAgent().getAgent().getRegion()).add(
+				new TableEntry(agent, trigger, dConfig, pa, score, selected));
+	}
+
+	/**
+	 * @see org.volante.abm.output.ActionReporter#setActionInfos(org.volante.abm.agent.Agent,
+	 *      org.volante.abm.decision.trigger.DecisionTrigger,
+	 *      de.cesr.lara.components.decision.LaraDecisionConfiguration, org.volante.abm.decision.pa.CraftyPa, double,
+	 *      boolean)
+	 */
+	@Override
+	public void setActionInfos(Agent agent, DecisionTrigger trigger, LaraDecisionConfiguration dconfig, CraftyPa<?> pa,
+			double score) {
+		this.setActionInfos(agent, trigger, dconfig, pa, score, true);
 	}
 
 	/**
 	 * @see org.volante.abm.output.TableOutputter#getData(org.volante.abm.data.Regions)
 	 */
 	@Override
-	public Iterable<CraftyPa<?>> getData(Regions r) {
-		Set<CraftyPa<?>> pas = new HashSet<>();
+	public Iterable<TableEntry> getData(Regions r) {
+		Set<TableEntry> tes = new HashSet<>();
 		for (Region region : r.getAllRegions()) {
 			if (actions.containsKey(region)) {
-				pas.addAll(actions.get(region));
+				tes.addAll(actions.get(region));
 			}
 		}
-		return pas;
+		return tes;
 	}
 
 	/**

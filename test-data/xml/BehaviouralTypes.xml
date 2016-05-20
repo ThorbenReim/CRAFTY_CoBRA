@@ -2,7 +2,7 @@
 	<bType label="Cognitor" serialID="1" class="org.volante.abm.agent.bt.CognitiveBT">
 	
 		<triggers>
-			<trigger class="org.volante.abm.decision.FrCheckDecreaseDecisionTrigger" id="FrTrigger">
+			<trigger class="org.volante.abm.decision.trigger.DecreasedCompetitivenessDT" id="FrTrigger">
 				<dcId>FrSelection</dcId>
 			</trigger>
 		</triggers>
@@ -90,13 +90,13 @@
 	
 	<bType label="Innovator" serialID="2" class="org.volante.abm.agent.bt.InnovativeCognitiveBT">
 		<triggers>
-			<trigger class="org.volante.abm.decision.InnovationDecisionTrigger" id="InnovationTrigger">
+			<trigger class="org.volante.abm.decision.trigger.PositiveDT" id="InnovationTrigger">
 				<dcId>Innovation</dcId>
 			</trigger>
 		</triggers>
 		<laraAgentConfigurator class="de.cesr.lara.toolbox.config.xml.LXmlAgentConfigurator">
 			<bofile>./pas/listA.xml</bofile>
-			<bofile>./pas/frselectionpas.xml</bofile>
+			<!-- bofile>./pas/frselectionpas.xml</bofile-->
 			
 			<preferenceWeight pref="PreferenceA">1.0</preferenceWeight>
 			<preferenceWeight pref="PreferenceB">2.0</preferenceWeight>

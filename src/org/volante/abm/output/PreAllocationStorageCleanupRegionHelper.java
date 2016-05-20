@@ -26,7 +26,6 @@ package org.volante.abm.output;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.LandUseAgent;
@@ -58,8 +57,21 @@ public class PreAllocationStorageCleanupRegionHelper implements CleanupRegionHel
 
 	protected Map<Cell, PreAllocData>	preAllocDataMap	= new HashMap<>();
 
+	/**
+	 * @see org.volante.abm.data.CleanupRegionHelper#cleanUpAgent(org.volante.abm.data.Region,
+	 *      org.volante.abm.agent.LandUseAgent)
+	 */
 	@Override
-	public void cleanUp(Region region, Set<LandUseAgent> agentsToRemove) {
+	public void cleanUpAgent(Region region, LandUseAgent a) {
+		for (Cell c : a.getCells()) {
+			preAllocDataMap.put(c,
+					new PreAllocData(a.getFC().getFR().getSerialID(), a.getProperty(AgentPropertyIds.COMPETITIVENESS),
+							a.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)));
+		}
+	}
+
+	@Override
+	public void cleanUp(Region region) {
 		for (Cell c : region.getAllCells()) {
 			if (!c.getOwner().equals(Agent.NOT_MANAGED)){
 				preAllocDataMap.put(
@@ -67,15 +79,6 @@ public class PreAllocationStorageCleanupRegionHelper implements CleanupRegionHel
 						new PreAllocData(c.getOwner().getFC().getFR().getSerialID(), c.getOwner().getProperty(
 								AgentPropertyIds.COMPETITIVENESS), c.getOwner().getProperty(
 								AgentPropertyIds.GIVING_UP_THRESHOLD)));
-			}
-		}
-		for (LandUseAgent a : agentsToRemove) {
-			for (Cell c : a.getCells()) {
-				preAllocDataMap.put(
-						c,
-						new PreAllocData(a.getFC().getFR().getSerialID(), a
-								.getProperty(AgentPropertyIds.COMPETITIVENESS), a
-								.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)));
 			}
 		}
 	}
