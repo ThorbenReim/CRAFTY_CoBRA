@@ -28,7 +28,6 @@ import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.institutions.AbstractInstitution;
 import org.volante.abm.schedule.RunInfo;
-import org.volante.abm.serialization.ScenarioLoader;
 
 
 /**
@@ -41,17 +40,18 @@ public abstract class AbstractGlobalInstitution extends AbstractInstitution impl
 
 
 	/**
-	 * In case of overriding, make sure to call
-	 * {@link AbstractGlobalInstitution#initialise(RunInfo, ModelData, ScenarioLoader)} or register at
-	 * {@link GlobalInstitutionsRegistry} and regions.
+	 * In case of overriding, make sure to call {@link AbstractGlobalInstitution#initialise(ModelData, RunInfo)} or
+	 * register at {@link GlobalInstitutionsRegistry} and regions.
 	 * 
-	 * @see org.volante.abm.institutions.global.GlobalInstitution#initialise(RunInfo, ModelData, ScenarioLoader)
+	 * @see org.volante.abm.institutions.global.GlobalInstitution#initialise(ModelData, RunInfo)
 	 */
 	@Override
-	public void initialise(RunInfo rinfo, ModelData mdata, ScenarioLoader sloader) {
+	public void initialise(ModelData mdata, RunInfo rinfo) {
 		// register
+		this.modelData = mdata;
+		this.rInfo = rinfo;
 		GlobalInstitutionsRegistry.getInstance().registerGlobalInstitution(this);
-		for (Region region : sloader.getRegions().getAllRegions()) {
+		for (Region region : this.modelData.getRootRegionSet().getAllRegions()) {
 			region.getInstitutions().addInstitution(this);
 		}
 	}

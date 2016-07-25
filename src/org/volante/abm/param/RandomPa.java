@@ -74,9 +74,16 @@ public enum RandomPa implements PmParameterDefinition {
 	RANDOM_SEED_RUN_GIVINGUP(Integer.class, RANDOM_SEED_RUN),
 
 	/**
-	 * Random seed used for processes during simulation run. Default: <code>RANDOM_SEED_ADOPTION</code>.
+	 * Random seed used for processes during simulation run. Default: <code>RANDOM_SEED_RUN</code>.
 	 */
-	RANDOM_SEED_RUN_ADOPTION(Integer.class, RANDOM_SEED_RUN);
+	RANDOM_SEED_RUN_ADOPTION(Integer.class, RANDOM_SEED_RUN),
+
+	/**
+	 * Random seed used for institutional decision making and action, e.g. noise of monitoring. Default:
+	 * <code>RANDOM_SEED_RUN</code>.
+	 */
+	RANDOM_SEED_RUN_INSTITUTIONS(Integer.class, RANDOM_SEED_RUN);
+	;
 	
 	private Class<?> type;
 	private Object defaultValue;

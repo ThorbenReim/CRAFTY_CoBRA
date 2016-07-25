@@ -57,4 +57,6 @@ public interface CobraLaraAgentComponent extends LaraAgentComponent<LaraBehaviou
 	 * @return true if given {@link ActionReporter} could be removed
 	 */
 	public boolean removePaReporter(ActionReporter paReporter);
+
+	public void reportActionPerformance(CraftyPa<?> pa);
 }

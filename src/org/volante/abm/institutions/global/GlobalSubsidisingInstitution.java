@@ -24,42 +24,99 @@
 package org.volante.abm.institutions.global;
 
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementMap;
+import org.volante.abm.agent.DecisionTriggerPrecheckingAgent;
+import org.volante.abm.agent.bt.BehaviouralType;
 import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
+import org.volante.abm.decision.pa.CompetitivenessAdjustingPa;
 import org.volante.abm.decision.trigger.DecisionTrigger;
-import org.volante.abm.schedule.PreTickAction;
+import org.volante.abm.schedule.PrePreTickAction;
 import org.volante.abm.schedule.RunInfo;
-import org.volante.abm.serialization.GloballyInitialisable;
-import org.volante.abm.serialization.ScenarioLoader;
 
-import com.moseph.modelutils.fastdata.DoubleMap;
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
+
+import de.cesr.lara.components.preprocessor.impl.LDefaultDecisionModeSelector;
 
 
 /**
+ * 
+ * Requires the definition of a {@link DecisionTrigger} in the {@link BehaviouralType} for this institution.
  * 
  * Applies adjusted competitiveness when service trigger checks are positive.
  * 
  * @author Sascha Holzhauer
  * 
  */
-public class GlobalSubsidisingInstitution extends AbstractCognitiveGlobalInstitution implements PreTickAction {
+public class GlobalSubsidisingInstitution extends AbstractCognitiveGlobalInstitution implements PrePreTickAction,
+        DecisionTriggerPrecheckingAgent {
 
+	public static class DecisionModeSelector extends LDefaultDecisionModeSelector {
+
+	}
+
+	public static class DefaultTickChecker implements TickChecker {
+		/**
+		 * @see org.volante.abm.institutions.global.TickChecker#check(int)
+		 */
+        @Override
+        public boolean check(int tick) {
+	        return true;
+        }
+	}
+	
+	public static class EvenTickChecker implements TickChecker {
+		/**
+		 * @see org.volante.abm.institutions.global.TickChecker#check(int)
+		 */
+        @Override
+        public boolean check(int tick) {
+	        return (tick) % 2 == 0;
+        }
+	}
+	
+	public static class OddTickChecker implements TickChecker {
+		/**
+		 * @see org.volante.abm.institutions.global.TickChecker#check(int)
+		 */
+        @Override
+        public boolean check(int tick) {
+			// <- LOGGING
+			logger.info("OddTickChecker: check");
+			// LOGGING ->
+	        return (tick + 1) % 2 == 0;
+        }
+	}
+	
 	/**
 	 * Logger
 	 */
 	static private Logger logger = Logger.getLogger(GlobalSubsidisingInstitution.class);
+
+	@Element(required = false)
+	protected int actionRuntime = 1;
+
+	@Attribute(required = false)
+	protected boolean allowMultipleActions = false;
+
+	@Element(required = false)
+	protected boolean triggerDecisionAfterRuntime = false;
+
+	protected int reportedTick = Integer.MIN_VALUE;
+	
+	@Element(required = false)
+	protected TickChecker tickChecker = new DefaultTickChecker();
+
+	protected int actionExpiry = Integer.MIN_VALUE;
 
 	/**
 	 * @param id
@@ -68,82 +125,19 @@ public class GlobalSubsidisingInstitution extends AbstractCognitiveGlobalInstitu
 		super(id);
 	}
 
-	Map<Service, DecisionTrigger> serviceTriggers = null;
-
-	/**
-	 * Contains only values for defined services
-	 */
-	DoubleMap<Service> definedServiceSubsidies = null;
-
-	/**
-	 * Contains default factor = 1.0 for undefined subsidies.
-	 */
-	DoubleMap<Service> appliedServiceSubsidies = null;
-
-	@ElementMap(inline = true, required = true, entry = "serviceTrigger", attribute = true, key = "service")
-	Map<String, DecisionTrigger> serialServiceTriggers = new HashMap<String, DecisionTrigger>();
-
-	/**
-	 * Factor the service provision is multiplied with.
-	 */
-	@ElementMap(inline = true, required = false, entry = "serviceSubsidyFactor", attribute = true, key = "service")
-	Map<String, Double> serialServiceSubsidies = new HashMap<String, Double>();
-
-	@Element(required = false)
-	protected double overallEffect = 1.0;
+	Map<Integer, CompetitivenessAdjustingPa> compAdjustPas = new LinkedHashMap<>();
 
 
-	public void initialise(RunInfo rinfo, ModelData mdata, ScenarioLoader sloader) {
-		super.initialise(rinfo, mdata, sloader);
+	public void initialise(ModelData mdata, RunInfo rinfo) {
+		super.initialise(mdata, rinfo);
 
 		rinfo.getSchedule().register(this);
 
-		for (Region region : sloader.getRegions().getAllRegions()) {
+		for (Region region : this.modelData.getRootRegionSet().getAllRegions()) {
 			region.setHasCompetitivenessAdjustingInstitution();
 		}
-
-		definedServiceSubsidies = mdata.serviceMap();
-		appliedServiceSubsidies = mdata.serviceMap();
-		serviceTriggers = new HashMap<>();
-
-		for (Entry<String, DecisionTrigger> e : serialServiceTriggers.entrySet()) {
-			if (mdata.services.contains(e.getKey())) {
-				if (e.getValue() instanceof GloballyInitialisable) {
-					try {
-						((GloballyInitialisable) e.getValue()).initialise(mdata, rInfo, sloader.getRegions());
-					} catch (Exception exception) {
-						exception.printStackTrace();
-					}
-				}
-				serviceTriggers.put(mdata.services.forName(e.getKey()), e.getValue());
-			} else {
-				logger.warn("The specified service (" + e.getKey()
-						+ ") for the trigger is not defined in the model (defined: " + mdata.services + ")!");
-			}
-		}
-
-		for (Entry<String, Double> e : serialServiceSubsidies.entrySet()) {
-			if (mdata.services.contains(e.getKey())) {
-				definedServiceSubsidies.put(mdata.services.forName(e.getKey()), e.getValue());
-			} else {
-				logger.warn("The specified service (" + e.getKey() + ") for the subsidy is not defined in the model!");
-			}
-		}
 	}
 
-	/**
-	 * @see org.volante.abm.schedule.PreTickAction#preTick()
-	 */
-	@Override
-	public void preTick() {
-		for (Service service : this.modelData.services) {
-			if (this.serviceTriggers.containsKey(service) && this.serviceTriggers.get(service).check(this)) {
-				this.appliedServiceSubsidies.addDouble(service, this.definedServiceSubsidies.get(service));
-			} else {
-				this.appliedServiceSubsidies.addDouble(service, 0.0);
-			}
-		}
-	}
 
 	/**
 	 * Multiplies given provision with service-specific subsidy factors, then multiplies this dot-product with
@@ -155,23 +149,46 @@ public class GlobalSubsidisingInstitution extends AbstractCognitiveGlobalInstitu
 	@Override
 	public double adjustCompetitiveness(FunctionalRole agent, Cell location, UnmodifiableNumberMap<Service> provision,
 			double competitiveness) {
-		double result = competitiveness;
-		double subsidy = provision.dotProduct(appliedServiceSubsidies);
-		result += subsidy * overallEffect;
-		return result;
+		double comp = competitiveness;
+		for (CompetitivenessAdjustingPa capa : this.compAdjustPas.values()) {
+			comp = capa.adjustCompetitiveness(agent, location, provision, comp);
+			if (reportedTick < this.rInfo.getSchedule().getCurrentTick()) {
+				capa.reportRenewedActionPerformance();
+				this.reportedTick = this.rInfo.getSchedule().getCurrentTick();
+			}
+		}
+		return comp;
+	}
+
+
+	/**
+	 * Clears the set of added Pa before a new one is added.
+	 * 
+	 * @param compAdjustPa
+	 */
+	public void addCompAdjustPa(CompetitivenessAdjustingPa compAdjustPa) {
+		this.compAdjustPas.clear();
+		this.compAdjustPas.put(new Integer(this.rInfo.getSchedule().getCurrentTick()), compAdjustPa);
+		this.actionExpiry = this.rInfo.getSchedule().getCurrentTick() + this.actionRuntime - 1;
 	}
 
 	/**
-	 * @return overall effect factor
+	 * @see org.volante.abm.schedule.PreTickAction#preTick()
 	 */
-	public double getOverallEffect() {
-		return overallEffect;
+	@Override
+	public void prePreTick() {
+		this.compAdjustPas.remove(new Integer(this.rInfo.getSchedule().getCurrentTick() - this.actionRuntime));
 	}
 
 	/**
-	 * @param overallEffect
+	 * @see org.volante.abm.agent.DecisionTriggerPrecheckingAgent#preCheckDecisionTriggers(java.util.Set)
 	 */
-	public void setOverallEffect(double overallEffect) {
-		this.overallEffect = overallEffect;
-	}
+	@Override
+    public Set<DecisionTrigger> preCheckDecisionTriggers(Set<DecisionTrigger> decisionTriggers) {
+		int tick = this.rInfo.getSchedule().getCurrentTick();
+		if (!tickChecker.check(tick) || !(this.allowMultipleActions || this.actionExpiry < tick)) {
+			decisionTriggers.clear();
+		}
+		return decisionTriggers;
+    }
 }

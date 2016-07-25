@@ -18,3 +18,5 @@ syntax: regexp
 ^java2kdmFragments$
 syntax: regexp
 ^\.gradle/2\.2$
+syntax: regexp
+^config/ant/JarFile_lib_CRAFTY_CoBRA_NetSens\.xml$

@@ -25,25 +25,27 @@ package org.volante.abm.institutions.global;
 
 
 import org.volante.abm.data.ModelData;
+import org.volante.abm.data.Regions;
 import org.volante.abm.institutions.Institution;
 import org.volante.abm.schedule.RunInfo;
-import org.volante.abm.serialization.ScenarioLoader;
+import org.volante.abm.serialization.GloballyInitialisable;
 
 
 /**
  * @author Sascha Holzhauer
  *
  */
-public interface GlobalInstitution extends Institution {
+public interface GlobalInstitution extends Institution, GloballyInitialisable {
 
 	/**
 	 * Initialises the global institution, adds it to the {@link GlobalInstitutionsRegistry} and registers it at
-	 * regions'.
+	 * regions.
 	 * 
 	 * @param rinfo
 	 * @param mdata
-	 * @param sloader
 	 */
-	public void initialise(RunInfo rinfo, ModelData mdata, ScenarioLoader sloader);
+	public void initialise(ModelData mdata, RunInfo rinfo);
+
+	public Regions getRegionSet();
 
 }

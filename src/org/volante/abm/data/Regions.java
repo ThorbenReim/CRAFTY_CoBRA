@@ -22,6 +22,8 @@
  */
 package org.volante.abm.data;
 
+
+import java.util.Collection;
 import java.util.Map;
 
 import org.volante.abm.agent.LandUseAgent;
@@ -32,6 +34,12 @@ import org.volante.abm.serialization.Initialisable;
 public interface Regions extends Initialisable
 {
 	public String getID();
+
+	/**
+	 * Provides the region itself and all sub-regions.
+	 * 
+	 * @return set of regions itself and all sub-regions.
+	 */
 	public Iterable<Region> getAllRegions();
 
 	public Iterable<LandUseAgent> getAllAllocatedAgents();
@@ -44,6 +52,7 @@ public interface Regions extends Initialisable
 	public Map<String, FunctionalRole> getFunctionalRoleMapByLabel();
 	public Map<Integer, FunctionalRole> getFunctionalRoleMapBySerialId();
 
+	public Collection<FunctionalRole> getFunctionalRoles();
 	public Extent getExtent();
 	public int getNumCells();
 }

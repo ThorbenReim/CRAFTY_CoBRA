@@ -25,7 +25,7 @@ package org.volante.abm.schedule;
 
 
 /**
- * marker interface for pre- and post tick actions.
+ * marker interface for prepre-, pre- and post tick actions.
  * 
  * @author Sascha Holzhauer
  * 

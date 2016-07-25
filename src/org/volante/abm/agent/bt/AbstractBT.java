@@ -24,6 +24,7 @@
 package org.volante.abm.agent.bt;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -61,11 +62,11 @@ public abstract class AbstractBT implements BehaviouralType {
 	@Attribute
 	protected int serialID = UNKNOWN_SERIAL;
 
-	@ElementList(name = "triggers", entry = "trigger", required = false)
-	protected Set<DecisionTrigger> triggerSet = new LinkedHashSet<DecisionTrigger>();
+	@ElementList(name = "triggers", entry = "trigger", required = false, inline = false)
+	protected Set<DecisionTrigger> triggerSet = new LinkedHashSet<>();
 
 	@ElementMap(entry = "agentProperty", key = "name", attribute = true, required = false, inline = true)
-	protected Map<String, Double> agentProperties2Set = new HashMap<String, Double>();
+	protected Map<String, Double> agentProperties2Set = new HashMap<>();
 
 	protected boolean initialised = false;
 
@@ -81,7 +82,7 @@ public abstract class AbstractBT implements BehaviouralType {
 
 		for (DecisionTrigger trigger : this.triggerSet) {
 			if (trigger instanceof GloballyInitialisable || trigger instanceof Initialisable) {
-				((GloballyInitialisable) trigger).initialise(data, info, extent);
+				((GloballyInitialisable) trigger).initialise(data, info);
 			}
 		}
 	}
@@ -150,7 +151,7 @@ public abstract class AbstractBT implements BehaviouralType {
 	/**
 	 * @see org.volante.abm.agent.bt.BehaviouralType#getDecisionTriggers()
 	 */
-	public Iterable<DecisionTrigger> getDecisionTriggers() {
-		return this.triggerSet;
+	public Set<DecisionTrigger> getDecisionTriggers() {
+		return new HashSet<>(this.triggerSet);
 	}
 }

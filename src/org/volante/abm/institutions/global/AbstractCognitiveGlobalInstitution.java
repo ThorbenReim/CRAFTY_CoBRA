@@ -30,10 +30,10 @@ import org.simpleframework.xml.Attribute;
 import org.volante.abm.agent.property.PropertyRegistry;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
+import org.volante.abm.data.Regions;
 import org.volante.abm.example.GlobalBtRepository;
 import org.volante.abm.institutions.AbstractCognitiveInstitution;
 import org.volante.abm.schedule.RunInfo;
-import org.volante.abm.serialization.ScenarioLoader;
 
 /**
  * @author Sascha Holzhauer
@@ -50,18 +50,18 @@ public abstract class AbstractCognitiveGlobalInstitution extends AbstractCogniti
 	}
 
 	/**
-	 * @see org.volante.abm.institutions.global.GlobalInstitution#initialise(org.volante.abm.schedule.RunInfo,
-	 *      org.volante.abm.data.ModelData, org.volante.abm.serialization.ScenarioLoader)
+	 * @see org.volante.abm.institutions.global.GlobalInstitution#initialise(org.volante.abm.data.ModelData,
+	 *      org.volante.abm.schedule.RunInfo)
 	 */
 	@Override
-	public void initialise(RunInfo rinfo, ModelData mdata, ScenarioLoader sloader) {
+	public void initialise(ModelData mdata, RunInfo rinfo) {
 		this.modelData = mdata;
 		this.rInfo = rinfo;
 
 		// register
 		GlobalInstitutionsRegistry.getInstance().registerGlobalInstitution(this);
 
-		for (Region region : sloader.getRegions().getAllRegions()) {
+		for (Region region : this.modelData.getRootRegionSet().getAllRegions()) {
 			region.getInstitutions().addInstitution(this);
 		}
 
@@ -80,8 +80,21 @@ public abstract class AbstractCognitiveGlobalInstitution extends AbstractCogniti
 
 	}
 
+	/**
+	 * @see org.volante.abm.institutions.AbstractCognitiveInstitution#initialise(org.volante.abm.data.ModelData,
+	 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Region)
+	 */
 	@Override
 	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
 		super.initialise(data, info, GlobalBtRepository.getInstance().getPseudoRegion());
+	}
+
+
+		/**
+	 * @see org.volante.abm.institutions.global.GlobalInstitution#getRegionSet()
+	 */
+	@Override
+	public Regions getRegionSet() {
+		return this.modelData.getRootRegionSet();
 	}
 }

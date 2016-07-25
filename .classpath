@@ -65,7 +65,7 @@
 	<classpathentry exported="true" kind="lib" path="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/net.java.dev.jsr-275/jsr-275/1.0-beta-2/7bdd90125e67cd38bee363208e32993c0c75e9be/jsr-275-1.0-beta-2.jar" sourcepath="C:/Users/sholzhau/.gradle/caches/modules-2/files-2.1/net.java.dev.jsr-275/jsr-275/1.0-beta-2/d6ad47c9432e76c6f727fd10e1128e919033dd60/jsr-275-1.0-beta-2-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/LARA_Base.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/LARA_Toolbox.jar"/>
-	<classpathentry kind="lib" path="lib/mpi.jar"/>
+	<classpathentry kind="lib" path="lib/mpi.jar" sourcepath="C:/Data/LURG/Crafty/ParallelComputing/mpiJava-source-1.2.7/src/Java"/>
 	<classpathentry kind="lib" path="lib/jep_ext-1.1.1.jar" sourcepath="C:/Data/General/JavaLibraries/jep-2.4.1-ext-1.1.1-gpl/src"/>
 	<classpathentry kind="lib" path="lib/jep-2.4.1.jar" sourcepath="C:/Data/General/JavaLibraries/jep-2.4.1-ext-1.1.1-gpl/src"/>
 	<classpathentry kind="output" path="bin"/>

@@ -37,6 +37,8 @@ import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.RegionSet;
 import org.volante.abm.example.RegionalDemandModel;
+import org.volante.abm.institutions.global.GlobalInstitution;
+import org.volante.abm.institutions.global.GlobalInstitutionsRegistry;
 import org.volante.abm.models.WorldSynchronisationModel;
 import org.volante.abm.output.Outputs;
 import org.volante.abm.schedule.ScheduleStatusEvent.ScheduleStage;
@@ -119,6 +121,11 @@ public class DefaultSchedule implements WorldSyncSchedule {
 			a.tickStartUpdate();
 		}
 
+		for (GlobalInstitution institution : GlobalInstitutionsRegistry.getInstance().getGlobalInstitutions()) {
+			if (institution instanceof Agent) {
+				((Agent) institution).tickStartUpdate();
+			}
+		}
 		for (Region r : regions.getAllRegions()) {
 			if (r.hasInstitutions()) {
 				r.getInstitutions().tickStartUpdate();

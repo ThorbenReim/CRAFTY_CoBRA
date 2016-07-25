@@ -25,6 +25,7 @@ package org.volante.abm.data;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -63,6 +64,8 @@ public class RegionSet implements Regions {
 
 	/**
 	 * Initialisation: Initialises regions and updates extent.
+	 * 
+	 * TODO does not consider provided region
 	 * 
 	 * @see org.volante.abm.serialization.Initialisable#initialise(org.volante.abm.data.ModelData,
 	 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Region)
@@ -234,6 +237,19 @@ public class RegionSet implements Regions {
 
 		for (Regions region : regions) {
 			functionalRoles.putAll(region.getFunctionalRoleMapBySerialId());
+		}
+		return functionalRoles;
+	}
+	
+	/**
+	 * @see org.volante.abm.data.Regions#getFunctionalRoleMapBySerialId()
+	 */
+	@Override
+	public Collection<FunctionalRole> getFunctionalRoles() {
+		Set<FunctionalRole> functionalRoles = new HashSet<FunctionalRole>();
+
+		for (Regions region : regions) {
+			functionalRoles.addAll(region.getFunctionalRoles());
 		}
 		return functionalRoles;
 	}

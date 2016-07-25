@@ -6,4 +6,7 @@
 	<preference>Competitiveness</preference>
 	<preference>SocialApproval</preference>
 	<preference>NeighbourApproval</preference>
+	
+	<preference>Costefficiency</preference>
+	<preference>GlobalDemandMatching</preference>
 </preferenceList>

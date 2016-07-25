@@ -28,10 +28,12 @@ import org.volante.abm.agent.Agent;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.decision.pa.CraftyPa;
+import org.volante.abm.institutions.global.GlobalInstitution;
+import org.volante.abm.lara.CobraLaraXmlAgentConfigurator;
 import org.volante.abm.schedule.RunInfo;
+import org.volante.abm.serialization.GloballyInitialisable;
 
 import de.cesr.lara.toolbox.config.LaraAgentConfigurator;
-import de.cesr.lara.toolbox.config.xml.LXmlAgentConfigurator;
 
 /**
  * @author Sascha Holzhauer
@@ -40,11 +42,15 @@ import de.cesr.lara.toolbox.config.xml.LXmlAgentConfigurator;
 public class CognitiveBT extends AbstractBT {
 
 	@Element(name = "laraAgentConfigurator", required = false)
-	LaraAgentConfigurator<LaraBehaviouralComponent, CraftyPa<?>> laraAgentConfigurator = new LXmlAgentConfigurator<LaraBehaviouralComponent, CraftyPa<?>>();
+	LaraAgentConfigurator<LaraBehaviouralComponent, CraftyPa<?>> laraAgentConfigurator =
+	        new CobraLaraXmlAgentConfigurator();
 
 	public void initialise(ModelData data, RunInfo info, Region extent)
 			throws Exception {
 		super.initialise(data, info, extent);
+		if (laraAgentConfigurator instanceof GloballyInitialisable) {
+			((GloballyInitialisable) laraAgentConfigurator).initialise(data, info);
+		}
 		this.laraAgentConfigurator.load(extent);
 	}
 	/**
@@ -56,6 +62,20 @@ public class CognitiveBT extends AbstractBT {
 		LaraBehaviouralComponent bc = new CognitiveBC(this, agent);
 		agent.setBC(bc);
 		laraAgentConfigurator.configure(bc);
+
+		// init PAs
+		if (agent instanceof GlobalInstitution) {
+			for (CraftyPa<?> cpa : ((LaraBehaviouralComponent) agent.getBC()).getLaraComp().getBOMemory()
+			        .recallAllMostRecent()) {
+				if (cpa instanceof GloballyInitialisable) {
+					try {
+						((GloballyInitialisable) cpa).initialise(this.region.getModelData(), this.region.getRinfo());
+					} catch (Exception exception) {
+						exception.printStackTrace();
+					}
+				}
+			}
+		}
 		return agent;
 	}
 }

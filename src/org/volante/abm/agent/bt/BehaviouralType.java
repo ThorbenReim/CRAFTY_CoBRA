@@ -23,6 +23,9 @@
  */
 package org.volante.abm.agent.bt;
 
+
+import java.util.Set;
+
 import org.volante.abm.agent.Agent;
 import org.volante.abm.data.Region;
 import org.volante.abm.decision.trigger.DecisionTrigger;
@@ -48,5 +51,5 @@ public interface BehaviouralType extends Initialisable {
 
 	public boolean removeDecisionTrigger(String id);
 
-	public Iterable<DecisionTrigger> getDecisionTriggers();
+	public Set<DecisionTrigger> getDecisionTriggers();
 }

@@ -25,7 +25,6 @@ package org.volante.abm.serialization;
 
 
 import org.volante.abm.data.ModelData;
-import org.volante.abm.data.Regions;
 import org.volante.abm.schedule.RunInfo;
 
 
@@ -46,5 +45,5 @@ public interface GloballyInitialisable {
 	 *        run information
 	 * @throws Exception
 	 */
-	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception;
+	public void initialise(ModelData data, RunInfo info) throws Exception;
 }

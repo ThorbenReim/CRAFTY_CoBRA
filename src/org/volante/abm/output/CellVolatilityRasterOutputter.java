@@ -27,7 +27,6 @@ import org.simpleframework.xml.Element;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
-import org.volante.abm.data.Regions;
 import org.volante.abm.models.AllocationModel;
 import org.volante.abm.models.utils.CellVolatilityMessenger;
 import org.volante.abm.models.utils.CellVolatilityObserver;
@@ -57,12 +56,12 @@ public class CellVolatilityRasterOutputter extends RasterOutputter implements Gl
 
 	/**
 	 * @see org.volante.abm.serialization.GloballyInitialisable#initialise(org.volante.abm.data.ModelData,
-	 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Regions)
+	 *      org.volante.abm.schedule.RunInfo)
 	 */
 	@Override
-	public void initialise(ModelData data, RunInfo info, Regions regions)
+	public void initialise(ModelData data, RunInfo info)
 			throws Exception {
-		for (Region r : regions.getAllRegions()) {
+		for (Region r : data.getRootRegionSet().getAllRegions()) {
 			if (r.getAllocationModel() instanceof CellVolatilityMessenger) {
 				((CellVolatilityMessenger) r.getAllocationModel())
 						.registerCellVolatilityOberserver(this.volatilityRecorder);

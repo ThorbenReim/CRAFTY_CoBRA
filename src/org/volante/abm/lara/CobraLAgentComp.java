@@ -154,6 +154,7 @@ public class CobraLAgentComp extends
 		if (decider.getNumSelectableBOs() > 0) {
 			CraftyPa<?> pa = decider.getSelectedBo();
 
+			// report selected PAs
 			for (ActionReporter paReporter : paReporters) {
 				paReporter.setActionInfos(
 						this.agent.getAgent(),
@@ -164,6 +165,7 @@ public class CobraLAgentComp extends
 								.getScore(pa) : Double.NaN);
 			}
 			
+			// report not selected PAs
 			for (CraftyPa<?> paction : decider.getSelectableBos()) {
 				if (paction != pa) {
 					for (ActionReporter paReporter : paReporters) {
@@ -177,6 +179,12 @@ public class CobraLAgentComp extends
 					}
 				}
 			}
+		}
+	}
+
+	public void reportActionPerformance(CraftyPa<?> pa) {
+		for (ActionReporter paReporter : paReporters) {
+			paReporter.setActionInfos(this.agent.getAgent(), pa);
 		}
 	}
 

@@ -104,7 +104,7 @@ public class Region implements Regions, PreTickAction {
 	Map<String, FunctionalRole> functionalRolesByLabel = new LinkedHashMap<String, FunctionalRole>();
 	Map<Integer, FunctionalRole> functionalRolesBySerialId = new LinkedHashMap<Integer, FunctionalRole>();
 
-	ModelData				data;
+	protected ModelData data;
 	RunInfo					rinfo;
 	Institutions institutions = null;
 	String					id							= "UnknownRegion";

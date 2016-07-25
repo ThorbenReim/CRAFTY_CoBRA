@@ -57,11 +57,11 @@ public class DisplayVideoWriter extends AbstractVideoWriter
 	
 
 	@Override
-	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception
+	public void initialise(ModelData data, RunInfo info) throws Exception
 	{
-		super.initialise(data, info, regions);
+		super.initialise(data, info);
 		
-		display.initialise(data, info, regions);
+		display.initialise(data, info, data.getRootRegionSet());
 
 		if( output == null || output.equals("") ) {
 			output = display.getTitle().replaceAll( "\\s", "" );

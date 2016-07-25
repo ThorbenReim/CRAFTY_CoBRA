@@ -62,7 +62,7 @@ public class ParameterCSVOutputter extends TableOutputter<Region> implements Glo
 
 
 	@Override
-	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception {
+	public void initialise(ModelData data, RunInfo info) throws Exception {
 		everyNYears = Integer.MAX_VALUE;
 		DecimalFormatSymbols decimalSymbols = new DecimalFormat()
 				.getDecimalFormatSymbols();
@@ -71,8 +71,8 @@ public class ParameterCSVOutputter extends TableOutputter<Region> implements Glo
 
 		addColumn(new RegionColumn());
 		
-		HashSet<String> processedColumns = new HashSet<String>();
-		for (Region r : regions.getAllRegions()) {
+		HashSet<String> processedColumns = new HashSet<>();
+		for (Region r : data.getRootRegionSet().getAllRegions()) {
 			for (String paramname : info.getParamRepos().getRegionParameters(r).keySet()) {
 				if (!processedColumns.contains(paramname)) {
 					addColumn(new ParameterColumn(paramname));

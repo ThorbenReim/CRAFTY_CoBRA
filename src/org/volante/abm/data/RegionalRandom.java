@@ -77,6 +77,11 @@ public class RegionalRandom {
 							((Integer) pm.getParam(RandomPa.RANDOM_SEED_RUN_ALLOCATION))));
 		}
 
+		if (!getURService().isGeneratorRegistered(RandomPa.RANDOM_SEED_RUN_INSTITUTIONS.name())) {
+			getURService().registerGenerator(RandomPa.RANDOM_SEED_RUN_INSTITUTIONS.name(),
+			        new MersenneTwister(((Integer) pm.getParam(RandomPa.RANDOM_SEED_RUN_INSTITUTIONS))));
+		}
+
 		if (!getURService().isGeneratorRegistered(RandomPa.RANDOM_SEED_RUN_GIVINGUP.name())) {
 			getURService().registerGenerator(RandomPa.RANDOM_SEED_RUN_GIVINGUP.name(),
 					new MersenneTwister(((Integer) pm.getParam(RandomPa.RANDOM_SEED_RUN_GIVINGUP))));

@@ -130,12 +130,12 @@ public abstract class AbstractVideoWriter implements CloseableOutput, Outputter,
 	protected Outputs	outputs;
 	protected RunInfo	info;
 	protected ModelData	data;
-	protected Regions regions;
 
 	@Override
 	public void open() {
 		try {
-			fn = outputs.getOutputFilename(output, ".avi", this.regions); // Construct proper output filename
+			fn = outputs.getOutputFilename(output, ".avi", this.data.getRootRegionSet()); // Construct proper output
+																						  // filename
 			File file = new File(fn);
 			Format format = new Format(MediaTypeKey, MediaType.VIDEO, //
 					EncodingKey, ENCODING_AVI_PNG,
@@ -201,12 +201,11 @@ public abstract class AbstractVideoWriter implements CloseableOutput, Outputter,
 	}
 
 	@Override
-	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception {
+	public void initialise(ModelData data, RunInfo info) throws Exception {
 		outputs = info.getOutputs();
 		outputs.registerClosableOutput(this);
 		this.info = info;
 		this.data = data;
-		this.regions = regions;
 	}
 
 	@Override

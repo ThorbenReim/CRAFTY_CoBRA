@@ -1,0 +1,13 @@
+<LBoFactoryList>
+	<bofactory class="org.volante.abm.institutions.pa.GlobalSubsidyPa$GlobalSubsidyPaFactory">
+		<key>GlobalSubsidyPa_HighIntensityArable</key>
+		<preferenceUtilities>
+			<utility pref="Costefficiency">0.5</utility>
+			<utility pref="GlobalDemandMatching">1.0</utility>
+			<utility pref="SocialApproval">0.5</utility>
+		</preferenceUtilities>
+		<agentclassname>org.volante.abm.agent.bt.LaraBehaviouralComponent</agentclassname>
+		<subsidisedFr>HighIntensityArable</subsidisedFr>
+		<serviceSubsidyFactor service="FOOD">2.0</serviceSubsidyFactor>
+	</bofactory>
+</LBoFactoryList>

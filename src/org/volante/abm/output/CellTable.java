@@ -102,10 +102,14 @@ public class CellTable extends TableOutputter<Cell> implements GloballyInitialis
 
 	protected Map<Region, PreAllocationStorageCleanupRegionHelper> cleanupHelpers = new HashMap<>();
 
+	/**
+	 * @see org.volante.abm.serialization.GloballyInitialisable#initialise(org.volante.abm.data.ModelData,
+	 *      org.volante.abm.schedule.RunInfo)
+	 */
 	@Override
-	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception {
+	public void initialise(ModelData data, RunInfo info) throws Exception {
 		if (addPreAllocCompetitiveness | addPreAllocLandUse) {
-			for (Region r : regions.getAllRegions()) {
+			for (Region r : data.getRootRegionSet().getAllRegions()) {
 				PreAllocationStorageCleanupRegionHelper helper = new PreAllocationStorageCleanupRegionHelper();
 				cleanupHelpers.put(r, helper);
 				r.registerHelper(this, helper);

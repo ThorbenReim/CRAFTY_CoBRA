@@ -37,7 +37,9 @@ import de.cesr.lara.components.LaraPreference;
  *            <BO extends CraftyPo<BO>>
  */
 public abstract class CraftyPa<BO extends CraftyPa<BO>> extends
-		LaraBehaviouralOption<LaraBehaviouralComponent, CraftyPa<BO>> {
+        LaraBehaviouralOption<LaraBehaviouralComponent, CraftyPa<BO>> implements CraftyPaFeatures {
+
+	protected boolean initialPerformance = true;
 
 	/**
 	 * @param key
@@ -57,5 +59,16 @@ public abstract class CraftyPa<BO extends CraftyPa<BO>> extends
 	 */
 	public CraftyPa(String key, LaraBehaviouralComponent agent) {
 		super(key, agent);
+	}
+
+	/**
+	 * @see org.volante.abm.decision.pa.CraftyPaFeatures#reportRenewedActionPerformance()
+	 */
+	public void reportRenewedActionPerformance() {
+		if (!initialPerformance) {
+			this.getAgent().getLaraComp().reportActionPerformance(this);
+		} else {
+			this.initialPerformance = false;
+		}
 	}
 }

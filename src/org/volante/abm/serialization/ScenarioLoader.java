@@ -226,6 +226,11 @@ public class ScenarioLoader {
 		this.info.setLinksCsvBasedirCorrection(this.linkCsvBasedirCorrection != null ? this.linkCsvBasedirCorrection
 				: this.csvParamBasedirCorrection);
 
+		if (this.globalBtReposFile != null) {
+			GlobalBtRepository repos = persister.readXML(GlobalBtRepository.class, this.globalBtReposFile, null);
+			repos.initialise(modelData, info);
+		}
+
 		if (worldLoader == null && worldLoaderFile != null) {
 			// TODO override persister method
 			worldLoader = persister.readXML(WorldLoader.class, worldLoaderFile, null);
@@ -278,27 +283,26 @@ public class ScenarioLoader {
 			regions.addRegion(reg);
 		}
 		log.info("Final extent: " + regions.getExtent());
+
+		this.modelData.setRootRegionalSet(regions);
+
 		regions.initialise(modelData, info, null);
-		outputs.initialise(modelData, info, regions);
+
 
 		// global institutions:
 		log.info("About to initialise global institutions");
 		Set<GlobalInstitution> institutions = new HashSet<GlobalInstitution>();
 
-		if (this.globalBtReposFile != null) {
-			GlobalBtRepository repos = persister.readXML(GlobalBtRepository.class, this.globalBtReposFile, null);
-			repos.initialise(modelData, info, getRegions());
-		}
-		
 		for (String institutionsFile : globalInstitutionFiles) {
 			institutions.addAll(persister.readXML(GlobalInstitutionsList.class, institutionsFile, null)
 					.getGlobalInstitutions());
 		}
 		for (GlobalInstitution institution : institutions) {
-			institution.initialise(info, modelData, this);
+			institution.initialise(modelData, info);
 		}
 
-		// initialisation
+		outputs.initialise(modelData, info);
+
 		if (displays == null) {
 			displays = new DefaultModelDisplays();
 		}

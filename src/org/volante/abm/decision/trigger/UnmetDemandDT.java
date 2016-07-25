@@ -5,25 +5,43 @@ package org.volante.abm.decision.trigger;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.bt.LaraBehaviouralComponent;
 import org.volante.abm.data.ModelData;
-import org.volante.abm.data.Regions;
 import org.volante.abm.data.Service;
+import org.volante.abm.example.GlobalBtRepository;
+import org.volante.abm.output.GenericTableOutputter;
+import org.volante.abm.param.RandomPa;
+import org.volante.abm.schedule.PreTickAction;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.schedule.WorldSyncSchedule;
 import org.volante.abm.serialization.GloballyInitialisable;
 
+import com.moseph.modelutils.distribution.Distribution;
+
+import de.cesr.lara.components.decision.LaraDecisionConfiguration;
+import de.cesr.lara.components.model.impl.LModel;
+
 
 /**
+ * Considers random stream {@link RandomPa#RANDOM_SEED_RUN_INSTITUTIONS} when
+ * <code>supplyDemandDiffFactorDistribution</code> is defined.
+ * 
  * @author Sascha Holzhauer
- *
+ * 
  */
 public class UnmetDemandDT extends AbstractDecisionTrigger implements GloballyInitialisable {
+
+	public enum TableOutputterColumns {
+		VALUE_REAL, VALUE_PERCEIVED, INSTITUTION;
+	}
 
 	/**
 	 * Logger
@@ -36,17 +54,24 @@ public class UnmetDemandDT extends AbstractDecisionTrigger implements GloballyIn
 	@Element(required = false)
 	protected int startTick = 0;
 
+	@Element(required = false)
+	protected int triggerDelay = 0;
+
 	protected List<Service> consideredServices = new ArrayList<>();
 
 	@Element(required = false)
 	protected double thresholdFraction = 0.2;
 
-	protected Regions regions = null;
+	@Element(required = false)
+	Distribution supplyDemandDiffFactorDistribution = null;
+
+	@Element(required = false)
+	protected String genericOutputterId = "UnmetDemandPerception";
+
 	protected RunInfo rInfo = null;
 	protected ModelData mData = null;
 
-	public void initialise(ModelData mData, RunInfo info, Regions regions) throws Exception {
-		this.regions = regions;
+	public void initialise(ModelData mData, RunInfo info) throws Exception {
 		this.rInfo = info;
 		this.mData = mData;
 
@@ -57,6 +82,11 @@ public class UnmetDemandDT extends AbstractDecisionTrigger implements GloballyIn
 				logger.warn("The specified service (" + serialService
 						+ ") for the subsidy is not defined in the model!");
 			}
+		}
+
+		if (this.supplyDemandDiffFactorDistribution != null) {
+			this.supplyDemandDiffFactorDistribution.init(GlobalBtRepository.getInstance().getPseudoRegion().getRandom()
+			        .getURService(), RandomPa.RANDOM_SEED_RUN_INSTITUTIONS.name());
 		}
 	}
 
@@ -80,7 +110,7 @@ public class UnmetDemandDT extends AbstractDecisionTrigger implements GloballyIn
 	 * @see org.volante.abm.decision.trigger.DecisionTrigger#check(org.volante.abm.agent.Agent)
 	 */
 	@Override
-	public boolean check(Agent agent) {
+	public boolean check(final Agent agent) {
 		if (this.checkFormal(agent)) {
 			for (Service service : this.consideredServices) {
 				// get total demand across regions (account for distributed regions)
@@ -93,12 +123,56 @@ public class UnmetDemandDT extends AbstractDecisionTrigger implements GloballyIn
 				                -
 				        ((WorldSyncSchedule) this.rInfo.getSchedule()).getWorldSyncModel().getWorldSupply()
 				                        .get(service);
+				double perceived = difference;
+
+				if (this.supplyDemandDiffFactorDistribution != null) {
+					double factor = this.supplyDemandDiffFactorDistribution.sample();
+					perceived = difference * factor;
+					// <- LOGGING
+					if (logger.isDebugEnabled()) {
+						logger.debug("Noise factor applied to difference between supply and demand: " + factor);
+					}
+					// LOGGING ->
+
+					if (GenericTableOutputter.hasGenericTableOutputter(this.genericOutputterId)) {
+						Map<String, Object> datamap = new HashMap<>();
+						datamap.put(TableOutputterColumns.VALUE_REAL.toString(), new Double(difference));
+						datamap.put(TableOutputterColumns.VALUE_PERCEIVED.toString(), new Double(perceived));
+						datamap.put(TableOutputterColumns.INSTITUTION.toString(), agent);
+						GenericTableOutputter.getGenericTabelOutputter(this.genericOutputterId).setData(datamap,
+						        agent.getRegion());
+					}
+				}
 
 				// <- LOGGING
-				logger.info("> " + service + ": " + difference / demand + " (" + this.thresholdFraction + ")");
+				logger.info("> " + service + ": " + perceived / demand + " (" + this.thresholdFraction + ")");
 				// LOGGING ->
 
-				if (difference > demand * this.thresholdFraction) {
+				if (perceived > demand * this.thresholdFraction) {
+
+					final LaraDecisionConfiguration dConfig =
+					        LModel.getModel(agent.getRegion()).getDecisionConfigRegistry().get(this.dcId);
+					final double perceivedFinal = perceived;
+
+					if (this.triggerDelay > 0) {
+						PreTickAction action = new PreTickAction() {
+							int intialTick = rInfo.getSchedule().getCurrentTick();
+
+							@Override
+							public void preTick() {
+								if (rInfo.getSchedule().getCurrentTick() == triggerDelay + intialTick) {
+									((LaraBehaviouralComponent) agent.getBC()).subscribeOnce(dConfig,
+									        new InformedTrigger(UnmetDemandDT.this, "Gap:" + perceivedFinal));
+									rInfo.getSchedule().unregister(this);
+								}
+							}
+						};
+						this.rInfo.getSchedule().register(action);
+
+					} else {
+						((LaraBehaviouralComponent) agent.getBC()).subscribeOnce(dConfig, new InformedTrigger(this,
+						        "Gap:" + perceived));
+					}
 					return true;
 				}
 			}

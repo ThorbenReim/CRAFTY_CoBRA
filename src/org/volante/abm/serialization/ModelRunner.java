@@ -141,7 +141,8 @@ public class ModelRunner
 						: true) {
 					clog("CurrentRun", "" + i);
 					clog("TotalRuns", "" + numRuns);
-					clog("RandomSeed", "" + randomSeed);
+					clog("CurrentRandomSeed", "" + randomSeed);
+					clog("TotalRandomSeeds", "" + numOfRandVariation);
 
 					PmParameterManager.getInstance(null).setParam(RandomPa.RANDOM_SEED, randomSeed);
 

@@ -21,4 +21,10 @@
 		<preference>PreferenceA</preference>
 		<preference>PreferenceB</preference>
 	</dConfig>
+	<dConfig>
+		<id>GlobalInstitutionalAction</id>
+		<preference>Costefficiency</preference>
+		<preference>GlobalDemandMatching</preference>
+		<preference>SocialApproval</preference>
+	</dConfig>
 </decisonConfigurations>

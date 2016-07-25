@@ -1,4 +1,21 @@
 <bTypes>
 	<bType label="CognitiveInst" serialID="10" class="org.volante.abm.agent.bt.CognitiveBT">
+		<triggers>
+			<trigger class="org.volante.abm.decision.trigger.UnmetDemandDT" 
+				id="UnmetDemandCerealDT">
+				<dcId>GlobalInstitutionalAction</dcId>
+				<consideredService>FOOD</consideredService>
+				<thresholdFraction>0.01</thresholdFraction>
+				<startTick>2001</startTick>
+			</trigger>
+		</triggers>
+		
+		<laraAgentConfigurator class="org.volante.abm.lara.CobraLaraXmlAgentConfigurator">
+			<bofile>./pas/GlobalSubsidisingInstPasA.xml</bofile>
+			
+			<preferenceWeight pref="Costefficiency">1.0</preferenceWeight>
+			<preferenceWeight pref="GlobalDemandMatching">1.0</preferenceWeight>
+			<preferenceWeight pref="SocialApproval">0.8</preferenceWeight>
+		</laraAgentConfigurator>
 	</bType>
 </bTypes>

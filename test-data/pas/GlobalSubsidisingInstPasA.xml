@@ -1,0 +1,11 @@
+<LBoFactoryList>
+	<bofactory class="org.volante.abm.institutions.pa.GlobalSubsidyPa$GlobalSubsidyPaFactory">
+		 <key>DoNothing</key>
+		 <preferenceUtilities>
+			 <utility pref="Costefficiency">1.0</utility>
+			 <utility pref="GlobalDemandMatching">0.0</utility>
+			 <utility pref="SocialApproval">0.3</utility>
+		 </preferenceUtilities>
+		 <agentclassname>org.volante.abm.agent.bt.LaraBehaviouralComponent</agentclassname>
+	</bofactory>
+</LBoFactoryList>

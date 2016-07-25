@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.volante.abm.agent.bt.LaraBehaviouralComponent;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -37,6 +38,7 @@ import org.volante.abm.institutions.global.GlobalInstitutionsRegistry;
 import org.volante.abm.institutions.global.GlobalSubsidisingInstitution;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.ABMPersister;
+import org.volante.abm.serialization.PotentialActionInitialiser;
 import org.volante.abm.serialization.ScenarioLoader;
 
 /**
@@ -46,7 +48,9 @@ import org.volante.abm.serialization.ScenarioLoader;
 public class GlobalSubsidyInstitutionTest {
 
 	protected static final String SCENARIO_LOADER_XML_FILE = "xml/globalinstitutions/Scenario.xml";
+	protected static final String FILENAME_PA_B = "./pas/GlobalSubsidisingInstPasB.xml";
 	protected static final int NUM_DEFINED_INSTITUTIONS = 1;
+	protected static final double SUBSIDIES_FACTOR = 2.0;
 
 	public static RunInfo runInfo = new RunInfo();
 	public static ModelData modelData = new ModelData();
@@ -82,8 +86,8 @@ public class GlobalSubsidyInstitutionTest {
 				this.globalInstitution = (GlobalSubsidisingInstitution) institution;
 			}
 		}
-		this.globalInstitution.initialise(runInfo,
-		        loader.getRegions().getAllRegions().iterator().next().getModelData(), loader);
+		this.globalInstitution
+		        .initialise(loader.getRegions().getAllRegions().iterator().next().getModelData(), runInfo);
 		runInfo.getSchedule().tick();
 		runInfo.getSchedule().tick();
 	}
@@ -113,21 +117,28 @@ public class GlobalSubsidyInstitutionTest {
 	 */
 	@Test
 	public void testAdjustCompetitiveness() {
-		// check competition without subsidies
-		this.globalInstitution.setOverallEffect(0.0);
+		// check competition without subsidies (DO_NOTHING)
 		for (Region region : loader.getRegions().getAllRegions()) {
 			for (Cell cell : region.getCells()) {
 				// supply * residual
 				assertEquals(20.0 * 50.0, region.getCompetitiveness(cell), 0.0001);
 			}
 		}
+		// add PA to subsidy:
+		try {
+			PotentialActionInitialiser.addPa((LaraBehaviouralComponent) this.globalInstitution.getBC(), FILENAME_PA_B,
+			        loader.getRegions().getAllRegions().iterator().next().getModelData(), runInfo);
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+
+		runInfo.getSchedule().tick();
 
 		// check competition with subsidies
-		this.globalInstitution.setOverallEffect(1.0);
 		for (Region region : loader.getRegions().getAllRegions()) {
 			for (Cell cell : region.getCells()) {
 				// supply * (residual + overallEffect * subsidies)
-				assertEquals(20.0 * (50.0 + 1 * 2.0), region.getCompetitiveness(cell), 0.0001);
+				assertEquals(20.0 * (50.0 + 1 * SUBSIDIES_FACTOR), region.getCompetitiveness(cell), 0.0001);
 			}
 		}
 	}

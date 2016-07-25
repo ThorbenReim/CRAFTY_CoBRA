@@ -64,11 +64,11 @@ public class AggregateCellVolatilityCSVOutputter extends AggregateCSVOutputter i
 
 	/**
 	 * @see org.volante.abm.serialization.GloballyInitialisable#initialise(org.volante.abm.data.ModelData,
-	 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Regions)
+	 *      org.volante.abm.schedule.RunInfo)
 	 */
 	@Override
-	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception {
-		for (Region r : regions.getAllRegions()) {
+	public void initialise(ModelData data, RunInfo info) throws Exception {
+		for (Region r : data.getRootRegionSet().getAllRegions()) {
 			if (r.getAllocationModel() instanceof CellVolatilityMessenger) {
 				((CellVolatilityMessenger) r.getAllocationModel())
 						.registerCellVolatilityOberserver(this.volatilityRecorder);

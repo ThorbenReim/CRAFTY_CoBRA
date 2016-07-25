@@ -27,7 +27,9 @@ import org.volante.abm.agent.Agent;
 import org.volante.abm.decision.trigger.DecisionTrigger;
 import org.volante.abm.lara.CobraLAgentComp;
 
+import de.cesr.lara.components.agents.LaraDecisionModeProvidingAgent;
 import de.cesr.lara.components.decision.LaraDecisionConfiguration;
+import de.cesr.lara.components.decision.LaraDecisionModes;
 import de.cesr.lara.components.eventbus.events.LaraEvent;
 import de.cesr.lara.components.model.impl.LModel;
 
@@ -36,7 +38,8 @@ import de.cesr.lara.components.model.impl.LModel;
  *
  */
 public class CognitiveBC extends AbstractIndividualBC implements
- LaraBehaviouralComponent {
+ LaraBehaviouralComponent,
+        LaraDecisionModeProvidingAgent {
 
 
 	protected CobraLAgentComp laraComp;
@@ -88,5 +91,17 @@ public class CognitiveBC extends AbstractIndividualBC implements
 
 	public String toString() {
 		return "CogBC [" + agent + "]";
+	}
+
+	/**
+	 * @see de.cesr.lara.components.agents.LaraDecisionModeProvidingAgent#getDecisionModeSuggestion()
+	 */
+	@Override
+	public LaraDecisionModes getDecisionModeSuggestion() {
+		if (this.getAgent() instanceof LaraDecisionModeProvidingAgent) {
+			return ((LaraDecisionModeProvidingAgent) this.getAgent()).getDecisionModeSuggestion();
+		} else {
+			return null;
+		}
 	}
 }

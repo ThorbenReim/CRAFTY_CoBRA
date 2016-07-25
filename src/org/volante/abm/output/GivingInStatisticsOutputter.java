@@ -76,12 +76,12 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 	Map<Region, Map<FunctionalRole, Bag<Integer>>> numSearchedCells = new HashMap<>();
 
 	@Override
-	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception {
+	public void initialise(ModelData data, RunInfo info) throws Exception {
 		if (this.startYear <= info.getSchedule().getStartTick()) {
 			logger.warn("This outputter's start year must be after the initial simulation year!");
 		}
 
-		for (Region r : regions.getAllRegions()) {
+		for (Region r : data.getRootRegionSet().getAllRegions()) {
 			if (r.getAllocationModel() instanceof GivingInStatisticsMessenger) {
 				((GivingInStatisticsMessenger) r.getAllocationModel())
 						.registerGivingInStatisticOberserver(this);

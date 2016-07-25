@@ -45,5 +45,14 @@ public interface ActionReporter {
 	public void setActionInfos(Agent agent, DecisionTrigger trigger, LaraDecisionConfiguration dconfig, CraftyPa<?> pa,
 			double score, boolean selected);
 
+	/**
+	 * Intended for renewed actions that have been set before. These are set anew when an action's performed without a
+	 * new decision process.
+	 * 
+	 * @param agent
+	 * @param pa
+	 */
+	public void setActionInfos(Agent agent, CraftyPa<?> pa);
+
 	public void registerAtAgent(Agent agent);
 }

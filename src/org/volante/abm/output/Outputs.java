@@ -70,18 +70,18 @@ public class Outputs implements GloballyInitialisable {
 	@Attribute(required = false)
 	String					outputsFile				= "";
 	@ElementList(inline = true, required = false, entry = "output")
-	List<Outputter>			outputs					= new ArrayList<Outputter>();
+	List<Outputter> outputs = new ArrayList<>();
 	@Attribute(required = false)
 	boolean					clearExistingFiles		= true;
 	Logger					log						= Logger.getLogger(getClass());
 	protected RunInfo		runInfo					= null;
 	protected ModelData		modelData				= null;
-	List<CloseableOutput>	outputsToClose			= new ArrayList<CloseableOutput>();
+	List<CloseableOutput> outputsToClose = new ArrayList<>();
 
 	Thread					shutdownHookThread;
 
 	@Override
-	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception {
+	public void initialise(ModelData data, RunInfo info) throws Exception {
 		runInfo = info;
 		modelData = data;
 		// Setup timestamp for output
@@ -101,7 +101,7 @@ public class Outputs implements GloballyInitialisable {
 			o.setOutputManager(this);
 			o.initialise(); // Outputs do their own scheduling in initialise();
 			if (o instanceof GloballyInitialisable) {
-				((GloballyInitialisable) o).initialise(data, info, regions);
+				((GloballyInitialisable) o).initialise(data, info);
 			}
 			o.open();
 		}
@@ -160,7 +160,7 @@ public class Outputs implements GloballyInitialisable {
 	 * @return output filename
 	 */
 	public String getOutputFilename(String output, String extension, String pattern, Regions r) {
-		Map<String, String> extra = new HashMap<String, String>();
+		Map<String, String> extra = new HashMap<>();
 		if (r != null) {
 			extra.put("r", r.getID());
 		}

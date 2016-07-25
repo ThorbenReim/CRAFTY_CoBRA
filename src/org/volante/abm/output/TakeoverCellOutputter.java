@@ -91,9 +91,9 @@ public class TakeoverCellOutputter extends TableOutputter<RegionFunctionalRole> 
 	 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Regions)
 	 */
 	@Override
-	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception {
+	public void initialise(ModelData data, RunInfo info) throws Exception {
 		this.rInfo = info;
-		for (Region r : regions.getAllRegions()) {
+		for (Region r : data.getRootRegionSet().getAllRegions()) {
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {
 				logger.debug("TakeoverCellOutputter: Init (register takeover observer for) region " + r

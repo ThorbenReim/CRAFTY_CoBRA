@@ -24,7 +24,6 @@
 package org.volante.abm.output;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,6 +40,7 @@ import org.volante.abm.data.Region;
 import org.volante.abm.data.Regions;
 import org.volante.abm.decision.pa.CraftyPa;
 import org.volante.abm.decision.trigger.DecisionTrigger;
+import org.volante.abm.example.GlobalBtRepository;
 import org.volante.abm.institutions.global.GlobalInstitution;
 import org.volante.abm.institutions.global.GlobalInstitutionsRegistry;
 import org.volante.abm.lara.CobraLAgentComp;
@@ -68,6 +68,20 @@ public class ActionCSVOutputter extends TableOutputter<TableEntry> implements Ac
 	@Attribute(required = false)
 	boolean addBtLabel = true;
 
+	/**
+	 * Adds actions of global institutions to regional files.
+	 */
+	@Attribute(required = false)
+	boolean addGlobalActionsToRegions = true;
+
+	/**
+	 * Outputs actions of global institutions to a separate file. If both addGlobalActionsToRegions and
+	 * outputGlobalActionsSeparately are true, global actions will be output both into region files and in a separate
+	 * file.
+	 */
+	@Attribute(required = false)
+	boolean outputGlobalActionsSeparately = false;
+
 	@ElementList(required = false, entry = "column", inline = true)
 	List<TableColumn<TableEntry>> additionalColumns = new ArrayList<>();
 
@@ -84,6 +98,7 @@ public class ActionCSVOutputter extends TableOutputter<TableEntry> implements Ac
 	boolean addRegion = true;
 
 	Map<Region, Set<TableEntry>> actions = new HashMap<>();
+	Map<Region, Set<TableEntry>> lastActions = new HashMap<>();
 
 	public class TableEntry {
 		protected Agent agent;
@@ -112,18 +127,33 @@ public class ActionCSVOutputter extends TableOutputter<TableEntry> implements Ac
 	 * Register at agents, regional institutions, and global institutions.
 	 * 
 	 * @see org.volante.abm.serialization.GloballyInitialisable#initialise(org.volante.abm.data.ModelData,
-	 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Regions)
+	 *      org.volante.abm.schedule.RunInfo)
 	 */
 	@Override
-	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception {
+	public void initialise(ModelData data, RunInfo info) throws Exception {
 		info.getSchedule().register(this);
-		for (Region r : regions.getAllRegions()) {
+		for (Region r : data.getRootRegionSet().getAllRegions()) {
 			r.registerPaReporter(this);
 		}
 		for (GlobalInstitution institution : GlobalInstitutionsRegistry.getInstance().getGlobalInstitutions()) {
 			if (institution instanceof Agent) {
 				this.registerAtAgent((Agent) institution);
 			}
+		}
+	}
+
+	@Override
+	public void doOutput(Regions regions) {
+		if (perRegion) {
+
+			for (Region r : regions.getAllRegions()) {
+				writeFile(r);
+			}
+			if (this.outputGlobalActionsSeparately) {
+				writeFile(GlobalBtRepository.getInstance().getPseudoRegion());
+			}
+		} else {
+			writeFile(regions);
 		}
 	}
 
@@ -165,10 +195,6 @@ public class ActionCSVOutputter extends TableOutputter<TableEntry> implements Ac
 		}
 	}
 
-	public void writeData(Iterable<TableEntry> data, Regions r) throws IOException {
-		super.writeData(data, r);
-
-	}
 
 	public class BtLabelColumn implements TableColumn<TableEntry> {
 
@@ -311,6 +337,27 @@ public class ActionCSVOutputter extends TableOutputter<TableEntry> implements Ac
 		this.setActionInfos(agent, trigger, dconfig, pa, score, true);
 	}
 
+
+	/**
+	 * @see org.volante.abm.output.ActionReporter#setActionInfos(org.volante.abm.agent.Agent,
+	 *      org.volante.abm.decision.pa.CraftyPa)
+	 */
+	public void setActionInfos(Agent agent, CraftyPa<?> pa) {
+		TableEntry lastEntry = null;
+		for (TableEntry te : this.lastActions.get(pa.getAgent().getAgent().getRegion())) {
+			if (te.getPa().equals(pa)) {
+				lastEntry = te;
+				break;
+			}
+		}
+		if (lastEntry == null) {
+			log.warn("There is no action stored at last tick for this renewed action: " + pa + "!");
+		} else {
+			this.actions.get(pa.getAgent().getAgent().getRegion()).add(
+			        new TableEntry(agent, lastEntry.trigger, lastEntry.dConfig, pa, lastEntry.score, true));
+		}
+	}
+
 	/**
 	 * @see org.volante.abm.output.TableOutputter#getData(org.volante.abm.data.Regions)
 	 */
@@ -322,6 +369,11 @@ public class ActionCSVOutputter extends TableOutputter<TableEntry> implements Ac
 				tes.addAll(actions.get(region));
 			}
 		}
+		if (addGlobalActionsToRegions) {
+			if (actions.containsKey(GlobalBtRepository.getInstance().getPseudoRegion())) {
+				tes.addAll(actions.get(GlobalBtRepository.getInstance().getPseudoRegion()));
+			}
+		}
 		return tes;
 	}
 
@@ -331,6 +383,11 @@ public class ActionCSVOutputter extends TableOutputter<TableEntry> implements Ac
 	@Override
 	public void prePreTick() {
 		for (Region region : actions.keySet()) {
+			if (!this.lastActions.containsKey(region)) {
+				this.lastActions.put(region, new HashSet<TableEntry>());
+			}
+			this.lastActions.get(region).clear();
+			this.lastActions.get(region).addAll(actions.get(region));
 			actions.get(region).clear();
 		}
 	}

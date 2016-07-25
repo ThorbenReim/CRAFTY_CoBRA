@@ -22,17 +22,18 @@
 package org.volante.abm.output;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
 import org.simpleframework.xml.Attribute;
-import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Regions;
+import org.volante.abm.example.measures.LandUseProportionMeasure;
 import org.volante.abm.schedule.RunInfo;
 
 
@@ -92,28 +93,9 @@ public class AggregateAFTCompositionCSVOutputter extends AggregateCSVOutputter {
 		}
 
 		for (Region r : regions.getAllRegions()) {
-
-			int[] pagentNumbers = new int[r.getFunctionalRoles().size()];
-			for (Agent a : r.getAgents()) {
-				if (a.getFC().getFR().getSerialID() >= 0) {
-					pagentNumbers[a.getFC().getFR().getSerialID()]++;
-				}
-			}
-
-			int sum = 0;
-			if (outputSums) {
-				sum = 1;
-			}
-			else {
-				for (int i = 0; i < pagentNumbers.length; i++) {
-					sum += pagentNumbers[i];
-				}
-			}
-			for (FunctionalRole fr : r.getFunctionalRoles()) {
-				aftData.get(r).put(
-						fr.getLabel(),
-						new Double((double) pagentNumbers[fr.getSerialID()] / sum));
-			}
+			ArrayList<Region> rlist = new ArrayList<>();
+			rlist.add(r);
+			aftData.put(r, LandUseProportionMeasure.getScore(rlist, outputSums));
 		}
 		super.doOutput(regions);
 	}

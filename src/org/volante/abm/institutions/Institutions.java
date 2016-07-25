@@ -35,6 +35,7 @@ import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
+import org.volante.abm.institutions.global.GlobalInstitution;
 import org.volante.abm.output.ActionReporter;
 import org.volante.abm.schedule.DefaultSchedule;
 import org.volante.abm.schedule.PreTickAction;
@@ -146,7 +147,7 @@ public class Institutions implements Institution, PreTickAction {
 	 */
 	public void tickStartUpdate() {
 		for (Institution i : institutions) {
-			if (i instanceof Agent) {
+			if (i instanceof Agent && !(i instanceof GlobalInstitution)) {
 				((Agent) i).tickStartUpdate();
 			}
 		}

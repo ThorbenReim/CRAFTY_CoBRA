@@ -39,8 +39,8 @@ import org.simpleframework.xml.ElementMap;
 import org.simpleframework.xml.ElementMapUnion;
 import org.volante.abm.agent.bt.BehaviouralType;
 import org.volante.abm.data.ModelData;
+import org.volante.abm.data.PseudoRegion;
 import org.volante.abm.data.Region;
-import org.volante.abm.data.Regions;
 import org.volante.abm.schedule.FinishAction;
 import org.volante.abm.schedule.PreTickAction;
 import org.volante.abm.schedule.RunInfo;
@@ -101,11 +101,12 @@ public class GlobalBtRepository extends LAbstractModel implements GloballyInitia
 
 	PmParameterManager pm;
 
-	Region pseudoRegion = new Region();
 
 	ModelData mData = null;
 	RunInfo rInfo = null;
 
+	PseudoRegion pseudoRegion = new PseudoRegion();
+	
 	@Element(required = false)
 	BTList bTypes = new BTList();
 
@@ -130,11 +131,14 @@ public class GlobalBtRepository extends LAbstractModel implements GloballyInitia
 	 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Regions)
 	 */
 	@Override
-	public void initialise(ModelData data, RunInfo info, Regions regions) throws Exception {
+	public void initialise(ModelData data, RunInfo info) throws Exception {
+		instance = this;
+
 		this.mData = data;
 		this.rInfo = info;
 
 		this.pseudoRegion.setID("PseudoRegion");
+		this.pseudoRegion.setModelData(data);
 
 		// init Lara Model
 
@@ -175,8 +179,6 @@ public class GlobalBtRepository extends LAbstractModel implements GloballyInitia
 
 		this.loadBehaviouralTypes();
 		this.addBehaviouralTypes();
-
-		instance = this;
 	}
 
 	protected void loadBehaviouralTypes() throws Exception {

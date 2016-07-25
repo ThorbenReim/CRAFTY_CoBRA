@@ -24,6 +24,7 @@
 package org.volante.abm.agent.bt;
 
 import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.DecisionTriggerPrecheckingAgent;
 import org.volante.abm.agent.property.DoublePropertyProvider;
 import org.volante.abm.agent.property.DoublePropertyProviderComp;
 import org.volante.abm.agent.property.PropertyId;
@@ -61,7 +62,8 @@ public abstract class AbstractBC implements BehaviouralComponent {
 	}
 
 	/**
-	 * @see org.volante.abm.agent.property.DoublePropertyProvider#setProperty(org.volante.abm.agent.property.PropertyId, double)
+	 * @see org.volante.abm.agent.property.DoublePropertyProvider#setProperty(org.volante.abm.agent.property.PropertyId,
+	 *      java.lang.Double)
 	 */
 	@Override
 	public void setProperty(PropertyId propertyId, Double value) {
@@ -84,9 +86,10 @@ public abstract class AbstractBC implements BehaviouralComponent {
 		return this.propertyProvider.getObjectProperty(property);
 	}
 
-	/**
-	 * @see org.volante.abm.agent.property.DoublePropertyProvider#setProperty(org.volante.abm.agent.property.PropertyId,
-	 *      double)
+
+		/**
+	 * @see org.volante.abm.agent.property.PropertyProvider#setObjectProperty(org.volante.abm.agent.property.PropertyId,
+	 *      java.lang.Object)
 	 */
 	@Override
 	public void setObjectProperty(PropertyId propertyId, Object value) {
@@ -98,8 +101,15 @@ public abstract class AbstractBC implements BehaviouralComponent {
 	 */
 	@Override
 	public void triggerDecisions(Agent agent) {
-		for (DecisionTrigger trigger : this.getType().getDecisionTriggers()) {
-			trigger.check(agent);
+		if (agent instanceof DecisionTriggerPrecheckingAgent) {
+			for (DecisionTrigger trigger : ((DecisionTriggerPrecheckingAgent) agent).preCheckDecisionTriggers(this
+			        .getType().getDecisionTriggers())) {
+				trigger.check(agent);
+			}
+		} else {
+			for (DecisionTrigger trigger : this.getType().getDecisionTriggers()) {
+				trigger.check(agent);
+			}			
 		}
 	}
 }
