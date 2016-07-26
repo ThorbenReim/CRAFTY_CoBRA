@@ -23,6 +23,10 @@
  */
 package org.volante.abm.data;
 
+
+import org.volante.abm.schedule.RunInfo;
+
+
 /**
  * @author Sascha Holzhauer
  *
@@ -32,8 +36,9 @@ public class PseudoRegion extends Region {
 	public PseudoRegion() {
 	}
 
-	public void setModelData(ModelData mdata) {
-		this.data = mdata;
+	@Override
+	public void initialise(ModelData data, RunInfo info, Region r) throws Exception {
+		this.data = data;
+		this.rinfo = info;
 	}
-
 }

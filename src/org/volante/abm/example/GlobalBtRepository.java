@@ -138,7 +138,7 @@ public class GlobalBtRepository extends LAbstractModel implements GloballyInitia
 		this.rInfo = info;
 
 		this.pseudoRegion.setID("PseudoRegion");
-		this.pseudoRegion.setModelData(data);
+		this.pseudoRegion.initialise(mData, rInfo, null);
 
 		// init Lara Model
 

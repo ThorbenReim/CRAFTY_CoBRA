@@ -261,11 +261,12 @@ public class GlobalSubsidyPa extends CraftyPa<GlobalSubsidyPa> implements LaraPe
 
 				totalpcounter += pcounter;
 				sum +=
-				        this.potentialTakeoversWeight > 0 ? pcounter / this.mData.getRootRegionSet().getNumCells()
+				        (double) pcounter
+				                / this.mData.getRootRegionSet().getNumCells()
 				                * this.potentialTakeoversWeight
-				                : 0 + allproduction > 0 ? (1 - this.potentialTakeoversWeight) * gap
+				                + (allproduction > 0 ? (1 - this.potentialTakeoversWeight) * gap
 				                * this.definedServiceSubsidies.get(service) * overallEffect * production
-				                / allproduction : 0;
+				                        / allproduction : 0);
 			}
 		}
 		utilities.put(
@@ -291,8 +292,8 @@ public class GlobalSubsidyPa extends CraftyPa<GlobalSubsidyPa> implements LaraPe
 	@Override
 	public void perform() {
 		if (this.getAgent().getAgent() instanceof GlobalSubsidisingInstitution) {
+			this.initialTick = Integer.MIN_VALUE;
 			((GlobalSubsidisingInstitution) this.getAgent().getAgent()).addCompAdjustPa(this);
-			// this.reportRenewedActionPerformance();
 		} else {
 			throw new IllegalStateException("This BO's associated agent should be a RegionalProvisionInstitution!");
 		}

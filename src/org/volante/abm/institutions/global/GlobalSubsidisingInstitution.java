@@ -138,7 +138,6 @@ public class GlobalSubsidisingInstitution extends AbstractCognitiveGlobalInstitu
 		}
 	}
 
-
 	/**
 	 * Multiplies given provision with service-specific subsidy factors, then multiplies this dot-product with
 	 * <code>overallEffect</code>.
@@ -152,10 +151,7 @@ public class GlobalSubsidisingInstitution extends AbstractCognitiveGlobalInstitu
 		double comp = competitiveness;
 		for (CompetitivenessAdjustingPa capa : this.compAdjustPas.values()) {
 			comp = capa.adjustCompetitiveness(agent, location, provision, comp);
-			if (reportedTick < this.rInfo.getSchedule().getCurrentTick()) {
-				capa.reportRenewedActionPerformance();
-				this.reportedTick = this.rInfo.getSchedule().getCurrentTick();
-			}
+			capa.reportRenewedActionPerformance();
 		}
 		return comp;
 	}

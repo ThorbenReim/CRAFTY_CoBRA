@@ -235,7 +235,8 @@ public class RegionalSubsidyPa extends CraftyPa<RegionalSubsidyPa> implements La
 
 				totalpcounter += pcounter;
 				sum +=
-				        pcounter / this.getAgent().getAgent().getRegion().getNumCells() * this.potentialTakeoversWeight
+				        (double) pcounter / this.getAgent().getAgent().getRegion().getNumCells()
+				                * this.potentialTakeoversWeight
 				                + allproduction > 0 ? (1 - this.potentialTakeoversWeight) * gap
 				                * this.definedServiceSubsidies.get(service) * overallEffect
 				                * production / allproduction : 0;
@@ -267,6 +268,7 @@ public class RegionalSubsidyPa extends CraftyPa<RegionalSubsidyPa> implements La
 	@Override
 	public void perform() {
 		if (this.getAgent().getAgent() instanceof RegionalProvisionInstitution) {
+			this.initialTick = Integer.MIN_VALUE;
 			((RegionalProvisionInstitution) this.getAgent().getAgent()).addCompAdjustPa(this);
 		} else {
 			throw new IllegalStateException("This BO's associated agent should be a RegionalProvisionInstitution!");

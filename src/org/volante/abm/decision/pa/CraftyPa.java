@@ -26,6 +26,7 @@ package org.volante.abm.decision.pa;
 import java.util.Map;
 
 import org.volante.abm.agent.bt.LaraBehaviouralComponent;
+import org.volante.abm.schedule.RunInfo;
 
 import de.cesr.lara.components.LaraBehaviouralOption;
 import de.cesr.lara.components.LaraPreference;
@@ -39,7 +40,9 @@ import de.cesr.lara.components.LaraPreference;
 public abstract class CraftyPa<BO extends CraftyPa<BO>> extends
         LaraBehaviouralOption<LaraBehaviouralComponent, CraftyPa<BO>> implements CraftyPaFeatures {
 
-	protected boolean initialPerformance = true;
+	protected int initialTick = Integer.MIN_VALUE;
+	protected int lastReportedTick = Integer.MIN_VALUE;
+	protected RunInfo rinfo;
 
 	/**
 	 * @param key
@@ -65,10 +68,14 @@ public abstract class CraftyPa<BO extends CraftyPa<BO>> extends
 	 * @see org.volante.abm.decision.pa.CraftyPaFeatures#reportRenewedActionPerformance()
 	 */
 	public void reportRenewedActionPerformance() {
-		if (!initialPerformance) {
+		if (this.initialTick == Integer.MIN_VALUE) {
+			this.rinfo = this.getAgent().getAgent().getRegion().getRinfo();
+			this.initialTick = this.rinfo.getSchedule().getCurrentTick();
+		}
+		if (this.initialTick < this.rinfo.getSchedule().getCurrentTick()
+		        && this.lastReportedTick < this.rinfo.getSchedule().getCurrentTick()) {
 			this.getAgent().getLaraComp().reportActionPerformance(this);
-		} else {
-			this.initialPerformance = false;
+			this.lastReportedTick = this.rinfo.getSchedule().getCurrentTick();
 		}
 	}
 }

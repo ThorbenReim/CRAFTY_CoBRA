@@ -50,8 +50,6 @@ public class RegionalProvisionInstitution extends AbstractCognitiveInstitution i
 	@Element(required = false)
 	protected TickChecker tickChecker = new DefaultTickChecker();
 
-	protected int reportedTick = Integer.MIN_VALUE;
-
 	protected int actionExpiry = Integer.MIN_VALUE;
 
 	/**
@@ -67,6 +65,7 @@ public class RegionalProvisionInstitution extends AbstractCognitiveInstitution i
 	 */
 	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
 		super.initialise(data, info, extent);
+		info.getSchedule().register(this);
 		extent.setHasCompetitivenessAdjustingInstitution();
 	}
 
@@ -76,10 +75,7 @@ public class RegionalProvisionInstitution extends AbstractCognitiveInstitution i
 		double comp = competitiveness;
 		for (CompetitivenessAdjustingPa capa : this.compAdjustPas.values()) {
 			comp = capa.adjustCompetitiveness(agent, location, provision, comp);
-			if (reportedTick < this.rInfo.getSchedule().getCurrentTick()) {
-				capa.reportRenewedActionPerformance();
-				this.reportedTick = this.rInfo.getSchedule().getCurrentTick();
-			}
+			capa.reportRenewedActionPerformance();
 		}
 		return comp;
 	}
@@ -109,7 +105,7 @@ public class RegionalProvisionInstitution extends AbstractCognitiveInstitution i
 	@Override
 	public Set<DecisionTrigger> preCheckDecisionTriggers(Set<DecisionTrigger> decisionTriggers) {
 		int tick = this.rInfo.getSchedule().getCurrentTick();
-		if (!tickChecker.check(tick) || !(this.allowMultipleActions || this.actionExpiry <= tick)) {
+		if (!tickChecker.check(tick) || !(this.allowMultipleActions || this.actionExpiry < tick)) {
 			decisionTriggers.clear();
 		}
 		return decisionTriggers;
