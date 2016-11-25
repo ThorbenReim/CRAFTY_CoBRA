@@ -50,6 +50,8 @@ public interface FunctionalRole extends Initialisable {
 
 	public ProductionModel getProduction();
 
+	public boolean isInitialised();
+
 	/**
 	 * Get the amount of services this {@link FunctionalRole} is expected to
 	 * supply, based on the (average) productivity.

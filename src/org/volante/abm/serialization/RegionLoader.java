@@ -34,6 +34,8 @@ import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.stream.NodeBuilder;
 import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.bt.BehaviouralType;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -334,6 +336,10 @@ public class RegionLoader {
 			bTypes.bTypes.addAll(LPersister.getPersister(region).readXML(
 					BTList.class, btFile).bTypes);
 		}
+		for (BehaviouralType bt : bTypes.bTypes) {
+			log.info("Initialise behavioural type: " + bt.getLabel());
+			bt.initialise(modelData, runInfo, region);
+		}
 	}
 
 	public void loadFunctionalRoles() throws Exception {
@@ -344,6 +350,10 @@ public class RegionLoader {
 
 			fRoles.fRoles.addAll(persister.readXML(FRList.class, frFile,
 					this.region.getPersisterContextExtra()).fRoles);
+		}
+		for (FunctionalRole fr : fRoles.fRoles) {
+			log.info("Initialise functional role: " + fr.getLabel());
+			fr.initialise(modelData, runInfo, region);
 		}
 	}
 

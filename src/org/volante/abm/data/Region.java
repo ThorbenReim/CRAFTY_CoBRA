@@ -347,14 +347,17 @@ public class Region implements Regions, PreTickAction {
 			c.initialise(data, info, this);
 		}
 
-		// TODO make sure BTs and FRs are not initialised twice!
 		try {
 			for (BehaviouralType type : behaviouralTypesByLabel.values()) {
-				type.initialise(data, rinfo, this);
+				if (!type.isInitialised()) {
+					type.initialise(data, rinfo, this);
+				}
 			}
 
 			for (FunctionalRole role : functionalRolesByLabel.values()) {
-				role.initialise(data, rinfo, this);
+				if (!role.isInitialised()) {
+					role.initialise(data, rinfo, this);
+				}
 			}
 		} catch (Exception exception) {
 			exception.printStackTrace();

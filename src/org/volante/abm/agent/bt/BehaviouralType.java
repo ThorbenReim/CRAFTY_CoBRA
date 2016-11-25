@@ -52,4 +52,6 @@ public interface BehaviouralType extends Initialisable {
 	public boolean removeDecisionTrigger(String id);
 
 	public Set<DecisionTrigger> getDecisionTriggers();
+
+	public boolean isInitialised();
 }

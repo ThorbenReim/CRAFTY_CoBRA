@@ -68,6 +68,8 @@ public abstract class AbstractFR implements FunctionalRole {
 	@Attribute(required = false)
 	protected double givingUpProbability = 1.0;
 
+	protected boolean initialised = false;
+
 	protected Set<FunctionalRoleProductionObserver> productionObserver = new HashSet<>();
 
 	public AbstractFR(String id, ProductionModel production) {
@@ -89,6 +91,14 @@ public abstract class AbstractFR implements FunctionalRole {
 	public void initialise(ModelData data, RunInfo info, Region region) throws Exception {
 		this.region = region;
 		production.initialise(data, info, region);
+		this.initialised = true;
+	}
+
+	/**
+	 * @see org.volante.abm.agent.fr.FunctionalRole#isInitialised()
+	 */
+	public boolean isInitialised() {
+		return this.initialised;
 	}
 
 	/**

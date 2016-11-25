@@ -78,13 +78,18 @@ public abstract class AbstractBT implements BehaviouralType {
 	public void initialise(ModelData data, RunInfo info, Region extent)
 			throws Exception {
 		this.region = extent;
-		this.initialised = true;
 
 		for (DecisionTrigger trigger : this.triggerSet) {
 			if (trigger instanceof GloballyInitialisable || trigger instanceof Initialisable) {
 				((GloballyInitialisable) trigger).initialise(data, info);
 			}
 		}
+		this.initialised = true;
+	}
+
+
+	public boolean isInitialised() {
+		return this.initialised;
 	}
 
 	public Agent assignNewBehaviouralComp(Agent agent) {
