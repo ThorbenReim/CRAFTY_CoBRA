@@ -33,6 +33,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections15.Transformer;
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
@@ -57,9 +58,11 @@ import org.volante.abm.schedule.RunInfo;
 import de.cesr.more.basic.MManager;
 import de.cesr.more.basic.edge.MoreEdge;
 import de.cesr.more.building.edge.MoreEdgeFactory;
+import de.cesr.more.building.network.AgentLabelFactory;
 import de.cesr.more.building.network.MoreNetworkService;
 import de.cesr.more.geo.building.edge.MDefaultGeoEdgeFactory;
 import de.cesr.more.geo.building.edge.MGeoNotifyingNetworkEdgeModifier;
+import de.cesr.more.geo.building.network.MGeoRestoreNetworkService;
 import de.cesr.more.geo.building.network.MoreGeoNetworkService;
 import de.cesr.more.param.MBasicPa;
 import de.cesr.more.param.MNetBuildBhPa;
@@ -273,7 +276,12 @@ public class SocialNetworkLoader {
 														"graphml",
 														(String) pm
 																.getParam(SocialNetworkPa.OUTPUT_NETWORK_AFTER_CREATION_TICKPATTERN),
-														region)));
+						                                region)), new Transformer<SocialAgent, String>() {
+							        @Override
+							        public String transform(SocialAgent input) {
+								        return input.getID();
+							        }
+						        });
 					}
 
 					if (nodeMeasures.size() > 0) {
@@ -314,6 +322,15 @@ public class SocialNetworkLoader {
 						setGeography(region.getGeography());
 				((MoreGeoNetworkService<SocialAgent, MoreEdge<SocialAgent>>) networkInitializer)
 						.setGeoRequestClass(SocialAgent.class);
+				if (networkInitializer instanceof MGeoRestoreNetworkService) {
+					((MGeoRestoreNetworkService) networkInitializer)
+					        .setAgentLabelFactory(new AgentLabelFactory<SocialAgent>() {
+						        @Override
+						        public String getLabel(SocialAgent agent) {
+							        return agent.getID();
+						        }
+					        });
+				}
 			}
 			networkInitializer.setEdgeModifier(new MGeoNotifyingNetworkEdgeModifier());
 

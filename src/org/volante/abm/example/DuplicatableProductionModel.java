@@ -3,7 +3,7 @@
  * 
  * CRAFTY - Competition for Resources between Agent Functional TYpes
  *
- * Copyright (C) 2014 School of GeoScience, University of Edinburgh, Edinburgh, UK
+ * Copyright (C) 2016 School of GeoScience, University of Edinburgh, Edinburgh, UK
  * 
  * CRAFTY is free software: You can redistribute it and/or modify it under the
  * terms of the GNU General Public License as published by the Free Software 
@@ -19,22 +19,21 @@
  *
  * School of Geoscience, University of Edinburgh, Edinburgh, UK
  * 
- * Created by Sascha Holzhauer on 12 Dec 2014
+ * Created by Sascha Holzhauer on 24 Oct 2016
  */
-package org.volante.abm.data;
+package org.volante.abm.example;
 
-import org.volante.abm.agent.Agent;
+
+import org.volante.abm.data.ModelData;
+
+import com.moseph.modelutils.distribution.Distribution;
 
 
 /**
- * {@link RegionHelper} to inform components of removed/added agents.
- * 
  * @author Sascha Holzhauer
- * 
+ *
  */
-public interface PopulationRegionHelper extends RegionHelper {
+public interface DuplicatableProductionModel {
 
-	public void agentRemoved(Agent agent);
-
-	public void agentAdded(Agent agent);
+	public SimpleProductionModel copyWithNoise(ModelData data, Distribution production, Distribution importance);
 }

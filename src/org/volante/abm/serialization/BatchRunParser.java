@@ -41,12 +41,12 @@ public class BatchRunParser {
 
 	public static double parseDouble(String text, RunInfo rInfo) {
 		if (text.contains("@")) {
-			return CsvBatchRunParser.parseDouble(text, rInfo);
+			return parseDouble(CsvBatchRunParser.getValue(text, rInfo), rInfo);
 
 		} else if (text.contains("|")) {
 			int run = rInfo.getCurrentRun();
 			String[] values = text.split("\\|");
-			return Double.parseDouble(values[run]);
+			return parseDouble(values[run], rInfo);
 
 		} else if (text.contains("(")) {
 			int run = rInfo.getCurrentRun();
@@ -55,7 +55,15 @@ public class BatchRunParser {
 			// parse parameters for all run configurations:
 			values = parseRDoubleArray(text, rInfo);
 
-			return values[run];
+			if (values.length > 1) {
+				if (values.length <= run) {
+					throw new IllegalStateException("The current run (" + run
+					        + ") exceeds the number of defined values (" + values.length + ")");
+				}
+				return values[run];
+			} else {
+				return values[0];
+			}
 
 		} else {
 			return Double.parseDouble(text);
@@ -64,12 +72,12 @@ public class BatchRunParser {
 
 	public static int parseInt(String text, RunInfo rInfo) {
 		if (text.startsWith("@")) {
-			return CsvBatchRunParser.parseInt(text, rInfo);
+			return parseInt(CsvBatchRunParser.getValue(text, rInfo), rInfo);
 
 		} else if (text.contains("|")) {
 			int run = rInfo.getCurrentRun();
 			String[] values = text.split("\\|");
-			return Integer.parseInt(values[run]);
+			return parseInt(values[run], rInfo);
 
 		} else if (text.contains("(")) {
 			int run = rInfo.getCurrentRun();
@@ -78,7 +86,15 @@ public class BatchRunParser {
 			// parse parameters for all run configurations:
 			values = parseRIntArray(text, rInfo);
 
-			return values[run];
+			if (values.length > 1) {
+				if (values.length <= run) {
+					throw new IllegalStateException("The current run (" + run
+					        + ") exceeds the number of defined values (" + values.length + ")");
+				}
+				return values[run];
+			} else {
+				return values[0];
+			}
 
 		} else {
 			return Integer.parseInt(text);
@@ -111,7 +127,7 @@ public class BatchRunParser {
 	 */
 	protected static String parseStringBasic(String text, RunInfo rInfo) {
 		if (text.contains("@")) {
-			return CsvBatchRunParser.parseString(text, rInfo);
+			return parseString(CsvBatchRunParser.parseString(text, rInfo), rInfo);
 
 		} else if (text.contains("|")) {
 			int run = rInfo.getCurrentRun();
@@ -123,7 +139,47 @@ public class BatchRunParser {
 			}
 			// LOGGING ->
 
-			return values[run];
+			return parseString(values[run], rInfo);
+
+		} else if (text.startsWith("D(")) {
+
+			int run = rInfo.getCurrentRun();
+			double[] values;
+
+			// parse parameters for all run configurations:
+			values = parseRDoubleArray(text.substring(1), rInfo);
+
+			// <- LOGGING
+			if (logger.isDebugEnabled()) {
+				logger.debug("Returning: " + values[run]);
+			}
+			// LOGGING ->
+
+			if (values.length > 1) {
+				if (values.length <= run) {
+					throw new IllegalStateException("The current run (" + run
+					        + ") exceeds the number of defined values (" + values.length + ")");
+				}
+				return new Double(values[run]).toString();
+			} else {
+				return new Double(values[0]).toString();
+			}
+
+		} else if (text.startsWith("I(")) {
+
+			int run = rInfo.getCurrentRun();
+			int[] values;
+
+			// parse parameters for all run configurations:
+			values = parseRIntArray(text.substring(1), rInfo);
+
+			// <- LOGGING
+			if (logger.isDebugEnabled()) {
+				logger.debug("Returning: " + values[run]);
+			}
+			// LOGGING ->
+
+			return new Integer(values[run]).toString();
 
 		} else if (text.contains("(")) {
 
@@ -139,7 +195,7 @@ public class BatchRunParser {
 			}
 			// LOGGING ->
 
-			return values[run];
+			return parseString(values[run], rInfo);
 
 		} else {
 			// <- LOGGING

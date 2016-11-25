@@ -28,8 +28,8 @@ import org.volante.abm.agent.LandUseAgent;
 
 
 /**
- * Helps the clean up components after updating competitiveness and before allocation (cleanUp) and when an agents is
- * removed from the region (cleanUpAgent; {@link Region#removeAgent(LandUseAgent)} called).
+ * Helps to clean up components after updating competitiveness and before allocation (cleanUp) and when an agents is
+ * removed from the region (cleanUpAgent; called at {@link Region#removeAgent(LandUseAgent)}).
  * 
  * @author Sascha Holzhauer
  * 

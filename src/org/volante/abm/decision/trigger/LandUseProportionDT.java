@@ -38,9 +38,12 @@ import org.volante.abm.example.measures.LandUseProportionMeasure;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.GloballyInitialisable;
 
+
 /**
+ * TODO implement
+ * 
  * @author Sascha Holzhauer
- *
+ * 
  */
 public class LandUseProportionDT extends AbstractDecisionTrigger implements GloballyInitialisable {
 
@@ -67,7 +70,7 @@ public class LandUseProportionDT extends AbstractDecisionTrigger implements Glob
 	 * @param agent
 	 * @return connectivity
 	 */
-	protected double getCurrentLUproporions(Agent agent) {
+	protected double getCurrentLUproportions(Agent agent) {
 		if (this.fRoles == null) {
 			this.fRoles = new HashSet<>();
 			for (String frLabel : this.serialFrLabels) {

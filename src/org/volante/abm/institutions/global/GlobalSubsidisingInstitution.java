@@ -64,43 +64,10 @@ public class GlobalSubsidisingInstitution extends AbstractCognitiveGlobalInstitu
 
 	}
 
-	public static class DefaultTickChecker implements TickChecker {
-		/**
-		 * @see org.volante.abm.institutions.global.TickChecker#check(int)
-		 */
-        @Override
-        public boolean check(int tick) {
-	        return true;
-        }
-	}
-	
-	public static class EvenTickChecker implements TickChecker {
-		/**
-		 * @see org.volante.abm.institutions.global.TickChecker#check(int)
-		 */
-        @Override
-        public boolean check(int tick) {
-	        return (tick) % 2 == 0;
-        }
-	}
-	
-	public static class OddTickChecker implements TickChecker {
-		/**
-		 * @see org.volante.abm.institutions.global.TickChecker#check(int)
-		 */
-        @Override
-        public boolean check(int tick) {
-			// <- LOGGING
-			logger.info("OddTickChecker: check");
-			// LOGGING ->
-	        return (tick + 1) % 2 == 0;
-        }
-	}
-	
 	/**
 	 * Logger
 	 */
-	static private Logger logger = Logger.getLogger(GlobalSubsidisingInstitution.class);
+	static Logger logger = Logger.getLogger(GlobalSubsidisingInstitution.class);
 
 	@Element(required = false)
 	protected int actionRuntime = 1;
@@ -114,7 +81,7 @@ public class GlobalSubsidisingInstitution extends AbstractCognitiveGlobalInstitu
 	protected int reportedTick = Integer.MIN_VALUE;
 	
 	@Element(required = false)
-	protected TickChecker tickChecker = new DefaultTickChecker();
+	protected TickChecker tickChecker = new TickChecker.DefaultTickChecker();
 
 	protected int actionExpiry = Integer.MIN_VALUE;
 

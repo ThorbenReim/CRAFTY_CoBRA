@@ -1,3 +1,4 @@
-Run,cellInitialiser/cellInitialiser.xml,agentID
-1,RunCellInitialiser,1
-42,RunCellInitialiser,99
+Run,cellInitialiser/cellInitialiser.xml,agentID,ArbitraryParam
+0,RunCellInitialiser,1,42
+1,RunCellInitialiser,1,0
+42,RunCellInitialiser,99,0

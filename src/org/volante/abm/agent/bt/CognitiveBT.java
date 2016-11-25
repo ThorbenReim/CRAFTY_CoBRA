@@ -28,10 +28,10 @@ import org.volante.abm.agent.Agent;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.decision.pa.CraftyPa;
-import org.volante.abm.institutions.global.GlobalInstitution;
 import org.volante.abm.lara.CobraLaraXmlAgentConfigurator;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.GloballyInitialisable;
+import org.volante.abm.serialization.Initialisable;
 
 import de.cesr.lara.toolbox.config.LaraAgentConfigurator;
 
@@ -64,15 +64,20 @@ public class CognitiveBT extends AbstractBT {
 		laraAgentConfigurator.configure(bc);
 
 		// init PAs
-		if (agent instanceof GlobalInstitution) {
-			for (CraftyPa<?> cpa : ((LaraBehaviouralComponent) agent.getBC()).getLaraComp().getBOMemory()
-			        .recallAllMostRecent()) {
-				if (cpa instanceof GloballyInitialisable) {
-					try {
-						((GloballyInitialisable) cpa).initialise(this.region.getModelData(), this.region.getRinfo());
-					} catch (Exception exception) {
-						exception.printStackTrace();
-					}
+		for (CraftyPa<?> cpa : ((LaraBehaviouralComponent) agent.getBC()).getLaraComp().getBOMemory()
+		        .recallAllMostRecent()) {
+			if (cpa instanceof GloballyInitialisable) {
+				try {
+					((GloballyInitialisable) cpa).initialise(this.region.getModelData(), this.region.getRinfo());
+				} catch (Exception exception) {
+					exception.printStackTrace();
+				}
+			}
+			if (cpa instanceof Initialisable) {
+				try {
+					((Initialisable) cpa).initialise(this.region.getModelData(), this.region.getRinfo(), this.region);
+				} catch (Exception exception) {
+					exception.printStackTrace();
 				}
 			}
 		}

@@ -51,7 +51,7 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
  * @author dmrust
  *
  */
-public class SimpleProductionModel implements ProductionModel, ProductionWeightReporter
+public class SimpleProductionModel implements ProductionModel, ProductionWeightReporter, DuplicatableProductionModel
 {
 
 	/**

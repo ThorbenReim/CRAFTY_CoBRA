@@ -55,6 +55,21 @@ public class BatchRunParserTest {
 		rInfo = null;
 	}
 
+	@Test
+	public void testSingleRexpr() {
+		String param = "(5+4)";
+		double exp = 9.0;
+		assertEquals(exp, BatchRunParser.parseDouble(param, rInfo), 0.0001);
+	}
+
+	@Test
+	public void testCombinedRexpr() {
+		rInfo.getPersister().setBaseDir("test-data");
+		String param = "(@(Runs.csv, ArbitraryParam)+4)";
+		double exp = 46.0;
+		assertEquals(exp, BatchRunParser.parseDouble(param, rInfo), 0.0001);
+	}
+
 	/**
 	 * Test method for {@link org.volante.abm.serialization.BatchRunParser#parseDouble(java.lang.String, org.volante.abm.schedule.RunInfo)}.
 	 */

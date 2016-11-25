@@ -3,8 +3,8 @@
 	<cellInitialiser class="org.volante.abm.serialization.CellCSVReader" csvFile="csv/SmallWorldRegion1.csv" />
 	
 	<!--  all the models use default settings, an are inline -->
-	<competition class="org.volante.abm.example.SimpleCompetitivenessModel" />
-	<allocation class="org.volante.abm.example.GiveUpGiveInAllocationModel"/>
+	<competition class="org.volante.abm.example.SimpleCompetitivenessModel"/>
+	<allocation class="org.volante.abm.example.GiveUpGiveInAllocationModel" numTakeovers="10" numCells="5"/>
 	<demand class="org.volante.abm.example.RegionalDemandModel" demandCSV="csv/Region1Demand.csv"/>
 	
 	<frFile>xml/FunctionalRoles_SmallWorld.xml</frFile>

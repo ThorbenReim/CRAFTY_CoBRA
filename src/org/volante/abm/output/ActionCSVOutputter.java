@@ -50,6 +50,7 @@ import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.GloballyInitialisable;
 
 import de.cesr.lara.components.decision.LaraDecisionConfiguration;
+import de.cesr.lara.components.decision.LaraDecisionData;
 
 
 /**
@@ -72,7 +73,7 @@ public class ActionCSVOutputter extends TableOutputter<TableEntry> implements Ac
 	 * Adds actions of global institutions to regional files.
 	 */
 	@Attribute(required = false)
-	boolean addGlobalActionsToRegions = true;
+	boolean addGlobalActionsToRegions = false;
 
 	/**
 	 * Outputs actions of global institutions to a separate file. If both addGlobalActionsToRegions and
@@ -104,18 +105,36 @@ public class ActionCSVOutputter extends TableOutputter<TableEntry> implements Ac
 		protected Agent agent;
 		protected DecisionTrigger trigger;
 		protected LaraDecisionConfiguration dConfig;
+		protected LaraDecisionData<?, CraftyPa<?>> dData;
 		protected CraftyPa<?> pa;
 		protected double score;
 		protected boolean selected;
 
-		protected TableEntry(Agent agent, DecisionTrigger trigger, LaraDecisionConfiguration dConfig, CraftyPa<?> pa,
-				double score, boolean selected) {
+		protected TableEntry(Agent agent, DecisionTrigger trigger, LaraDecisionConfiguration dConfig,
+		        LaraDecisionData<?, CraftyPa<?>> dData, CraftyPa<?> pa, double score, boolean selected) {
 			this.agent = agent;
 			this.trigger = trigger;
 			this.dConfig = dConfig;
+			this.dData = dData;
 			this.pa = pa;
 			this.score = score;
 			this.selected = selected;
+		}
+
+		public Agent getAgent() {
+			return this.agent;
+		}
+
+		public DecisionTrigger getDTrigger() {
+			return this.trigger;
+		}
+
+		public LaraDecisionConfiguration getDConfig() {
+			return this.dConfig;
+		}
+
+		public LaraDecisionData<?, CraftyPa<?>> getDecisionData() {
+			return this.dData;
 		}
 
 		public CraftyPa<?> getPa() {
@@ -316,13 +335,24 @@ public class ActionCSVOutputter extends TableOutputter<TableEntry> implements Ac
 	 *      de.cesr.lara.components.decision.LaraDecisionConfiguration, org.volante.abm.decision.pa.CraftyPa, double)
 	 */
 	@Override
-	public void setActionInfos(Agent agent, DecisionTrigger trigger, LaraDecisionConfiguration dConfig, CraftyPa<?> pa,
-			double score, boolean selected) {
+	public void setActionInfos(Agent agent, DecisionTrigger trigger, LaraDecisionConfiguration dConfig,
+	        LaraDecisionData<?, CraftyPa<?>> dData, CraftyPa<?> pa, double score, boolean selected) {
 		if (!this.actions.containsKey(pa.getAgent().getAgent().getRegion())) {
 			this.actions.put(pa.getAgent().getAgent().getRegion(), new HashSet<TableEntry>());
 		}
 		this.actions.get(pa.getAgent().getAgent().getRegion()).add(
-				new TableEntry(agent, trigger, dConfig, pa, score, selected));
+		        new TableEntry(agent, trigger, dConfig, dData, pa, score, selected));
+	}
+
+	/**
+	 * @see org.volante.abm.output.ActionReporter#setActionInfos(org.volante.abm.agent.Agent,
+	 *      org.volante.abm.decision.trigger.DecisionTrigger,
+	 *      de.cesr.lara.components.decision.LaraDecisionConfiguration, org.volante.abm.decision.pa.CraftyPa, double)
+	 */
+	@Override
+	public void setActionInfos(Agent agent, DecisionTrigger trigger, LaraDecisionConfiguration dConfig, CraftyPa<?> pa,
+	        double score, boolean selected) {
+		this.setActionInfos(agent, trigger, dConfig, null, pa, score, selected);
 	}
 
 	/**
@@ -354,7 +384,8 @@ public class ActionCSVOutputter extends TableOutputter<TableEntry> implements Ac
 			log.warn("There is no action stored at last tick for this renewed action: " + pa + "!");
 		} else {
 			this.actions.get(pa.getAgent().getAgent().getRegion()).add(
-			        new TableEntry(agent, lastEntry.trigger, lastEntry.dConfig, pa, lastEntry.score, true));
+			        new TableEntry(agent, lastEntry.trigger, lastEntry.dConfig, lastEntry.dData, pa, lastEntry.score,
+			                true));
 		}
 	}
 

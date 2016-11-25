@@ -31,6 +31,11 @@ import org.volante.abm.agent.Agent;
  */
 public interface DecisionTrigger {
 
+	/**
+	 * The ID is required e.g. to de-register triggers from a behavioural type.
+	 * 
+	 * @return
+	 */
 	public String getId();
 
 	/**

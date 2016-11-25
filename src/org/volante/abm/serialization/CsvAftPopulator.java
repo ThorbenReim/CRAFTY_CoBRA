@@ -143,6 +143,7 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 	@Override
 	public void initialise(RegionLoader rLoader) throws Exception {
 		ModelData data = rLoader.modelData;
+
 		boolean hasAgentColumn = false;
 		boolean singleCellAgentMode = false;
 		boolean assignBT = false;
@@ -357,8 +358,13 @@ public class CsvAftPopulator implements CellInitialiser, AftPopulator {
 
 					Map<PropertyId, Double> agentPropertyMap = new HashMap<PropertyId, Double>();
 					for (String agentPropertyColumn : agentPropertyColumns) {
-						agentPropertyMap.put(PropertyRegistry.get(agentPropertyColumn),
-								Double.parseDouble(reader.get(agentPropertyColumn)));
+						try {
+							agentPropertyMap.put(PropertyRegistry.get(agentPropertyColumn),
+							        Double.parseDouble(reader.get(agentPropertyColumn)));
+						} catch (NumberFormatException ex) {
+							throw new IllegalParameterException("Property " + agentPropertyColumn
+							        + " could not be evaluated for " + agentId);
+						}
 					}
 					agentProperties.put(agentId, agentPropertyMap);
 

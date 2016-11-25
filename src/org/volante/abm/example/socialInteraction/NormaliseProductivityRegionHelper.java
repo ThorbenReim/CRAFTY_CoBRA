@@ -45,7 +45,7 @@ public class NormaliseProductivityRegionHelper implements SocialRegionHelper {
 		return lastChanges;
 	}
 
-	public void socialNetworkPerceived() {
+	public void socialNetworkPerceived(Region region) {
 		this.normaliseProductivity();
 	}
 

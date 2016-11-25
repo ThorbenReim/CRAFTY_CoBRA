@@ -24,6 +24,9 @@
 package org.volante.abm.param;
 
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 import de.cesr.parma.core.PmParameterDefinition;
 import de.cesr.parma.core.PmParameterManager;
 
@@ -51,7 +54,17 @@ public enum BasicPa implements PmParameterDefinition {
 	/**
 	 * If false, edges are not added to geography and thus are not displayed
 	 */
-	ADD_EDGES_TO_GEOGRAPHY(Boolean.class, true);
+	ADD_EDGES_TO_GEOGRAPHY(Boolean.class, true),
+
+	/**
+	 * Used for logging integer numbers
+	 */
+	INTEGER_FORMAT(NumberFormat.class, new DecimalFormat("0000")),
+
+	/**
+	 * Used for logging floating point numbers
+	 */
+	FLOAT_POINT_FORMAT(NumberFormat.class, new DecimalFormat("0.000"));
 
 	private Class<?>	type;
 	private Object		defaultValue;

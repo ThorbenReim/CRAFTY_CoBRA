@@ -24,8 +24,11 @@ package org.volante.abm.example;
 
 
 import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.geotools.util.UnsupportedImplementationException;
 import org.simpleframework.xml.Attribute;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
@@ -41,7 +44,7 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
 
 
 /**
- * A simple model of competitiveness
+ * A simple model of competitiveness (production is multiplied by residual).
  * 
  * @author dmrust
  * 
@@ -135,5 +138,21 @@ public class SimpleCompetitivenessModel implements CompetitivenessModel {
 	@Override
 	public CompetitivenessDisplay getDisplay() {
 		return new SimpleCompetitivenessDisplay(this);
+	}
+
+	/**
+	 * @see org.volante.abm.models.CompetitivenessModel#getDefinedServices()
+	 */
+	@Override
+	public Set<Service> getDefinedServices() {
+		return new HashSet<>(this.region.getModelData().services.getList());
+	}
+
+	/**
+	 * @see org.volante.abm.models.CompetitivenessModel#getDeepCopy()
+	 */
+	@Override
+	public CompetitivenessModel getDeepCopy() {
+		throw new UnsupportedImplementationException("Not supported for SimpleCompetitivenessModel");
 	}
 }

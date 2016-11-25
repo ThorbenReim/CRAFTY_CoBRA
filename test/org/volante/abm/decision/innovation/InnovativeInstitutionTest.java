@@ -83,7 +83,7 @@ public class InnovativeInstitutionTest extends InnovationTestUtils {
 	}
 
 	@Test
-	public void test() {
+	public void test() throws Exception {
 		setUpInstitution(INSTITUTION_XML_FILE);
 
 		Service serviceFood = BasicTestsUtils.modelData.services
@@ -119,8 +119,9 @@ public class InnovativeInstitutionTest extends InnovationTestUtils {
 				serviceTimber);
 
 		// trigger innovation decisions at agents:
-		forester.getBC().getType()
-				.addDecisionTrigger(new PositiveDT("Innovation"));
+		PositiveDT pdt = new PositiveDT("Innovation");
+		pdt.initialise(modelData, runInfo);
+		forester.getBC().getType().addDecisionTrigger(pdt);
 
 		// initialise innovation and spread
 		BasicTestsUtils.runInfo.getSchedule().tick();
@@ -151,7 +152,7 @@ public class InnovativeInstitutionTest extends InnovationTestUtils {
 	}
 
 	@Test
-	public void testAmbulant() {
+	public void testAmbulant() throws Exception {
 		setUpInstitution(INSTITUTION_AMBULANT_XML_FILE);
 
 		Service serviceFood = BasicTestsUtils.modelData.services
@@ -183,9 +184,9 @@ public class InnovativeInstitutionTest extends InnovationTestUtils {
 				serviceTimber);
 
 		// trigger innovation decisions at agents:
-		forester.getBC()
-				.getType()
-				.addDecisionTrigger(new PositiveDT("Innovation"));
+		PositiveDT pdt = new PositiveDT("Innovation");
+		pdt.initialise(modelData, runInfo);
+		forester.getBC().getType().addDecisionTrigger(pdt);
 
 		// initialise innovation and spread
 		BasicTestsUtils.runInfo.getSchedule().tick();

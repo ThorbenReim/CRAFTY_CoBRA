@@ -23,8 +23,9 @@
  */
 package org.volante.abm.lara.decider;
 
-import java.util.HashSet;
-import java.util.Set;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.volante.abm.agent.bt.LaraBehaviouralComponent;
 import org.volante.abm.decision.pa.CraftyPa;
@@ -61,10 +62,10 @@ public abstract class AbstractImitatingFrDecider implements
 	 * @see de.cesr.lara.components.decision.LaraDecider#getKSelectedBos(int)
 	 */
 	@Override
-	public Set<? extends CraftyPa<?>> getKSelectedBos(int k) {
-		Set<CraftyPa<?>> set = new HashSet<CraftyPa<?>>();
-		set.add(selectedPo);
-		return set;
+	public List<CraftyPa<?>> getSelectedBos() {
+		List<CraftyPa<?>> list = new ArrayList<CraftyPa<?>>();
+		list.add(selectedPo);
+		return list;
 	}
 
 	/**
@@ -81,6 +82,14 @@ public abstract class AbstractImitatingFrDecider implements
 	@Override
 	public CraftyPa<?> getSelectedBo() {
 		return selectedPo;
+	}
+
+	/**
+	 * @see de.cesr.lara.components.decision.LaraDecider#setSelectedBos(java.util.List)
+	 */
+	@Override
+	public void setSelectedBos(List<CraftyPa<?>> selectedBos) {
+		this.selectedPo = selectedBos.get(1);
 	}
 
 	/**

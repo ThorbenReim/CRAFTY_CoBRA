@@ -35,7 +35,7 @@ import de.cesr.lara.components.model.impl.LModel;
  * @author Sascha Holzhauer
  * 
  */
-public class PositiveDT extends AbstractDecisionTrigger {
+public class PositiveDT extends AbstractDelayedStartDecisionTrigger {
 
 	/**
 	 * 
@@ -56,7 +56,7 @@ public class PositiveDT extends AbstractDecisionTrigger {
 	 * @see org.volante.abm.decision.trigger.DecisionTrigger#check(Agent)
 	 */
 	@Override
-	public boolean check(Agent agent) {
+	protected boolean checkHook(Agent agent) {
 		((LaraBehaviouralComponent) agent.getBC()).subscribeOnce(LModel.getModel(agent.getRegion())
 				.getDecisionConfigRegistry()
 				.get(dcId), this);

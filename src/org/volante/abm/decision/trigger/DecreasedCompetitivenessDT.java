@@ -35,7 +35,7 @@ import de.cesr.lara.components.model.impl.LModel;
 
 /**
  * Compares the agent's competitiveness to the last tick's and subscribes the agent for defined
- * {@link LaraDecisionConfiguration} in case if decreased. Requires agents to provide
+ * {@link LaraDecisionConfiguration} in case it decreased. Requires agents to provide
  * {@link DecreasedCompetitivenessDT.FrCheckPropertyIds#LAST_RECORD_TICK} and
  * {@link DecreasedCompetitivenessDT.FrCheckPropertyIds#LAST_COMPETITIVENESS}.
  * 

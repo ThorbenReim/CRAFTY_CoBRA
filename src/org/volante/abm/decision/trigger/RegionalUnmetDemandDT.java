@@ -64,6 +64,16 @@ public class RegionalUnmetDemandDT extends UnmetDemandDT {
 				}
 
 				double perceived = (regionalDemand.get(service) - regionalSupply.get(service)) * factor;
+
+				// <- LOGGING
+				if (logger.isDebugEnabled()) {
+					logger.debug("> " + service + ": "
+					        + this.floatFormat.format(perceived / regionalDemand.get(service))
+ + " (Threshold: "
+					        + this.floatFormat.format(this.thresholdFraction) + ")");
+				}
+				// LOGGING ->
+
 				if (perceived >= regionalDemand.get(service)
 				        * thresholdFraction) {
 
@@ -88,8 +98,9 @@ public class RegionalUnmetDemandDT extends UnmetDemandDT {
 
 					} else {
 						((LaraBehaviouralComponent) agent.getBC()).subscribeOnce(dConfig, new InformedTrigger(this,
-						        "Gap:" + perceived));
+						        "Gap:" + this.floatFormat.format(perceived)));
 					}
+
 					return true;
 				}
 			}

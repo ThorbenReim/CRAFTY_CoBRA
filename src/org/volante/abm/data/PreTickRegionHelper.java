@@ -30,8 +30,7 @@ package org.volante.abm.data;
 public interface PreTickRegionHelper extends RegionHelper {
 
 	/**
-	 * Executed by the region this helper is registered at the beginning of {@link Region#preTick()}
-	 * .
+	 * Registered at the region this helper is executed at the beginning of {@link Region#preTick()} .
 	 */
-	public void preTick();
+	public void preTick(Region region);
 }

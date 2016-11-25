@@ -26,6 +26,8 @@ package org.volante.abm.example;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
@@ -72,7 +74,7 @@ public class CurveCompetitivenessModel implements CompetitivenessModel {
 	 * A set of curves which are loaded in
 	 */
 	@ElementMap(inline = true, entry = "curve", attribute = true, required = false, key = "service")
-	Map<String, Curve>	serialCurves		= new LinkedHashMap<String, Curve>();
+	Map<String, Curve> serialCurves = new LinkedHashMap<>();
 
 	/**
 	 * If this points to a csv file with the columns "Service","Intercept","Slope" this will be
@@ -87,7 +89,7 @@ public class CurveCompetitivenessModel implements CompetitivenessModel {
 	@Attribute(required = false)
 	String				slopeColumn			= "Slope";
 
-	Map<Service, Curve>	curves				= new LinkedHashMap<Service, Curve>();
+	Map<Service, Curve> curves = new LinkedHashMap<>();
 
 	Logger				log					= Logger.getLogger(getClass());
 	ModelData			data				= null;
@@ -247,8 +249,40 @@ public class CurveCompetitivenessModel implements CompetitivenessModel {
 		curves.put(s, c);
 	}
 
+	/**
+	 * @return set of services
+	 */
+	public Set<Service> getDefinedServices() {
+		return this.curves.keySet();
+	}
+
 	@Override
 	public CurveCompetitivenessDisplay getDisplay() {
 		return new CurveCompetitivenessDisplay(this);
+	}
+
+	/**
+	 * @see org.volante.abm.models.CompetitivenessModel#getDeepCopy()
+	 * 
+	 *      TODO test
+	 */
+	@Override
+	public CompetitivenessModel getDeepCopy() {
+		CurveCompetitivenessModel copy = new CurveCompetitivenessModel();
+		for (Entry<Service, Curve> entry : this.curves.entrySet()) {
+			copy.curves.put(entry.getKey(), entry.getValue());
+		}
+		copy.data = this.data;
+		copy.info = this.info;
+		copy.region = this.region;
+
+		copy.serviceColumn = this.serviceColumn;
+		copy.slopeColumn = this.slopeColumn;
+		copy.interceptColumn = this.interceptColumn;
+		copy.linearCSV = this.linearCSV;
+		copy.removeCurrentLevel = this.removeCurrentLevel;
+		copy.removeNegative = this.removeNegative;
+
+		return copy;
 	}
 }

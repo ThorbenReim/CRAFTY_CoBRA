@@ -32,6 +32,7 @@ import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.example.SimpleProductionModel;
+import org.volante.abm.models.AgentAwareProductionModel;
 import org.volante.abm.models.ProductionModel;
 import org.volante.abm.param.RandomPa;
 import org.volante.abm.schedule.RunInfo;
@@ -167,6 +168,11 @@ public class VariantProductionFR extends AbstractFR {
 				getSampledGivingUpThreshold());
 
 		agent.setProperty(AgentPropertyIds.GIVING_UP_PROB, this.givingUpProbability);
+
+		if (agent.getFC().getProduction() instanceof AgentAwareProductionModel) {
+			((AgentAwareProductionModel) agent.getFC().getProduction()).setAgent(agent);
+		}
+
 		return agent;
 	}
 

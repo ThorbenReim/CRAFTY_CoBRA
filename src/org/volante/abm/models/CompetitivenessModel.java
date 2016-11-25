@@ -22,6 +22,8 @@
 package org.volante.abm.models;
 
 
+import java.util.Set;
+
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.Service;
 import org.volante.abm.serialization.Initialisable;
@@ -42,6 +44,10 @@ public interface CompetitivenessModel extends Initialisable, Displayable {
 
 	@Override
 	public CompetitivenessDisplay getDisplay();
+
+	public Set<Service> getDefinedServices();
+
+	public CompetitivenessModel getDeepCopy();
 
 	public interface CompetitivenessDisplay extends Display {
 	}

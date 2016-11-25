@@ -40,6 +40,8 @@ import de.cesr.lara.components.agents.impl.LAbstractAgent;
 import de.cesr.lara.components.decision.LaraDecisionConfiguration;
 import de.cesr.lara.components.eventbus.events.LAgentDecideEvent;
 import de.cesr.lara.components.eventbus.events.LAgentExecutionEvent;
+import de.cesr.lara.components.eventbus.events.LAgentPostExecutionEvent;
+import de.cesr.lara.components.eventbus.events.LAgentPostprocessEvent;
 import de.cesr.lara.components.eventbus.events.LAgentPreprocessEvent;
 import de.cesr.lara.components.eventbus.events.LInternalModelInitializedEvent;
 import de.cesr.lara.components.eventbus.events.LModelFinishEvent;
@@ -219,8 +221,13 @@ public class RegionalLaraModel extends LAbstractModel {
 				eventBus.publish(new LAgentPreprocessEvent(dConfig));
 				// decide
 				eventBus.publish(new LAgentDecideEvent(dConfig));
+				// post process
+				eventBus.publish(new LAgentPostprocessEvent(dConfig));
 				// execute
 				eventBus.publish(new LAgentExecutionEvent(dConfig));
+
+				// tidy up
+				eventBus.publish(new LAgentPostExecutionEvent(dConfig));
 			}
 			eventBus.publish(new LModelStepFinishedEvent());
 		}

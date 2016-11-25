@@ -34,16 +34,12 @@ import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
 import org.simpleframework.xml.stream.NodeBuilder;
 import org.volante.abm.agent.Agent;
-import org.volante.abm.agent.bt.BehaviouralType;
-import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
-import org.volante.abm.data.Service;
 import org.volante.abm.example.RegionalDemandModel;
 import org.volante.abm.example.SimpleAllocationModel;
 import org.volante.abm.example.SimpleCompetitivenessModel;
-import org.volante.abm.example.SimpleProductionModel;
 import org.volante.abm.institutions.Institution;
 import org.volante.abm.institutions.Institutions;
 import org.volante.abm.lara.RegionalLaraModel;
@@ -223,9 +219,7 @@ public class RegionLoader {
 		}
 
 		if (institutionFile != null && !institutionFile.equals("")) {
-			for (String iFile : institutionFile.split("\\|")) {
-				this.institutionFiles.add(iFile.trim());
-			}
+			this.institutionFiles.addAll(ABMPersister.splitTags(institutionFile));
 		}
 		if (laraModelFile != null && !laraModelFile.equals("")) {
 			regionalLaraModelFile = laraModelFile;
@@ -340,10 +334,6 @@ public class RegionLoader {
 			bTypes.bTypes.addAll(LPersister.getPersister(region).readXML(
 					BTList.class, btFile).bTypes);
 		}
-		for (BehaviouralType bt : bTypes.bTypes) {
-			log.info("Initialise behavioural type: " + bt.getLabel());
-			bt.initialise(modelData, runInfo, region);
-		}
 	}
 
 	public void loadFunctionalRoles() throws Exception {
@@ -354,32 +344,6 @@ public class RegionLoader {
 
 			fRoles.fRoles.addAll(persister.readXML(FRList.class, frFile,
 					this.region.getPersisterContextExtra()).fRoles);
-		}
-		for (FunctionalRole fr : fRoles.fRoles) {
-			log.info("Initialise functional role: " + fr.getLabel());
-			fr.initialise(modelData, runInfo, region);
-			storeAgentParameters(fr);
-		}
-	}
-
-	protected void storeAgentParameters(FunctionalRole pa) {
-		this.runInfo.getParamRepos().addParameter(region,
-				"AFT" + pa.getSerialID() + "_AssociatedGiveUP",
-				pa.getMeanGivingUpThreshold());
-
-		if (pa.getProduction() instanceof SimpleProductionModel) {
-			for (Service s : modelData.services) {
-				// initialise production weights:
-				Cell c = new Cell();
-				c.initialise(modelData, runInfo, region);
-				pa.getProduction().production(c, this.modelData.serviceMap());
-					
-				this.runInfo.getParamRepos().addParameter(
-						region,
-						"AFT" + pa.getSerialID() + "_" + s + "_Productivity",
-						((SimpleProductionModel) pa.getProduction())
-								.getProductionWeights().getDouble(s));
-			}
 		}
 	}
 

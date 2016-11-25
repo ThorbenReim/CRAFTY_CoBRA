@@ -42,6 +42,7 @@ import de.cesr.lara.components.decision.LaraScoreReportingDecider;
 import de.cesr.lara.components.environment.LaraEnvironment;
 import de.cesr.lara.components.eventbus.events.LAgentDecideEvent;
 import de.cesr.lara.components.eventbus.events.LAgentExecutionEvent;
+import de.cesr.lara.components.eventbus.events.LAgentPostprocessEvent;
 import de.cesr.lara.components.eventbus.events.LAgentPreprocessEvent;
 import de.cesr.lara.components.eventbus.events.LaraEvent;
 import de.cesr.lara.components.eventbus.impl.LDcSpecificEventbus;
@@ -59,6 +60,11 @@ import de.cesr.parma.core.PmParameterManager;
 public class CobraLAgentComp extends
  LDefaultAgentComp<LaraBehaviouralComponent, CraftyPa<?>> implements
 		CobraLaraAgentComponent {
+
+	/**
+	 * Logger
+	 */
+	static private Logger logger = Logger.getLogger(CobraLAgentComp.class);
 
 	Collection<ActionReporter> paReporters = new HashSet<>();
 
@@ -88,11 +94,6 @@ public class CobraLAgentComp extends
 		super(model, lbc, env);
 		this.mdata = lbc.getAgent().getRegion().getModelData();
 	}
-
-	/**
-	 * Logger
-	 */
-	static private Logger logger = Logger.getLogger(CobraLAgentComp.class);
 
 	@Override
 	public void setLaraModel(LaraModel lmodel) {
@@ -130,6 +131,7 @@ public class CobraLAgentComp extends
 
 		eb.subscribeOnce(this, LAgentPreprocessEvent.class, dc);
 		eb.subscribeOnce(this, LAgentDecideEvent.class, dc);
+		eb.subscribeOnce(this, LAgentPostprocessEvent.class, dc);
 		eb.subscribeOnce(this, LAgentExecutionEvent.class, dc);
 	}
 
@@ -140,6 +142,19 @@ public class CobraLAgentComp extends
 		LEventbus.getNewInstance(this.agent, PmParameterManager
 				.getInstance(this.agent.getAgent().getRegion()));
 		super.onInternalEvent(event);
+	}
+
+	/**
+	 * @see de.cesr.lara.components.agents.impl.LDefaultAgentComp#decide(de.cesr.lara.components.decision.LaraDecisionConfiguration)
+	 */
+	public void decide(LaraDecisionConfiguration decisionConfig) {
+		// <- LOGGING
+	    if (logger.isDebugEnabled()) {
+	        logger.debug(this.decisionComponentsInfo());
+	    }
+	    // LOGGING ->
+
+		super.decide(decisionConfig);
 	}
 
 	protected void perform(LaraEvent event) {
@@ -160,9 +175,10 @@ public class CobraLAgentComp extends
 						this.agent.getAgent(),
 						decisionTriggers.get(dConfig),
 						dConfig,
+				        this.getDecisionData(((LAgentExecutionEvent) event).getDecisionConfiguration()),
 						pa,
-						decider instanceof LaraScoreReportingDecider ? ((LaraScoreReportingDecider) decider)
-								.getScore(pa) : Double.NaN);
+						decider instanceof LaraScoreReportingDecider ? ((LaraScoreReportingDecider<CraftyPa<?>>) decider)
+				                .getScore(pa) : Double.NaN, true);
 			}
 			
 			// report not selected PAs
@@ -173,8 +189,9 @@ public class CobraLAgentComp extends
 								this.agent.getAgent(),
 								decisionTriggers.get(dConfig),
 								dConfig,
+						        this.getDecisionData(((LAgentExecutionEvent) event).getDecisionConfiguration()),
 								paction,
-								decider instanceof LaraScoreReportingDecider ? ((LaraScoreReportingDecider) decider)
+								decider instanceof LaraScoreReportingDecider ? ((LaraScoreReportingDecider<CraftyPa<?>>) decider)
 										.getScore(paction) : Double.NaN, false);
 					}
 				}

@@ -66,7 +66,7 @@
 	<classpathentry exported="true" kind="lib" path="lib/LARA_Base.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/LARA_Toolbox.jar"/>
 	<classpathentry kind="lib" path="lib/mpi.jar" sourcepath="C:/Data/LURG/Crafty/ParallelComputing/mpiJava-source-1.2.7/src/Java"/>
-	<classpathentry kind="lib" path="lib/jep_ext-1.1.1.jar" sourcepath="C:/Data/General/JavaLibraries/jep-2.4.1-ext-1.1.1-gpl/src"/>
-	<classpathentry kind="lib" path="lib/jep-2.4.1.jar" sourcepath="C:/Data/General/JavaLibraries/jep-2.4.1-ext-1.1.1-gpl/src"/>
+	<classpathentry kind="lib" path="lib/jep_ext-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/jep-2.4.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

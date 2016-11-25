@@ -18,7 +18,6 @@ import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
 import org.volante.abm.decision.pa.CompetitivenessAdjustingPa;
 import org.volante.abm.decision.trigger.DecisionTrigger;
-import org.volante.abm.institutions.global.GlobalSubsidisingInstitution.DefaultTickChecker;
 import org.volante.abm.institutions.global.TickChecker;
 import org.volante.abm.schedule.PrePreTickAction;
 import org.volante.abm.schedule.RunInfo;
@@ -48,7 +47,7 @@ public class RegionalProvisionInstitution extends AbstractCognitiveInstitution i
 	protected boolean triggerDecisionAfterRuntime = false;
 
 	@Element(required = false)
-	protected TickChecker tickChecker = new DefaultTickChecker();
+	protected TickChecker tickChecker = new TickChecker.DefaultTickChecker();
 
 	protected int actionExpiry = Integer.MIN_VALUE;
 
@@ -81,14 +80,19 @@ public class RegionalProvisionInstitution extends AbstractCognitiveInstitution i
 	}
 
 	/**
-	 * Clears the set of added Pa before a new one is added.
 	 * 
 	 * @param compAdjustPa
 	 */
 	public void addCompAdjustPa(CompetitivenessAdjustingPa compAdjustPa) {
-		this.compAdjustPas.clear();
 		this.compAdjustPas.put(this.rInfo.getSchedule().getCurrentTick(), compAdjustPa);
 		this.actionExpiry = this.rInfo.getSchedule().getCurrentTick() + this.actionRuntime - 1;
+	}
+
+	/**
+	 * Clears the set of added Pa before a new one is added.
+	 */
+	public void clearCompAdjustPa() {
+		this.compAdjustPas.clear();
 	}
 
 	/**
@@ -109,5 +113,16 @@ public class RegionalProvisionInstitution extends AbstractCognitiveInstitution i
 			decisionTriggers.clear();
 		}
 		return decisionTriggers;
+	}
+
+	public int getActionRuntime() {
+		return actionRuntime;
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "RegionalProvisionInstitution (" + this.region + ")";
 	}
 }

@@ -23,9 +23,13 @@
 package org.volante.abm.example;
 
 
+import java.util.Map.Entry;
+
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.volante.abm.data.Service;
+import org.volante.abm.models.CompetitivenessModel;
+import org.volante.abm.visualisation.CurveCompetitivenessDisplay;
 
 import com.moseph.modelutils.curve.Curve;
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
@@ -44,10 +48,27 @@ public class NormalisedCurveCompetitivenessModel extends CurveCompetitivenessMod
 	 */
 	static private Logger log = Logger.getLogger(NormalisedCurveCompetitivenessModel.class);
 
+	/**
+	 * Residuals are normalised by per cell demand of the particular service. Used to balance differences in services'
+	 * dimension before the competition function is applied (therefore, the competition function does not need to take
+	 * differences in dimensions into account). Example: If the demand supply gap of cereal is 20% and that of meat is
+	 * 50%, the normalised residual is higher for meat, but the absolute residual would be higher for cereal in case the
+	 * absolute demand for cereal is much higher.
+	 */
 	@Attribute(required = false)
 	boolean	normaliseCellResidual	= true;
 
 
+	/**
+	 * Supply as multiplied with the competition curve value is normalised by per cell demand for the particular
+	 * service. When true, it is assumed that the value of production is relative to the demand (i.e., it is more
+	 * profitable to produce a service whose relative (to demand) cell production is higher, not matter the absolute
+	 * production).
+	 * 
+	 * Actually, a thorough representation would need to consider the market-wide ability to produce the particular
+	 * service (which is currently not represented in the CRAFTY framework itself but modelled by the current supply as
+	 * subject to competition).
+	 */
 	@Attribute(required = false)
 	boolean	normaliseCellSupply		= true;
 
@@ -105,5 +126,38 @@ public class NormalisedCurveCompetitivenessModel extends CurveCompetitivenessMod
 		log.trace("Competitiveness sum: " + sum);
 
 		return sum;
+	}
+
+	@Override
+	public CurveCompetitivenessDisplay getDisplay() {
+		return new CurveCompetitivenessDisplay(this);
+	}
+
+	/**
+	 * @see org.volante.abm.models.CompetitivenessModel#getDeepCopy()
+	 * 
+	 *      TODO test
+	 */
+	@Override
+	public CompetitivenessModel getDeepCopy() {
+		NormalisedCurveCompetitivenessModel copy = new NormalisedCurveCompetitivenessModel();
+		for (Entry<Service, Curve> entry : this.curves.entrySet()) {
+			copy.curves.put(entry.getKey(), entry.getValue());
+		}
+		copy.data = this.data;
+		copy.info = this.info;
+		copy.region = this.region;
+
+		copy.serviceColumn = this.serviceColumn;
+		copy.slopeColumn = this.slopeColumn;
+		copy.interceptColumn = this.interceptColumn;
+		copy.linearCSV = this.linearCSV;
+		copy.removeCurrentLevel = this.removeCurrentLevel;
+		copy.removeNegative = this.removeNegative;
+
+		copy.normaliseCellResidual = this.normaliseCellResidual;
+		copy.normaliseCellSupply = this.normaliseCellSupply;
+
+		return copy;
 	}
 }

@@ -33,12 +33,16 @@ import org.apache.log4j.Logger;
 import org.nfunk.jep.JEP;
 import org.nfunk.jep.ParseException;
 import org.simpleframework.xml.Attribute;
+import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.property.PropertyId;
+import org.volante.abm.agent.property.PropertyRegistry;
 import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
 import org.volante.abm.example.util.DeepCopyJEP;
+import org.volante.abm.models.AgentAwareProductionModel;
 import org.volante.abm.schedule.RunInfo;
 
 import com.moseph.modelutils.distribution.Distribution;
@@ -50,13 +54,16 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
  * @author Sascha Holzhauer
  *
  */
-public class DynamicMaxProductionModel extends SimpleProductionModel {
+public class DynamicMaxProductionModel extends SimpleProductionModel implements AgentAwareProductionModel {
 
 	/**
 	 * Logger
 	 */
 	static private Logger logger = Logger.getLogger(DynamicMaxProductionModel.class);
 
+	/**
+	 * Sets {@link JEP#setImplicitMul(boolean)} to <code>TRUE</code>.
+	 */
 	@Attribute(required = false)
 	boolean allowImplicitMultiplication = true;
 
@@ -70,6 +77,8 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	
 	protected Region region = null;
 	
+	protected Agent agent = null;
+
 	/**
 	 * lazy initialisation: call {@link DynamicMaxProductionModel#getMaxProductionFunctions()}!
 	 */
@@ -167,6 +176,11 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 				productionParser.addVariable(capital.getName(), 0);
 			}
 			productionParser.addVariable("CTICK", 0);
+			
+			for (PropertyId propid : PropertyRegistry.getPropertyIds()) {
+				productionParser.addVariable(propid.toString(), 0);
+			}
+			
 			this.addVariablesHook(productionParser);
 
 			// <- LOGGING
@@ -204,7 +218,7 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	 *      com.moseph.modelutils.fastdata.DoubleMap, org.volante.abm.data.Cell)
 	 */
 	public void production(UnmodifiableNumberMap<Capital> capitals, DoubleMap<Service> production, Cell cell) {
-		updateProductionWeigths(capitals);
+		updateProductionWeigths(capitals, cell);
 		basicProduction(capitals, production, cell);
 	}
 
@@ -217,12 +231,19 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 	 * 
 	 * @param capitals
 	 */
-	protected void updateProductionWeigths(UnmodifiableNumberMap<Capital> capitals) {
+	protected void updateProductionWeigths(UnmodifiableNumberMap<Capital> capitals, Cell cell) {
 		for (Service service : capitalWeights.rows()) {
 			for (Capital capital : capitals.getKeySet()) {
 				maxProductionParsers.get(service).addVariable(capital.getName(), capitals.getDouble(capital));
 			}
 			maxProductionParsers.get(service).addVariable("CTICK", rInfo.getSchedule().getCurrentTick());
+
+			for (PropertyId propid : PropertyRegistry.getPropertyIds()) {
+				maxProductionParsers.get(service).addVariable(
+				        propid.toString(),
+				        this.getAgent() != null && this.getAgent().isProvided(propid) ? this.getAgent().getProperty(
+				                propid) : 0);
+			}
 
 			productionWeights.put(
 					service,
@@ -348,5 +369,21 @@ public class DynamicMaxProductionModel extends SimpleProductionModel {
 			}
 
 		return pout;
+	}
+
+	/**
+	 * @see org.volante.abm.models.AgentAwareProductionModel#setAgent(org.volante.abm.agent.Agent)
+	 */
+	@Override
+	public void setAgent(Agent agent) {
+		this.agent = agent;
+	}
+
+	/**
+	 * @see org.volante.abm.models.AgentAwareProductionModel#getAgent()
+	 */
+	@Override
+	public Agent getAgent() {
+		return this.agent;
 	}
 }

@@ -30,8 +30,10 @@ package org.volante.abm.data;
 public interface SocialRegionHelper extends RegionHelper {
 
 	/**
-	 * Executed by the region this helper is registered at the end of
-	 * {@link Region#perceiveSocialNetwork()}.
+	 * Registered by the region this helper is executed at the end of {@link Region#perceiveSocialNetwork()}.
+	 * 
+	 * @param region
+	 *        Invoking region
 	 */
-	public void socialNetworkPerceived();
+	public void socialNetworkPerceived(Region region);
 }

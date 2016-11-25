@@ -24,6 +24,7 @@
 package org.volante.abm.serialization;
 
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -271,6 +272,9 @@ public class CsvBatchRunParser {
 						fileMap.get(reader.getHeaders()[i]).put(new Integer(run), reader.get(i));
 					}
 				}
+			} catch (FileNotFoundException exception) {
+				throw new IllegalStateException("The file " + rInfo.getPersister().getFullPath(filename, null)
+				        + " was not found!");
 			} catch (IOException exception) {
 				exception.printStackTrace();
 			}

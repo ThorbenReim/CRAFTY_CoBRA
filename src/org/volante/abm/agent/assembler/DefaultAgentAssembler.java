@@ -46,14 +46,15 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 	static private Logger logger = Logger
 			.getLogger(DefaultAgentAssembler.class);
 
-	Region region;
-	ModelData mData;
-	
-	@Element(required = false)
-	int defaultBtId = Integer.MIN_VALUE;
+	protected Region region;
+	protected ModelData mData;
+	protected RunInfo rinfo;
 
 	@Element(required = false)
-	int defaultFrId = Integer.MIN_VALUE;
+	protected int defaultBtId = Integer.MIN_VALUE;
+
+	@Element(required = false)
+	protected int defaultFrId = Integer.MIN_VALUE;
 
 	/**
 	 * Assigns the ID of the first entry of
@@ -66,6 +67,7 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 	public void initialise(ModelData mData, RunInfo runInfo, Region region) {
 		this.region = region;
 		this.mData = mData;
+		this.rinfo = runInfo;
 		if (this.defaultBtId == Integer.MIN_VALUE) {
 			if (region.getBehaviouralTypeMapBySerialId().isEmpty()) {
 				logger.warn("Cannot determine default Behavioural Type ID since the regional list of BT is empty!");

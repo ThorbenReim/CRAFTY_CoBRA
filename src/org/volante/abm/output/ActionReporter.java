@@ -29,6 +29,7 @@ import org.volante.abm.decision.pa.CraftyPa;
 import org.volante.abm.decision.trigger.DecisionTrigger;
 
 import de.cesr.lara.components.decision.LaraDecisionConfiguration;
+import de.cesr.lara.components.decision.LaraDecisionData;
 
 
 /**
@@ -42,6 +43,9 @@ public interface ActionReporter {
 	public void setActionInfos(Agent agent, DecisionTrigger trigger, LaraDecisionConfiguration dconfig, CraftyPa<?> pa,
 			double score);
 	
+	public void setActionInfos(Agent agent, DecisionTrigger trigger, LaraDecisionConfiguration dconfig,
+	        LaraDecisionData<?, CraftyPa<?>> dData, CraftyPa<?> pa, double score, boolean selected);
+
 	public void setActionInfos(Agent agent, DecisionTrigger trigger, LaraDecisionConfiguration dconfig, CraftyPa<?> pa,
 			double score, boolean selected);
 

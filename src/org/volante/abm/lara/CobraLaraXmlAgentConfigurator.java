@@ -31,6 +31,7 @@ import org.volante.abm.data.ModelData;
 import org.volante.abm.decision.pa.CraftyPa;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.GloballyInitialisable;
+import org.volante.abm.serialization.Initialisable;
 
 import de.cesr.lara.components.container.exceptions.LContainerFullException;
 import de.cesr.lara.components.container.exceptions.LInvalidTimestampException;
@@ -59,7 +60,10 @@ public class CobraLaraXmlAgentConfigurator extends LXmlAgentConfigurator<LaraBeh
 			try {
 				if (factory instanceof GloballyInitialisable) {
 					((GloballyInitialisable) factory).initialise(mdata, rinfo);
+				} else if (factory instanceof Initialisable) {
+					((Initialisable) factory).initialise(mdata, rinfo, agent.getAgent().getRegion());
 				}
+
 				agent.getLaraComp().getBOMemory().memorize((CraftyPa<?>) factory.assembleBo(agent, modelId));
 			} catch (LContainerFullException exception) {
 				exception.printStackTrace();
@@ -86,6 +90,10 @@ public class CobraLaraXmlAgentConfigurator extends LXmlAgentConfigurator<LaraBeh
 
 		agent.getLaraComp().addPreferenceWeights(preferenceWeights);
 		agent.getLaraComp().setPreprocessor(ppConfigurator.getPreprocessor());
+
+		if (this.postprocessor != null) {
+			agent.getLaraComp().setPostProcessor(postprocessor);
+		}
 	}
 
 	/**

@@ -23,7 +23,7 @@ import de.cesr.lara.components.model.impl.LModel;
 
 /**
  * NOTE: There can be only one {@link ConnectivityTrigger} per institution (as multiple would set the same property
- * onnectivityTriggerIds.LAST_RECORD_TICK and)!
+ * ConnectivityTriggerIds.LAST_RECORD_TICK and)!
  * 
  * @author Sascha Holzhauer
  */

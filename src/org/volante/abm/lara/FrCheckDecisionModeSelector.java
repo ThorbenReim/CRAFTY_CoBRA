@@ -48,8 +48,7 @@ import de.cesr.lara.components.preprocessor.impl.LAbstractPpComp;
 
 /**
  * 
- * Applies the consumat approach to select one of
- * imitating/exploring/deliberative decision makeing
+ * Applies the consumat approach to select one of imitating/exploring/deliberative decision making
  * 
  * @author Sascha Holzhauer
  * 

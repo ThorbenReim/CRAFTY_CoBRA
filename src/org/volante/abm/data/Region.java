@@ -319,7 +319,7 @@ public class Region implements Regions, PreTickAction {
 
 			for (RegionHelper helper : this.helpers.values()) {
 				if (helper instanceof SocialRegionHelper) {
-					((SocialRegionHelper) helper).socialNetworkPerceived();
+					((SocialRegionHelper) helper).socialNetworkPerceived(this);
 				}
 			}
 		}
@@ -343,15 +343,11 @@ public class Region implements Regions, PreTickAction {
 		this.data = data;
 		this.rinfo = info;
 
-		if (this.institutions != null) {
-			this.institutions.initialise(data, info, this);
-			info.getSchedule().register(institutions);
-		}
-
 		for (Cell c : cells) {
 			c.initialise(data, info, this);
 		}
 
+		// TODO make sure BTs and FRs are not initialised twice!
 		try {
 			for (BehaviouralType type : behaviouralTypesByLabel.values()) {
 				type.initialise(data, rinfo, this);
@@ -368,6 +364,11 @@ public class Region implements Regions, PreTickAction {
 		competition.initialise(data, info, this);
 		demand.initialise(data, info, this);
 
+		if (this.institutions != null) {
+			this.institutions.initialise(data, info, this);
+			info.getSchedule().register(institutions);
+		}
+
 		this.initialised = true;
 	}
 
@@ -382,6 +383,13 @@ public class Region implements Regions, PreTickAction {
 	// Deprecated to show it should only be used in tests - normally ask the Region
 	public CompetitivenessModel getCompetitionModel() {
 		return competition;
+	}
+
+	public CompetitivenessModel getCompetitionModelCopy() {
+		if (this.competition == null) {
+			throw new IllegalStateException("Competition model has not been set at region " + this);
+		}
+		return competition.getDeepCopy();
 	}
 
 	public DemandModel getDemandModel() {
@@ -777,6 +785,12 @@ public class Region implements Regions, PreTickAction {
 		
 		allocatedAgents.add(a);
 		ambulantAgents.remove(a);
+		
+		for (RegionHelper helper : this.helpers.values()) {
+			if (helper instanceof PopulationRegionHelper) {
+				((PopulationRegionHelper) helper).agentAdded(a);
+			}
+		}
 	}
 
 	/**
@@ -959,7 +973,7 @@ public class Region implements Regions, PreTickAction {
 	public void preTick() {
 		for (RegionHelper helper : this.helpers.values()) {
 			if (helper instanceof PreTickRegionHelper) {
-				((PreTickRegionHelper) helper).preTick();
+				((PreTickRegionHelper) helper).preTick(this);
 				;
 			}
 		}
@@ -985,6 +999,16 @@ public class Region implements Regions, PreTickAction {
 	 */
 	public RegionHelper getHelper(Object id) {
 		return this.helpers.get(id);
+	}
+
+	/**
+	 * Removes the {@link RegionHelper} which was registered by the given ID object.
+	 * 
+	 * @param id
+	 * @return removed region helper
+	 */
+	public RegionHelper removeHelper(Object id) {
+		return this.helpers.remove(id);
 	}
 
 	public Map<String, String> getPersisterContextExtra() {

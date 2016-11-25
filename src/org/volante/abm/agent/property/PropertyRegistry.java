@@ -24,6 +24,8 @@
 package org.volante.abm.agent.property;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,6 +67,18 @@ public class PropertyRegistry {
 	    return null;
 	}
 	
+	/**
+	 * @return collection of all defined {@link PropertyId}s
+	 */
+	public static Collection<PropertyId> getPropertyIds() {
+		Collection<PropertyId> propertyIds = new ArrayList<>();
+		for (Class<? extends PropertyId> agentPropertyIdEnum : enumClasses) {
+			for (PropertyId prop : agentPropertyIdEnum.getEnumConstants()) {
+				propertyIds.add(prop);
+			}
+		}
+		return propertyIds;
+	}
 
 	public static void registerPropertiesEnum(Class<? extends PropertyId> enumeration) {
 		enumClasses.add(enumeration);

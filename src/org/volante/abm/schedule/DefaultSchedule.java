@@ -49,7 +49,8 @@ public class DefaultSchedule implements WorldSyncSchedule {
 
 	protected int					id				= idCounter++;
 
-	Logger							log				= Logger.getLogger(this.getClass());
+	static Logger logger = Logger.getLogger(DefaultSchedule.class);
+
 	RegionSet						regions			= null;
 	int								tick			= 0;
 	int								targetTick		= 0;
@@ -97,7 +98,7 @@ public class DefaultSchedule implements WorldSyncSchedule {
 
 	@Override
 	public void tick() {
-		log.info(this + ">\n********************\nStart of tick " + tick + "\n********************");
+		logger.info("\n********************\nStart of tick " + tick + "\n********************");
 		fireScheduleStatus(new ScheduleStatusEvent(tick, ScheduleStage.PRE_TICK, true));
 		info.getPersister().setContext("y", tick + "");
 
@@ -153,7 +154,12 @@ public class DefaultSchedule implements WorldSyncSchedule {
 
 		// Recalculate agent competitiveness and give up
 		if (this.getCurrentTick() > this.getStartTick()) {
-			log.info("Update agents' competitiveness and consider giving up ...");
+			// <- LOGGING
+			if (logger.isDebugEnabled()) {
+				logger.debug("Update agents' competitiveness and consider giving up ...");
+			}
+			// LOGGING ->
+
 			for (LandUseAgent a : regions.getAllAllocatedAgents()) {
 				if (a instanceof InnovativeBC) {
 					((InnovativeBC) a).considerInnovationsNextStep();
@@ -175,7 +181,12 @@ public class DefaultSchedule implements WorldSyncSchedule {
 		}
 		
 		// Calculate supply
-		log.info("Update agents' supply...");
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Update agents' supply...");
+		}
+		// LOGGING ->
+
 		for (LandUseAgent a : regions.getAllAllocatedAgents()) {
 			a.updateSupply();
 		}
@@ -213,11 +224,14 @@ public class DefaultSchedule implements WorldSyncSchedule {
 		postTickUpdates();
 
 
-		log.info("Number of Agents in total: "
-				+ DefaultSocialLandUseAgent.numberAgents);
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Number of Agents in total: " + DefaultSocialLandUseAgent.numberAgents);
+		}
+		// LOGGING ->
 
 		output();
-		log.info("\n********************\nEnd of tick " + tick + "\n********************");
+		logger.info("\n********************\nEnd of tick " + tick + "\n********************");
 		fireScheduleStatus(new ScheduleStatusEvent(tick, ScheduleStage.PAUSED, false));
 		tick++;
 	}
@@ -238,8 +252,8 @@ public class DefaultSchedule implements WorldSyncSchedule {
 	 */
 	@Override
 	public void runFromTo(int start, int end) {
-		log.info("Starting run for set number of ticks");
-		log.info("Start: " + start + ", End: " + end);
+		logger.info("Starting run for set number of ticks");
+		logger.info("Start: " + start + ", End: " + end);
 
 		setStartTick(start);
 		setEndTick(end);
@@ -309,7 +323,11 @@ public class DefaultSchedule implements WorldSyncSchedule {
 	 */
 
 	private void prePreTickUpdates() {
-		log.info("Pre PreTick\t\t (DefaultSchedule ID " + id + ")");
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Pre PreTick\t\t (DefaultSchedule ID " + id + ")");
+		}
+		// LOGGING ->
 
 		// copy to prevent concurrent modifications:
 		List<PrePreTickAction> prePreTickActionsCopy = new ArrayList<PrePreTickAction>(
@@ -317,8 +335,8 @@ public class DefaultSchedule implements WorldSyncSchedule {
 
 		for (PrePreTickAction p : prePreTickActionsCopy) {
 			// <- LOGGING
-			if (log.isDebugEnabled()) {
-				log.debug("Do PrePreTick action " + p);
+			if (logger.isTraceEnabled()) {
+				logger.trace("Do PrePreTick action " + p);
 			}
 			// LOGGING ->
 
@@ -327,7 +345,11 @@ public class DefaultSchedule implements WorldSyncSchedule {
 	}
 
 	private void preTickUpdates() {
-		log.info("Pre Tick\t\t (DefaultSchedule ID " + id + ")");
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Pre Tick\t\t (DefaultSchedule ID " + id + ")");
+		}
+		// LOGGING ->
 
 		// copy to prevent concurrent modifications:
 		List<PreTickAction> preTickActionsCopy = new ArrayList<PreTickAction>(
@@ -335,8 +357,8 @@ public class DefaultSchedule implements WorldSyncSchedule {
 
 		for (PreTickAction p : preTickActionsCopy) {
 			// <- LOGGING
-			if (log.isDebugEnabled()) {
-				log.debug("Do PreTick action " + p);
+			if (logger.isTraceEnabled()) {
+				logger.trace("Do PreTick action " + p);
 			}
 			// LOGGING ->
 
@@ -345,7 +367,11 @@ public class DefaultSchedule implements WorldSyncSchedule {
 	}
 
 	private void postTickUpdates() {
-		log.info("Post Tick\t\t (DefaultSchedule ID " + id + ")");
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Post Tick\t\t (DefaultSchedule ID " + id + ")");
+		}
+		// LOGGING ->
 
 		// copy to prevent concurrent modifications:
 		List<PostTickAction> postTickActionsCopy = new ArrayList<PostTickAction>(
@@ -357,7 +383,11 @@ public class DefaultSchedule implements WorldSyncSchedule {
 	}
 
 	private void finishUpdates() {
-		log.info("Finish\t\t (DefaultSchedule ID " + id + ")");
+		// <- LOGGING
+        if (logger.isDebugEnabled()) {
+	        logger.debug("Finish\t\t (DefaultSchedule ID " + id + ")");
+		}
+        // LOGGING ->
 
 		// copy to prevent concurrent modifications:
 		List<FinishAction> finishActionsCopy = new ArrayList<FinishAction>(
@@ -395,7 +425,7 @@ public class DefaultSchedule implements WorldSyncSchedule {
 		if (o instanceof PostTickAction) {
 			return postTickActions.remove(o);
 		}
-		log.warn("The specified object is not a PreTickAction or PostTickAction!");
+		logger.warn("The specified object is not a PreTickAction or PostTickAction!");
 		return false;
 	}
 

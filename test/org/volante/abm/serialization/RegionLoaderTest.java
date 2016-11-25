@@ -43,6 +43,7 @@ public class RegionLoaderTest extends BasicTestsUtils
 				"xml/SmallWorldRegion1.xml", null);
 		loader.initialise( new RunInfo() );
 		Region region = loader.region;
+		region.initialise(modelData, new RunInfo(), region);
 		
 		assertEquals( 10, loader.cellTable.size() );
 		assertNotNull( loader.demand );
