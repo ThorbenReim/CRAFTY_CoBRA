@@ -39,11 +39,10 @@ import com.moseph.modelutils.fastdata.DoubleMap;
  */
 public interface DemandModel extends Initialisable, Displayable {
 	/**
-	 * Should be called to get the level of demand in a particular cell This can
-	 * include any regional demand
+	 * Should be called to get the level of demand in a particular cell This can include any regional demand
 	 * 
 	 * @param c
-	 * @return demand map fro given cell
+	 * @return demand map from given cell
 	 */
 	public DoubleMap<Service> getDemand(Cell c);
 

@@ -48,6 +48,8 @@ public interface FunctionalRole extends Initialisable {
 
 	public int getSerialID();
 
+	public String getDescription();
+
 	public ProductionModel getProduction();
 
 	public boolean isInitialised();

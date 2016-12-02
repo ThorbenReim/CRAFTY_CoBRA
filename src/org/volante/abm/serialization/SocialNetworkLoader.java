@@ -74,6 +74,7 @@ import de.cesr.more.param.reader.MMilieuNetLinkDataCsvReader;
 import de.cesr.more.util.io.MoreIoUtilities;
 import de.cesr.parma.core.PmParameterDefinition;
 import de.cesr.parma.core.PmParameterManager;
+import edu.uci.ics.jung.io.GraphMLMetadata;
 
 
 /**
@@ -105,6 +106,12 @@ public class SocialNetworkLoader {
 
 	@Element(required = false, name = "networkGeneratorClass")
 	String					networkGeneratorClass	= "de.cesr.more.building.network.MWattsBetaSwBuilder.class";
+
+	@Element(required = false)
+	protected boolean outputAgentCoords = false;
+
+	@Element(required = false)
+	protected boolean outputAgentFrId = false;
 
 	@ElementMapUnion({
 			@ElementMap(inline = true, entry = "Integer", attribute = true, required = false, key = "param", valueType = Integer.class),
@@ -267,6 +274,9 @@ public class SocialNetworkLoader {
 
 					// output network
 					if ((Boolean) pm.getParam(SocialNetworkPa.OUTPUT_NETWORK_AFTER_CREATION)) {
+
+						Map<String, GraphMLMetadata<SocialAgent>> metaData = setVertexMetaData();
+
 						MoreIoUtilities.outputGraph(
 								region.getNetwork(),
 								new File(
@@ -276,7 +286,8 @@ public class SocialNetworkLoader {
 														"graphml",
 														(String) pm
 																.getParam(SocialNetworkPa.OUTPUT_NETWORK_AFTER_CREATION_TICKPATTERN),
-						                                region)), new Transformer<SocialAgent, String>() {
+						                                region)), metaData, null,
+						        new Transformer<SocialAgent, String>() {
 							        @Override
 							        public String transform(SocialAgent input) {
 								        return input.getID();
@@ -300,6 +311,44 @@ public class SocialNetworkLoader {
 					}
 				}
 			}
+
+			/**
+			 * @return
+			 */
+            protected Map<String, GraphMLMetadata<SocialAgent>> setVertexMetaData() {
+	            Map<String, GraphMLMetadata<SocialAgent>> metaData =
+	                    new HashMap<String, GraphMLMetadata<SocialAgent>>();
+
+
+				if (SocialNetworkLoader.this.outputAgentFrId) {
+					metaData.put("FR", new GraphMLMetadata<SocialAgent>("FR[int]", "0",
+					        new Transformer<SocialAgent, String>() {
+						        @Override
+						        public String transform(SocialAgent agent) {
+							        return agent.getFC().getFR().getSerialID() + "";
+						        }
+					        }));
+				}
+
+				if (SocialNetworkLoader.this.outputAgentCoords) {
+					metaData.put("X", new GraphMLMetadata<SocialAgent>("X[int]", "0",
+					        new Transformer<SocialAgent, String>() {
+						        @Override
+						        public String transform(SocialAgent agent) {
+							        return Math.round(agent.getHomeCell().getX()) + "";
+						        }
+					        }));
+
+					metaData.put("Y", new GraphMLMetadata<SocialAgent>("Y[int]", "0",
+					        new Transformer<SocialAgent, String>() {
+						        @Override
+						        public String transform(SocialAgent agent) {
+							        return Math.round(agent.getHomeCell().getY()) + "";
+						        }
+					        }));
+				}
+	            return metaData;
+            }
 		});
 	}
 

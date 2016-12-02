@@ -68,6 +68,9 @@ public abstract class AbstractFR implements FunctionalRole {
 	@Attribute(required = false)
 	protected double givingUpProbability = 1.0;
 
+	@Element(required = false)
+	protected String description = "";
+
 	protected boolean initialised = false;
 
 	protected Set<FunctionalRoleProductionObserver> productionObserver = new HashSet<>();
@@ -153,6 +156,10 @@ public abstract class AbstractFR implements FunctionalRole {
 	@Override
 	public int getSerialID() {
 		return serialID;
+	}
+
+	public String getDescription() {
+		return this.description;
 	}
 
 	@Override

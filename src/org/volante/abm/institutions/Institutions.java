@@ -206,4 +206,17 @@ public class Institutions implements Institution, PreTickAction {
 			}
 		}
 	}
+
+	/**
+	 * @param id
+	 * @return institution or null if id cannot be found
+	 */
+	public Institution getInstitution(String id) {
+		for (Institution inst : institutions) {
+			if (inst instanceof Agent && ((Agent) inst).getID().equals(id)) {
+				return inst;
+			}
+		}
+		return null;
+	}
 }
