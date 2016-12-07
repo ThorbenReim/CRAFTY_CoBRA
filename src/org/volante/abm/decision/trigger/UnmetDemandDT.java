@@ -58,6 +58,10 @@ public class UnmetDemandDT extends AbstractDelayedStartDecisionTrigger {
 
 	protected List<Service> consideredServices = new ArrayList<>();
 
+	/**
+	 * A negative value will multiply demand supply gap and this thresholdFraction to allow triggering in case of
+	 * oversupply.
+	 */
 	@Element(required = false)
 	protected double thresholdFraction = 0.2;
 
@@ -129,7 +133,9 @@ public class UnmetDemandDT extends AbstractDelayedStartDecisionTrigger {
 			logger.info("> " + service + ": " + perceived / demand + " (" + this.thresholdFraction + ")");
 			// LOGGING ->
 
-			if (perceived > demand * this.thresholdFraction) {
+			int oversupplySwitch = this.thresholdFraction < 0 ? -1 : 1;
+
+			if (perceived * oversupplySwitch >= demand * this.thresholdFraction * oversupplySwitch) {
 
 				final LaraDecisionConfiguration dConfig =
 				        LModel.getModel(agent.getRegion()).getDecisionConfigRegistry().get(this.dcId);

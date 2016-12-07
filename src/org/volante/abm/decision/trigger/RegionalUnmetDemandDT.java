@@ -74,8 +74,9 @@ public class RegionalUnmetDemandDT extends UnmetDemandDT {
 				}
 				// LOGGING ->
 
-				if (perceived >= regionalDemand.get(service)
-				        * thresholdFraction) {
+				int oversupplySwitch = this.thresholdFraction < 0 ? -1 : 1;
+
+				if (perceived * oversupplySwitch >= regionalDemand.get(service) * thresholdFraction * oversupplySwitch) {
 
 					final LaraDecisionConfiguration dConfig =
 					        LModel.getModel(agent.getRegion()).getDecisionConfigRegistry().get(this.dcId);
