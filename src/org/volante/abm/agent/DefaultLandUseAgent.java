@@ -24,8 +24,8 @@ package org.volante.abm.agent;
 
 
 import org.apache.log4j.Logger;
-import org.volante.abm.agent.fr.DefaultFR;
 import org.volante.abm.agent.fr.FunctionalRole;
+import org.volante.abm.agent.fr.LazyFR;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -54,7 +54,7 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 
 
 	public DefaultLandUseAgent(String id, ModelData data) {
-		this(DefaultFR.UNMANAGED_FR, id, data, null,
+		this(LazyFR.getInstance(), id, data, null,
 				NullProductionModel.INSTANCE, -Double.MAX_VALUE,
 				Double.MAX_VALUE);
 	}

@@ -28,7 +28,6 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
-import org.volante.abm.example.SimpleProductionModel;
 import org.volante.abm.models.ProductionModel;
 import org.volante.abm.schedule.RunInfo;
 
@@ -39,10 +38,6 @@ public class DefaultFR extends AbstractFR {
 	 * Logger
 	 */
 	static private Logger logger = Logger.getLogger(DefaultFR.class);
-
-	static public FunctionalRole UNMANAGED_FR = new DefaultFR("Unmanaged",
-			new SimpleProductionModel());
-
 
 	public DefaultFR(@Attribute(name = "label") String label,
 			@Element(name = "production") ProductionModel production) {

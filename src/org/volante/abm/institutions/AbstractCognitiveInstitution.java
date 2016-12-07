@@ -13,14 +13,15 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementMap;
 import org.volante.abm.agent.Agent;
+import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.bt.BehaviouralComponent;
 import org.volante.abm.agent.bt.BehaviouralType;
 import org.volante.abm.agent.fr.FunctionalComponent;
 import org.volante.abm.agent.fr.LazyFR;
-import org.volante.abm.agent.property.PropertyRegistry;
 import org.volante.abm.agent.property.DoublePropertyProvider;
 import org.volante.abm.agent.property.DoublePropertyProviderComp;
 import org.volante.abm.agent.property.PropertyId;
+import org.volante.abm.agent.property.PropertyRegistry;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
@@ -53,6 +54,9 @@ public abstract class AbstractCognitiveInstitution extends AbstractInstitution i
 	@Element(required = false)
 	protected String btLabel = "CognitiveBT";
 
+	@Element(required = false)
+	protected String frLabel = LandUseAgent.NOT_MANAGED_FR_ID;
+
 	protected BehaviouralComponent behaviouralComp = null;
 
 	protected FunctionalComponent functionalComp = LazyFR.getInstance();
@@ -84,6 +88,7 @@ public abstract class AbstractCognitiveInstitution extends AbstractInstitution i
 		}
 
 		this.region.getBehaviouralTypeMapByLabel().get(btLabel).assignNewBehaviouralComp(this);
+		this.region.getFunctionalRoleMapByLabel().get(frLabel).assignNewFunctionalComp(this);
 	}
 
 	/**

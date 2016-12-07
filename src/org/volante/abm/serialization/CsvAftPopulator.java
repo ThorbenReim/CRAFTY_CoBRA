@@ -49,7 +49,6 @@ import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.param.RandomPa;
-import org.volante.abm.serialization.RegionLoader.CellInitialiser;
 import org.volante.abm.serialization.transform.IntTransformer;
 
 import repast.simphony.parameter.IllegalParameterException;
@@ -66,7 +65,7 @@ import de.cesr.parma.core.PmParameterManager;
  * @author Sascha Holzhauer
  * 
  */
-public class CsvAftPopulator implements CellInitialiser, AftPopulator {
+public class CsvAftPopulator implements AftPopulator {
 
 	@Element(required = true)
 	String	csvFile		= "";

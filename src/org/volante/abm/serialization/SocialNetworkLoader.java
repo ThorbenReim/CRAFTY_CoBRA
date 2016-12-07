@@ -242,8 +242,14 @@ public class SocialNetworkLoader {
 		}
 		// LOGGING ->
 
-		info.getSchedule().register(new PreTickAction() {
+		info.getSchedule().register(getNetworkInitPreTickAction(networkService, data, info, tick));
+	}
 
+	protected PreTickAction getNetworkInitPreTickAction(
+	        final MoreNetworkService<SocialAgent, MoreEdge<SocialAgent>> networkService, final ModelData data,
+	        final RunInfo info, final int tick) {
+
+		return new PreTickAction() {
 			@Override
 			public void preTick() {
 				if (info.getSchedule().getCurrentTick() == tick) {
@@ -349,7 +355,7 @@ public class SocialNetworkLoader {
 				}
 	            return metaData;
             }
-		});
+		};
 	}
 
 	/**
