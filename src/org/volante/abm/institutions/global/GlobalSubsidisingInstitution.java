@@ -57,7 +57,7 @@ import de.cesr.lara.components.preprocessor.impl.LDefaultDecisionModeSelector;
  * @author Sascha Holzhauer
  * 
  */
-public class GlobalSubsidisingInstitution extends AbstractCognitiveGlobalInstitution implements PrePreTickAction,
+public class GlobalSubsidisingInstitution extends AbstractCobraGlobalInstitution implements PrePreTickAction,
         DecisionTriggerPrecheckingAgent {
 
 	public static class DecisionModeSelector extends LDefaultDecisionModeSelector {

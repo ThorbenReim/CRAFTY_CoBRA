@@ -32,7 +32,7 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
  * @author Sascha Holzhauer
  * 
  */
-public class RegionalProvisionInstitution extends AbstractCognitiveInstitution implements PrePreTickAction,
+public class RegionalProvisionInstitution extends AbstractCobraInstitution implements PrePreTickAction,
         DecisionTriggerPrecheckingAgent {
 
 	Map<Integer, CompetitivenessAdjustingPa> compAdjustPas = new LinkedHashMap<>();
@@ -59,7 +59,7 @@ public class RegionalProvisionInstitution extends AbstractCognitiveInstitution i
 	}
 
 	/**
-	 * @see org.volante.abm.institutions.AbstractCognitiveInstitution#initialise(org.volante.abm.data.ModelData,
+	 * @see org.volante.abm.institutions.AbstractCobraInstitution#initialise(org.volante.abm.data.ModelData,
 	 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Region)
 	 */
 	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {

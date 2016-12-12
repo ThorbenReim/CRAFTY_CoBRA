@@ -21,13 +21,12 @@
  * 
  * Created by Sascha Holzhauer on 7 Dec 2016
  */
-package org.volante.abm.institutions.global;
+package org.volante.abm.institutions;
 
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.volante.abm.agent.SocialAgent;
-import org.volante.abm.institutions.AbstractCognitiveInstitution;
 
 import de.cesr.more.basic.agent.MAgentNetworkComp;
 import de.cesr.more.basic.agent.MoreAgentNetworkComp;
@@ -41,18 +40,18 @@ import de.cesr.more.measures.node.MoreNodeMeasureSupport;
  * @author Sascha Holzhauer
  *
  */
-public abstract class AbstractSocialCognitiveInstitution extends AbstractCognitiveInstitution implements SocialAgent {
+public abstract class AbstractSocialCobraInstitution extends AbstractCobraInstitution implements SocialAgent {
 
 	/**
 	 * Logger
 	 */
-	static private Logger logger = Logger.getLogger(AbstractSocialCognitiveInstitution.class);
+	static private Logger logger = Logger.getLogger(AbstractSocialCobraInstitution.class);
 
 	MoreAgentNetworkComp<SocialAgent, MoreEdge<SocialAgent>> netComp =
 	        new MAgentNetworkComp<SocialAgent, MoreEdge<SocialAgent>>(this);
 	protected MNodeMeasures measures = new MNodeMeasures();
 
-	public AbstractSocialCognitiveInstitution(@Attribute(name = "id") String id) {
+	public AbstractSocialCobraInstitution(@Attribute(name = "id") String id) {
 		super(id);
 	}
 

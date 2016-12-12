@@ -32,20 +32,20 @@ import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Regions;
 import org.volante.abm.example.GlobalBtRepository;
-import org.volante.abm.institutions.AbstractCognitiveInstitution;
+import org.volante.abm.institutions.AbstractCobraInstitution;
 import org.volante.abm.schedule.RunInfo;
 
 /**
  * @author Sascha Holzhauer
  *
  */
-public abstract class AbstractCognitiveGlobalInstitution extends AbstractCognitiveInstitution implements
+public abstract class AbstractCobraGlobalInstitution extends AbstractCobraInstitution implements
 		GlobalInstitution {
 
 	/**
 	 * @param id
 	 */
-	public AbstractCognitiveGlobalInstitution(@Attribute(name = "id") String id) {
+	public AbstractCobraGlobalInstitution(@Attribute(name = "id") String id) {
 		super(id);
 	}
 
@@ -81,7 +81,7 @@ public abstract class AbstractCognitiveGlobalInstitution extends AbstractCogniti
 	}
 
 	/**
-	 * @see org.volante.abm.institutions.AbstractCognitiveInstitution#initialise(org.volante.abm.data.ModelData,
+	 * @see org.volante.abm.institutions.AbstractCobraInstitution#initialise(org.volante.abm.data.ModelData,
 	 *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Region)
 	 */
 	@Override

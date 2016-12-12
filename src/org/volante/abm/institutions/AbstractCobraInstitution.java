@@ -16,6 +16,7 @@ import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.bt.BehaviouralComponent;
 import org.volante.abm.agent.bt.BehaviouralType;
+import org.volante.abm.agent.bt.PseudoBT;
 import org.volante.abm.agent.fr.FunctionalComponent;
 import org.volante.abm.agent.fr.LazyFR;
 import org.volante.abm.agent.property.DoublePropertyProvider;
@@ -41,18 +42,18 @@ import org.volante.abm.schedule.RunInfo;
  * @author Sascha Holzhauer
  * 
  */
-public abstract class AbstractCognitiveInstitution extends AbstractInstitution implements Agent {
+public abstract class AbstractCobraInstitution extends AbstractInstitution implements InstitutionAgent {
 
 	/**
 	 * Logger
 	 */
-	static private Logger logger = Logger.getLogger(AbstractCognitiveInstitution.class);
+	static private Logger logger = Logger.getLogger(AbstractCobraInstitution.class);
 
 	@Attribute(required = false)
 	protected String id = "NN";
 
 	@Element(required = false)
-	protected String btLabel = "CognitiveBT";
+	protected String btLabel = null;
 
 	@Element(required = false)
 	protected String frLabel = LandUseAgent.NOT_MANAGED_FR_ID;
@@ -69,7 +70,7 @@ public abstract class AbstractCognitiveInstitution extends AbstractInstitution i
 	protected DoublePropertyProvider propertyProvider;
 
 
-	public AbstractCognitiveInstitution(@Attribute(name = "id") String id) {
+	public AbstractCobraInstitution(@Attribute(name = "id") String id) {
 		this.id = id;
 		this.propertyProvider = new DoublePropertyProviderComp();
 	}
@@ -87,8 +88,24 @@ public abstract class AbstractCognitiveInstitution extends AbstractInstitution i
 			}
 		}
 
-		this.region.getBehaviouralTypeMapByLabel().get(btLabel).assignNewBehaviouralComp(this);
-		this.region.getFunctionalRoleMapByLabel().get(frLabel).assignNewFunctionalComp(this);
+		if (this.getFC().equals(LazyFR.getInstance()) && !btLabel.equals(Agent.NOT_MANAGED_FR_ID)) {
+			if (this.region.getFunctionalRoleMapByLabel().containsKey(btLabel)) {
+				this.region.getFunctionalRoleMapByLabel().get(frLabel).assignNewFunctionalComp(this);
+			} else {
+				LazyFR.getInstance().assignNewFunctionalComp(this);
+				logger.warn("Requested FunctionalRole (" + frLabel + ") not found. Using " + Agent.NOT_MANAGED_FR_ID
+				        + "!");
+			}
+		}
+
+		if (this.getBC() == null) {
+			if (this.region.getBehaviouralTypeMapByLabel().containsKey(btLabel)) {
+				this.region.getBehaviouralTypeMapByLabel().get(btLabel).assignNewBehaviouralComp(this);
+			} else {
+				logger.warn("Couldn't find BehaviouralType by id: " + btLabel + ". Assignind PseudoBT.");
+				new PseudoBT().assignNewBehaviouralComp(this);
+			}
+		}
 	}
 
 	/**

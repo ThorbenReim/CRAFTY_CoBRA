@@ -217,7 +217,7 @@ public class RegionLoader {
 		}
 
 		if (socialNetworkFile != null && !socialNetworkFile.equals("")) {
-			this.socialNetworkFileList.add(socialNetworkFile);
+			this.socialNetworkFileList.addAll(ABMPersister.splitTags(socialNetworkFile));
 		}
 
 		if (institutionFile != null && !institutionFile.equals("")) {
