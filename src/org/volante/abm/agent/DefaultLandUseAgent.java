@@ -120,13 +120,21 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 		if (this.getProperty(AgentPropertyIds.COMPETITIVENESS) < this
 				.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)) {
 
-			if (this.region.getRandom().getURService().nextDouble(RandomPa.RANDOM_SEED_RUN_GIVINGUP.name()) < this
+			double random = this.region.getRandom().getURService().nextDouble(RandomPa.RANDOM_SEED_RUN_GIVINGUP.name());
+
+			if (random < this
 					.getProperty(AgentPropertyIds.GIVING_UP_PROB)) {
+				// <- LOGGING
+				if (logger.isDebugEnabled()) {
+					logger.debug(this + "> GivingUp (random number: " + random + ")");
+				}
+				// LOGGING ->
+
 				giveUp();
 			} else {
 				// <- LOGGING
 				if (logger.isDebugEnabled()) {
-					logger.debug(this + "> GivingUp rejected!");
+					logger.debug(this + "> GivingUp rejected! (random number: " + random + ")");
 				}
 				// LOGGING ->
 			}

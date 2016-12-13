@@ -24,7 +24,7 @@ import com.moseph.modelutils.fastdata.DoubleMap;
 
 
 /**
- * Once Reads a CSV file with factors per cell and capital which are applied every tick
+ * Once Reads a CSV file with summands (default)/factors per cell and capital which are applied every tick
  * 
  * @author Sascha Holzhauer
  * 
@@ -40,13 +40,16 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 		int x;
 		int y;
 
+		boolean multiply = false;
+
 		// Map<Capital, Double> factors;
 		DoubleMap<Capital> operands;
 
-		public CellCapitalData(DoubleMap<Capital> operands, int x, int y) {
+		public CellCapitalData(DoubleMap<Capital> operands, int x, int y, boolean multiply) {
 			this.operands = operands;
 			this.x = x;
 			this.y = y;
+			this.multiply = multiply;
 		}
 
 		protected void apply(Region r) {
@@ -61,7 +64,9 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 				c.getBaseCapitals().copyInto(adjusted);
 
 				for (Capital cap : operands.getKeySet()) {
-					double result = adjusted.getDouble(cap) + operands.get(cap);
+					double result =
+					        this.multiply ? adjusted.getDouble(cap) * operands.get(cap) : adjusted.getDouble(cap)
+					                + operands.get(cap);
 
 					if (result < 0) {
 						// <- LOGGING
@@ -97,6 +102,8 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 	@Element(required = false)
 	protected IntTransformer yTransformer = null;
 
+	@Element(required = false)
+	protected boolean multiply = false;
 
 	Set<CellCapitalData> cellCapitalData = new HashSet<>();
 
@@ -133,7 +140,7 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 				y = yTransformer.transform(y);
 			}
 			
-			cellCapitalData.add(new CellCapitalData(adjusted, x, y));
+			cellCapitalData.add(new CellCapitalData(adjusted, x, y, this.multiply));
 		}
 	}
 
