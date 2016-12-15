@@ -67,7 +67,7 @@ public class RegionalUnmetDemandDT extends UnmetDemandDT {
 
 				// <- LOGGING
 				if (logger.isDebugEnabled()) {
-					logger.debug(this.dcId + "> " + service + ": "
+					logger.debug(this.id + " (" + this.dcId + ") > " + service + ": "
 					        + this.floatFormat.format(perceived / regionalDemand.get(service))
  + " (Threshold: "
 					        + this.floatFormat.format(this.thresholdFraction) + ")");

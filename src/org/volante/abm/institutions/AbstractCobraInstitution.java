@@ -88,8 +88,8 @@ public abstract class AbstractCobraInstitution extends AbstractInstitution imple
 			}
 		}
 
-		if (this.getFC().equals(LazyFR.getInstance()) && !btLabel.equals(Agent.NOT_MANAGED_FR_ID)) {
-			if (this.region.getFunctionalRoleMapByLabel().containsKey(btLabel)) {
+		if (this.getFC().equals(LazyFR.getInstance()) && !frLabel.equals(Agent.NOT_MANAGED_FR_ID)) {
+			if (this.region.getFunctionalRoleMapByLabel().containsKey(frLabel)) {
 				this.region.getFunctionalRoleMapByLabel().get(frLabel).assignNewFunctionalComp(this);
 			} else {
 				LazyFR.getInstance().assignNewFunctionalComp(this);

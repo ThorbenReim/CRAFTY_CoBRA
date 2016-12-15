@@ -22,6 +22,8 @@
  */
 package org.volante.abm.example;
 
+
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,11 +46,14 @@ import org.volante.abm.example.allocation.AgentFinder;
 import org.volante.abm.models.AllocationModel;
 import org.volante.abm.models.utils.CellVolatilityMessenger;
 import org.volante.abm.models.utils.CellVolatilityObserver;
+import org.volante.abm.param.BasicPa;
 import org.volante.abm.param.RandomPa;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.visualisation.SimpleAllocationDisplay;
 
 import com.moseph.modelutils.Utilities;
+
+import de.cesr.parma.core.PmParameterManager;
 
 
 /**
@@ -146,15 +151,19 @@ public class SimpleAllocationModel implements AllocationModel,
 		double max = -Double.MAX_VALUE;
 		FunctionalRole bestFr = null;
 
+		double random;
+
 		// Find FR with highest competitiveness above his GU threshold:
 		for (FunctionalRole fr : fComps)
 		{
-			if (r.getInstitutions().isAllowed(fr, c)) {
+			random = r.getRandom().getURService().nextDouble(RandomPa.RANDOM_SEED_RUN_ALLOCATION.name());
+
+			if (fr.getAllocationProbability() >= random && r.getInstitutions().isAllowed(fr, c)) {
 
 				double s = r.getCompetitiveness(fr, c);
 				// <- LOGGING
 				if (logger.isDebugEnabled()) {
-					logger.debug(fr + "> competitiveness: " + s);
+					logger.debug(fr + "> competitiveness: " + s + " (threshold: " + fr.getMeanGivingUpThreshold() + ")");
 				}
 				// LOGGING ->
 
@@ -165,6 +174,17 @@ public class SimpleAllocationModel implements AllocationModel,
 					}
 				}
 			}
+
+			// <- LOGGING
+			if (logger.isTraceEnabled()) {
+				NumberFormat format = (NumberFormat) PmParameterManager.getParameter(r, BasicPa.FLOAT_POINT_FORMAT);
+				logger.trace(fr + (fr.getAllocationProbability() >= random ? "" : " not")
+				        + " considered (prob: " + format.format(fr.getAllocationProbability()) + "/rand: "
+				        + format.format(random) + "); " + (r.getInstitutions().isAllowed(fr, c) ? "" : "not ")
+				        + "allowed.");
+			}
+			// LOGGING ->
+
 		}
 
 		// <- LOGGING
@@ -179,7 +199,7 @@ public class SimpleAllocationModel implements AllocationModel,
 
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {
-				logger.debug("Ownership from :" + c.getOwner() + " --> " + agent);
+				logger.debug("Ownership from " + c.getOwner() + " --> " + agent);
 			}
 			// LOGGING ->
 

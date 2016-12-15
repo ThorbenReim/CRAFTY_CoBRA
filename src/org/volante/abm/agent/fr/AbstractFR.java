@@ -66,6 +66,9 @@ public abstract class AbstractFR implements FunctionalRole {
 	protected double givingInMean = -Double.MAX_VALUE;
 
 	@Attribute(required = false)
+	protected double allocationProbability = 1.0;
+
+	@Attribute(required = false)
 	protected double givingUpProbability = 1.0;
 
 	@Element(required = false)
@@ -126,6 +129,7 @@ public abstract class AbstractFR implements FunctionalRole {
 			agent.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, this.givingUpMean);
 		}
 		agent.setProperty(AgentPropertyIds.GIVING_UP_PROB, this.givingUpProbability);
+		agent.setProperty(AgentPropertyIds.ALLOCATE_PROB, this.allocationProbability);
 
 		return agent;
 	}
@@ -178,7 +182,11 @@ public abstract class AbstractFR implements FunctionalRole {
 	public double getMeanGivingUpThreshold() {
 		return this.givingUpMean;
 	}
-
+	
+	public double getAllocationProbability() {
+		return this.allocationProbability;
+	}
+	
 	public void productionModelChanged() {
 		for (FunctionalRoleProductionObserver observer : this.productionObserver) {
 			observer.functionalRoleProductionChanged(this);

@@ -192,7 +192,8 @@ public class RegionLoader {
 			String frfiles, String cellInitialisers,
 			String agentInitialisers) {
 		this(pid, id, competition, allocation, demand, btfiles, frfiles,
- cellInitialisers, agentInitialisers, null, null,
+ cellInitialisers, agentInitialisers, null,
+		        null, null,
 				null);
 	}
 
@@ -200,6 +201,7 @@ public class RegionLoader {
  String demand, String btfiles,
 			String frfiles, String cellInitialisers, String agentInitialisers, String socialNetworkFile,
 			String institutionFile,
+ String updatersFile,
 			String laraModelFile) {
 		this.pid = Integer.parseInt(pid);
 		this.id = id;
@@ -223,6 +225,11 @@ public class RegionLoader {
 		if (institutionFile != null && !institutionFile.equals("")) {
 			this.institutionFiles.addAll(ABMPersister.splitTags(institutionFile));
 		}
+
+		if (updatersFile != null && !updatersFile.equals("")) {
+			this.updaterFiles.addAll(ABMPersister.splitTags(updatersFile));
+		}
+
 		if (laraModelFile != null && !laraModelFile.equals("")) {
 			regionalLaraModelFile = laraModelFile;
 		}

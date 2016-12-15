@@ -63,6 +63,8 @@ public interface FunctionalRole extends Initialisable {
 	 */
 	public UnmodifiableNumberMap<Service> getExpectedSupply(Cell cell);
 
+	public double getAllocationProbability();
+
 	public double getMeanGivingUpThreshold();
 
 	public double getMeanGivingInThreshold();

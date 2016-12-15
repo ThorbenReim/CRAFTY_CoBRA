@@ -47,6 +47,11 @@ public enum AgentPropertyIds implements PropertyId {
 	GIVING_UP_PROB,
 
 	/**
+	 * Probability to allocate new land to this agent
+	 */
+	ALLOCATE_PROB,
+
+	/**
 	 * If set (not {@link Double#NaN}) and above 1,
 	 * {@link AgentPropertyIds#GIVING_IN_THRESHOLD} may not be overwritten,
 	 * below 1 only by a higher value.

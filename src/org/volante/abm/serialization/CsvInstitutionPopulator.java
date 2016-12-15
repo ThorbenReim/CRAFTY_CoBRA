@@ -210,18 +210,6 @@ public class CsvInstitutionPopulator implements CellInitialiser {
 
 
 	/**
-	 * @param agentCellMap
-	 * @param c
-	 * @param agentId
-	 */
-	protected void addManagedCell(Map<String, Set<Cell>> agentCellMap, Cell c, String agentId) {
-		if (!agentCellMap.containsKey(agentId)) {
-			agentCellMap.put(agentId, new HashSet<Cell>());
-		}
-		agentCellMap.get(agentId).add(c);
-	}
-
-	/**
 	 * @param homecell
 	 * @param btIdInitial
 	 * @param frIdInitial

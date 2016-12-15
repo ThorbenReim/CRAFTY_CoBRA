@@ -85,6 +85,9 @@ public class WorldLoader {
 	String agentColumn = "Agent Initialisers";
 
 	@Attribute(required = false)
+	String updatersColumn = "Updaters";
+
+	@Attribute(required = false)
 	String laraModelColumn = "LARA Model";
 
 	ABMPersister persister = ABMPersister.getInstance();
@@ -174,6 +177,8 @@ public class WorldLoader {
 				null,
 				BatchRunParser.parseString(reader.get(socNetColumn), info),
 				BatchRunParser.parseString(reader.get(institutionsColumn), info),
+ BatchRunParser.parseString(
+		                        reader.get(updatersColumn), info),
 				BatchRunParser.parseString(reader.get(laraModelColumn), info));
 
 		if (!reader.get(this.initialisersColumn).equals("")) {
