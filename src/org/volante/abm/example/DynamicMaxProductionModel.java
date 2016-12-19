@@ -248,8 +248,9 @@ public class DynamicMaxProductionModel extends SimpleProductionModel implements 
 			productionWeights.put(
 					service,
 					this.multiplyProductionNoise ? maxProductionParsers.get(service).getValue()
-							* productionNoise.get(service) : maxProductionParsers.get(service).getValue()
-							+ productionNoise.get(service));
+			        * productionNoise.get(service)
+			        : (maxProductionParsers.get(service).getValue() != 0 ? maxProductionParsers.get(service).getValue()
+			                + productionNoise.get(service) : 0.0));
 
 			if (maxProductionParsers.get(service).hasError()) {
 				logger.error("Error while parsing maximum production function: "
@@ -288,8 +289,7 @@ public class DynamicMaxProductionModel extends SimpleProductionModel implements 
 		pout.productionWeights = productionWeights.duplicate();
 
 		for (Service s : data.services) {
-			// if there is no production, it remains no production:
-			if (productionDist == null || productionWeights.getDouble(s) == 0.0) {
+			if (productionDist == null) {
 				pout.productionNoise.put(s, 0.0);
 			} else {
 				double randomSample = productionDist.sample();
@@ -297,7 +297,7 @@ public class DynamicMaxProductionModel extends SimpleProductionModel implements 
 
 				// <- LOGGING
 				if (logger.isDebugEnabled()) {
-					logger.debug("Random sample: " + randomSample);
+					logger.debug("Production noise random sample: " + randomSample);
 				}
 				// LOGGING ->
 			}
@@ -353,7 +353,8 @@ public class DynamicMaxProductionModel extends SimpleProductionModel implements 
 	public SimpleProductionModel copyExact() {
 		DynamicMaxProductionModel pout = new DynamicMaxProductionModel();
 		pout.capitalWeights = capitalWeights.duplicate();
-		pout.productionWeights = productionWeights.duplicate();
+		capitalWeights.copyInto(pout.capitalWeights);
+		pout.productionWeights = productionWeights.copy();
 
 		pout.allowImplicitMultiplication = this.allowImplicitMultiplication;
 		pout.productionNoise = (Map<Service, Double>) ((HashMap) this.productionNoise).clone();

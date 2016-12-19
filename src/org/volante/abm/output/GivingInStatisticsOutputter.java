@@ -35,6 +35,7 @@ import org.apache.commons.collections15.bag.HashBag;
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.volante.abm.agent.fr.FunctionalRole;
+import org.volante.abm.agent.fr.InstitutionalFR;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Regions;
@@ -109,7 +110,9 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 
 	public void initGivingInStatistic(Region region) {
 		for (FunctionalRole fr : region.getFunctionalRoles()) {
-			addColumn(new SearchedCellsAftColumn(fr.getLabel(), fr, region));
+			if (!(fr instanceof InstitutionalFR)) {
+				addColumn(new SearchedCellsAftColumn(fr.getLabel(), fr, region));
+			}
 		}
 	}
 
@@ -118,9 +121,9 @@ public class GivingInStatisticsOutputter extends TableOutputter<Integer> impleme
 		Set<Integer> regionIntegers = new HashSet<>();
 		for (Region region : r.getAllRegions()) {
 			if (numSearchedCells.containsKey(region)) {
-				for (FunctionalRole pagent : region.getFunctionalRoles()) {
-					if (numSearchedCells.get(region).containsKey(pagent)) {
-						for (Integer integer : numSearchedCells.get(region).get(pagent)) {
+				for (FunctionalRole fr : region.getFunctionalRoles()) {
+					if (!(fr instanceof InstitutionalFR) && numSearchedCells.get(region).containsKey(fr)) {
+						for (Integer integer : numSearchedCells.get(region).get(fr)) {
 							regionIntegers.add(integer);
 						}
 					}

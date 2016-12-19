@@ -30,6 +30,7 @@ import java.util.Set;
 
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.fr.FunctionalRole;
+import org.volante.abm.agent.fr.InstitutionalFR;
 import org.volante.abm.data.Region;
 
 
@@ -68,7 +69,9 @@ public class LandUseProportionMeasure {
 				}
 			}
 			for (FunctionalRole fr : r.getFunctionalRoles()) {
-				aftData.put(fr.getLabel(), new Double((double) pagentNumbers[fr.getSerialID()] / sum));
+				if (!(fr instanceof InstitutionalFR)) {
+					aftData.put(fr.getLabel(), new Double((double) pagentNumbers[fr.getSerialID()] / sum));
+				}
 			}
 		}
 		return aftData;

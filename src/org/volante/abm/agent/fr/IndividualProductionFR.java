@@ -26,8 +26,9 @@ package org.volante.abm.agent.fr;
 import org.volante.abm.example.SimpleProductionModel;
 import org.volante.abm.models.ProductionModel;
 
+
 /**
- * The production model is copied for each new instance.
+ * The production model is copied exactly (no individual noise) for each new instance.
  * 
  * @author Sascha Holzhauer
  * 
