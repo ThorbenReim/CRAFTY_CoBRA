@@ -30,6 +30,7 @@ import java.util.Set;
 import org.simpleframework.xml.Attribute;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.fr.FunctionalRole;
+import org.volante.abm.agent.fr.InstitutionalFR;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Regions;
@@ -67,7 +68,7 @@ public class AggregateAFTCompetitivenessCSVOutputter extends AggregateCSVOutputt
 		Set<String> pAgentSet = new LinkedHashSet<String>();
 		for (Region r : regions.getAllRegions()) {
 			for (FunctionalRole fr : r.getFunctionalRoleMapByLabel().values()) {
-				if (!pAgentSet.contains(fr.getLabel())) {
+				if (!(fr instanceof InstitutionalFR || pAgentSet.contains(fr.getLabel()))) {
 					pAgentSet.add(fr.getLabel());
 				}
 			}

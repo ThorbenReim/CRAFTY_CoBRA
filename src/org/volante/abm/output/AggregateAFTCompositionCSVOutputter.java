@@ -68,7 +68,7 @@ public class AggregateAFTCompositionCSVOutputter extends AggregateCSVOutputter {
 		Set<String> pAgentSet = new LinkedHashSet<String>();
 		for (Region r : regions.getAllRegions()) {
 			for (FunctionalRole fr : r.getFunctionalRoleMapByLabel().values()) {
-				if (!(pAgentSet instanceof InstitutionalFR || pAgentSet.contains(fr.getLabel()))) {
+				if (!(fr instanceof InstitutionalFR || pAgentSet.contains(fr.getLabel()))) {
 					pAgentSet.add(fr.getLabel());
 				}
 			}
