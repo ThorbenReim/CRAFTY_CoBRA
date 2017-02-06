@@ -73,7 +73,7 @@ public class ModelRunner
 			realArgs = MPI.Init(args);
 
 		} catch (ClassNotFoundException e) {
-			logger.error("No MPI in classpath!");
+			logger.error("No MPI in classpath (this message can be ignored if not running in parallel)!");
 			realArgs = args;
 		}
 
