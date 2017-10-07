@@ -283,8 +283,12 @@ public class RegionalSubsidyPa extends CraftyPa<RegionalSubsidyPa> implements La
 	public double adjustCompetitiveness(
 	        FunctionalRole agent, Cell location, UnmodifiableNumberMap<Service> provision, double competitiveness) {
 		double result = competitiveness;
-		double subsidy = provision.dotProduct(definedServiceSubsidies);
-		result += subsidy * overallEffect;
+		DoubleMap<Service> subsidyProvision = definedServiceSubsidies.duplicate();
+		// multiply provision with definedServiceSubsidies:
+		for (Service s : provision.getKeySet())
+			subsidyProvision.putDouble(s, provision.getDouble(s) * definedServiceSubsidies.getDouble(s));
+		// add competitiveness from subsidy provision:
+		result += location.getRegion().getUnadjustedCompetitiveness(subsidyProvision) * overallEffect;
 		return result;
 	}
 
