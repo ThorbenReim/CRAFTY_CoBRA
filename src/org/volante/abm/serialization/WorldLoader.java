@@ -28,8 +28,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import mpi.MPI;
-
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementList;
@@ -39,6 +37,8 @@ import org.volante.abm.data.RegionSet;
 import org.volante.abm.schedule.RunInfo;
 
 import com.csvreader.CsvReader;
+
+import mpi.MPI;
 
 
 public class WorldLoader {
@@ -63,6 +63,10 @@ public class WorldLoader {
 	String competitionColumn = "Competition";
 	@Attribute(required=false)
 	String allocationColumn = "Allocation";
+
+	@Attribute(required = false)
+	String handleAmbulantAgentsColumn = "HandleAmbulant";
+
 	@Attribute(required=false)
 	String demandColumn = "Demand";
 
@@ -170,6 +174,7 @@ public class WorldLoader {
 				BatchRunParser.parseString(reader.get(idColumn), info),
 				BatchRunParser.parseString(reader.get(competitionColumn), info),
 				BatchRunParser.parseString(reader.get(allocationColumn), info),
+		        Boolean.parseBoolean(reader.get(handleAmbulantAgentsColumn)),
 				BatchRunParser.parseString(reader.get(demandColumn), info),
 				BatchRunParser.parseString(reader.get(btColumn), info), 
 				BatchRunParser.parseString(reader.get(frColumn), info),

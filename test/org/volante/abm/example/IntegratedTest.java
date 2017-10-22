@@ -102,7 +102,7 @@ public class IntegratedTest extends BasicTestsUtils
 
 		fRoles = new HashSet<FunctionalRole>(Arrays.asList(farming, forest));
 
-		r1 = new Region(allocation, competition, demand, behaviouralTypes,
+		r1 = new Region(allocation, true, competition, demand, behaviouralTypes,
 				fRoles, c1, c2, c3, c4);
 
 		w = new RegionSet(r1);

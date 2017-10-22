@@ -73,11 +73,13 @@ public class ParameterCSVOutputter extends TableOutputter<Region> implements Glo
 		
 		HashSet<String> processedColumns = new HashSet<>();
 		for (Region r : data.getRootRegionSet().getAllRegions()) {
-			for (String paramname : info.getParamRepos().getRegionParameters(r).keySet()) {
-				if (!processedColumns.contains(paramname)) {
-					addColumn(new ParameterColumn(paramname));
-				} else {
-					processedColumns.add(paramname);
+			if (info.getParamRepos().containsKey(r)) {
+				for (String paramname : info.getParamRepos().getRegionParameters(r).keySet()) {
+					if (!processedColumns.contains(paramname)) {
+						addColumn(new ParameterColumn(paramname));
+					} else {
+						processedColumns.add(paramname);
+					}
 				}
 			}
 		}

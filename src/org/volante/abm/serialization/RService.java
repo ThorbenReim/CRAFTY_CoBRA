@@ -86,6 +86,7 @@ public class RService implements RMainLoopCallbacks {
 		if (re != null) {
 			re.end();
 		}
+		instance = null;
 	}
 
 	/**

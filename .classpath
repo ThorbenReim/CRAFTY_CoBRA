@@ -28,7 +28,11 @@
 	<classpathentry kind="lib" path="lib/jep_ext-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jep-2.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/jide-oss-2.9.7.jar"/>
-	<classpathentry kind="lib" path="lib/JRI.jar" sourcepath="/CRAFTY_CoBRA_NetSens/C:/Data/General/JavaLibraries/JRI/source"/>
+	<classpathentry kind="lib" path="lib/JRI.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CRAFTY_CoBRA_Trunk/lib/jniLibs"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib/jscience.jar"/>
 	<classpathentry kind="lib" path="lib/jts-1.13.jar"/>
 	<classpathentry kind="lib" path="lib/jung-algorithms-2.0.1.jar"/>

@@ -85,6 +85,10 @@ public class ABMPersister extends EasyPersister {
 		return instance;
 	}
 
+	public static void reset() {
+		instance = null;
+	}
+
 	public void regionsToRaster(String filename, Regions r, CellToDouble converter,
 			boolean writeInts, String nDataString) throws Exception {
 		this.regionsToRaster(filename, r, converter, writeInts, null, nDataString);

@@ -74,6 +74,7 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 			} else {
 				this.defaultBtId = region.getBehaviouralTypeMapBySerialId()
 					.entrySet().iterator().next().getValue().getSerialID();
+				logger.warn("Assigning first Behavioural Type ID of regional list (as default not set)!");
 			}
 		}
 	}

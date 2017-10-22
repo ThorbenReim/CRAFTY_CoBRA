@@ -436,12 +436,12 @@ public class BasicTestsUtils {
 		r2cells = new HashSet<Cell>(Arrays.asList(new Cell[] { c21, c22, c23,
 				c24, c25, c26, c27, c28, c29 }));
 		
-		r1 = new Region(allocation, competition, demandR1, behaviouralTypes,
+		r1 = new Region(allocation, true, competition, demandR1, behaviouralTypes,
 				functionalRolesR1, c11, c12, c13, c14, c15, c16,
 				c17, c18, c19);
 		r1.setID("Region01");
 
-		r2 = new Region(allocation, competition, demandR2, behaviouralTypes,
+		r2 = new Region(allocation, true, competition, demandR2, behaviouralTypes,
 				functionalRolesR2, c21, c22, c23, c24, c25, c26,
 				c27, c28, c29);
 		r2.setID("Region02");
@@ -788,7 +788,7 @@ public class BasicTestsUtils {
 			CompetitivenessModel competition, DemandModel demand,
 			Set<BehaviouralType> bTypes, Set<FunctionalRole> fRoles,
 			Cell... cells) throws Exception {
-		Region r = new Region(allocation, competition, demand, bTypes, fRoles,
+		Region r = new Region(allocation, true, competition, demand, bTypes, fRoles,
 				cells);
 		r.initialise(modelData, runInfo, null);
 		runInfo.getSchedule().setRegions(new RegionSet(r));

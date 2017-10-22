@@ -53,10 +53,6 @@ import org.volante.abm.schedule.PreTickAction;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.ABMPersister;
 
-import repast.simphony.space.gis.DefaultGeography;
-import repast.simphony.space.gis.Geography;
-import repast.simphony.space.gis.GeographyParameters;
-
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
@@ -68,6 +64,9 @@ import de.cesr.more.basic.network.MoreNetwork;
 import de.cesr.more.building.network.MoreNetworkService;
 import de.cesr.parma.core.PmParameterManager;
 import de.cesr.uranus.util.UIdentifyCallerException;
+import repast.simphony.space.gis.DefaultGeography;
+import repast.simphony.space.gis.Geography;
+import repast.simphony.space.gis.GeographyParameters;
 
 
 public class Region implements Regions, PreTickAction {
@@ -117,6 +116,8 @@ public class Region implements Regions, PreTickAction {
 
 	boolean skipInitialAllocation = false;
 	
+	boolean handleAmbulantAgents = true;
+
 	Map<Object, RegionHelper>	helpers					= new LinkedHashMap<Object, RegionHelper>();
 
 	InnovationRegistry		innovationRegistry			= new InnovationRegistry(this);
@@ -183,7 +184,7 @@ public class Region implements Regions, PreTickAction {
 	 * @param frs
 	 * @param initialCells
 	 */
-	public Region(AllocationModel allocation, CompetitivenessModel competition,
+	public Region(AllocationModel allocation, boolean handleAmbulantAgents, CompetitivenessModel competition,
 			DemandModel demand, Set<BehaviouralType> bts,
 			Set<FunctionalRole> frs, Cell... initialCells) {
 		this(initialCells);
@@ -192,6 +193,7 @@ public class Region implements Regions, PreTickAction {
 		this.addfunctionalRoles(frs);
 
 		this.allocation = allocation;
+		this.handleAmbulantAgents = handleAmbulantAgents;
 		this.competition = competition;
 		this.demand = demand;
 	}
@@ -522,7 +524,9 @@ public class Region implements Regions, PreTickAction {
 		allocatedAgents.remove(agent);
 
 		// check whether too remove agent or make ambulant
-		ambulantAgents.add(agent);
+		if (handleAmbulantAgents) {
+			ambulantAgents.add(agent);
+		}
 	}
 
 	/**

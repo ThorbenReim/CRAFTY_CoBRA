@@ -137,7 +137,7 @@ public class GlobalBtRepository extends LAbstractModel implements GloballyInitia
 		this.mData = data;
 		this.rInfo = info;
 
-		this.pseudoRegion.setID("PseudoRegion");
+		this.pseudoRegion.setID("PseudoRegion_" + info.getCurrentRun() + "-" + info.getCurrentRandomSeed());
 		this.pseudoRegion.initialise(mData, rInfo, null);
 
 		// init Lara Model
@@ -232,6 +232,8 @@ public class GlobalBtRepository extends LAbstractModel implements GloballyInitia
 		this.id = id;
 		LModel.resetModel(id);
 		LModel.setNewModel(id, this);
+
+		logger.info("Set new model at LModel for id " + id);
 
 		eventBus = LEventbus.getDcSpecificInstance(id);
 		eventBus.subscribe(this, LModelInstantiatedEvent.class);

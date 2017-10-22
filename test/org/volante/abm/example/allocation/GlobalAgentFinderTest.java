@@ -69,7 +69,7 @@ public class GlobalAgentFinderTest extends BasicTestsUtils {
 
 		c11 = new Cell(1, 1);
 		c12 = new Cell(1, 2);
-		r1 = new Region(allocation, competition, demandR1, behaviouralTypes, functionalRolesR1, c11, c12);
+		r1 = new Region(allocation, true, competition, demandR1, behaviouralTypes, functionalRolesR1, c11, c12);
 		r1.setID("Region01");
 		r1.initialise(modelData, runInfo, r1);
 		this.agentAssemblerR1.initialise(modelData, runInfo, r1);

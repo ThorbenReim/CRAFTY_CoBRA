@@ -68,7 +68,7 @@ public class GiveUpGiveInAllocationTest extends BasicTestsUtils {
 		competition.setRemoveNegative(true);
 
 		// Create the region
-		Region r = new Region(allocation, competition, demand,
+		Region r = new Region(allocation, true, competition, demand,
 				behaviouralTypes, functionalRolesR1, c11);
 		r.initialise(modelData, runInfo, r);
 
@@ -157,7 +157,7 @@ public class GiveUpGiveInAllocationTest extends BasicTestsUtils {
 		functionalRolesR1.add(persistentForestry);
 
 		// Create the region
-		Region r = new Region(allocation, competition, demand,
+		Region r = new Region(allocation, true, competition, demand,
 				behaviouralTypes, functionalRolesR1, c1);
 		r.initialise(modelData, runInfo, r);
 

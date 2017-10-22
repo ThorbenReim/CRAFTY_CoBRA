@@ -24,8 +24,6 @@ package org.volante.abm.serialization;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
-import mpi.MPI;
-
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -33,15 +31,18 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.log4j.Logger;
+import org.volante.abm.institutions.global.GlobalInstitutionsRegistry;
 import org.volante.abm.param.RandomPa;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.schedule.ScheduleThread;
 import org.volante.abm.visualisation.ScheduleControls;
 import org.volante.abm.visualisation.TimeDisplay;
 
+import de.cesr.lara.components.model.impl.LModel;
 import de.cesr.more.basic.MManager;
 import de.cesr.more.util.MVersionInfo;
 import de.cesr.parma.core.PmParameterManager;
+import mpi.MPI;
 
 
 public class ModelRunner
@@ -62,6 +63,8 @@ public class ModelRunner
 	public static Logger getConfigLogger() {
 		return clogger;
 	}
+
+	protected static RunInfo rInfo = null;
 
 	public static void main( String[] args ) throws Exception
 	{
@@ -130,7 +133,7 @@ public class ModelRunner
 						: (int) System
 								.currentTimeMillis();
 				// Worry about random seeds here...
-				RunInfo rInfo = new RunInfo();
+				rInfo = new RunInfo();
 				rInfo.setNumRuns(numRuns);
 				rInfo.setNumRandomVariations(numOfRandVariation);
 				rInfo.setCurrentRun(i);
@@ -146,7 +149,8 @@ public class ModelRunner
 
 					PmParameterManager.getInstance(null).setParam(RandomPa.RANDOM_SEED, randomSeed);
 
-					doRun(filename, start, end, rInfo, interactive);
+					doRun(filename, start, end, interactive);
+					rInfo = null;
 				}
 			}
 		}
@@ -164,15 +168,16 @@ public class ModelRunner
 	}
 
 	public static void doRun(String filename, int start,
-			int end, RunInfo rInfo, boolean interactive) throws Exception
+	        int end, boolean interactive) throws Exception
 	{
-		ScenarioLoader loader = setupRun(filename, start, end, rInfo);
+		ScenarioLoader loader = setupRun(filename, start, end);
 		if (interactive) {
 			interactiveRun(loader);
 		} else {
 			noninteractiveRun(loader, start == Integer.MIN_VALUE ? loader.startTick : start,
 					end == Integer.MIN_VALUE ? loader.endTick : end);
-			finalActions(rInfo);
+			loader = null;
+			finalActions();
 		}
 	}
 
@@ -211,14 +216,14 @@ public class ModelRunner
 		controls.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				ModelRunner.finalActions(loader.info);
+				ModelRunner.finalActions();
 			}
 		});
 		controls.setVisible( true );
 	}
 
 	public static ScenarioLoader setupRun(String filename,
-			int start, int end, RunInfo rInfo) throws Exception
+	        int start, int end) throws Exception
 	{
 		// TODO override persister method
 		ScenarioLoader loader = ABMPersister.getInstance().readXML(ScenarioLoader.class, filename,
@@ -315,9 +320,13 @@ public class ModelRunner
 		return options;
 	}
 
-	protected static void finalActions(RunInfo rInfo) {
+	protected static void finalActions() {
 		rInfo.getOutputs().removeClosingOutputThreads();
+		ModelRunner.rInfo = null;
+		ABMPersister.reset();
+		GlobalInstitutionsRegistry.reset();
 		PmParameterManager.reset();
 		MManager.reset();
+		LModel.reset();
 	}
 }

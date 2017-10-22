@@ -101,6 +101,9 @@ public class RegionLoader {
 	String allocationFile = "";
 
 	@Element(required = false)
+	boolean handleAmbulantAgents = true;
+
+	@Element(required = false)
 	DemandModel demand = null;
 	@Element(required = false)
 	String demandFile = "";
@@ -191,13 +194,14 @@ public class RegionLoader {
  String demand, String btfiles,
 			String frfiles, String cellInitialisers,
 			String agentInitialisers) {
-		this(pid, id, competition, allocation, demand, btfiles, frfiles,
+		this(pid, id, competition, allocation, true, demand, btfiles, frfiles,
  cellInitialisers, agentInitialisers, null,
 		        null, null,
 				null);
 	}
 
 	public RegionLoader(String pid, String id, String competition, String allocation,
+	        boolean handleAmbulantAgents,
  String demand, String btfiles,
 			String frfiles, String cellInitialisers, String agentInitialisers, String socialNetworkFile,
 			String institutionFile,
@@ -207,6 +211,7 @@ public class RegionLoader {
 		this.id = id;
 		this.competitionFile = competition;
 		this.allocationFile = allocation;
+		this.handleAmbulantAgents = handleAmbulantAgents;
 		this.demandFile = demand;
 		this.btFileList.addAll(ABMPersister.splitTags(btfiles));
 		this.frFileList.addAll(ABMPersister.splitTags(frfiles));

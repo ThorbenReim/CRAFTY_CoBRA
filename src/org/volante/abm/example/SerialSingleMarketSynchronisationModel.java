@@ -80,7 +80,9 @@ public class SerialSingleMarketSynchronisationModel implements WorldSynchronisat
 		// LOGGING ->
 
 		for (Region r : regions.getAllRegions()) {
-			((WorldDemandModel) r.getDemandModel()).setWorldNumberCells(numRegionalCells);
+			if (r.getDemandModel() instanceof WorldDemandModel) {
+				((WorldDemandModel) r.getDemandModel()).setWorldNumberCells(numRegionalCells);
+			}
 		}
 	}
 
@@ -109,7 +111,9 @@ public class SerialSingleMarketSynchronisationModel implements WorldSynchronisat
 		// LOGGING ->
 
 		for (Region r : regions.getAllRegions()) {
-			((WorldDemandModel) r.getDemandModel()).setWorldDemand(demand);
+			if (r.getDemandModel() instanceof WorldDemandModel) {
+				((WorldDemandModel) r.getDemandModel()).setWorldDemand(demand);
+			}
 		}
 	}
 
@@ -130,7 +134,7 @@ public class SerialSingleMarketSynchronisationModel implements WorldSynchronisat
 
 			} else {
 				throw new IllegalStateException("The demand model of region " + r
-						+ " does not implement" +
+				        + " does not implement " +
 						"WorldDemandModel but is meant to be applied to a global market!");
 			}
 		}
@@ -138,7 +142,9 @@ public class SerialSingleMarketSynchronisationModel implements WorldSynchronisat
 		this.worldSupplyMap = supply;
 
 		for (Region r : regions.getAllRegions()) {
-			((WorldDemandModel) r.getDemandModel()).setWorldSupply(supply);
+			if (r.getDemandModel() instanceof WorldDemandModel) {
+				((WorldDemandModel) r.getDemandModel()).setWorldSupply(supply);
+			}
 		}
 	}
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="stdout" target="SYSTEM_OUT">
+      <PatternLayout pattern="%p:\t%C{1} - %m%n"/>
+      <ThresholdFilter level="debug"/>
+    </Console>
+    <Console name="stderr" target="SYSTEM_OUT">
+      <PatternLayout pattern="%p:\t%C{1} - %m%n"/>
+       <ThresholdFilter level="warn"/>
+    </Console>
+  </Appenders>
+  
+  <Loggers>
+    <Root level="INFO">
+      <AppenderRef ref="stdout"/>
+      <AppenderRef ref="stderr"/>
+    </Root>
+    
+    <Logger name="de.cesr.lara" level="warn">
+      <AppenderRef ref="stdout"/>
+      <AppenderRef ref="stderr"/>
+    </Logger>
+    <Logger name="de.cesr.uranus" level="warn">
+      <AppenderRef ref="stdout"/>
+      <AppenderRef ref="stderr"/>
+    </Logger>
+    <Logger name="de.cesr.parma" level="warn">
+      <AppenderRef ref="stdout"/>
+      <AppenderRef ref="stderr"/>
+    </Logger>
+    
+    <Logger name="MessageCenter.INTERNAL.repast" level="info">
+      <AppenderRef ref="stdout"/>
+      <AppenderRef ref="stderr"/>
+    </Logger>
+    <Logger name="MessageCenter.INTERNAL.saf" level="info">
+      <AppenderRef ref="stdout"/>
+      <AppenderRef ref="stderr"/>
+    </Logger>
+  </Loggers>
+</Configuration>

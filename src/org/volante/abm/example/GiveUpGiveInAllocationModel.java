@@ -113,6 +113,10 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 
 	public int				numTakeoversDerived	= Integer.MIN_VALUE;
 
+	/**
+	 * Sets the impact of a potential FR's competitiveness (on a perfect cell) during probabilistic choice of FRs. Set
+	 * to 0 for uniformly random selection.
+	 */
 	@Attribute(required = false)
 	public int				probabilityExponent	= 2;
 
@@ -192,6 +196,7 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 		}
 
 		super.allocateLand(r); // Puts the best agent on any unmanaged cells
+
 		Score<FunctionalRole> compScore = new Score<FunctionalRole>()
 		{
 			@Override
@@ -206,31 +211,66 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 		for (FunctionalRole fRole : r.getFunctionalRoleMapByLabel().values()) {
 			fComps.add(fRole);
 		}
-		Map<FunctionalRole, Double> scores = scoreMap(fComps,
-				compScore);
 
-		logger.info("Number of derived take overs: " + numTakeoversDerived
-					+ " (specified percentage: " + this.percentageTakeOvers + ")");
+		logger.info("Number of derived take overs: " + numTakeoversDerived + " (specified percentage: "
+		        + this.percentageTakeOvers + ")");
 
-		// normalise scores:
-		double maxProb = 0.0;
-		for (double d : scores.values()) {
-			maxProb += d;
-		}
+		////////////
+		//
+		// for (int i = 0; i < numTakeovers; i++) {
+		// // Resample this each time to deal with changes in supply affecting competitiveness
+		// Map<PotentialAgent, Double> scores = scoreMap(r.getPotentialAgents(), compScore);
+		// tryToComeIn(sample(scores, true), r);
+		// }
 
-		for (Map.Entry<FunctionalRole, Double> entry : scores.entrySet()) {
-			if (maxProb == 0) {
-				scores.put(entry.getKey(), 1.0 / scores.size());
-			} else {
-				scores.put(entry.getKey(), entry.getValue() / maxProb);
-			}
-		}
+		///////////
+
+		// Map<FunctionalRole, Double> scores = scoreMap(fComps,
+		// compScore);
+		//
+		// // normalise scores:
+		// double maxProb = 0.0;
+		// for (double d : scores.values()) {
+		// maxProb += d;
+		// }
+		//
+		// for (Map.Entry<FunctionalRole, Double> entry : scores.entrySet()) {
+		// if (maxProb == 0) {
+		// scores.put(entry.getKey(), 1.0 / scores.size());
+		// } else {
+		// scores.put(entry.getKey(), entry.getValue() / maxProb);
+		// }
+		// }
+
+		/////////////////
 
 		// <- LOGGING
 		logger.info("Apply Try-to-come-in-mode " + tryToComeInMode);
 		// LOGGING ->
+		Map<FunctionalRole, Double> scores;
+		double maxProb;
 
 		for (int i = 0; i < numTakeoversDerived; i++) {
+
+			// updating supply/demand is done in r.setOwnership(agent, c);
+
+			// Update scores
+			scores = scoreMap(fComps, compScore);
+
+			// normalise scores:
+			maxProb = 0.0;
+			for (double d : scores.values()) {
+				maxProb += d;
+			}
+
+			for (Map.Entry<FunctionalRole, Double> entry : scores.entrySet()) {
+				if (maxProb == 0) {
+					scores.put(entry.getKey(), 1.0 / scores.size());
+				} else {
+					scores.put(entry.getKey(), entry.getValue() / maxProb);
+				}
+			}
+
 			// Resample this each time to deal with changes in supply affecting competitiveness
 			tryToComeIn(
 					sample(scores, false, r.getRandom().getURService(),
