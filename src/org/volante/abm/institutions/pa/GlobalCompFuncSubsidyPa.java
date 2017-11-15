@@ -24,6 +24,7 @@ import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
 import org.volante.abm.decision.pa.CompetitivenessAdjustingPa;
 import org.volante.abm.decision.pa.CraftyPa;
+import org.volante.abm.example.AdaptionCurveCompetitivenessModel;
 import org.volante.abm.example.CurveCompetitivenessModel;
 import org.volante.abm.institutions.global.GlobalSubsidisingInstitution;
 import org.volante.abm.models.CompetitivenessModel;
@@ -47,6 +48,8 @@ import de.cesr.lara.toolbox.config.xml.LBoFactory;
 
 
 /**
+ * Compare {@link AdaptionCurveCompetitivenessModel}.
+ * 
  * @author Sascha Holzhauer
  * 
  */

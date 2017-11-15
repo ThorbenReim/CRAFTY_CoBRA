@@ -47,6 +47,13 @@ public enum AgentPropertyIds implements PropertyId {
 	GIVING_UP_PROB,
 
 	/**
+	 * Power for the relative competition gap (difference between competition and giving up threshold, divided by the
+	 * maximum difference per FR). Assign 0 to bypass this effect. The result is multiplied with the
+	 * {@link AgentPropertyIds#GIVING_UP_PROB} to obtain final giving up probability.
+	 */
+	GIVING_UP_PROB_WEIGHT,
+
+	/**
 	 * Probability to allocate new land to this agent
 	 */
 	ALLOCATE_PROB,

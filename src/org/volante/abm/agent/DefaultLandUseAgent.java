@@ -116,17 +116,23 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 					+ " (threshold)?");
 		}
 		// LOGGING ->
-
-		if (this.getProperty(AgentPropertyIds.COMPETITIVENESS) < this
-				.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)) {
+		
+		double compThresholdDiff = this.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)
+		        - this.getProperty(AgentPropertyIds.COMPETITIVENESS);
+		if (compThresholdDiff > 0.0) {
 
 			double random = this.region.getRandom().getURService().nextDouble(RandomPa.RANDOM_SEED_RUN_GIVINGUP.name());
 
-			if (random < this
-					.getProperty(AgentPropertyIds.GIVING_UP_PROB)) {
+			double probability = this
+			        .getProperty(AgentPropertyIds.GIVING_UP_PROB)
+			        * Math.pow(
+			                compThresholdDiff
+			                        / this.region.getMaxGivingUpThresholdDeviation().get(this.getFC().getFR()),
+			                this.getProperty(AgentPropertyIds.GIVING_UP_PROB_WEIGHT).doubleValue());
+			if (random < probability) {
 				// <- LOGGING
 				if (logger.isDebugEnabled()) {
-					logger.debug(this + "> GivingUp (random number: " + random + ")");
+					logger.debug(this + "> GivingUp (random number: " + random + ", probability: " + probability + ")");
 				}
 				// LOGGING ->
 
@@ -134,7 +140,8 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 			} else {
 				// <- LOGGING
 				if (logger.isDebugEnabled()) {
-					logger.debug(this + "> GivingUp rejected! (random number: " + random + ")");
+					logger.debug(this + "> GivingUp rejected! (random number: " + random + ", probability: "
+					        + probability + ")");
 				}
 				// LOGGING ->
 			}

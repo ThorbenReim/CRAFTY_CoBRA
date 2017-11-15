@@ -77,6 +77,7 @@ public class IntegratedTest extends BasicTestsUtils
 	DefaultFR forest;
 	Set<FunctionalRole> fRoles;
 	
+	DefaultSchedule sched;
 	Region r1;
 	RegionSet w;
 
@@ -111,6 +112,8 @@ public class IntegratedTest extends BasicTestsUtils
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		sched = new DefaultSchedule(w);
+		sched.register(r1);
 	}
 
 	public IntegratedTest() {
@@ -123,7 +126,6 @@ public class IntegratedTest extends BasicTestsUtils
 		for( Cell c : cells ) {
 			c.setBaseCapitals( capitals( 1, 1, 1, 1, 1, 1, 1 ) );
 		}
-		DefaultSchedule sched = new DefaultSchedule( w );
 		sched.initialise( modelData, runInfo, null );
 		sched.tick(); // Tick 0
 		assertUnmanaged( c1, c2, c3, c4  );

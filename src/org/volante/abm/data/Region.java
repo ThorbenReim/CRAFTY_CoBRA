@@ -134,6 +134,8 @@ public class Region implements Regions, PreTickAction {
 
 	RegionalRandom			random			= null;
 
+	Map<FunctionalRole, Double> maxGivingUpDiff = null;
+
 	/*
 	 * Unmodifiable versions to pass out as necessary
 	 */
@@ -978,6 +980,7 @@ public class Region implements Regions, PreTickAction {
 	 */
 	@Override
 	public void preTick() {
+		this.maxGivingUpDiff = null;
 		for (RegionHelper helper : this.helpers.values()) {
 			if (helper instanceof PreTickRegionHelper) {
 				((PreTickRegionHelper) helper).preTick(this);
@@ -985,9 +988,10 @@ public class Region implements Regions, PreTickAction {
 			}
 		}
 
-		for (Service s : data.services) {
-			rinfo.getParamRepos().addParameter(this, "Demand_" + s,
-					demand.getDemand().get(s));
+		if (demand.getDemand() != null) {
+			for (Service s : data.services) {
+				rinfo.getParamRepos().addParameter(this, "Demand_" + s, demand.getDemand().get(s));
+			}
 		}
 	}
 
@@ -1037,5 +1041,22 @@ public class Region implements Regions, PreTickAction {
 		for (Agent agent : this.getAgents()) {
 			reporter.registerAtAgent(agent);
 		}
+	}
+
+	public Map<FunctionalRole, Double> getMaxGivingUpThresholdDeviation() {
+		if (this.maxGivingUpDiff == null) {
+			this.maxGivingUpDiff = new HashMap<>();
+			double diff = 0.0;
+			for (LandUseAgent a : this.getAllAllocatedAgents()) {
+				diff = a.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)
+				        - a.getProperty(AgentPropertyIds.COMPETITIVENESS);
+				this.maxGivingUpDiff.put(a.getFC().getFR(),
+				        new Double(Math.max(diff,
+				                this.maxGivingUpDiff.containsKey(a.getFC().getFR())
+				                        ? this.maxGivingUpDiff.get(a.getFC().getFR())
+				                        : 0)));
+			}
+		}
+		return this.maxGivingUpDiff;
 	}
 }

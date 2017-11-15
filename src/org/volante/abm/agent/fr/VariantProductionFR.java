@@ -168,6 +168,8 @@ public class VariantProductionFR extends AbstractFR {
 				getSampledGivingUpThreshold());
 
 		agent.setProperty(AgentPropertyIds.GIVING_UP_PROB, this.givingUpProbability);
+		agent.setProperty(AgentPropertyIds.GIVING_UP_PROB_WEIGHT, this.givingUpProbabilityWeight);
+		agent.setProperty(AgentPropertyIds.ALLOCATE_PROB, this.allocationProbability);
 
 		if (agent.getFC().getProduction() instanceof AgentAwareProductionModel) {
 			((AgentAwareProductionModel) agent.getFC().getProduction()).setAgent(agent);

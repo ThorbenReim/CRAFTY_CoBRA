@@ -29,6 +29,7 @@ import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
+import org.volante.abm.institutions.pa.GlobalCompFuncSubsidyPa.GlobalCompFuncSubsidyPaFactory;
 import org.volante.abm.models.CompetitivenessModel;
 import org.volante.abm.models.DemandModel;
 import org.volante.abm.schedule.RunInfo;
@@ -41,6 +42,8 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
 /**
  * Indented for institutions that change (e.g. subsidise) agents' competitiveness on a per service basis and want to
  * adjust the competition functions rather than only adjusting the production that feeds the competition model.
+ * 
+ * Compare {@link GlobalCompFuncSubsidyPaFactory}.
  * 
  * TODO test
  * 

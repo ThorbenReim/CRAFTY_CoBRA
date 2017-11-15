@@ -118,7 +118,7 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 	 * to 0 for uniformly random selection.
 	 */
 	@Attribute(required = false)
-	public int				probabilityExponent	= 2;
+	public float probabilityExponent = 2.0f;
 
 	protected Cell						perfectCell			= new Cell();
 	protected ModelData					data				= null;

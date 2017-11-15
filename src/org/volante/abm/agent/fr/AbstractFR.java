@@ -71,6 +71,9 @@ public abstract class AbstractFR implements FunctionalRole {
 	@Attribute(required = false)
 	protected double givingUpProbability = 1.0;
 
+	@Attribute(required = false)
+	protected double givingUpProbabilityWeight = 0;
+
 	@Element(required = false)
 	protected String description = "";
 
@@ -129,6 +132,7 @@ public abstract class AbstractFR implements FunctionalRole {
 			agent.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, this.givingUpMean);
 		}
 		agent.setProperty(AgentPropertyIds.GIVING_UP_PROB, this.givingUpProbability);
+		agent.setProperty(AgentPropertyIds.GIVING_UP_PROB_WEIGHT, this.givingUpProbabilityWeight);
 		agent.setProperty(AgentPropertyIds.ALLOCATE_PROB, this.allocationProbability);
 
 		return agent;
