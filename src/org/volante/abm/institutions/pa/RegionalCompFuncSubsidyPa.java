@@ -46,7 +46,7 @@ import de.cesr.lara.toolbox.config.xml.LBoFactory;
  * @author Sascha Holzhauer
  * 
  */
-public class RegionalCompFuncSubsidyPa extends CraftyPa<RegionalSubsidyPa> implements LaraPerformableBo,
+public class RegionalCompFuncSubsidyPa extends CraftyPa<RegionalCompFuncSubsidyPa> implements LaraPerformableBo,
         CompetitivenessAdjustingPa {
 
 	/**
@@ -170,9 +170,9 @@ public class RegionalCompFuncSubsidyPa extends CraftyPa<RegionalSubsidyPa> imple
 	 *      java.util.Map)
 	 */
 	@Override
-	public CraftyPa<RegionalSubsidyPa> getModifiedBO(
+	public CraftyPa<RegionalCompFuncSubsidyPa> getModifiedBO(
 	        LaraBehaviouralComponent agent, Map<LaraPreference, Double> preferenceUtilities) {
-		return new RegionalSubsidyPa(this.getKey(), agent, preferenceUtilities, this.subsidisedFrs,
+		return new RegionalCompFuncSubsidyPa(this.getKey(), agent, preferenceUtilities, this.subsidisedFrs,
 		        this.definedServiceSubsidies, this.overallEffect, this.potentialTakeoversWeight);
 	}
 

@@ -53,7 +53,7 @@ import de.cesr.lara.toolbox.config.xml.LBoFactory;
  * @author Sascha Holzhauer
  * 
  */
-public class GlobalCompFuncSubsidyPa extends CraftyPa<GlobalSubsidyPa>
+public class GlobalCompFuncSubsidyPa extends CraftyPa<GlobalCompFuncSubsidyPa>
         implements LaraPerformableBo,
         CompetitivenessAdjustingPa {
 
@@ -207,9 +207,9 @@ public class GlobalCompFuncSubsidyPa extends CraftyPa<GlobalSubsidyPa>
 	 *      java.util.Map)
 	 */
 	@Override
-	public CraftyPa<GlobalSubsidyPa> getModifiedBO(
+	public CraftyPa<GlobalCompFuncSubsidyPa> getModifiedBO(
 	        LaraBehaviouralComponent agent, Map<LaraPreference, Double> preferenceUtilities) {
-		return new GlobalSubsidyPa(this.getKey(), agent, preferenceUtilities, this.subsidisedFrs,
+		return new GlobalCompFuncSubsidyPa(this.getKey(), agent, preferenceUtilities, this.subsidisedFrs,
 		        this.definedServiceSubsidies, this.overallEffect, this.potentialTakeoversWeight, this.worldSyncModel,
 		        this.mData);
 	}
@@ -306,7 +306,7 @@ public class GlobalCompFuncSubsidyPa extends CraftyPa<GlobalSubsidyPa>
 			this.initialTick = Integer.MIN_VALUE;
 			((GlobalSubsidisingInstitution) this.getAgent().getAgent()).addCompAdjustPa(this);
 		} else {
-			throw new IllegalStateException("This BO's associated agent should be a RegionalProvisionInstitution!");
+			throw new IllegalStateException("This BO's associated agent should be a GlobalSubsidisingInstitution!");
 		}
 	}
 
