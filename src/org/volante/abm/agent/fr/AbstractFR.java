@@ -110,6 +110,11 @@ public abstract class AbstractFR implements FunctionalRole {
 		return this.initialised;
 	}
 
+	
+	
+	// #### todo print out gi threshold property at the end of the timestep  
+	
+	
 	/**
 	 * TODO test!
 	 * 

@@ -75,10 +75,13 @@ public class ModelRunner
 			Class.forName("mpi.MPI");
 			realArgs = MPI.Init(args);
 
-		} catch (ClassNotFoundException e) {
-			logger.error("No MPI in classpath (this message can be ignored if not running in parallel)!");
+//		} catch (ClassNotFoundException e) {
+		} catch (UnsatisfiedLinkError e) {
+ 			logger.error("No MPI in classpath (this message can be ignored if not running in parallel)!");
 			realArgs = args;
 		}
+
+		realArgs = args;
 
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd = parser.parse(manageOptions(), realArgs);
@@ -155,16 +158,16 @@ public class ModelRunner
 			}
 		}
 
-		try {
-			Class.forName("mpi.MPI");
-			MPI.Finalize();
-		} catch (ClassNotFoundException e) {
-			logger.error("No MPI in classpath!");
-		} catch (Exception exception) {
-			logger.error("Error during MPI finilization: "
-					+ exception.getMessage());
-			exception.printStackTrace();
-		}
+//		try {
+//			Class.forName("mpi.MPI");
+//			MPI.Finalize();
+//		} catch (ClassNotFoundException e) {
+//			logger.error("No MPI in classpath!");
+//		} catch (Exception exception) {
+//			logger.error("Error during MPI finilization: "
+//					+ exception.getMessage());
+//			exception.printStackTrace();
+//		}
 	}
 
 	public static void doRun(String filename, int start,
