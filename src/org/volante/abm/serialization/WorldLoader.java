@@ -121,22 +121,22 @@ public class WorldLoader {
 	{
 		RegionSet rs = new RegionSet();
 		for( RegionLoader rl : loaders ) {
-			try {
-				Class.forName("mpi.MPI");
-				if (MPI.COMM_WORLD.Rank() == rl.getUid()) {
-					Region r = loadRegion(rl);
-
-					logger.info("Run region " + r + " on rank " + MPI.COMM_WORLD.Rank());
-
-					rs.addRegion(r);
-				}
-			} catch (ClassNotFoundException exception) {
+//			try {
+//				Class.forName("mpi.MPI");
+//				if (MPI.COMM_WORLD.Rank() == rl.getUid()) {
+//					Region r = loadRegion(rl);
+//
+//					logger.info("Run region " + r + " on rank " + MPI.COMM_WORLD.Rank());
+//
+//					rs.addRegion(r);
+//				}
+//			} catch (ClassNotFoundException exception) {
 				Region r = loadRegion(rl);
-
+//
 				logger.info("No MPI. Region " + r + " loaded.");
-
+//
 				rs.addRegion(r);
-			}
+//			}
 		}
 		return rs;
 	}

@@ -56,8 +56,7 @@ public class NormalisedCurveCompetitivenessModel extends CurveCompetitivenessMod
 	 * absolute demand for cereal is much higher.
 	 */
 	@Attribute(required = false)
-	boolean	normaliseCellResidual	= true;
-
+	boolean normaliseCellResidual = true;
 
 	/**
 	 * Supply as multiplied with the competition curve value is normalised by per cell demand for the particular
@@ -70,27 +69,26 @@ public class NormalisedCurveCompetitivenessModel extends CurveCompetitivenessMod
 	 * subject to competition).
 	 */
 	@Attribute(required = false)
-	boolean	normaliseCellSupply		= true;
+	boolean normaliseCellSupply = true;
 
 	/**
-	 * Adds up marginal utilities (determined by competitiveness for unmet
-	 * demand) of all services.
+	 * Adds up marginal utilities (determined by competitiveness for unmet demand) of all services.
 	 * 
 	 * @param residualDemand
 	 * @param supply
 	 * @param showWorking
-	 *            if true, log details in DEBUG mode
+	 *        if true, log details in DEBUG mode
 	 * @return summed marginal utilities of all services
 	 */
 	public double addUpMarginalUtilities(UnmodifiableNumberMap<Service> residualDemand,
-			UnmodifiableNumberMap<Service> supply, boolean showWorking) {
+	        UnmodifiableNumberMap<Service> supply, boolean showWorking) { // @TODO showWorking is not being used?
 		double sum = 0;
 
 		for (Service s : supply.getKeySet()) {
 			Curve c = curves.get(s); /* Gets the curve parameters for this service */
 
 			double perCellDemand = region.getDemandModel().getAveragedPerCellDemand().get(s);
-			perCellDemand = perCellDemand == 0 ? Double.MIN_VALUE : perCellDemand;
+			perCellDemand = (perCellDemand == 0) ? Double.MIN_VALUE : perCellDemand;
 
 			if (c == null) {
 				String message = "Missing curve for: " + s.getName() + " got: " + curves.keySet();
@@ -98,29 +96,54 @@ public class NormalisedCurveCompetitivenessModel extends CurveCompetitivenessMod
 				throw new IllegalStateException(message);
 			}
 			double res = residualDemand.getDouble(s);
+			// String message = "residualDemand=" + res + " perCellDemand="+perCellDemand + " in " + s.getName() ;
+			// log.info(message);
+
 			if (normaliseCellResidual) {
 				res /= perCellDemand;
 			}
+			// message = "residualDemand/perCellDemand = " + res ;
+			// log.info(message);
+
+ 
+			if (res > 1.0) {
+				String message = "residualDemand/perCellDemand > 1 : " + s.getName() + " got: " + curves.keySet()
+				        + " res = " + res;
+				log.fatal(message);
+				throw new IllegalStateException(message);
+			}
+
 			double marginal = c.sample(res); /*
-											 * Get the corresponding 'value' (y-value) for this
-											 * level of unmet demand
-											 */
+			                                  * Get the corresponding 'value' (y-value) for this level of unmet demand
+			                                  */
+			// message = "marginal = " + marginal;
+			// log.info(message);
+
 			double amount = supply.getDouble(s);
+
+			// message = "amount = " + amount;
+			// log.info(message);
+
 			if (this.normaliseCellSupply) {
 				amount /= perCellDemand;
 			}
+			// message = "amount/perCellDemand= " + amount;
+			// log.info(message);
 
 			if (removeNegative && marginal < 0) {
 				marginal = 0;
 			}
 
-			double comp = (marginal == 0 || amount == 0 ? 0 : marginal * amount);
+			double comp = ((marginal == 0 || amount == 0) ? 0 : marginal * amount);
 
 			if (log.isTraceEnabled() || (log.isDebugEnabled() && removeNegative && comp < 0)) {
 				log.debug(String.format(
-						"\t\tService %10s: Residual (%5f) > Marginal (%5f; Curve: %s) * Amount (%5f) = %5f",
-						s.getName(), res, marginal, c.toString(), amount, marginal * amount));
+				        "\t\tService %10s: Residual (%5f) > Marginal (%5f; Curve: %s) * Amount (%5f) = %5f",
+				        s.getName(), res, marginal, c.toString(), amount, marginal * amount));
 			}
+			// message = "comp = " + comp;
+			// log.info(message);
+
 			sum += comp;
 		}
 		log.trace("Competitiveness sum: " + sum);

@@ -58,4 +58,24 @@ public class ProductionDisplay extends DatatypeDisplay<Service> implements Displ
 	{
 		service = data.services.forName( type );
 	}
+	
+	
+	
+//	@Override
+//	public void update() {
+		
+		
+//		for (Display display : displays.values()) {
+//			display.update();
+//		}
+
+//		if (competitionDisplay != null) {
+//			competitionDisplay.update();
+//		}
+//		if (demandDisplay != null) {
+//			demandDisplay.update();
+//		}
+//	}
+	
+	
 }
