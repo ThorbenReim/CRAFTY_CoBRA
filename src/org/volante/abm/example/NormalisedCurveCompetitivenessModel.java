@@ -105,8 +105,7 @@ public class NormalisedCurveCompetitivenessModel extends CurveCompetitivenessMod
 			// message = "residualDemand/perCellDemand = " + res ;
 			// log.info(message);
 
-			// log.fatal(message);
-
+ 
 			if (res > 1.0) {
 				String message = "residualDemand/perCellDemand > 1 : " + s.getName() + " got: " + curves.keySet()
 				        + " res = " + res;
