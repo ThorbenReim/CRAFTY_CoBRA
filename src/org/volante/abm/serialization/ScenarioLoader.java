@@ -174,7 +174,7 @@ public class ScenarioLoader {
 	Logger log = Logger.getLogger(getClass());
 
 	@Element(required = false)
-	ModelDisplays			displays		= null;
+	private ModelDisplays			displays		= null;
 
 	/**
 	 * @param info
@@ -317,10 +317,10 @@ public class ScenarioLoader {
 		
 		outputs.initialise(modelData, info);
 
-		if (displays == null) {
-			displays = new DefaultModelDisplays();
+		if (getDisplays() == null) {
+			setDisplays(new DefaultModelDisplays());
 		}
-		displays.initialise(modelData, info, regions);
+		getDisplays().initialise(modelData, info, regions);
 	}
 
 	public void setSchedule(Schedule sched) {
@@ -340,5 +340,19 @@ public class ScenarioLoader {
 
 	public RegionSet getRegions() {
 		return regions;
+	}
+
+	/**
+	 * @return the displays
+	 */
+	public ModelDisplays getDisplays() {
+		return displays;
+	}
+
+	/**
+	 * @param displays the displays to set
+	 */
+	private void setDisplays(ModelDisplays displays) {
+		this.displays = displays;
 	}
 }

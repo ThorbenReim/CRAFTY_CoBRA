@@ -54,8 +54,11 @@ public class ModelRunner
 	 * Logger
 	 */
 	static private Logger logger = Logger.getLogger(ModelRunner.class);
-	static private Logger	clogger				= Logger.getLogger(CONFIG_LOGGER_NAME);
+	static private Logger clogger = Logger.getLogger(CONFIG_LOGGER_NAME);
 
+	
+	static private ScenarioLoader loader; 
+	
 	public static void clog(String property, String value) {
 		clogger.info(property + ": \t" + value);
 	}
@@ -173,13 +176,13 @@ public class ModelRunner
 	public static void doRun(String filename, int start,
 	        int end, boolean interactive) throws Exception
 	{
-		ScenarioLoader loader = setupRun(filename, start, end);
+		setLoader(setupRun(filename, start, end));
 		if (interactive) {
-			interactiveRun(loader);
+			interactiveRun(getLoader());
 		} else {
-			noninteractiveRun(loader, start == Integer.MIN_VALUE ? loader.startTick : start,
-					end == Integer.MIN_VALUE ? loader.endTick : end);
-			loader = null;
+			noninteractiveRun(getLoader(), start == Integer.MIN_VALUE ? getLoader().startTick : start,
+					end == Integer.MIN_VALUE ? getLoader().endTick : end);
+			setLoader(null);
 			finalActions();
 		}
 	}
@@ -331,5 +334,19 @@ public class ModelRunner
 		PmParameterManager.reset();
 		MManager.reset();
 		LModel.reset();
+	}
+
+	/**
+	 * @return the loader
+	 */
+	public static ScenarioLoader getLoader() {
+		return loader;
+	}
+
+	/**
+	 * @param loader the loader to set
+	 */
+	private static void setLoader(ScenarioLoader loader) {
+		ModelRunner.loader = loader;
 	}
 }

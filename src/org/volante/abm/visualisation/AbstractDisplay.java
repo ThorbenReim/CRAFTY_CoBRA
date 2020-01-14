@@ -64,6 +64,11 @@ public abstract class AbstractDisplay extends JPanel implements Display {
 		return title;
 	}
 
+	
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
 	protected Logger	log	= Logger.getLogger(getClass());
 
 	public JComponent getControls() {
