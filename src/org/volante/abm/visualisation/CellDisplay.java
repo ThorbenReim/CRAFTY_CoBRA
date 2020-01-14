@@ -151,7 +151,7 @@ public abstract class CellDisplay extends AbstractDisplay implements KeyListener
 	@Override
 	public void update() {
 		super.update();
-		Graphics g = image.getGraphics();
+		Graphics g = image.getGraphics(); 
 		g.setColor(bgColorCells);
 		g.fillRect(0, 0, regionWidth, regionHeight);
 		for (Cell c : region.getAllCells()) {
@@ -166,6 +166,7 @@ public abstract class CellDisplay extends AbstractDisplay implements KeyListener
 				throw e;
 			}
 		}
+	
 		super.postUpdate();
 	}
 
@@ -373,4 +374,15 @@ public abstract class CellDisplay extends AbstractDisplay implements KeyListener
 		frame.setSize(new Dimension(500, 600));
 		frame.setVisible(true);
 	}
+	
+	@Override
+	public void postTick() {
+		update();
+		repaint();
+		
+
+	}
+	
+	
+
 }
