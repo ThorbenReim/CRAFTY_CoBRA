@@ -25,6 +25,7 @@ package org.volante.abm.visualisation;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -38,6 +39,7 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementMap;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.data.Cell;
+import org.volante.abm.data.Region;
 
 import de.cesr.uranus.core.URandomService;
 
@@ -63,10 +65,7 @@ public class AgentTypeDisplay extends CellDisplay {
 
 	public Color getColor(Cell c) {
 		
-		
-		System.out.print("sth");
-
-		
+		 
 		Color col = agentColours.get(c.getOwnersFrLabel());
 		if (col != null) {
 			return col;
@@ -114,11 +113,5 @@ public class AgentTypeDisplay extends CellDisplay {
 		revalidate();
 	}
 
-	public void update() {
-		System.out.print("sth");
-		super.update();
-		updateLegend();
-
- 	}
-
+ 
 }
