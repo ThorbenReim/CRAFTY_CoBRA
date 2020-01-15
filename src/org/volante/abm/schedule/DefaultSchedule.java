@@ -45,7 +45,6 @@ import org.volante.abm.models.WorldSynchronisationModel;
 import org.volante.abm.output.Outputs;
 import org.volante.abm.schedule.ScheduleStatusEvent.ScheduleStage;
 import org.volante.abm.serialization.ModelRunner;
-import org.volante.abm.serialization.ScenarioLoader;
 import org.volante.abm.visualisation.ModelDisplays;
 import org.volante.abm.visualisation.DefaultModelDisplays;
 
@@ -434,6 +433,18 @@ public class DefaultSchedule implements WorldSyncSchedule {
 		}
 	}
 
+	 /**
+	  * To register listener objects esp. in the interactive mode (by ABS in 2020)
+	  * @see org.volante.abm.schedule.Schedule#registerListeners(org.volante.abm.schedule.ScheduleStatusListener)
+	  */
+	@Override
+	public void registerListeners(ScheduleStatusListener o) {
+		if (o instanceof ScheduleStatusListener && !listeners.contains(o)) {
+			listeners.add( o);
+		}
+	}
+	 
+	
 	/**
 	 * @see org.volante.abm.schedule.Schedule#unregister(org.volante.abm.schedule.TickAction)
 	 */
@@ -477,7 +488,18 @@ public class DefaultSchedule implements WorldSyncSchedule {
 	}
 
 	void fireScheduleStatus(ScheduleStatusEvent e) {
-		for (ScheduleStatusListener l : listeners) {
+		
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Fire\t\t (DefaultSchedule ID " + id + ")");
+		}
+		// LOGGING ->
+
+		// copy to prevent concurrent modifications:
+		List<ScheduleStatusListener> listenersCopy = new ArrayList<ScheduleStatusListener>(
+				listeners);
+		 
+		for (ScheduleStatusListener l : listenersCopy) {
 			l.scheduleStatus(e);
 		}
 	}

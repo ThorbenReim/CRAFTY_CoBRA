@@ -21,6 +21,9 @@
  */
 package org.volante.abm.serialization;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
@@ -33,6 +36,7 @@ import org.apache.commons.cli.Options;
 import org.apache.log4j.Logger;
 import org.volante.abm.institutions.global.GlobalInstitutionsRegistry;
 import org.volante.abm.param.RandomPa;
+import org.volante.abm.schedule.PrePreTickAction;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.schedule.ScheduleThread;
 import org.volante.abm.visualisation.ScheduleControls;
@@ -56,8 +60,11 @@ public class ModelRunner
 	static private Logger logger = Logger.getLogger(ModelRunner.class);
 	static private Logger clogger = Logger.getLogger(CONFIG_LOGGER_NAME);
 
-	
+	/**
+	 * loader and interactive controls for further use (by ABS in 2020)
+	 */
 	static private ScenarioLoader loader; 
+	static public JFrame interactiveControls;
 	
 	public static void clog(String property, String value) {
 		clogger.info(property + ": \t" + value);
@@ -211,21 +218,25 @@ public class ModelRunner
 		logger.info("Setting up interactive run");
 		ScheduleThread thread = new ScheduleThread( loader.schedule );
 		thread.start();
-		JFrame controls = new JFrame();
+		interactiveControls = new JFrame();
 		TimeDisplay td = new TimeDisplay( loader.schedule );
+		loader.schedule.registerListeners(td);
+
 		ScheduleControls sc = new ScheduleControls( loader.schedule );
-		controls.getContentPane().setLayout( new BoxLayout( controls.getContentPane(), BoxLayout.Y_AXIS ) );
-		controls.add( td );
-		controls.add( sc );
-		controls.pack();
-		controls.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		controls.addWindowListener(new java.awt.event.WindowAdapter() {
+		interactiveControls.getContentPane().setLayout( new BoxLayout( interactiveControls.getContentPane(), BoxLayout.Y_AXIS ) );
+		interactiveControls.add( td );
+		interactiveControls.add( sc );
+		interactiveControls.pack();
+		interactiveControls.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+		interactiveControls.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 				ModelRunner.finalActions();
 			}
 		});
-		controls.setVisible( true );
+		
+		interactiveControls.setVisible( true );
+
 	}
 
 	public static ScenarioLoader setupRun(String filename,

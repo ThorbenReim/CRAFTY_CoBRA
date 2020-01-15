@@ -38,7 +38,7 @@ import org.volante.abm.schedule.RunInfo;
 
 import com.csvreader.CsvReader;
 
-import mpi.MPI;
+//import mpi.MPI;
 
 
 public class WorldLoader {
