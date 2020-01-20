@@ -79,7 +79,7 @@ public class CSVCapitalUpdater extends AbstractUpdater
 	{
 		try {
 			CsvReader file = getFileForYear();
-			if( file != null ) {
+ 			if( file != null ) {
 				applyFile( file );
 			}
 		} catch ( Exception e )
@@ -117,6 +117,9 @@ public class CSVCapitalUpdater extends AbstractUpdater
 			previousFilename = fn;
 			return p.getCSVReader(fn, region.getPersisterContextExtra());
 		}
+		
+//		log.debug(filename + previousFilename );
+  	
 		return null;
 	}
 	
