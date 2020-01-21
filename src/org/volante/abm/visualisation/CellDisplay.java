@@ -91,7 +91,10 @@ public abstract class CellDisplay extends AbstractDisplay implements KeyListener
 		regionHeight = extent.getHeight();
 		image = new BufferedImage(regionWidth, regionHeight, BufferedImage.TYPE_INT_RGB);
 		cells = new Cell[regionWidth][regionHeight];
-		setBackground(Color.magenta);
+		
+		//setBackground(Color.magenta);
+		setBackground(bgColorCells); 
+
 		setFocusable(true);
 		addKeyListener(this);
 		addMouseListener(this);
@@ -370,6 +373,7 @@ public abstract class CellDisplay extends AbstractDisplay implements KeyListener
 
 		JComponent panel = ce.getDisplay();
 
+		
 		frame.add(panel);
 		frame.setSize(new Dimension(500, 600));
 		frame.setVisible(true);

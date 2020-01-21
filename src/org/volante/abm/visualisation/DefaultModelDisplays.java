@@ -78,6 +78,15 @@ public class DefaultModelDisplays extends ModelDisplays {
 
 		GraphicsConfiguration config = getFrame().getGraphicsConfiguration();
 		Rectangle usableBounds = SunGraphicsEnvironment.getUsableBounds(config.getDevice());
+ 
+		
+		// Make the model display smaller 
+		usableBounds.x = usableBounds.width / 20 ;
+		usableBounds.y = usableBounds.y + usableBounds.height / 15 ;
+ 
+		usableBounds.height /= 1.2;
+		usableBounds.width /= 1.2;
+
 		getFrame().setMaximizedBounds(usableBounds);
 		getFrame().setExtendedState(Frame.MAXIMIZED_BOTH);
 	}
