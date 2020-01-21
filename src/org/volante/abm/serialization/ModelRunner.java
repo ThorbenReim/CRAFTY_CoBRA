@@ -231,7 +231,7 @@ public class ModelRunner
 		interactiveControls.addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				ModelRunner.finalActions();
+ 				ModelRunner.finalActions();
 			}
 		});
 		
@@ -338,8 +338,10 @@ public class ModelRunner
 	}
 
 	protected static void finalActions() {
-		rInfo.getOutputs().removeClosingOutputThreads();
-		ModelRunner.rInfo = null;
+		// rInfo is null when called from other awt threads (ABS, Jan 2020)
+ 		getRunInfo().getOutputs().removeClosingOutputThreads();
+//		ModelRunner.rInfo = null;
+ 		nullifyRunInfo();
 		ABMPersister.reset();
 		GlobalInstitutionsRegistry.reset();
 		PmParameterManager.reset();
@@ -347,6 +349,19 @@ public class ModelRunner
 		LModel.reset();
 	}
 
+	/**
+	 * @return the run info
+	 */
+	public static RunInfo getRunInfo() {
+		return rInfo;
+	}
+
+	
+	public static void nullifyRunInfo() {
+		rInfo = null;
+	}
+
+	
 	/**
 	 * @return the loader
 	 */
