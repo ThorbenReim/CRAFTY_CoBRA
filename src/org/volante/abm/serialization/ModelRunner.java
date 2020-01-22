@@ -21,6 +21,7 @@
  */
 package org.volante.abm.serialization;
 
+import java.awt.event.WindowAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,18 +82,23 @@ public class ModelRunner
 		logger.info("Start CRAFTY CoBRA");
 
 		String[] realArgs = null;
+ 
 		try {
 			Class.forName("mpi.MPI");
 			realArgs = MPI.Init(args);
+			
+		} catch (NoClassDefFoundError e) {
+			logger.error("No MPI in classpath (this message can be ignored if not running in parallel)!");
+			realArgs = args;
+		} catch (ClassNotFoundException e) {
+			logger.error("No MPI in classpath (this message can be ignored if not running in parallel)!");
+			realArgs = args;
 
-//		} catch (ClassNotFoundException e) {
 		} catch (UnsatisfiedLinkError e) {
- 			logger.error("No MPI in classpath (this message can be ignored if not running in parallel)!");
+			logger.error("MPI is in classpath but not linked to shared libraries correctly (this message can be ignored if not running in parallel)!");
 			realArgs = args;
 		}
-
-		realArgs = args;
-
+ 		
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd = parser.parse(manageOptions(), realArgs);
 
@@ -228,12 +234,27 @@ public class ModelRunner
 		interactiveControls.add( sc );
 		interactiveControls.pack();
 		interactiveControls.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		interactiveControls.addWindowListener(new java.awt.event.WindowAdapter() {
+		
+		
+ 
+	        
+		
+		
+		java.awt.event.WindowListener wl = new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
- 				ModelRunner.finalActions();
+//                int confirm = JOptionPane.showOptionDialog(frame,
+//                        "Are You Sure to Close this Application?",
+//                        "Exit Confirmation", JOptionPane.YES_NO_OPTION,
+//                        JOptionPane.QUESTION_MESSAGE, null, null, null);
+//                if (confirm == JOptionPane.YES_OPTION) {
+////                    System.exit(1);
+//                }
+  				ModelRunner.finalActions( );
 			}
-		});
+		};
+		
+		interactiveControls.addWindowListener(wl);
 		
 		interactiveControls.setVisible( true );
 
@@ -339,9 +360,10 @@ public class ModelRunner
 
 	protected static void finalActions() {
 		// rInfo is null when called from other awt threads (ABS, Jan 2020)
- 		getRunInfo().getOutputs().removeClosingOutputThreads();
-//		ModelRunner.rInfo = null;
- 		nullifyRunInfo();
+//  		System.out.println(mRunner.getRunInfo().toString());		
+//  		mRunner.getRunInfo().getOutputs().removeClosingOutputThreads();
+  		rInfo.getOutputs().removeClosingOutputThreads();
+		rInfo = null;
 		ABMPersister.reset();
 		GlobalInstitutionsRegistry.reset();
 		PmParameterManager.reset();
@@ -357,10 +379,7 @@ public class ModelRunner
 	}
 
 	
-	public static void nullifyRunInfo() {
-		rInfo = null;
-	}
-
+ 
 	
 	/**
 	 * @return the loader

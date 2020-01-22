@@ -84,7 +84,7 @@ public class CSVCapitalUpdater extends AbstractUpdater
 			}
 		} catch ( Exception e )
 		{
-			log.fatal( "Couldn't update Capitals: " + e.getMessage() );
+			this.log.fatal( "Couldn't update Capitals: " + e.getMessage() );
 			e.printStackTrace();
 		}
 	}
@@ -112,13 +112,15 @@ public class CSVCapitalUpdater extends AbstractUpdater
 			fn = previousFilename;
 		}
 		
+		this.log.debug("Read " + fn);
+
+		
 		if( fn != null )
 		{
 			previousFilename = fn;
 			return p.getCSVReader(fn, region.getPersisterContextExtra());
 		}
 		
-//		log.debug(filename + previousFilename );
   	
 		return null;
 	}
