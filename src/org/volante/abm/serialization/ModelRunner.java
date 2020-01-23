@@ -66,7 +66,7 @@ public class ModelRunner
 	 */
 	static private ScenarioLoader loader; 
 	static public JFrame interactiveControls;
-	
+
 	public static void clog(String property, String value) {
 		clogger.info(property + ": \t" + value);
 	}
@@ -77,16 +77,21 @@ public class ModelRunner
 
 	protected static RunInfo rInfo = null;
 
+
+
+
+
+
 	public static void main( String[] args ) throws Exception
 	{
 		logger.info("Start CRAFTY CoBRA");
 
 		String[] realArgs = null;
- 
+
 		try {
 			Class.forName("mpi.MPI");
 			realArgs = MPI.Init(args);
-			
+
 		} catch (NoClassDefFoundError e) {
 			logger.error("No MPI in classpath (this message can be ignored if not running in parallel)!");
 			realArgs = args;
@@ -98,7 +103,7 @@ public class ModelRunner
 			logger.error("MPI is in classpath but not linked to shared libraries correctly (this message can be ignored if not running in parallel)!");
 			realArgs = args;
 		}
- 		
+
 		CommandLineParser parser = new BasicParser();
 		CommandLine cmd = parser.parse(manageOptions(), realArgs);
 
@@ -131,7 +136,7 @@ public class ModelRunner
 
 		clog("CRAFY_CoBRA Revision", CVersionInfo.REVISION_NUMBER);
 		clog("CRAFY_CoBRA BuildDate", CVersionInfo.TIMESTAMP);
-		
+
 		clog("MoRe Revision", MVersionInfo.revisionNumber);
 		clog("MoRe BuildDate", MVersionInfo.timeStamp);
 
@@ -150,7 +155,7 @@ public class ModelRunner
 				int randomSeed = cmd.hasOption('o') ? (j + Integer
 						.parseInt(cmd.getOptionValue('o')))
 						: (int) System
-								.currentTimeMillis();
+						.currentTimeMillis();
 				// Worry about random seeds here...
 				rInfo = new RunInfo();
 				rInfo.setNumRuns(numRuns);
@@ -174,20 +179,162 @@ public class ModelRunner
 			}
 		}
 
-//		try {
-//			Class.forName("mpi.MPI");
-//			MPI.Finalize();
-//		} catch (ClassNotFoundException e) {
-//			logger.error("No MPI in classpath!");
-//		} catch (Exception exception) {
-//			logger.error("Error during MPI finilization: "
-//					+ exception.getMessage());
-//			exception.printStackTrace();
-//		}
+		//		try {
+		//			Class.forName("mpi.MPI");
+		//			MPI.Finalize();
+		//		} catch (ClassNotFoundException e) {
+		//			logger.error("No MPI in classpath!");
+		//		} catch (Exception exception) {
+		//			logger.error("Error during MPI finilization: "
+		//					+ exception.getMessage());
+		//			exception.printStackTrace();
+		//		}
 	}
 
+
+
+	public static boolean RmainPreparation ( String[] args ) throws Exception
+	{
+		logger.info("Start CRAFTY CoBRA");
+
+		String[] realArgs = null;
+
+		boolean isSuccess = false;
+
+		try {
+			Class.forName("mpi.MPI");
+			realArgs = MPI.Init(args);
+
+		} catch (NoClassDefFoundError e) {
+			logger.error("No MPI in classpath (this message can be ignored if not running in parallel)!");
+			realArgs = args;
+		} catch (ClassNotFoundException e) {
+			logger.error("No MPI in classpath (this message can be ignored if not running in parallel)!");
+			realArgs = args;
+
+		} catch (UnsatisfiedLinkError e) {
+			logger.error("MPI is in classpath but not linked to shared libraries correctly (this message can be ignored if not running in parallel)!");
+			realArgs = args;
+		}
+
+		CommandLineParser parser = new BasicParser();
+		CommandLine cmd = parser.parse(manageOptions(), realArgs);
+
+		if (cmd.hasOption('h')) {
+			HelpFormatter formatter = new HelpFormatter();
+			formatter.printHelp("CRAFTY", manageOptions());
+			isSuccess = false;
+			return(isSuccess);
+		}
+
+		boolean interactive = cmd.hasOption("i");
+
+		String filename = cmd.hasOption("f") ? cmd.getOptionValue('f') : "xml/test-scenario.xml";
+		String directory = cmd.hasOption("d") ? cmd.getOptionValue('d')
+				: "data";
+
+		int start = cmd.hasOption("s") ? Integer.parseInt(cmd.getOptionValue('s'))
+				: Integer.MIN_VALUE;
+		int end = cmd.hasOption("e") ? Integer.parseInt(cmd.getOptionValue('e'))
+				: Integer.MIN_VALUE;
+
+		int numRuns = cmd.hasOption("n") ? Integer.parseInt(cmd.getOptionValue('n')) : 1;
+		
+		if (numRuns > 1 ) {
+			logger.error("CRAFTY R-JAVA API does not allow multiple runs in one call (yet in 2020).");
+
+			isSuccess = false;
+			return(isSuccess);
+		
+		}
+		
+		int startRun = cmd.hasOption("sr") ? Integer.parseInt(cmd.getOptionValue("sr")) : 0;
+
+		int numOfRandVariation = cmd.hasOption("r") ? Integer.parseInt(cmd.getOptionValue('r')) : 1;
+
+		
+		if (numOfRandVariation > 1 ) {
+			logger.error("CRAFTY R-JAVA API does not allow multiple random variations in one call (yet in 2020).");
+
+			isSuccess = false;
+			return(isSuccess);
+		}
+		
+		clog("Scenario-File", filename);
+		clog("DataDir", directory);
+		clog("StartTick", "" + (start == Integer.MIN_VALUE ? "<ScenarioFile>" : start));
+		clog("EndTick", "" + (end == Integer.MIN_VALUE ? "<ScenarioFile>" : end));
+
+		clog("CRAFY_CoBRA Revision", CVersionInfo.REVISION_NUMBER);
+		clog("CRAFY_CoBRA BuildDate", CVersionInfo.TIMESTAMP);
+
+		clog("MoRe Revision", MVersionInfo.revisionNumber);
+		clog("MoRe BuildDate", MVersionInfo.timeStamp);
+
+		if (end < start) {
+			logger.error("End tick must not be larger than start tick!");
+			isSuccess = false;
+			return(isSuccess);
+		}
+
+		if (startRun > numRuns) {
+			logger.error("StartRun must not be larger than number of runs!");
+			isSuccess = false;
+			return(isSuccess);
+		}
+
+
+		//		for (int i = startRun; i < numRuns; i++) {
+		//			for (int j = 0; j < numOfRandVariation; j++) {
+		int i = 1; 
+		int j = 1; 
+
+		int randomSeed = cmd.hasOption('o') ? (j + Integer
+				.parseInt(cmd.getOptionValue('o')))
+				: (int) System.currentTimeMillis();
+		// Worry about random seeds here...
+		rInfo = new RunInfo();
+		rInfo.setNumRuns(numRuns);
+		rInfo.setNumRandomVariations(numOfRandVariation);
+		rInfo.setCurrentRun(i);
+		rInfo.setCurrentRandomSeed(randomSeed);
+		
+
+		ABMPersister.getInstance().setBaseDir(directory);
+	
+		if (cmd.hasOption("se") ? BatchRunParser.parseInt(cmd.getOptionValue("se"), rInfo) == 1
+				: true) {
+			clog("CurrentRun", "" + i);
+			clog("TotalRuns", "" + numRuns);
+			clog("CurrentRandomSeed", "" + randomSeed);
+			clog("TotalRandomSeeds", "" + numOfRandVariation);
+
+			PmParameterManager.getInstance(null).setParam(RandomPa.RANDOM_SEED, randomSeed);
+
+			rInfo = null;
+
+		}
+		
+		System.out.println("doRuninR");
+		isSuccess = doRuninR (filename, start, end);
+
+
+		return(isSuccess);
+	}
+
+
+	public static boolean doRuninR(String filename, int start, int end) throws Exception
+	{
+		doRun(filename, start, end, false);
+		
+		return(true);
+	}
+
+
+
+
 	public static void doRun(String filename, int start,
-	        int end, boolean interactive) throws Exception
+			int end, boolean interactive) throws Exception
 	{
 		setLoader(setupRun(filename, start, end));
 		if (interactive) {
@@ -234,34 +381,34 @@ public class ModelRunner
 		interactiveControls.add( sc );
 		interactiveControls.pack();
 		interactiveControls.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-		
-		
- 
-	        
-		
-		
+
+
+
+
+
+
 		java.awt.event.WindowListener wl = new java.awt.event.WindowAdapter() {
-		    @Override
-		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-//                int confirm = JOptionPane.showOptionDialog(frame,
-//                        "Are You Sure to Close this Application?",
-//                        "Exit Confirmation", JOptionPane.YES_NO_OPTION,
-//                        JOptionPane.QUESTION_MESSAGE, null, null, null);
-//                if (confirm == JOptionPane.YES_OPTION) {
-////                    System.exit(1);
-//                }
-  				ModelRunner.finalActions( );
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				//                int confirm = JOptionPane.showOptionDialog(frame,
+				//                        "Are You Sure to Close this Application?",
+				//                        "Exit Confirmation", JOptionPane.YES_NO_OPTION,
+				//                        JOptionPane.QUESTION_MESSAGE, null, null, null);
+				//                if (confirm == JOptionPane.YES_OPTION) {
+				////                    System.exit(1);
+				//                }
+				ModelRunner.finalActions( );
 			}
 		};
-		
+
 		interactiveControls.addWindowListener(wl);
-		
+
 		interactiveControls.setVisible( true );
 
 	}
 
 	public static ScenarioLoader setupRun(String filename,
-	        int start, int end) throws Exception
+			int start, int end) throws Exception
 	{
 		// TODO override persister method
 		ScenarioLoader loader = ABMPersister.getInstance().readXML(ScenarioLoader.class, filename,
@@ -360,9 +507,9 @@ public class ModelRunner
 
 	protected static void finalActions() {
 		// rInfo is null when called from other awt threads (ABS, Jan 2020)
-//  		System.out.println(mRunner.getRunInfo().toString());		
-//  		mRunner.getRunInfo().getOutputs().removeClosingOutputThreads();
-  		rInfo.getOutputs().removeClosingOutputThreads();
+		//  		System.out.println(mRunner.getRunInfo().toString());		
+		//  		mRunner.getRunInfo().getOutputs().removeClosingOutputThreads();
+		rInfo.getOutputs().removeClosingOutputThreads();
 		rInfo = null;
 		ABMPersister.reset();
 		GlobalInstitutionsRegistry.reset();
@@ -378,9 +525,9 @@ public class ModelRunner
 		return rInfo;
 	}
 
-	
- 
-	
+
+
+
 	/**
 	 * @return the loader
 	 */
