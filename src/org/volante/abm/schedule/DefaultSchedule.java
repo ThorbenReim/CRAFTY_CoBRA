@@ -233,7 +233,9 @@ public class DefaultSchedule implements WorldSyncSchedule {
 		// use information from the loader (by ABS)
   		final ModelDisplays displays = ModelRunner.getLoader().getDisplays(); 
  
-  		if (displays != null) {
+  		// @TODO refactor it into the display classes
+   		if (displays != null && (displays instanceof DefaultModelDisplays)) {
+   			 
   			System.out.println("displays not null");
   			DefaultModelDisplays displays2 = (DefaultModelDisplays) displays; 
   	  		JFrame frame = displays2.getFrame();
