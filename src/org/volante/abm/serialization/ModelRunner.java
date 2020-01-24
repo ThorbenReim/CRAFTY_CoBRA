@@ -179,16 +179,16 @@ public class ModelRunner
 			}
 		}
 
-		//		try {
-		//			Class.forName("mpi.MPI");
-		//			MPI.Finalize();
-		//		} catch (ClassNotFoundException e) {
-		//			logger.error("No MPI in classpath!");
-		//		} catch (Exception exception) {
-		//			logger.error("Error during MPI finilization: "
-		//					+ exception.getMessage());
-		//			exception.printStackTrace();
-		//		}
+		try {
+			Class.forName("mpi.MPI");
+			MPI.Finalize();
+		} catch (ClassNotFoundException e) {
+			logger.error("No MPI in classpath!");
+		} catch (Exception exception) {
+			logger.error("Error during MPI finilization: "
+					+ exception.getMessage());
+			exception.printStackTrace();
+		}
 	}
 
 
@@ -197,9 +197,11 @@ public class ModelRunner
 	{
 		logger.info("Start CRAFTY CoBRA");
 
-		String[] realArgs = null;
 
 		boolean isSuccess = false;
+
+
+		String[] realArgs = null;
 
 		try {
 			Class.forName("mpi.MPI");
@@ -223,7 +225,7 @@ public class ModelRunner
 		if (cmd.hasOption('h')) {
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp("CRAFTY", manageOptions());
-			isSuccess = false;
+			isSuccess = true;
 			return(isSuccess);
 		}
 
@@ -239,27 +241,25 @@ public class ModelRunner
 				: Integer.MIN_VALUE;
 
 		int numRuns = cmd.hasOption("n") ? Integer.parseInt(cmd.getOptionValue('n')) : 1;
-		
-		if (numRuns > 1 ) {
+		int startRun = cmd.hasOption("sr") ? Integer.parseInt(cmd.getOptionValue("sr")) : 0;
+
+		if (numRuns - startRun != 1 ) {
 			logger.error("CRAFTY R-JAVA API does not allow multiple runs in one call (yet in 2020).");
 
 			isSuccess = false;
 			return(isSuccess);
-		
-		}
-		
-		int startRun = cmd.hasOption("sr") ? Integer.parseInt(cmd.getOptionValue("sr")) : 0;
 
+		}
+ 		
 		int numOfRandVariation = cmd.hasOption("r") ? Integer.parseInt(cmd.getOptionValue('r')) : 1;
 
-		
 		if (numOfRandVariation > 1 ) {
 			logger.error("CRAFTY R-JAVA API does not allow multiple random variations in one call (yet in 2020).");
 
 			isSuccess = false;
 			return(isSuccess);
 		}
-		
+
 		clog("Scenario-File", filename);
 		clog("DataDir", directory);
 		clog("StartTick", "" + (start == Integer.MIN_VALUE ? "<ScenarioFile>" : start));
@@ -283,11 +283,13 @@ public class ModelRunner
 			return(isSuccess);
 		}
 
+ 
+
 
 		//		for (int i = startRun; i < numRuns; i++) {
 		//			for (int j = 0; j < numOfRandVariation; j++) {
-		int i = 1; 
-		int j = 1; 
+		int i = startRun; 
+		int j = numOfRandVariation; 
 
 		int randomSeed = cmd.hasOption('o') ? (j + Integer
 				.parseInt(cmd.getOptionValue('o')))
@@ -298,10 +300,10 @@ public class ModelRunner
 		rInfo.setNumRandomVariations(numOfRandVariation);
 		rInfo.setCurrentRun(i);
 		rInfo.setCurrentRandomSeed(randomSeed);
-		
+
 
 		ABMPersister.getInstance().setBaseDir(directory);
-	
+
 		if (cmd.hasOption("se") ? BatchRunParser.parseInt(cmd.getOptionValue("se"), rInfo) == 1
 				: true) {
 			clog("CurrentRun", "" + i);
@@ -311,23 +313,66 @@ public class ModelRunner
 
 			PmParameterManager.getInstance(null).setParam(RandomPa.RANDOM_SEED, randomSeed);
 
+			logger.info("doRuninR");
+
+			isSuccess = doRuninR (filename, start, end, interactive);
+
 			rInfo = null;
+
+			return(isSuccess);
 
 		}
 		
-		System.out.println("doRuninR");
-		isSuccess = doRuninR (filename, start, end);
-
+  
 
 		return(isSuccess);
 	}
 
 
-	public static boolean doRuninR(String filename, int start, int end) throws Exception
+	public static boolean doRuninR(String filename, int start, int end, boolean interactive) throws Exception
 	{
-		doRun(filename, start, end, false);
-		
-		return(true);
+
+
+
+		try {
+
+			setLoader(setupRun(filename, start, end));
+
+			if (interactive) {
+				logger.info("do interactiveRun in R");
+
+				interactiveRun(getLoader());
+			} else {
+
+				logger.info("do noninteractiveRun in R");
+
+				try {
+					ScenarioLoader Loader_tmp = getLoader(); 
+				} catch (Exception e2) {
+					logger.fatal(e2.getMessage());
+					e2.printStackTrace();
+
+				}
+				logger.info("getLoader in R");
+
+				noninteractiveRun(getLoader(), start == Integer.MIN_VALUE ? getLoader().startTick : start,
+						end == Integer.MIN_VALUE ? getLoader().endTick : end);
+				setLoader(null);
+				finalActions();
+			}
+
+			logger.info("doRuninR done");
+			return(true);
+
+		} catch (Exception e) {
+			logger.fatal(e.getMessage());
+
+			e.printStackTrace();
+			logger.info("doRuninR failed");
+			return(false);
+
+		}
+
 	}
 
 
@@ -337,6 +382,7 @@ public class ModelRunner
 			int end, boolean interactive) throws Exception
 	{
 		setLoader(setupRun(filename, start, end));
+
 		if (interactive) {
 			interactiveRun(getLoader());
 		} else {
@@ -349,6 +395,8 @@ public class ModelRunner
 
 	public static void noninteractiveRun( ScenarioLoader loader, int start, int end )
 	{
+		logger.info("do noninteractiveRun");
+
 		logger.info(String.format("Running from %s to %s\n",
 				(start == Integer.MIN_VALUE ? "<ScenarioFile>" : start + ""),
 				(end == Integer.MIN_VALUE ? "<ScenarioFile>" : end + "")));
