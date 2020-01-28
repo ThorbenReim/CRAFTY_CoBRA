@@ -193,12 +193,9 @@ public class ModelRunner
 
 
 
-	public static boolean RmainPreparation ( String[] args ) throws Exception
+	public RunInfo EXTprepareRrun ( String[] args ) throws Exception
 	{
 		logger.info("Start CRAFTY CoBRA");
-
-
-		boolean isSuccess = false;
 
 
 		String[] realArgs = null;
@@ -225,8 +222,7 @@ public class ModelRunner
 		if (cmd.hasOption('h')) {
 			HelpFormatter formatter = new HelpFormatter();
 			formatter.printHelp("CRAFTY", manageOptions());
-			isSuccess = true;
-			return(isSuccess);
+			return(null);
 		}
 
 		boolean interactive = cmd.hasOption("i");
@@ -246,18 +242,16 @@ public class ModelRunner
 		if (numRuns - startRun != 1 ) {
 			logger.error("CRAFTY R-JAVA API does not allow multiple runs in one call (yet in 2020).");
 
-			isSuccess = false;
-			return(isSuccess);
+			return(null);
 
 		}
- 		
+
 		int numOfRandVariation = cmd.hasOption("r") ? Integer.parseInt(cmd.getOptionValue('r')) : 1;
 
 		if (numOfRandVariation > 1 ) {
 			logger.error("CRAFTY R-JAVA API does not allow multiple random variations in one call (yet in 2020).");
 
-			isSuccess = false;
-			return(isSuccess);
+			return(null);
 		}
 
 		clog("Scenario-File", filename);
@@ -273,17 +267,15 @@ public class ModelRunner
 
 		if (end < start) {
 			logger.error("End tick must not be larger than start tick!");
-			isSuccess = false;
-			return(isSuccess);
+			return(null);
 		}
 
 		if (startRun > numRuns) {
 			logger.error("StartRun must not be larger than number of runs!");
-			isSuccess = false;
-			return(isSuccess);
+			return(null);
 		}
 
- 
+
 
 
 		//		for (int i = startRun; i < numRuns; i++) {
@@ -315,65 +307,93 @@ public class ModelRunner
 
 			logger.info("doRuninR");
 
-			isSuccess = doRuninR (filename, start, end, interactive);
-
-			rInfo = null;
-
-			return(isSuccess);
-
-		}
-		
-  
-
-		return(isSuccess);
-	}
-
-
-	public static boolean doRuninR(String filename, int start, int end, boolean interactive) throws Exception
-	{
-
-
-
-		try {
+			logger.info("SetLoader to setup a run");
 
 			setLoader(setupRun(filename, start, end));
 
-			if (interactive) {
-				logger.info("do interactiveRun in R");
 
-				interactiveRun(getLoader());
-			} else {
-
-				logger.info("do noninteractiveRun in R");
-
-				try {
-					ScenarioLoader Loader_tmp = getLoader(); 
-				} catch (Exception e2) {
-					logger.fatal(e2.getMessage());
-					e2.printStackTrace();
-
-				}
-				logger.info("getLoader in R");
-
-				noninteractiveRun(getLoader(), start == Integer.MIN_VALUE ? getLoader().startTick : start,
-						end == Integer.MIN_VALUE ? getLoader().endTick : end);
-				setLoader(null);
-				finalActions();
-			}
-
-			logger.info("doRuninR done");
-			return(true);
-
-		} catch (Exception e) {
-			logger.fatal(e.getMessage());
-
-			e.printStackTrace();
-			logger.info("doRuninR failed");
-			return(false);
+			return(rInfo);
 
 		}
 
+		start = start == Integer.MIN_VALUE ? loader.startTick : start;
+		end = end == Integer.MIN_VALUE ? loader.endTick : end;
+
+
+		// when no run was done
+		rInfo = null;
+		return(rInfo);
 	}
+
+
+
+	public ScenarioLoader EXTsetSchedule (int start, int end) {  
+
+		
+
+		logger.info(String.format("Running from %s to %s\n",
+				(start == Integer.MIN_VALUE ? "<ScenarioFile>" : start + ""),
+				(end == Integer.MIN_VALUE ? "<ScenarioFile>" : end + "")));
+
+		
+		ScenarioLoader loader = getLoader(); 
+ 
+		if (end != Integer.MIN_VALUE) {
+			if (start != Integer.MIN_VALUE) {
+				logger.info("Starting run for set number of ticks");
+				logger.info("Start: " + start + ", End: " + end);
+				
+//				loader.schedule.runFromTo(start, end); should not use because it finalises
+				loader.schedule.setStartTick(start);
+				loader.schedule.setEndTick(end);
+ 
+			}
+		}
+		
+ 		return (loader);
+
+	}
+
+	
+	public int EXTtick() {  
+
+		
+		ScenarioLoader loader = getLoader(); 
+		loader.schedule.tick();
+		
+		int currentTick = loader.schedule.getCurrentTick();
+ 		return (currentTick);
+
+	}
+
+	
+	
+  
+
+
+	public static boolean EXTcloseRrun() { 
+
+		getLoader().schedule.finish();
+		setLoader(null);
+		finalActions();
+
+		try {
+			Class.forName("mpi.MPI");
+			MPI.Finalize();
+		} catch (ClassNotFoundException e) {
+			logger.error("No MPI in classpath!");
+		} catch (Exception exception) {
+			logger.error("Error during MPI finilization: "
+					+ exception.getMessage());
+			exception.printStackTrace();
+		}
+
+		return true;
+
+	}
+
+
+
 
 
 
