@@ -143,9 +143,17 @@ public class WorldLoader {
 	
 	Region loadRegion( RegionLoader l ) throws Exception
 	{
+		
+		try {
+
 		l.setPersister( persister );
 		l.setModelData( modelData );
 		l.initialise( info );
+		
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+
 		return l.getRegion();
 	}
 	

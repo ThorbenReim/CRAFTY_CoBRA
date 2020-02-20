@@ -450,9 +450,7 @@ public class ModelRunner
 		interactiveControls.pack();
 		interactiveControls.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 
-
-
-
+ 
 
 
 		java.awt.event.WindowListener wl = new java.awt.event.WindowAdapter() {
@@ -481,6 +479,8 @@ public class ModelRunner
 		// TODO override persister method
 		ScenarioLoader loader = ABMPersister.getInstance().readXML(ScenarioLoader.class, filename,
 				null);
+		
+  
 		loader.setRunID(rInfo.getCurrentRun() + "-" + rInfo.getCurrentRandomSeed());
 		loader.initialise(rInfo);
 		loader.schedule.setRegions(loader.regions);

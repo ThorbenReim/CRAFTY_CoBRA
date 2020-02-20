@@ -49,7 +49,7 @@ import com.moseph.modelutils.fastdata.DoubleMap;
  *
  */
 public class LanduseControllingInstitution extends AbstractInstitution {
-	          
+
 	/**
 	 * Logger
 	 */
@@ -71,13 +71,15 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 	 */
 	@Element(required = false)
 	String tickCol = "Year";
+	@Element(required = false)
+	String xColumn = "x";
+	@Element(required = false)
+	String yColumn = "y";
 
-//	@Element(required = false)
-//	protected String labelUnmanaged = "UNMANAGED";
 
-//	protected Table<String, String, Double> restrictedRoles;
-//
-//	protected Set<FunctionalRole> frs = null;
+	//	protected Table<String, String, Double> restrictedRoles;
+	//
+	//	protected Set<FunctionalRole> frs = null;
 
 	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
 		super.initialise(data, info, extent);
@@ -88,20 +90,23 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 		final Table<String, String, Double> landuseProhibited;
 
 		try {
-			landuseProhibited = ABMPersister.getInstance().csvToDoubleTable(csvFileRestrictedLanduse, "Restricted", null);
 			
-		} catch (IOException exception) {
+		//	landuseProhibited = ABMPersister.getInstance().csv(csvFileRestrictedLanduse, "Restricted", null);
+			// @todo read YN values  
+
+
+		} catch (Exception exception) {
 			exception.printStackTrace();
 		}
-		
-		
+
+
 		if (csvFileRestrictedLanduse != null) {
-//			loadCapitalFactorCurves();
+			//		do something here
 		}
 	}
 
 
- 
+
 	/**
 	 * Checks configured restriction CSV file.
 	 * 
@@ -110,23 +115,23 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 	 * @return true if the given {@link FunctionalRole} is allowed to occupy the given cell.
 	 */
 	public boolean isAllowed(FunctionalRole fr, Cell cell) {
-		
-//		DoubleMap<Capital> adjusted = modelData.landUses();
-//
-// 		cell.get
-		
+
+		//		DoubleMap<Capital> adjusted = modelData.landUses();
+		//
+		// 		cell.get
+
 		boolean landuseallowed = true;
-		
-		
-// TODO year tick in land 
-//		year tick 
-//		keeps applied until the next restriction rule applied 
-		
-		
+
+
+		// TODO year tick in land 
+		//		year tick 
+		//		keeps applied until the next restriction rule applied 
+
+
 		if (landuseallowed) {
 			// <- LOGGING
 			logger.warn("Land use change allowed X" + cell.getX() + "Y" + cell.getY()
-			);
+					);
 			// LOGGING ->
 			return true;
 		} else {
