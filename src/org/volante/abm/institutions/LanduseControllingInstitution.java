@@ -48,12 +48,12 @@ import com.moseph.modelutils.fastdata.DoubleMap;
  * @author Bumsuk Seo
  *
  */
-public class LanduseControllingInsitution extends AbstractInstitution {
-
+public class LanduseControllingInstitution extends AbstractInstitution {
+	          
 	/**
 	 * Logger
 	 */
-	static private Logger logger = Logger.getLogger(LanduseControllingInsitution.class);
+	static private Logger logger = Logger.getLogger(LanduseControllingInstitution.class);
 
 	/**
 	 * CSV file matrix of functional role serial IDs as column and row names. If the entry is > 0 a transition from the
@@ -65,7 +65,7 @@ public class LanduseControllingInsitution extends AbstractInstitution {
 	 * relative to the base capitals.
 	 */
 	@Element(required = true)
-	protected String csvFileRestrictdLanduse = null;
+	protected String csvFileRestrictedLanduse = null;
 	/**
 	 * Name of column in CSV file that specifies the year a row belongs to
 	 */
@@ -88,14 +88,14 @@ public class LanduseControllingInsitution extends AbstractInstitution {
 		final Table<String, String, Double> landuseProhibited;
 
 		try {
-			landuseProhibited = ABMPersister.getInstance().csvToDoubleTable(csvFileRestrictdLanduse, "Restricted", null);
+			landuseProhibited = ABMPersister.getInstance().csvToDoubleTable(csvFileRestrictedLanduse, "Restricted", null);
 			
 		} catch (IOException exception) {
 			exception.printStackTrace();
 		}
 		
 		
-		if (csvFileRestrictdLanduse != null) {
+		if (csvFileRestrictedLanduse != null) {
 //			loadCapitalFactorCurves();
 		}
 	}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry combineaccessrules="false" kind="src" path="/modelling-utilities"/>
-	<classpathentry excluding="org/volante/abm/lara/FrCheckDecisionModeSelector.java" kind="src" path="src"/>
+	<classpathentry excluding="org/volante/abm/lara/FrCheckDecisionModeSelector.java|org/volante/abm/example/BestProductionFirstGiveUpGiveInAllocationModel.java" kind="src" path="src"/>
 	<classpathentry excluding="org/volante/abm/lara/FrCheckerDecisionModeSelectorTest.java" kind="src" path="test"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>

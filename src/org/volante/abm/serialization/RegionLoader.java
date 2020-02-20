@@ -113,6 +113,9 @@ public class RegionLoader {
 
 	@Element(required = false)
 	FRList fRoles = new FRList();
+	
+	
+ 
 
 	@Element(required = false)
 	SocialNetworkLoaderList socialNetworkLoaders = new SocialNetworkLoaderList();
