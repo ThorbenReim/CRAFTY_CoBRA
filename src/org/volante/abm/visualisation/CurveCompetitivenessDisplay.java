@@ -61,6 +61,9 @@ public class CurveCompetitivenessDisplay extends AbstractDisplay implements Comp
 	ModelData					data				= null;
 	private Regions				region				= null;
 	
+	
+	
+ 
 	public CurveCompetitivenessDisplay( CurveCompetitivenessModel model ) 
 	{
 		this.model = model;

@@ -91,7 +91,7 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 
 		try {
 			
-		//	landuseProhibited = ABMPersister.getInstance().csv(csvFileRestrictedLanduse, "Restricted", null);
+//			landuseProhibited = ABMPersister.getInstance()..(csvFileRestrictedLanduse, "Restricted", null);
 			// @todo read YN values  
 
 
@@ -118,9 +118,8 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 
 		//		DoubleMap<Capital> adjusted = modelData.landUses();
 		//
-		// 		cell.get
-
-		boolean landuseallowed = true;
+ 
+		boolean landuseallowed = false;
 
 
 		// TODO year tick in land 
@@ -130,7 +129,7 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 
 		if (landuseallowed) {
 			// <- LOGGING
-			logger.warn("Land use change allowed X" + cell.getX() + "Y" + cell.getY()
+			logger.info("Land use change allowed X" + cell.getX() + "Y" + cell.getY()
 					);
 			// LOGGING ->
 			return true;
