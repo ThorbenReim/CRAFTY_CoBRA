@@ -116,4 +116,12 @@ public interface Schedule extends Initialisable {
 	public void runFromTo(int start, int end);
 
 	public void finish();
+
+	/**
+	 * Registers the listener object in case any actions are going to be called on it e.g. before/after
+	 * ticks.
+	 * 
+	 * @param o
+	 */
+	public void registerListeners(ScheduleStatusListener o);
 }

@@ -51,14 +51,14 @@ public class DefaultModelDisplays extends ModelDisplays {
 
 	@ElementList(inline = true, entry = "display", required = false)
 	List<Display>				displays			= new ArrayList<Display>();
-	JFrame						frame				= new JFrame("Model Displays");
+	private JFrame				frame				= new JFrame("CRAFTY Model Displays");
 	Logger						log					= Logger.getLogger(getClass());
 	JTabbedPane					tabbedPane			= null;
 
 	public DefaultModelDisplays() {
 		this.tabbedPane = new JTabbedPane();
-		frame.add(this.tabbedPane);
-		frame.setSize(new Dimension(800, 1200));
+		getFrame().add(this.tabbedPane);
+		getFrame().setSize(new Dimension(800, 1200));
 	}
 
 	@Override
@@ -70,16 +70,25 @@ public class DefaultModelDisplays extends ModelDisplays {
 			this.tabbedPane.addTab(d.getTitle(), d.getDisplay());
 		}
 		if (displays.size() > 0) {
-			frame.setVisible(true);
+			getFrame().setVisible(true);
 		}
 		for (Display d : displays) {
 			registerDisplay(d);
 		}
 
-		GraphicsConfiguration config = frame.getGraphicsConfiguration();
+		GraphicsConfiguration config = getFrame().getGraphicsConfiguration();
 		Rectangle usableBounds = SunGraphicsEnvironment.getUsableBounds(config.getDevice());
-		frame.setMaximizedBounds(usableBounds);
-		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+ 
+		
+		// Make the model display smaller 
+		usableBounds.x = usableBounds.width / 20 ;
+		usableBounds.y = usableBounds.y + usableBounds.height / 15 ;
+ 
+		usableBounds.height /= 1.2;
+		usableBounds.width /= 1.2;
+
+		getFrame().setMaximizedBounds(usableBounds);
+		getFrame().setExtendedState(Frame.MAXIMIZED_BOTH);
 	}
 
 	@Override
@@ -90,5 +99,19 @@ public class DefaultModelDisplays extends ModelDisplays {
 			}
 		}
 		d.setModelDisplays(this);
+	}
+
+	/**
+	 * @return the frame
+	 */
+	public JFrame getFrame() {
+		return frame;
+	}
+
+	/**
+	 * @param frame the frame to set
+	 */
+	public void setFrame(JFrame frame) {
+		this.frame = frame;
 	}
 }

@@ -348,7 +348,7 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 				LandUseAgent agent = agentFinder.findAgent(c, Integer.MIN_VALUE,
 						fr.getSerialID());
 
-				agent.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD,
+				agent.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, // @todo print out in cell table 
 						newAgentsGU);
 
 				for (TakeoverObserver observer : takeoverObserver) {
@@ -390,6 +390,9 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 				}
 
 				break;
+			} else {
+				// not interested in 
+			
 			}
 		}
 	}

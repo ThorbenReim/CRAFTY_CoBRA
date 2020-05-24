@@ -79,12 +79,12 @@ public class CSVCapitalUpdater extends AbstractUpdater
 	{
 		try {
 			CsvReader file = getFileForYear();
-			if( file != null ) {
+ 			if( file != null ) {
 				applyFile( file );
 			}
 		} catch ( Exception e )
 		{
-			log.fatal( "Couldn't update Capitals: " + e.getMessage() );
+			this.log.fatal( "Couldn't update Capitals: " + e.getMessage() );
 			e.printStackTrace();
 		}
 	}
@@ -112,11 +112,16 @@ public class CSVCapitalUpdater extends AbstractUpdater
 			fn = previousFilename;
 		}
 		
+		this.log.debug("Read " + fn);
+
+		
 		if( fn != null )
 		{
 			previousFilename = fn;
 			return p.getCSVReader(fn, region.getPersisterContextExtra());
 		}
+		
+  	
 		return null;
 	}
 	

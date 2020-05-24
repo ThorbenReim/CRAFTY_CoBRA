@@ -27,6 +27,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JFrame;
+
 import org.apache.log4j.Logger;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.DefaultSocialLandUseAgent;
@@ -42,6 +44,10 @@ import org.volante.abm.institutions.global.GlobalInstitutionsRegistry;
 import org.volante.abm.models.WorldSynchronisationModel;
 import org.volante.abm.output.Outputs;
 import org.volante.abm.schedule.ScheduleStatusEvent.ScheduleStage;
+import org.volante.abm.serialization.ModelRunner;
+import org.volante.abm.visualisation.ModelDisplays;
+import org.volante.abm.visualisation.DefaultModelDisplays;
+
 
 
 public class DefaultSchedule implements WorldSyncSchedule {
@@ -164,7 +170,7 @@ public class DefaultSchedule implements WorldSyncSchedule {
 				if (a instanceof InnovativeBC) {
 					((InnovativeBC) a).considerInnovationsNextStep();
 				}
-	
+
 				a.updateCompetitiveness();
 				a.considerGivingUp();
 			}
@@ -173,13 +179,13 @@ public class DefaultSchedule implements WorldSyncSchedule {
 			for (Region r : regions.getAllRegions()) {
 				r.cleanupAgents();
 			}
-	
+
 			// Allocate land
 			for (Region r : regions.getAllRegions()) {
 				r.getAllocationModel().allocateLand(r);
 			}
 		}
-		
+
 		// Calculate supply
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
@@ -207,7 +213,7 @@ public class DefaultSchedule implements WorldSyncSchedule {
 		for (Region r : regions.getAllRegions()) {
 			if (r.getDemandModel() instanceof RegionalDemandModel) {
 				((RegionalDemandModel) r.getDemandModel())
-						.recalculateResidual();
+				.recalculateResidual();
 			}
 		}
 
@@ -221,9 +227,24 @@ public class DefaultSchedule implements WorldSyncSchedule {
 		}
 
 		fireScheduleStatus(new ScheduleStatusEvent(tick, ScheduleStage.POST_TICK, true));
+
 		postTickUpdates();
 
+		// use information from the loader (by ABS)
+  		final ModelDisplays displays = ModelRunner.getLoader().getDisplays(); 
+ 
+  		// @TODO refactor it into the display classes
+   		if (displays != null && (displays instanceof DefaultModelDisplays)) {
+   			 
+  			System.out.println("displays not null");
+  			DefaultModelDisplays displays2 = (DefaultModelDisplays) displays; 
+  	  		JFrame frame = displays2.getFrame();
+  	  		String currentTick = "CRAFTY Model displays in " + Integer.toString(this.getCurrentTick());
+  	  		frame.setTitle(currentTick);
+  	  		frame.repaint();
 
+ 		}
+  		
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
 			logger.debug("Number of Agents in total: " + DefaultSocialLandUseAgent.numberAgents);
@@ -384,10 +405,10 @@ public class DefaultSchedule implements WorldSyncSchedule {
 
 	private void finishUpdates() {
 		// <- LOGGING
-        if (logger.isDebugEnabled()) {
-	        logger.debug("Finish\t\t (DefaultSchedule ID " + id + ")");
+		if (logger.isDebugEnabled()) {
+			logger.debug("Finish\t\t (DefaultSchedule ID " + id + ")");
 		}
-        // LOGGING ->
+		// LOGGING ->
 
 		// copy to prevent concurrent modifications:
 		List<FinishAction> finishActionsCopy = new ArrayList<FinishAction>(
@@ -414,6 +435,18 @@ public class DefaultSchedule implements WorldSyncSchedule {
 		}
 	}
 
+	 /**
+	  * To register listener objects esp. in the interactive mode (by ABS in 2020)
+	  * @see org.volante.abm.schedule.Schedule#registerListeners(org.volante.abm.schedule.ScheduleStatusListener)
+	  */
+	@Override
+	public void registerListeners(ScheduleStatusListener o) {
+		if (o instanceof ScheduleStatusListener && !listeners.contains(o)) {
+			listeners.add( o);
+		}
+	}
+	 
+	
 	/**
 	 * @see org.volante.abm.schedule.Schedule#unregister(org.volante.abm.schedule.TickAction)
 	 */
@@ -457,7 +490,18 @@ public class DefaultSchedule implements WorldSyncSchedule {
 	}
 
 	void fireScheduleStatus(ScheduleStatusEvent e) {
-		for (ScheduleStatusListener l : listeners) {
+		
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Fire\t\t (DefaultSchedule ID " + id + ")");
+		}
+		// LOGGING ->
+
+		// copy to prevent concurrent modifications:
+		List<ScheduleStatusListener> listenersCopy = new ArrayList<ScheduleStatusListener>(
+				listeners);
+		 
+		for (ScheduleStatusListener l : listenersCopy) {
 			l.scheduleStatus(e);
 		}
 	}

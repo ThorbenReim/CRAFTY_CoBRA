@@ -38,7 +38,7 @@ import org.volante.abm.schedule.RunInfo;
 
 import com.csvreader.CsvReader;
 
-import mpi.MPI;
+//import mpi.MPI;
 
 
 public class WorldLoader {
@@ -121,31 +121,39 @@ public class WorldLoader {
 	{
 		RegionSet rs = new RegionSet();
 		for( RegionLoader rl : loaders ) {
-			try {
-				Class.forName("mpi.MPI");
-				if (MPI.COMM_WORLD.Rank() == rl.getUid()) {
-					Region r = loadRegion(rl);
-
-					logger.info("Run region " + r + " on rank " + MPI.COMM_WORLD.Rank());
-
-					rs.addRegion(r);
-				}
-			} catch (ClassNotFoundException exception) {
+//			try {
+//				Class.forName("mpi.MPI");
+//				if (MPI.COMM_WORLD.Rank() == rl.getUid()) {
+//					Region r = loadRegion(rl);
+//
+//					logger.info("Run region " + r + " on rank " + MPI.COMM_WORLD.Rank());
+//
+//					rs.addRegion(r);
+//				}
+//			} catch (ClassNotFoundException exception) {
 				Region r = loadRegion(rl);
-
+//
 				logger.info("No MPI. Region " + r + " loaded.");
-
+//
 				rs.addRegion(r);
-			}
+//			}
 		}
 		return rs;
 	}
 	
 	Region loadRegion( RegionLoader l ) throws Exception
 	{
+		
+		try {
+
 		l.setPersister( persister );
 		l.setModelData( modelData );
 		l.initialise( info );
+		
+		} catch (Exception exception) {
+			exception.printStackTrace();
+		}
+
 		return l.getRegion();
 	}
 	

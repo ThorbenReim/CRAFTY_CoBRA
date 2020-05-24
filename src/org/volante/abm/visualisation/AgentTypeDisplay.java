@@ -25,6 +25,7 @@ package org.volante.abm.visualisation;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -38,21 +39,21 @@ import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementMap;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.data.Cell;
+import org.volante.abm.data.Region;
 
 import de.cesr.uranus.core.URandomService;
 
 
 public class AgentTypeDisplay extends CellDisplay {
 
-	private static final long	serialVersionUID	= 722528466121585081L;
-
+	private static final long serialVersionUID = 722528466121585081L;
 
 	@ElementMap(entry = "aftColor", key = "aft", attribute = true, inline = true, required = false)
-	protected Map<String, Color>	agentColours		= new LinkedHashMap<String, Color>();
+	protected Map<String, Color> agentColours = new LinkedHashMap<String, Color>();
 
 	@Attribute(required = false)
-	String						prefix				= null;
-	JPanel						legend				= new JPanel();
+	String prefix = null;
+	JPanel legend = new JPanel();
 
 	public AgentTypeDisplay() {
 		addAgent(Agent.NOT_MANAGED_AGENT_ID, Color.gray.brighter());
@@ -63,14 +64,16 @@ public class AgentTypeDisplay extends CellDisplay {
 	}
 
 	public Color getColor(Cell c) {
+		
+		 
 		Color col = agentColours.get(c.getOwnersFrLabel());
 		if (col != null) {
 			return col;
 		}
 		log.warn("No colour found for: " + c.getOwnersFrLabel() + " so making one up");
 		Color nc = new Color(URandomService.getURandomService().getUniform().nextIntFromTo(0, 255),
-				URandomService.getURandomService().getUniform().nextIntFromTo(0, 255),
-				URandomService.getURandomService().getUniform().nextIntFromTo(0, 255));
+		        URandomService.getURandomService().getUniform().nextIntFromTo(0, 255),
+		        URandomService.getURandomService().getUniform().nextIntFromTo(0, 255));
 
 		agentColours.put(c.getOwnersFrLabel(), nc);
 		updateLegend();
@@ -106,6 +109,9 @@ public class AgentTypeDisplay extends CellDisplay {
 			b.add(lab);
 			legend.add(b);
 		}
+		 
 		revalidate();
 	}
+
+ 
 }
