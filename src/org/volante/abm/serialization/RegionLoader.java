@@ -374,15 +374,26 @@ public class RegionLoader {
 
 	public void loadModels() throws Exception {
 		if (allocation == null) {
+			
+			// <- LOGGING
+			log.info("Allocation Model file: " + allocationFile);
+			// LOGGING ->
 			allocation = persister.readXML(AllocationModel.class,
 					allocationFile, this.region.getPersisterContextExtra());
 		}
 		if (demand == null) {
+			// <- LOGGING
+			log.info("Demand Model file: " + demandFile);
+			// LOGGING ->
 			demand = persister.readXML(DemandModel.class, demandFile,
 					this.region.getPersisterContextExtra());
 		}
 
 		if (competition == null) {
+			// <- LOGGING
+			log.info("Competitiveness Model file: " + competitionFile);
+			// LOGGING ->
+ 			
 			competition = persister.readXML(CompetitivenessModel.class,
 					competitionFile, this.region.getPersisterContextExtra());
 		}

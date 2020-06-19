@@ -368,12 +368,23 @@ public class Region implements Regions, PreTickAction {
 		}
 
 		allocation.initialise(data, info, this);
+		// <- LOGGING
+		logger.info("Allocation model initialised " + this + "...");
+		// LOGGING ->
 		competition.initialise(data, info, this);
+		// <- LOGGING
+		logger.info("Competition model initialised " + this + "...");
+		// LOGGING ->
 		demand.initialise(data, info, this);
-
+		// <- LOGGING
+		logger.info("Demand model initialised " + this + "...");
+		// LOGGING ->
 		if (this.institutions != null) {
 			this.institutions.initialise(data, info, this);
 			info.getSchedule().register(institutions);
+			// <- LOGGING
+			logger.info("Institutional model initialised " + this + "...");
+			// LOGGING ->
 		}
 
 		this.initialised = true;
