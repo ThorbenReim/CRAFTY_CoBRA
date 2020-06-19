@@ -391,7 +391,7 @@ public class RegionLoader {
 
 		if (competition == null) {
 			// <- LOGGING
-			log.info("Competitiveness Model file: " + competitionFile);
+			log.info("Competition Model file: " + competitionFile);
 			// LOGGING ->
  			
 			competition = persister.readXML(CompetitivenessModel.class,
