@@ -233,16 +233,13 @@ public class DefaultSchedule implements WorldSyncSchedule {
 		// use information from the loader (by ABS)
   		final ModelDisplays displays = ModelRunner.getLoader().getDisplays(); 
  
-  		// @TODO refactor it into the display classes
    		if (displays != null && (displays instanceof DefaultModelDisplays)) {
    			 
-  			System.out.println("displays not null");
-  			DefaultModelDisplays displays2 = (DefaultModelDisplays) displays; 
-  	  		JFrame frame = displays2.getFrame();
-  	  		String currentTick = "CRAFTY Model displays in " + Integer.toString(this.getCurrentTick());
-  	  		frame.setTitle(currentTick);
+  			DefaultModelDisplays display = (DefaultModelDisplays) displays;
+  	  		JFrame frame = display.getFrame();
+  	  		String framelabel = "CRAFTY using " + this.info.getScenario() + " scenario in " + Integer.toString(this.getCurrentTick());
+  	  		frame.setTitle(framelabel);
   	  		frame.repaint();
-
  		}
   		
 		// <- LOGGING

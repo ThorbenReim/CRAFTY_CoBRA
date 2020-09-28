@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
@@ -64,11 +65,11 @@ public abstract class AbstractDisplay extends JPanel implements Display {
 		return title;
 	}
 
-	
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+
 	protected Logger	log	= Logger.getLogger(getClass());
 
 	public JComponent getControls() {
@@ -153,7 +154,8 @@ public abstract class AbstractDisplay extends JPanel implements Display {
 	@Override
 	public void update() {
 		// Nothing to do here
-	}
+
+ 	}
 
 	public void postUpdate() {
 		this.invalidate();
