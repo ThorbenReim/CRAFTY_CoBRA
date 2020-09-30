@@ -1,0 +1,5 @@
+<cellInitialiser class="org.volante.abm.serialization.CsvAftPopulator">
+	<csvFile>csv/%r.csv</csvFile>
+	<taggedHomeCells>true</taggedHomeCells>
+	<manageEveryHomeCell>false</manageEveryHomeCell>
+</cellInitialiser>

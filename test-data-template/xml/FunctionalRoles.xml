@@ -1,0 +1,17 @@
+<functionalRoles>
+	<fRole class="org.volante.abm.agent.fr.DefaultFR" label="FR1" serialID="0"
+	givingUpMean="0.0" givingInMean="0.0">
+		<production class="org.volante.abm.example.SimpleProductionModel"
+			csvFile="csv/FR1.csv" />
+	</fRole>
+		<fRole class="org.volante.abm.agent.fr.DefaultFR" label="FR2" serialID="1"
+	givingUpMean="0.0" givingInMean="0.0">
+		<production class="org.volante.abm.example.SimpleProductionModel"
+			csvFile="csv/FR2.csv" />
+	</fRole>
+		<fRole class="org.volante.abm.agent.fr.DefaultFR" label="FR3" serialID="2"
+	givingUpMean="0.0" givingInMean="0.0">
+		<production class="org.volante.abm.example.SimpleProductionModel"
+			csvFile="csv/FR3.csv" />
+	</fRole>
+</functionalRoles>

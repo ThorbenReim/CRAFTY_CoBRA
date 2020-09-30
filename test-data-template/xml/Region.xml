@@ -1,0 +1,31 @@
+<region id="Region">
+	<cellInitialiser class="org.volante.abm.serialization.CellCSVReader" csvFile="csv/TestRegion.csv" />
+	
+	<!-- This defines an allocation model inline -->
+	<allocation class="org.volante.abm.example.GiveUpGiveInAllocationModel" numCells="10" numTakeovers="400" probabilityExponent="0" />
+
+	<competition class="org.volante.abm.example.CurveCompetitivenessModel">
+		<curve service="Service1">
+			<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="3.0" />
+		</curve>
+		<curve service="Service2">
+			<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="3.0" />
+		</curve>
+		<curve service="Service3">
+			<curve class="com.moseph.modelutils.curve.LinearFunction" a="0.0" b="3.0" />
+		</curve>
+	</competition>
+
+	<demand class="org.volante.abm.example.RegionalDemandModel" demandCSV="csv/Demand1.csv"/>
+	
+	<socialNetworkParamFile>xml/SocialNetwork_WsBeta.xml</socialNetworkParamFile>
+	
+	<frFile>xml/FunctionalRoles.xml</frFile>
+	<btFile>xml/BehaviouralTypes.xml</btFile>
+	
+	<regionalLaraModel>
+		<Boolean param="de.cesr.lara.components.param.LBasicPa:EVENTBUS_FORCE_SEQUENTIAL">true</Boolean>
+		<String param="de.cesr.lara.toolbox.param.LXmlConfigPa:XML_PATH_PREFERENCES">xml/LaraPreferences.xml</String>
+		<String param="de.cesr.lara.toolbox.param.LXmlConfigPa:XML_PATH_DCONFIG">xml/LaraDecisionConfigurations.xml</String>
+	</regionalLaraModel>
+</region>
