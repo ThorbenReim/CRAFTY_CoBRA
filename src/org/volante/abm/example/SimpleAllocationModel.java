@@ -55,27 +55,30 @@ import com.moseph.modelutils.Utilities;
 
 import de.cesr.parma.core.PmParameterManager;
 
+// The Allocation model is responsible for taking a Region full of Cells, and a set of PotentialAgents, and re-allocating land to new agents. This can include mechanisms such as:
+// - replacing agents who have given up
+// - allowing new agents to force out existing ones 
+// - some form of market 
+// - top down optimisation etc.
+// The idea is to use the Competitiveness of Agents and PotentialAgents based on the supply, demand and ability to produce in the Region/Cell.
+// Note that allocation does not take place during the initial time step. The main reason is to allow CRAFTY to synchronise demand, calculate and synchronise supply, and determine competitiveness (which take place after allocation in the time step cycle). This leads to the assumption that initial land use patters represent those of the initial time step.
+
 
 /**
- * A very simple kind of allocation. Any abandoned cells get the most
- * competitive agent assigned to them.
+ * A very simple kind of allocation. Any abandoned cells get the most competitive agent assigned to them.
  * 
- * Note: Subclasses need to consider reporting allocation changes to the
- * {@link CellVolatilityObserver}.
+ * Note: Subclasses need to consider reporting allocation changes to the {@link CellVolatilityObserver}.
  * 
  * @author dmrust
  * @author Sascha Holzhauer
  * 
  */
 @Root
-public class SimpleAllocationModel implements AllocationModel,
-		CellVolatilityMessenger
-{
+public class SimpleAllocationModel implements AllocationModel, CellVolatilityMessenger {
 	/**
 	 * Logger
 	 */
-	static private Logger	logger	= Logger.getLogger(SimpleAllocationModel.class);
-
+	static private Logger logger = Logger.getLogger(SimpleAllocationModel.class);
 
 	protected Set<CellVolatilityObserver> cellVolatilityObserver = new HashSet<CellVolatilityObserver>();
 
@@ -83,8 +86,8 @@ public class SimpleAllocationModel implements AllocationModel,
 	protected AgentFinder agentFinder = new DefaultSocialAgentAssembler();
 
 	@Attribute(required = false)
-	double						proportionToAllocate	= 1;
-	
+	double proportionToAllocate = 1;
+
 	/**
 	 * @param agentFinder
 	 */
@@ -102,15 +105,15 @@ public class SimpleAllocationModel implements AllocationModel,
 	};
 
 	protected boolean networkNullErrorOccurred = false;
+
 	/**
 	 * Creates a copy of the best performing potential agent on each empty cell
 	 */
 	@Override
-	public void allocateLand( Region r )
-	{
+	public void allocateLand(Region r) {
 		// <- LOGGING
-		logger.info("Allocate land for region " + r + " (allocating " + r.getAvailable().size()
-				+ " cells)...");
+		logger.info("Allocate land for `available(=empty)' cells in region " + r + " (allocating "
+		        + r.getAvailable().size() + " cells)...");
 		// LOGGING ->
 
 		allocateAvailableCells(r);
@@ -121,21 +124,19 @@ public class SimpleAllocationModel implements AllocationModel,
 	 */
 	protected void allocateAvailableCells(Region r) {
 		// Determine random subset of available cells:
-		Collection<Cell> cells2allocate = Utilities.sampleN(r.getAvailable(),
-				(int) (r.getAvailable().size() * proportionToAllocate), r.getRandom()
-						.getURService(),
-				RandomPa.RANDOM_SEED_RUN_ALLOCATION.name());
+		Collection<Cell> cells2allocate =
+		        Utilities.sampleN(r.getAvailable(), (int) (r.getAvailable().size() * proportionToAllocate),
+		                r.getRandom().getURService(), RandomPa.RANDOM_SEED_RUN_ALLOCATION.name());
 
 		for (Cell c : cells2allocate) {
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {
-				logger.debug("Create best agent for cell " + c + " of region "
-						+ r + " (current owner: " + c.getOwner()
-						+ ")...");
+				logger.debug("Create best agent for cell " + c + " of region " + r + " (current owner: " + c.getOwner()
+				        + ")...");
 			}
 			// LOGGING ->
 
-			createBestAgentForCell( r, c );
+			createBestAgentForCell(r, c);
 		}
 	}
 
@@ -154,8 +155,7 @@ public class SimpleAllocationModel implements AllocationModel,
 		double random;
 
 		// Find FR with highest competitiveness above his GU threshold:
-		for (FunctionalRole fr : fComps)
-		{
+		for (FunctionalRole fr : fComps) {
 			random = r.getRandom().getURService().nextDouble(RandomPa.RANDOM_SEED_RUN_ALLOCATION.name());
 
 			if (fr.getAllocationProbability() >= random && r.getInstitutions().isAllowed(fr, c)) {
@@ -163,7 +163,8 @@ public class SimpleAllocationModel implements AllocationModel,
 				double s = r.getCompetitiveness(fr, c);
 				// <- LOGGING
 				if (logger.isDebugEnabled()) {
-					logger.debug(fr + "> competitiveness: " + s + " (threshold: " + fr.getMeanGivingUpThreshold() + ")");
+					logger.debug(
+					        fr + "> competitiveness: " + s + " (threshold: " + fr.getMeanGivingUpThreshold() + ")");
 				}
 				// LOGGING ->
 
@@ -178,10 +179,9 @@ public class SimpleAllocationModel implements AllocationModel,
 			// <- LOGGING
 			if (logger.isTraceEnabled()) {
 				NumberFormat format = (NumberFormat) PmParameterManager.getParameter(r, BasicPa.FLOAT_POINT_FORMAT);
-				logger.trace(fr + (fr.getAllocationProbability() >= random ? "" : " not")
-				        + " considered (prob: " + format.format(fr.getAllocationProbability()) + "/rand: "
-				        + format.format(random) + "); " + (r.getInstitutions().isAllowed(fr, c) ? "" : "not ")
-				        + "allowed.");
+				logger.trace(fr + (fr.getAllocationProbability() >= random ? "" : " not") + " considered (prob: "
+				        + format.format(fr.getAllocationProbability()) + "/rand: " + format.format(random) + "); "
+				        + (r.getInstitutions().isAllowed(fr, c) ? "" : "not ") + "allowed.");
 			}
 			// LOGGING ->
 
@@ -220,11 +220,11 @@ public class SimpleAllocationModel implements AllocationModel,
 					if (r.getGeography() != null && agent instanceof GeoAgent) {
 						((GeoAgent) agent).addToGeography();
 					}
-					r.getNetworkService().addAndLinkNode(r.getNetwork(),
-							(SocialAgent) agent);
+					r.getNetworkService().addAndLinkNode(r.getNetwork(), (SocialAgent) agent);
 				} else {
 					if (!networkNullErrorOccurred) {
-						logger.warn("Network object not present during creation of new agent (subsequent error messages are suppressed)");
+						logger.warn(
+						        "Network object not present during creation of new agent (subsequent error messages are suppressed)");
 						networkNullErrorOccurred = true;
 					}
 				}
@@ -233,8 +233,7 @@ public class SimpleAllocationModel implements AllocationModel,
 	}
 
 	@Override
-	public AllocationDisplay getDisplay()
-	{
+	public AllocationDisplay getDisplay() {
 		return new SimpleAllocationDisplay(this);
 	}
 
