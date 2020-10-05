@@ -23,6 +23,7 @@
  */
 package org.volante.abm.example;
 
+
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
@@ -31,7 +32,9 @@ import org.volante.abm.data.Service;
 import org.volante.abm.models.CompetitivenessModel;
 
 import com.moseph.modelutils.curve.Curve;
+import com.moseph.modelutils.fastdata.DoubleMap;
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
+
 
 /**
  * @author seo-b
@@ -67,21 +70,6 @@ public class RelativeThresholdCompetitivenessModel extends CurveCompetitivenessM
 	@Attribute(required = false)
 	boolean normaliseCellSupply = true;
 
-	/**
-	 * Every time a threshold is used, it's converted to a proportion of the mean benefit value across the current population of agents. 
-	 * It makes difficult to determine the prescribed giving-in and giving-up thresholds as the benefit level changes over time. 
-	 * Ideally the current mean benefit value can be compared to the benefit values of a cell.
-	 * 
-	 * SD gap relative to the current demand
-	 * E.g. Gap_i = (S_i - D_i)/D_i
-	 * 
-	 * org.volante.abm.agent.DefaultLandUseAgent.considerGivingUp() and
-	 * org.volante.abm.agent.DefaultLandUseAgent.considerGivingUp.ProductionModel()
-	 * @see org.volante.abm.example.NormalisedCurveCompetitivenessModel#addUpMarginalUtilities()
-	 * @author seo-b
-	 * TODO test
-	 * 
-	 */
 
 
 	/**
@@ -105,6 +93,17 @@ public class RelativeThresholdCompetitivenessModel extends CurveCompetitivenessM
 		for (Service s : supply.getKeySet()) {
 			Curve c = curves.get(s); /* Gets the curve parameters for this service */
 
+			DoubleMap dm;
+			dm =  region.getDemandModel().getDemand();
+			double dm_s = dm.get(s);
+
+			boolean printDebug = log.isDebugEnabled() && (dm_s >  Double.MIN_VALUE);
+
+			if (printDebug) { 
+				log.debug(this + "> addUpMarginalUtilities ");
+				log.debug(s.getName()+ " demand=" + dm_s);
+			}
+
 			double perCellDemand = region.getDemandModel().getAveragedPerCellDemand().get(s);
 			perCellDemand = (perCellDemand == 0) ? Double.MIN_VALUE : perCellDemand;
 
@@ -113,67 +112,75 @@ public class RelativeThresholdCompetitivenessModel extends CurveCompetitivenessM
 				log.fatal(message);
 				throw new IllegalStateException(message);
 			}
+			
 			double res = residualDemand.getDouble(s);
 
-			if (perCellDemand > 0.001) {
-				log.debug(perCellDemand); 
-
+			if (printDebug) { 
+				log.debug("perCellDemand="+perCellDemand);
+				log.debug("residualDemand=" + res ) ;
 			}
-			log.debug(this + "> addUpMarginalUtilities ");
-			log.debug("residualDemand=" + res + " perCellDemand="+perCellDemand + " in " + s.getName()) ;
-
 			// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - residualDemand=1.1089970033307922E-8 perCellDemand=46.45615663357212 in Meat
 
 
 			if (normaliseCellResidual) {
 				res /= perCellDemand;
+				
+				if (printDebug) { 
+
+					log.debug("residualDemand/perCellDemand = " + res );
+				}
+				// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - residualDemand/perCellDemand = 2.387190597961265E-10
+
+
+				if (res > 1.0) {
+					message = "residualDemand/perCellDemand > 1 : " + s.getName() + " got: " + curves.keySet()
+					+ " res = " + res;
+					log.fatal(message);
+					throw new IllegalStateException(message);
+				}
+
 			}
 
-
-			log.debug("residualDemand/perCellDemand = " + res );
-
-			// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - residualDemand/perCellDemand = 2.387190597961265E-10
+  
 
 
-			if (res > 1.0) {
-				message = "residualDemand/perCellDemand > 1 : " + s.getName() + " got: " + curves.keySet()
-				+ " res = " + res;
-				log.fatal(message);
-				throw new IllegalStateException(message);
-			}
-
-			double marginal = c.sample(res); 
 			/*
-			 * Get the corresponding 'value' (y-value) for this level of unmet demand
+			 * Get the corresponding 'competitiveness value' (y-value) for this level of unmet demand
 			 */
-
-			message = "marginal = " + marginal;
-			log.debug(message);
-			// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - marginal = 2.983988247451581E-13 (=2.387190597961265E-10 * 0.00125 (see values in Competition_linear_new_relative.xml)
+			double marginal = c.sample(res); // 
 
 
 
-			double amount = supply.getDouble(s); // get supply for the service
+			double amount = supply.getDouble(s); // get cell-level supply for the service 
 
-			log.debug("amount = " + amount);
-			// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - amount = 86.4036268140081
+
+			if (printDebug) { 
+
+
+				log.debug("marginal = " + marginal);
+				// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - marginal = 2.983988247451581E-13 (=2.387190597961265E-10 * 0.00125 (see values in Competition_linear_new_relative.xml)
+
+				log.debug("amount = " + amount);
+				// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - amount = 86.4036268140081
+			}
+
 
 			if (this.normaliseCellSupply) {
 				amount /= perCellDemand;
 			}
 
-			// SD gap relative to the current demand
-			// Gap_i = (S_i - D_i)/D_i
-			amount = (amount-perCellDemand)/amount;
- 
 
-			log.debug( "amount/perCellDemand= " + amount);
-			// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - amount/perCellDemand= 1.8598961488684032
+			if (printDebug) { 
 
+				log.debug( "amount = amount/perCellDemand (normalised) = " + amount);
+				// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - amount/perCellDemand= 1.8598961488684032
+			}
 
 			if (removeNegative && marginal < 0) {
 				marginal = 0;
 			}
+
+
 
 			double comp = ((marginal == 0 || amount == 0) ? 0 : marginal * amount);
 
@@ -183,15 +190,21 @@ public class RelativeThresholdCompetitivenessModel extends CurveCompetitivenessM
 						s.getName(), res, marginal, c.toString(), amount, marginal * amount));
 			}
 
-			log.debug( "Competitiveness = " + comp);
+			if (printDebug) { 
+
+				log.debug( "Competitiveness = " + comp);
+
+			}
 			//	   	1967     DEBUG:	RelativeThresholdCompetitivenessModel - Competitiveness = 5.549908249703771E-13
 
 
 			sum += comp;
 		}
+		if (sum > Double.MIN_VALUE) { 
 
-		log.debug("Competitiveness sum: " + sum);
 
+			log.debug("Competitiveness sum: " + sum);
+		}
 		return sum;
 	}
 

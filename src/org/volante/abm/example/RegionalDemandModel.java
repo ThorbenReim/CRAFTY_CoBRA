@@ -73,7 +73,8 @@ public class RegionalDemandModel implements DemandModel, PreTickAction, PostTick
 	protected DoubleMap<Service> residual = null;
 	protected DoubleMap<Service> perCellResidual = null;
 	protected DoubleMap<Service> demand = null;
-	protected DoubleMap<Service> perCellDemand = null;
+	protected DoubleMap<Service> perCellDemand = null; // Per-cell demand is updating on: preTick(), setDemand(UnmodifiableNumberMap<Service> dem), 
+														// updateSupply(), agentChange(Cell c), tick()
 	protected RunInfo runInfo = null;
 	protected ModelData modelData = null;
 
