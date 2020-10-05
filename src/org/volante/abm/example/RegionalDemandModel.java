@@ -73,7 +73,8 @@ public class RegionalDemandModel implements DemandModel, PreTickAction, PostTick
 	protected DoubleMap<Service> residual = null;
 	protected DoubleMap<Service> perCellResidual = null;
 	protected DoubleMap<Service> demand = null;
-	protected DoubleMap<Service> perCellDemand = null;
+	protected DoubleMap<Service> perCellDemand = null; // Per-cell demand is updating on: preTick(), setDemand(UnmodifiableNumberMap<Service> dem), 
+														// updateSupply(), agentChange(Cell c), tick()
 	protected RunInfo runInfo = null;
 	protected ModelData modelData = null;
 
@@ -175,9 +176,9 @@ public class RegionalDemandModel implements DemandModel, PreTickAction, PostTick
 	 * residual by subtracting totalSupply from demand.
 	 */
 	public void recalculateResidual() {
-		demand.multiplyInto(1.0 / supply.size(), perCellDemand);
-		demand.subtractInto(totalSupply, residual);
-		residual.multiplyInto(1.0 / supply.size(), perCellResidual);
+		demand.multiplyInto(1.0 / supply.size(), perCellDemand);  //  supply.size() = # of cells
+		demand.subtractInto(totalSupply, residual); // residual = demand - totalSupply
+		residual.multiplyInto(1.0 / supply.size(), perCellResidual); // perCellResidual = residual / # of cells
 	}
 
 	@Override
