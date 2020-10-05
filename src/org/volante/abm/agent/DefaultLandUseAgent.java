@@ -105,6 +105,10 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 		return this.getFC().getProduction();
 	}
 
+
+
+
+
 	@Override
 	public void considerGivingUp() {
 		// <- LOGGING
@@ -116,19 +120,39 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 					+ " (threshold)?");
 		}
 		// LOGGING ->
-		
-		double compThresholdDiff = this.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)
-		        - this.getProperty(AgentPropertyIds.COMPETITIVENESS);
-		if (compThresholdDiff > 0.0) {
+
+
+
+		/**
+		 * Every time a threshold is used, it's converted to a proportion of the mean benefit value across the current
+		 * population of agents. It makes difficult to determine the prescribed giving-in and giving-up thresholds as the
+		 * benefit level changes over time. Ideally the current mean benefit value can be compared to the benefit values of
+		 * a cell.
+		 * 
+		 * SD gap relative to the current demand E.g. Gap_i = (S_i - D_i)/D_i
+		 * 
+		 * org.volante.abm.agent.DefaultLandUseAgent.considerGivingUp() and
+		 * org.volante.abm.agent.DefaultLandUseAgent.considerGivingUp.ProductionModel()
+		 * 
+		 * @see org.volante.abm.example.NormalisedCurveCompetitivenessModel#addUpMarginalUtilities()
+		 * @author seo-b TODO test
+		 * 
+		 */
+
+
+		double givingUpThreshold =  this.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD);
+		double compThresholdDiff = givingUpThreshold - this.getProperty(AgentPropertyIds.COMPETITIVENESS);
+
+
+		if (compThresholdDiff > 0.0) { // try to give-up  
 
 			double random = this.region.getRandom().getURService().nextDouble(RandomPa.RANDOM_SEED_RUN_GIVINGUP.name());
 
-			double probability = this
-			        .getProperty(AgentPropertyIds.GIVING_UP_PROB)
-			        * Math.pow(
-			                compThresholdDiff
-			                        / this.region.getMaxGivingUpThresholdDeviation().get(this.getFC().getFR()),
-			                this.getProperty(AgentPropertyIds.GIVING_UP_PROB_WEIGHT).doubleValue());
+			double probability = this.getProperty(AgentPropertyIds.GIVING_UP_PROB)
+					* Math.pow(
+							compThresholdDiff
+							/ this.region.getMaxGivingUpThresholdDeviation().get(this.getFC().getFR()),
+							this.getProperty(AgentPropertyIds.GIVING_UP_PROB_WEIGHT).doubleValue());
 			if (random < probability) {
 				// <- LOGGING
 				if (logger.isDebugEnabled()) {
@@ -141,7 +165,7 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 				// <- LOGGING
 				if (logger.isDebugEnabled()) {
 					logger.debug(this + "> GivingUp rejected! (random number: " + random + ", probability: "
-					        + probability + ")");
+							+ probability + ")");
 				}
 				// LOGGING ->
 			}
@@ -150,8 +174,19 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 
 	@Override
 	public boolean canTakeOver(Cell c, double incoming) {
-		return incoming > (this.getProperty(AgentPropertyIds.COMPETITIVENESS) + this
-				.getProperty(AgentPropertyIds.GIVING_IN_THRESHOLD));
+
+		double givingInThreshold =  this.getProperty(AgentPropertyIds.GIVING_IN_THRESHOLD);
+		double competitiveness = this.getProperty(AgentPropertyIds.COMPETITIVENESS);
+
+		// able to give in?
+		boolean takeover = incoming > (competitiveness + givingInThreshold);
+ 
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug(this + "> canTakeOver?" + takeover);
+		}
+
+		return (takeover);
 	}
 
 	@Override
@@ -173,10 +208,10 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 	public String infoString() {
 		return "Giving up: "
 				+ this.propertyProvider
-						.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)
+				.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)
 				+ ", Giving in: "
 				+ this.propertyProvider
-						.getProperty(AgentPropertyIds.GIVING_IN_THRESHOLD)
+				.getProperty(AgentPropertyIds.GIVING_IN_THRESHOLD)
 				+ ", nCells: " + cells.size();
 	}
 

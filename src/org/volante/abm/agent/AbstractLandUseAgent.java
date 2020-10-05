@@ -272,10 +272,10 @@ public abstract class AbstractLandUseAgent implements LandUseAgent {
 		}
 		// LOGGING ->
 
-		if (this.getFC() instanceof CompetitivenessUpdatingFC) {
+		if (this.getFC() instanceof CompetitivenessUpdatingFC) { // FunctionalComponent (FC)
 			comp = ((CompetitivenessUpdatingFC) this.getFC()).getUpdatedCompetitiveness(this);
 		} else {
-			for (Cell c : cells) {
+			for (Cell c : cells) { // @TODO parallelise
 				comp += region.getCompetitiveness(c);
 			}
 		}

@@ -712,7 +712,8 @@ public class Region implements Regions, PreTickAction {
 	 * @return get competitiveness of given cell
 	 */
 	public double getCompetitiveness(Cell c) {
-		double comp = getUnadjustedCompetitiveness(c);
+		double comp = getUnadjustedCompetitiveness(c); // before institution intervenes
+		
 		if (hasCompetitivenessAdjustingInstitution()) {
 			FunctionalRole a = c.getOwner() == null ? null : c.getOwner()
 					.getFC().getFR();

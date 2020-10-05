@@ -246,9 +246,10 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 
 			// updating supply/demand is done in r.setOwnership(agent, c);
 
-			// Update scores (for each FR)
-			scores = scoreMap(fComps, compScore);
+			// Update scores (for each FR), which changes in the course as new ownerships are set in trytoComeIn()
+			scores = scoreMap(fComps, compScore); 
 
+			logger.info(scores);
 			// sum of the scores
 			maxProb = 0.0;
 			for (double d : scores.values()) {
@@ -264,6 +265,7 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 				}
 			}
 
+			// Try to come in the order of the normalised scores (= com 
 			// Resample this each time to deal with changes in supply affecting competitiveness
  			// com.moseph.modelutils.Utilities.sample() samples from the map of probabilities (i.e. T -> prob of T)  
 			
@@ -324,15 +326,22 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 		logger.debug("Try " + fr.getLabel() + " to take over on mostly " + sorted.size() + " cells (region " + r.getID()
 		        + " has " + r.getNumCells() + " cells).");
 
-		double newAgentsGU = fr.getSampledGivingUpThreshold();
+		double newAgentsGU = fr.getSampledGivingUpThreshold(); 
+		
 		for (Cell c : sorted) {
 			// if (competitiveness.get(c) < a.getGivingUp()) return;
-			if (competitiveness.get(c) > newAgentsGU && c.getOwner().canTakeOver(c, competitiveness.get(c))
-			        && r.getInstitutions().isAllowed(fr, c)) {
+			
+			
+			boolean canComein = competitiveness.get(c) > newAgentsGU;
+			boolean canTakeOver =c.getOwner().canTakeOver(c, competitiveness.get(c));
+			boolean isAllowed = r.getInstitutions().isAllowed(fr, c); // @TODO protected area
+			
+			
+			if (canComein && canTakeOver && isAllowed) {
 
 				LandUseAgent agent = agentFinder.findAgent(c, Integer.MIN_VALUE, fr.getSerialID());
 
-				agent.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, // @todo print out in cell table
+				agent.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, // @TODO print out in cell table
 				        newAgentsGU);
 
 				for (TakeoverObserver observer : takeoverObserver) {

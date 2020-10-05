@@ -133,6 +133,7 @@ public class DefaultSchedule implements WorldSyncSchedule {
 				((Agent) institution).tickStartUpdate();
 			}
 		}
+		
 		for (Region r : regions.getAllRegions()) {
 			if (r.hasInstitutions()) {
 				r.getInstitutions().tickStartUpdate();
@@ -230,7 +231,7 @@ public class DefaultSchedule implements WorldSyncSchedule {
 
 		postTickUpdates();
 
-		// use information from the loader (by ABS)
+		// Displaying model running information 
   		final ModelDisplays displays = ModelRunner.getLoader().getDisplays(); 
  
    		if (displays != null && (displays instanceof DefaultModelDisplays)) {
