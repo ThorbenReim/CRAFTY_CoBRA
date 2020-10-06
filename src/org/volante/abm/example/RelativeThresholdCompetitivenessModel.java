@@ -131,7 +131,7 @@ public class RelativeThresholdCompetitivenessModel extends CurveCompetitivenessM
 			double resDem = residualDemand.getDouble(s); 
 
 			// relative residual demand
-			double resDem2 = residualDemand.getDouble(s);
+//			double resDem2 = residualDemand.getDouble(s);
 			// The current mean benefit value can be compared to the benefit values of a cell.
 
  			
@@ -200,9 +200,13 @@ public class RelativeThresholdCompetitivenessModel extends CurveCompetitivenessM
 
 
 			/**
+			 * Currently, it is difficult to determine the prescribed giving-in and giving-up thresholds as the
+			 * benefit level changes over time. 
+			 * 
 			 * Every time a threshold is used, it's converted to a proportion of the mean benefit value across the current
-			 * population of agents. It makes difficult to determine the prescribed giving-in and giving-up thresholds as the
-			 * benefit level changes over time. Ideally the current mean benefit value can be compared to the benefit values of
+			 * population of agents.
+			 *  
+			 * Ideally the current mean benefit value can be compared to the benefit values of
 			 * a cell.
 			 *  
 			 * @see org.volante.abm.agent.DefaultLandUseAgent.considerGivingUp() and
