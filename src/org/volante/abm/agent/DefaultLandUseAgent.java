@@ -122,6 +122,27 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 		// LOGGING ->
 
 
+ 
+
+
+
+
+		/**
+		 * Every time a threshold is used, it's converted to a proportion of the mean benefit value across the current
+		 * population of agents. It makes difficult to determine the prescribed giving-in and giving-up thresholds as the
+		 * benefit level changes over time. Ideally the current mean benefit value can be compared to the benefit values of
+		 * a cell.
+		 * 
+		 * SD gap relative to the current demand E.g. Gap_i = (S_i - D_i)/D_i
+		 * 
+		 * org.volante.abm.agent.DefaultLandUseAgent.considerGivingUp() and
+		 * org.volante.abm.agent.DefaultLandUseAgent.considerGivingUp.ProductionModel()
+		 * 
+		 * @see org.volante.abm.example.NormalisedCurveCompetitivenessModel#addUpMarginalUtilities()
+		 * @author seo-b TODO test
+		 * 
+		 */
+
 
 		double givingUpThreshold =  this.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD);
 
