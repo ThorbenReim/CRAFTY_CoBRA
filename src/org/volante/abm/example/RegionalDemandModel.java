@@ -176,9 +176,9 @@ public class RegionalDemandModel implements DemandModel, PreTickAction, PostTick
 	 * residual by subtracting totalSupply from demand.
 	 */
 	public void recalculateResidual() {
-		demand.multiplyInto(1.0 / supply.size(), perCellDemand);
-		demand.subtractInto(totalSupply, residual);
-		residual.multiplyInto(1.0 / supply.size(), perCellResidual);
+		demand.multiplyInto(1.0 / supply.size(), perCellDemand);  //  supply.size() = # of cells
+		demand.subtractInto(totalSupply, residual); // residual = demand - totalSupply
+		residual.multiplyInto(1.0 / supply.size(), perCellResidual); // perCellResidual = residual / # of cells
 	}
 
 	@Override

@@ -123,6 +123,54 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 
 
 
+
+
+
+
+		/**
+		 * Every time a threshold is used, it's converted to a proportion of the mean benefit value across the current
+		 * population of agents. It makes difficult to determine the prescribed giving-in and giving-up thresholds as the
+		 * benefit level changes over time. 
+		 * 
+		 * 
+		 * Ideally the current mean benefit value can be compared to the benefit values of
+		 * a cell.
+		 * 
+		 * SD gap relative to the current demand E.g. Gap_i = (S_i - D_i)/D_i
+		 * 
+		 * org.volante.abm.agent.DefaultLandUseAgent.considerGivingUp() and
+		 * org.volante.abm.agent.DefaultLandUseAgent.considerGivingUp.ProductionModel()
+		 * 
+		 * @see org.volante.abm.example.NormalisedCurveCompetitivenessModel#addUpMarginalUtilities()
+		 * @author seo-b TODO test
+		 * 
+		 */
+
+
+		double givingUpThreshold =  this.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD);
+
+
+		boolean relativeThresholding = true; // @TODO make it configurable in a scenario file
+		double compThresholdDiff = 0; 
+		double compPerfect = 100; 
+
+		if (relativeThresholding) { 
+			/* competitiveness of perfect agents (function of residual demand and prescribed production parameter and competitiveness functions 
+		so changes over time but does not worry about cell-level capitals )
+			 */
+
+			compThresholdDiff = givingUpThreshold * compPerfect  - this.getProperty(AgentPropertyIds.COMPETITIVENESS);
+
+		} else { 
+			// original absolute thresholding
+			compThresholdDiff = givingUpThreshold - this.getProperty(AgentPropertyIds.COMPETITIVENESS);  
+		}
+
+
+		if (compThresholdDiff > 0.0) {
+
+
+
 		/**
 		 * Every time a threshold is used, it's converted to a proportion of the mean benefit value across the current
 		 * population of agents. It makes difficult to determine the prescribed giving-in and giving-up thresholds as the
@@ -175,12 +223,34 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 	@Override
 	public boolean canTakeOver(Cell c, double incoming) {
 
+		// able to give in?
+
+		
 		double givingInThreshold =  this.getProperty(AgentPropertyIds.GIVING_IN_THRESHOLD);
 		double competitiveness = this.getProperty(AgentPropertyIds.COMPETITIVENESS);
 
-		// able to give in?
-		boolean takeover = incoming > (competitiveness + givingInThreshold);
- 
+
+		boolean relativeThresholding = true; // @TODO make it configurable in a scenario file
+		boolean takeover ; 
+		double compPerfect = 100; 
+		
+		
+		if (relativeThresholding) { 
+			/* competitiveness of perfect agents (function of residual demand and prescribed production parameter and competitiveness functions 
+		so changes over time but does not worry about cell-level capitals )
+			 */
+			takeover = incoming > (competitiveness + givingInThreshold * compPerfect); // 
+
+
+			// Different idea not implemented  
+			// boolean takeover = incoming > (competitiveness * ( 1 + givingInThreshold ) ); // 1-D direct comparison (x% higher than the current competitiveness (=sum of benefits) 
+
+		} else { 
+			 takeover = incoming > (competitiveness +  givingInThreshold  ); // original 
+
+		}
+
+
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
 			logger.debug(this + "> canTakeOver?" + takeover);
