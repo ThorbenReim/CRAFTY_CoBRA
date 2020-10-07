@@ -71,9 +71,8 @@ public class RelativeThresholdCompetitivenessModel extends CurveCompetitivenessM
 	@Attribute(required = false)
 	boolean normaliseCellSupply = true;
 
-
-
-	/**
+ 
+ 	/**
 	 * Adds up marginal utilities (determined by competitiveness for unmet demand) of all services.
 	 * 
 	 * @param residualDemand
@@ -83,6 +82,22 @@ public class RelativeThresholdCompetitivenessModel extends CurveCompetitivenessM
 	 * @return summed marginal utilities of all services
 	 */
 
+	
+//	In competition.xml, normaliseCellResidual and normaliseCellSupply are
+//	by default `true' (means we normalise both).
+//
+//	normalised per cell residual demand = (demand - supply) / perCellDemand
+//  normalised per cell supply = supply / perCellDemand
+//
+ 
+//	They trigger normalisation is implemented in
+//	org.volante.abm.agent.NormalisedCurveCompetitivenessModel.java
+//	‌
+//	and done for each cell.
+//
+//	org.volante.abm.agent.DefaultLandUseAgent.considerGivingUp() and
+//	org.volante.abm.agent.DefaultLandUseAgent.considerGivingUp.ProductionModel()
+ 
 
 	@Override
 	public double addUpMarginalUtilities(UnmodifiableNumberMap<Service> residualDemand,
@@ -105,7 +120,7 @@ public class RelativeThresholdCompetitivenessModel extends CurveCompetitivenessM
 				log.debug(s.getName()+ " demand=" + dm_s);
 			}
 
-			double perCellDemand = region.getDemandModel().getAveragedPerCellDemand().get(s);
+			double perCellDemand = region.getDemandModel().getAveragedPerCellDemand().get(s); // static  
 			perCellDemand = (perCellDemand == 0) ? Double.MIN_VALUE : perCellDemand;
 
 			if (c == null) {
@@ -113,64 +128,58 @@ public class RelativeThresholdCompetitivenessModel extends CurveCompetitivenessM
 				log.fatal(message);
 				throw new IllegalStateException(message);
 			}
-			
-			
-			// residual demand (original)
-			double res = residualDemand.getDouble(s);
-			
+
+			double resDem = residualDemand.getDouble(s); 
+
+			// relative residual demand
+//			double resDem2 = residualDemand.getDouble(s);
+			// The current mean benefit value can be compared to the benefit values of a cell.
+
  			
 			
 			if (printDebug) { 
-				log.debug("perCellDemand="+ perCellDemand);
-				log.debug("residualDemand=" + res ) ;
-				
-				DemandModel dm_m = region.getDemandModel();
-			
-//				log.debug("residualDemand on-the-fly=" + res2 ) ;
-
+				log.debug("perCellDemand=" + perCellDemand);
+				log.debug("residualDemand=" + resDem ) ;
 			}
 			// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - residualDemand=1.1089970033307922E-8 perCellDemand=46.45615663357212 in Meat
 
 			
 			if (normaliseCellResidual) {
-				res /= perCellDemand;
-				
-				if (printDebug) { 
+				resDem /= perCellDemand;
 
-					log.debug("residualDemand/perCellDemand = " + res );
+				if (printDebug) { 
+					log.debug("residualDemand/perCellDemand = " + resDem );
 				}
 				// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - residualDemand/perCellDemand = 2.387190597961265E-10
 
 
-				if (res > 1.0) {
+				if (resDem > 1.0) {
 					message = "residualDemand/perCellDemand > 1 : " + s.getName() + " got: " + curves.keySet()
-					+ " res = " + res;
+					+ " res = " + resDem;
 					log.fatal(message);
 					throw new IllegalStateException(message);
 				}
 
 			}
 
-  
 
 
 			/*
-			 * Get the corresponding 'competitiveness value' (y-value) for this level of unmet demand
+			 * Get the corresponding 'competitiveness value' (y-value) for this level of unmet (=residual) demand
 			 */
-			double marginal = c.sample(res); // 
-
+			double marginal = c.sample(resDem); // 
 
 
 			double amount = supply.getDouble(s); // get cell-level supply for the service 
 
-
+ 
 			if (printDebug) { 
 
 
 				log.debug("marginal = " + marginal);
 				// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - marginal = 2.983988247451581E-13 (=2.387190597961265E-10 * 0.00125 (see values in Competition_linear_new_relative.xml)
 
-				log.debug("amount = " + amount);
+				log.debug("amount (cell level supply) = " + amount);
 				// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - amount = 86.4036268140081
 			}
 
@@ -197,7 +206,7 @@ public class RelativeThresholdCompetitivenessModel extends CurveCompetitivenessM
 			if (  removeNegative && comp < 0) {
 				log.debug(String.format(
 						"\t\tService %10s: Residual (%5f) > Marginal (%5f; Curve: %s) * Amount (%5f) = %5f",
-						s.getName(), res, marginal, c.toString(), amount, marginal * amount));
+						s.getName(), resDem, marginal, c.toString(), amount, marginal * amount));
 			}
 
 			if (printDebug) { 
