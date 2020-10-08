@@ -151,7 +151,9 @@ public class WorldLoader {
 		l.initialise( info );
 		
 		} catch (Exception exception) {
-			exception.printStackTrace();
+			logger.fatal("Loading region failed: " + exception.toString() + exception.getStackTrace());
+//			exception.printStackTrace();
+			System.exit(0);
 		}
 
 		return l.getRegion();

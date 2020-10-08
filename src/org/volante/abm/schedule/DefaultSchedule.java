@@ -169,11 +169,11 @@ public class DefaultSchedule implements WorldSyncSchedule {
 
 			for (LandUseAgent a : regions.getAllAllocatedAgents()) {
 				if (a instanceof InnovativeBC) {
-					((InnovativeBC) a).considerInnovationsNextStep();
+					((InnovativeBC) a).considerInnovationsNextStep(); // consider innovation
 				}
 
 				a.updateCompetitiveness();
-				a.considerGivingUp();
+				a.considerGivingUp(); // consider giving-up
 			}
 
 			// Remove any unneeded agents

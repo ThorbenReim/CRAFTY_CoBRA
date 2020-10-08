@@ -23,6 +23,8 @@
 package org.volante.abm.agent;
 
 
+import static java.lang.Math.pow;
+
 import org.apache.log4j.Logger;
 import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.agent.fr.LazyFR;
@@ -31,10 +33,12 @@ import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.data.Service;
 import org.volante.abm.example.AgentPropertyIds;
+import org.volante.abm.example.GiveUpGiveInAllocationModel;
 import org.volante.abm.models.ProductionModel;
 import org.volante.abm.models.nullmodel.NullProductionModel;
 import org.volante.abm.param.RandomPa;
 
+import com.moseph.modelutils.Utilities.Score;
 import com.moseph.modelutils.fastdata.DoubleMap;
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
 
@@ -43,7 +47,7 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
  * This is a default agent
  * 
  * @author jasper
- * 
+ * @author seo-b
  */
 public class DefaultLandUseAgent extends AbstractLandUseAgent {
 
@@ -51,7 +55,22 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 	 * Logger
 	 */
 	static private Logger	logger	= Logger.getLogger(DefaultLandUseAgent.class);
-
+	
+	
+	/**
+	 * Absolute thresholding makes difficult to determine the prescribed giving-in and giving-up thresholds as the
+	 * benefit level changes over time. 
+	 *
+	 * When relative thresholding is used, the current benefit value of perfect agent is compared to the benefit values of a cell.
+	 * Every time a threshold is used, it's converted to a proportion of the mean benefit value across the current
+	 * population of agents.  
+	 * 
+ 	 * @see org.volante.abm.example.NormalisedCurveCompetitivenessModel#addUpMarginalUtilities()
+ 	 * 
+	 */
+	private boolean relativeThresholding; 
+	private GiveUpGiveInAllocationModel allocation;
+	
 
 	public DefaultLandUseAgent(String id, ModelData data) {
 		this(LazyFR.getInstance(), id, data, null,
@@ -82,6 +101,8 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 				AgentPropertyIds.GIVING_IN_THRESHOLD, givingIn);
 		fRole.assignNewFunctionalComp(this);
 		productivity = new DoubleMap<Service>(data.services);
+
+
 	}
 
 	@Override
@@ -107,10 +128,28 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 
 
 
+	
+	@Override
+	public void tickStartUpdate() {
+		super.tickStartUpdate();
+
+		
+		// @TODO do it in allocation? it is called too many times. Can be initialised once in the initialisation?
+
+		allocation =  (GiveUpGiveInAllocationModel)this.region.getAllocationModel();
+		relativeThresholding = allocation.relativeThresholding; 
+		 
+ 	}
+
 
 
 	@Override
 	public void considerGivingUp() {
+		
+		
+		
+
+		
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
 			logger.debug(this + "> Consider giving up: "
@@ -121,44 +160,23 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 		}
 		// LOGGING ->
 
-
-
-
-
-
-
-		/**
-		 * Every time a threshold is used, it's converted to a proportion of the mean benefit value across the current
-		 * population of agents. It makes difficult to determine the prescribed giving-in and giving-up thresholds as the
-		 * benefit level changes over time. 
-		 * 
-		 * 
-		 * Ideally the current mean benefit value can be compared to the benefit values of
-		 * a cell.
-		 * 
-		 * SD gap relative to the current demand E.g. Gap_i = (S_i - D_i)/D_i
-		 * 
-		 * org.volante.abm.agent.DefaultLandUseAgent.considerGivingUp() and
-		 * org.volante.abm.agent.DefaultLandUseAgent.considerGivingUp.ProductionModel()
-		 * 
-		 * @see org.volante.abm.example.NormalisedCurveCompetitivenessModel#addUpMarginalUtilities()
-		 * @author seo-b TODO test
-		 * 
-		 */
-
-
+ 
 		double givingUpThreshold =  this.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD);
 
 
-		boolean relativeThresholding = true; // @TODO make it configurable in a scenario file
-		double compThresholdDiff = 0; 
-		double compPerfect = 100; 
+ 		double compThresholdDiff = 0; 
 
 		if (relativeThresholding) { 
-			/* competitiveness of perfect agents (function of residual demand and prescribed production parameter and competitiveness functions 
-		so changes over time but does not worry about cell-level capitals )
+			
+			/* competitiveness of perfect agents (function of residual demand and prescribed production parameter and competitiveness functions. 
+			 * It changes over time and does not reflect cell-level capitals. 
 			 */
+ 			
+			Cell perfectCell = allocation.getPerfectCell();
 
+			double compPerfect = this.region.getCompetitiveness(this.getFC().getFR(), perfectCell);
+			
+ 			
 			compThresholdDiff = givingUpThreshold * compPerfect  - this.getProperty(AgentPropertyIds.COMPETITIVENESS);
 
 		} else { 
@@ -166,7 +184,6 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 			compThresholdDiff = givingUpThreshold - this.getProperty(AgentPropertyIds.COMPETITIVENESS);  
 		}
 
- 
 
 
 		if (compThresholdDiff > 0.0) { // try to give-up  
@@ -200,22 +217,30 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 	@Override
 	public boolean canTakeOver(Cell c, double incoming) {
 
+		
+//		// @TODO do it in allocation? 
+//		GiveUpGiveInAllocationModel allocation =  (GiveUpGiveInAllocationModel) this.region.getAllocationModel();
+//		relativeThresholding = allocation.relativeThresholding; 
+//				
 		// able to give in?
 
-		
-		double givingInThreshold =  this.getProperty(AgentPropertyIds.GIVING_IN_THRESHOLD);
+ 		double givingInThreshold =  this.getProperty(AgentPropertyIds.GIVING_IN_THRESHOLD);
 		double competitiveness = this.getProperty(AgentPropertyIds.COMPETITIVENESS);
 
 
-		boolean relativeThresholding = true; // @TODO make it configurable in a scenario file
 		boolean takeover ; 
-		double compPerfect = 100; 
+		 
 		
 		
 		if (relativeThresholding) { 
-			/* competitiveness of perfect agents (function of residual demand and prescribed production parameter and competitiveness functions 
-		so changes over time but does not worry about cell-level capitals )
+			
+			/* competitiveness of perfect agents (function of residual demand and prescribed production parameter and competitiveness functions. 
+			 * It changes over time and does not reflect cell-level capitals. 
 			 */
+			Cell perfectCell = allocation.getPerfectCell();
+			double compPerfect = this.region.getCompetitiveness(this.getFC().getFR(), perfectCell);
+			
+			 
 			takeover = incoming > (competitiveness + givingInThreshold * compPerfect); // 
 
 

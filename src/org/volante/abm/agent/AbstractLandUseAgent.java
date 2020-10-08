@@ -238,6 +238,7 @@ public abstract class AbstractLandUseAgent implements LandUseAgent {
 		this.propertyProvider.setProperty(AgentPropertyIds.AGE,
 				this.propertyProvider.getProperty(AgentPropertyIds.AGE) + 1);
 		this.behaviouralComp.triggerDecisions(this);
+ 
 	}
 
 	@Override
@@ -280,8 +281,6 @@ public abstract class AbstractLandUseAgent implements LandUseAgent {
 			}
 		}
 
-		this.propertyProvider.setProperty(
-				AgentPropertyIds.COMPETITIVENESS,
-				comp / cells.size());
+		this.propertyProvider.setProperty(AgentPropertyIds.COMPETITIVENESS, comp / cells.size());
 	}
 }
