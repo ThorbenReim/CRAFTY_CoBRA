@@ -166,7 +166,6 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 			compThresholdDiff = givingUpThreshold - this.getProperty(AgentPropertyIds.COMPETITIVENESS);  
 		}
 
- 
 
 
 		if (compThresholdDiff > 0.0) { // try to give-up  
