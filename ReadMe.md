@@ -1,9 +1,11 @@
 CRAFTY_CoBRA
 =============
 
-CRAFTY Component-Based Role Agents
+CRAFTY Component-Based Role Agents (CoBRA) in continuing development of the CRAFTY CoBRA Impressions model in 2020. 
 
 See [documentation](http://crafty-abm.sourceforge.net/) for more information.
+
+
 
 # CRAFTY CoBRA IMPRESSIONS EU Model
 
