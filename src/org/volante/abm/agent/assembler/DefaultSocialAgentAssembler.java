@@ -25,10 +25,13 @@ package org.volante.abm.agent.assembler;
 
 
 import org.apache.log4j.Logger;
+import org.volante.abm.agent.DefaultLandUseAgent;
 import org.volante.abm.agent.DefaultSocialLandUseAgent;
 import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.fr.LazyFR;
 import org.volante.abm.data.Cell;
+import org.volante.abm.example.GiveUpGiveInAllocationModel;
+import org.volante.abm.models.AllocationModel;
 
 
 /**
@@ -84,6 +87,17 @@ public class DefaultSocialAgentAssembler extends DefaultAgentAssembler {
 		}
 
 		agent.setHomeCell(homecell);
+		
+		// set relative thresholding in case GuGi allocation
+		AllocationModel allocation = this.region.getAllocationModel();
+
+		if (allocation instanceof GiveUpGiveInAllocationModel) { 
+			
+			((DefaultLandUseAgent) agent).setRelativeThresholding(((GiveUpGiveInAllocationModel)allocation).relativeThresholding);
+ 
+		}
+			 
+		
 		return agent;
 	}
 

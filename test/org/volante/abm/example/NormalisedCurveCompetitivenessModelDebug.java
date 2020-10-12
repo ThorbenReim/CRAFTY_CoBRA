@@ -41,12 +41,12 @@ import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
  * @author seo-b
  *
  */
-public class RelativeThresholdCompetitivenessModel extends CurveCompetitivenessModel {
+public class NormalisedCurveCompetitivenessModelDebug extends CurveCompetitivenessModel {
 
 	/**
 	 * Logger
 	 */
-	private static Logger log = Logger.getLogger(RelativeThresholdCompetitivenessModel.class);
+	private static Logger log = Logger.getLogger(NormalisedCurveCompetitivenessModelDebug.class);
 
 	/**
 	 * Residuals are normalised by per cell demand of the particular service. Used to balance differences in services'

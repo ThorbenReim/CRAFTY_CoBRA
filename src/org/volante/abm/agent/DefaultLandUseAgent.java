@@ -68,9 +68,23 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
  	 * @see org.volante.abm.example.NormalisedCurveCompetitivenessModel#addUpMarginalUtilities()
  	 * 
 	 */
-	private boolean relativeThresholding; 
-	private GiveUpGiveInAllocationModel allocation;
-	
+	private boolean relativeThresholding
+	; 
+	/**
+	 * @return the relativeThresholding
+	 */
+	public boolean isRelativeThresholding() {
+		return relativeThresholding;
+	}
+
+	/**
+	 * @param relativeThresholding the relativeThresholding to set
+	 */
+	public void setRelativeThresholding(boolean relativeThresholding) {
+		this.relativeThresholding = relativeThresholding;
+	}
+
+ 
 
 	public DefaultLandUseAgent(String id, ModelData data) {
 		this(LazyFR.getInstance(), id, data, null,
@@ -126,29 +140,14 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 		return this.getFC().getProduction();
 	}
 
-
-
-	
-	@Override
-	public void tickStartUpdate() {
-		super.tickStartUpdate();
-
-		
-		// @TODO do it in allocation? it is called too many times. Can be initialised once in the initialisation?
-
-		allocation =  (GiveUpGiveInAllocationModel)this.region.getAllocationModel();
-		relativeThresholding = allocation.relativeThresholding; 
-		 
- 	}
+ 
 
 
 
 	@Override
 	public void considerGivingUp() {
 		
-		
-		
-
+		 
 		
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
@@ -172,7 +171,7 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 			 * It changes over time and does not reflect cell-level capitals. 
 			 */
  			
-			Cell perfectCell = allocation.getPerfectCell();
+			Cell perfectCell =  ((GiveUpGiveInAllocationModel) this.region.getAllocationModel()).getPerfectCell();
 
 			double compPerfect = this.region.getCompetitiveness(this.getFC().getFR(), perfectCell);
 			
@@ -217,27 +216,21 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 	@Override
 	public boolean canTakeOver(Cell c, double incoming) {
 
-		
-//		// @TODO do it in allocation? 
-//		GiveUpGiveInAllocationModel allocation =  (GiveUpGiveInAllocationModel) this.region.getAllocationModel();
-//		relativeThresholding = allocation.relativeThresholding; 
-//				
+ 
 		// able to give in?
-
  		double givingInThreshold =  this.getProperty(AgentPropertyIds.GIVING_IN_THRESHOLD);
 		double competitiveness = this.getProperty(AgentPropertyIds.COMPETITIVENESS);
 
 
-		boolean takeover ; 
+		boolean takeover; 
 		 
 		
-		
-		if (relativeThresholding) { 
+ 		if (relativeThresholding) { 
 			
 			/* competitiveness of perfect agents (function of residual demand and prescribed production parameter and competitiveness functions. 
 			 * It changes over time and does not reflect cell-level capitals. 
 			 */
-			Cell perfectCell = allocation.getPerfectCell();
+			Cell perfectCell =  ((GiveUpGiveInAllocationModel) this.region.getAllocationModel()).getPerfectCell();
 			double compPerfect = this.region.getCompetitiveness(this.getFC().getFR(), perfectCell);
 			
 			 
@@ -245,7 +238,7 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 
 
 			// Different idea not implemented  
-			// boolean takeover = incoming > (competitiveness * ( 1 + givingInThreshold ) ); // 1-D direct comparison (x% higher than the current competitiveness (=sum of benefits) 
+			// boolean takeover = incoming > (competitiveness * ( 1 + givingInThreshold ) ); // Direct comparison (x% higher than the current competitiveness (=sum of benefits) 
 
 		} else { 
 			 takeover = incoming > (competitiveness +  givingInThreshold  ); // original 

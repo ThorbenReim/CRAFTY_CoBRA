@@ -27,11 +27,14 @@ import org.apache.log4j.Logger;
 import org.simpleframework.xml.Element;
 import org.volante.abm.agent.DefaultLandUseAgent;
 import org.volante.abm.agent.LandUseAgent;
+import org.volante.abm.agent.SocialAgent;
 import org.volante.abm.agent.fr.LazyFR;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
+import org.volante.abm.example.GiveUpGiveInAllocationModel;
 import org.volante.abm.example.allocation.AgentFinder;
+import org.volante.abm.models.AllocationModel;
 import org.volante.abm.schedule.RunInfo;
 
 /**
@@ -73,7 +76,7 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 				logger.warn("Cannot determine default Behavioural Type ID since the regional list of BT is empty!");
 			} else {
 				this.defaultBtId = region.getBehaviouralTypeMapBySerialId()
-					.entrySet().iterator().next().getValue().getSerialID();
+						.entrySet().iterator().next().getValue().getSerialID();
 				logger.warn("Assigning first Behavioural Type ID of regional list (as default not set)!");
 			}
 		}
@@ -106,13 +109,13 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 
 		LandUseAgent agent =
 				new DefaultLandUseAgent((id != null ? id : "Agent_"
-				+ (homecell == null ? "" : homecell.toString())), mData);
+						+ (homecell == null ? "" : homecell.toString())), mData);
 		agent.setRegion(this.region);
 		this.region.setAmbulant(agent);
 
 		if (this.region.getFunctionalRoleMapBySerialId().containsKey(frId)) {
 			this.region.getFunctionalRoleMapBySerialId().get(frId)
-				.assignNewFunctionalComp(agent);
+			.assignNewFunctionalComp(agent);
 		} else if (this.defaultFrId == Integer.MIN_VALUE) {
 			LazyFR.getInstance().assignNewFunctionalComp(agent);
 			logger.warn("Requested FunctionalRole (" + frId + ") not found. Using LazyFR!");
@@ -122,16 +125,28 @@ public class DefaultAgentAssembler implements AgentAssembler, AgentFinder {
 
 		if (this.region.getBehaviouralTypeMapBySerialId().containsKey(btId)) {
 			this.region.getBehaviouralTypeMapBySerialId().get(btId)
-				.assignNewBehaviouralComp(agent);
+			.assignNewBehaviouralComp(agent);
 		} else {
 			logger.error("Couldn't find BehaviouralType by id: " + btId);
 		}
 
 		agent.setHomeCell(homecell);
+
+		
+		// set relative thresholding in case GuGi allocation
+		AllocationModel allocation = this.region.getAllocationModel();
+
+		if (allocation instanceof GiveUpGiveInAllocationModel) { 
+			
+			((DefaultLandUseAgent) agent).setRelativeThresholding(((GiveUpGiveInAllocationModel)allocation).relativeThresholding);
+ 
+		}
+
+
 		return agent;
 	}
-	
-	
+
+
 	public LandUseAgent assembleAgent(Cell homecell, String btLabel, String frLabel,
 			String agentLabel) {
 
