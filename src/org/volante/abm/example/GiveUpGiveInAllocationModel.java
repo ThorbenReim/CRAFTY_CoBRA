@@ -130,7 +130,6 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 
 
 
-
 	protected Cell perfectCell = new Cell();
 	/**
 	 * @return the perfectCell
@@ -139,12 +138,6 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 		return perfectCell;
 	}
 
-	/**
-	 * @param perfectCell the perfectCell to set
-	 */
-	//	public void setPerfectCell(Cell perfectCell) {
-	//		this.perfectCell = perfectCell;
-	//	}
 
 	protected ModelData data = null;
 
@@ -271,7 +264,7 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 		// LOGGING ->
 		Map<FunctionalRole, Double> scores;
 		double maxProb;
-		//@todo optimise the for loop (using parallel stream?)
+		//@TODO optimise the for loop (using parallel stream?)
 		for (int i = 0; i < numTakeoversDerived; i++) {
 
 			// updating supply/demand is done in r.setOwnership(agent, c);
@@ -295,7 +288,7 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 				}
 			}
 
-			// Try to come in the order of the normalised scores (= com 
+			// Try to come in the order of the normalised scores (= competitiveness ^ probabilityExponent
 			// Resample this each time to deal with changes in supply affecting competitiveness
 			// com.moseph.modelutils.Utilities.sample() samples from the map of probabilities (i.e. T -> prob of T)  
 

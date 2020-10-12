@@ -6,7 +6,7 @@ package org.volante.abm.institutions;
 
 import java.io.IOException;
 import java.util.Set;
-
+ 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Element;
 import org.volante.abm.agent.Agent;
@@ -97,6 +97,9 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 
 		} catch (Exception exception) {
 			exception.printStackTrace();
+			logger.fatal("Land Use Controlling Institution failed: " + exception.toString());
+			
+			System.exit(0);
 		}
 
 
