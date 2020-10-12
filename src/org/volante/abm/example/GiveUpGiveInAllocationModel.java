@@ -68,9 +68,10 @@ import com.moseph.modelutils.fastdata.DoubleMap;
  * 
  * @author dmrust
  * @author Sascha Holzhauer
+ * @author Bumsuk Seo
  */
 public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
-        implements TakeoverMessenger, GivingInStatisticsMessenger {
+implements TakeoverMessenger, GivingInStatisticsMessenger {
 
 	/**
 	 * Logger
@@ -118,7 +119,33 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 	@Attribute(required = false)
 	public float probabilityExponent = 2.0f;
 
+
+
+
+	/**
+	 * Sets the give-in and give-up threshold to be relative to competitiveness of perfect agents. 
+	 */
+	@Attribute(required = false)
+	public boolean relativeThresholding = false;
+
+
+
+
 	protected Cell perfectCell = new Cell();
+	/**
+	 * @return the perfectCell
+	 */
+	public Cell getPerfectCell() {
+		return perfectCell;
+	}
+
+	/**
+	 * @param perfectCell the perfectCell to set
+	 */
+	//	public void setPerfectCell(Cell perfectCell) {
+	//		this.perfectCell = perfectCell;
+	//	}
+
 	protected ModelData data = null;
 
 	protected Set<TakeoverObserver> takeoverObserver = new HashSet<>();
@@ -140,7 +167,7 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 				throw new IllegalStateException("You need to specify either numTakeovers or percentageTakeOvers!");
 			} else {
 				this.numTakeoversDerived =
-				        (int) (r.getNumCells() * BatchRunParser.parseDouble(this.percentageTakeOvers, info) / 100.0);
+						(int) (r.getNumCells() * BatchRunParser.parseDouble(this.percentageTakeOvers, info) / 100.0);
 			}
 		} else {
 			this.numTakeoversDerived = BatchRunParser.parseInt(this.numTakeovers, info);
@@ -157,11 +184,14 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 				throw new IllegalStateException("You need to specify either numCells or percentageCells!");
 			} else {
 				this.numSearchedCells =
-				        (int) (r.getNumCells() * BatchRunParser.parseDouble(this.percentageCells, info) / 100.0);
+						(int) (r.getNumCells() * BatchRunParser.parseDouble(this.percentageCells, info) / 100.0);
 			}
 		} else {
 			this.numSearchedCells = BatchRunParser.parseInt(this.numCells, info);
 		}
+
+
+
 
 		this.data = data;
 		perfectCell.initialise(data, info, r);
@@ -197,7 +227,7 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 			}
 		};
 
-		
+
 		// create a set competitiveness score fComps (number of AFTs)
 		Set<FunctionalRole> fComps = new LinkedHashSet<>();
 		for (FunctionalRole fRole : r.getFunctionalRoleMapByLabel().values()) {
@@ -205,7 +235,7 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 		}
 
 		logger.info("Number of derived take overs: " + numTakeoversDerived + " (specified percentage: "
-		        + this.percentageTakeOvers + ")");
+				+ this.percentageTakeOvers + ")");
 
 		////////////
 		//
@@ -249,7 +279,7 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 			// Update scores (for each FR), which changes in the course as new ownerships are set in trytoComeIn()
 			scores = scoreMap(fComps, compScore); 
 
-			logger.info(scores);
+			logger.debug(scores);
 			// sum of the scores
 			maxProb = 0.0;
 			for (double d : scores.values()) {
@@ -267,10 +297,10 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 
 			// Try to come in the order of the normalised scores (= com 
 			// Resample this each time to deal with changes in supply affecting competitiveness
- 			// com.moseph.modelutils.Utilities.sample() samples from the map of probabilities (i.e. T -> prob of T)  
-			
+			// com.moseph.modelutils.Utilities.sample() samples from the map of probabilities (i.e. T -> prob of T)  
+
 			tryToComeIn(sample(scores, false, r.getRandom().getURService(), RandomPa.RANDOM_SEED_RUN_ALLOCATION.name()),
-			        r);
+					r);
 		}
 	}
 
@@ -299,12 +329,12 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 		}
 
 		Map<Cell, Double> competitiveness = scoreMap(sampleN(r.getCells(), numSearchedCells,
-		        r.getRandom().getURService(), RandomPa.RANDOM_SEED_RUN_ALLOCATION.name()), new Score<Cell>() {
-			        @Override
-			        public double getScore(Cell c) {
-				        return r.getCompetitiveness(fr, c);
-			        }
-		        });
+				r.getRandom().getURService(), RandomPa.RANDOM_SEED_RUN_ALLOCATION.name()), new Score<Cell>() {
+			@Override
+			public double getScore(Cell c) {
+				return r.getCompetitiveness(fr, c);
+			}
+		});
 
 		List<Cell> sorted = new ArrayList<>(competitiveness.keySet());
 
@@ -324,24 +354,24 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 		}
 
 		logger.debug("Try " + fr.getLabel() + " to take over on mostly " + sorted.size() + " cells (region " + r.getID()
-		        + " has " + r.getNumCells() + " cells).");
+		+ " has " + r.getNumCells() + " cells).");
 
 		double newAgentsGU = fr.getSampledGivingUpThreshold(); 
 		for (Cell c : sorted) {
 			// if (competitiveness.get(c) < a.getGivingUp()) return;
-			
-			
+
+
 			boolean canComein = competitiveness.get(c) > newAgentsGU;
 			boolean canTakeOver =c.getOwner().canTakeOver(c, competitiveness.get(c));
 			boolean isAllowed = r.getInstitutions().isAllowed(fr, c); // @TODO protected area
-			
-			
+
+
 			if (canComein && canTakeOver && isAllowed) {
 
 				LandUseAgent agent = agentFinder.findAgent(c, Integer.MIN_VALUE, fr.getSerialID());
 
 				agent.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, // @TODO print out in cell table
-				        newAgentsGU);
+						newAgentsGU);
 
 				for (TakeoverObserver observer : takeoverObserver) {
 					observer.setTakeover(r, c.getOwner(), agent);
@@ -375,7 +405,7 @@ public class GiveUpGiveInAllocationModel extends SimpleAllocationModel
 					} else {
 						if (!networkNullErrorOccurred) {
 							logger.warn(
-							        "Network object not present during creation of new agent (subsequent error messages are suppressed)");
+									"Network object not present during creation of new agent (subsequent error messages are suppressed)");
 							networkNullErrorOccurred = true;
 						}
 					}
