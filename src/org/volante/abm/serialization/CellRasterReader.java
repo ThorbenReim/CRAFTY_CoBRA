@@ -36,7 +36,7 @@ import com.moseph.modelutils.fastdata.DoubleMap;
 
 
 /**
- * Reads information from a csv file into the given region
+ * Reads information from a raster file into the given region
  * 
  * @author dmrust
  * 
