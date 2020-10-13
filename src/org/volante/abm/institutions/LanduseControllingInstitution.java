@@ -103,6 +103,7 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 
 				//			landuseProhibited = ABMPersister.getInstance().csvToStringMap(csvFileRestrictedLanduse, "Restricted", null, null);
 
+				//
 				//			CsvReader capitalFactorReader =
 				//					rLoader.persister.getCSVReader(csvCapitalFactorFile, rLoader.getRegion().getPersisterContextExtra());
 				//
