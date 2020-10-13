@@ -356,7 +356,7 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 
 			boolean canComein = competitiveness.get(c) > newAgentsGU;
 			boolean canTakeOver =c.getOwner().canTakeOver(c, competitiveness.get(c));
-			boolean isAllowed = r.getInstitutions().isAllowed(fr, c); // @TODO protected area
+			boolean isAllowed = r.getInstitutions().isAllowed(fr, c); // e.g., protected area
 
 
 			if (canComein && canTakeOver && isAllowed) {

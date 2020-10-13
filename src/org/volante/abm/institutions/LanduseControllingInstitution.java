@@ -6,17 +6,20 @@ package org.volante.abm.institutions;
 
 import java.io.IOException;
 import java.util.Set;
- 
+
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Element;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.fr.FunctionalRole;
+import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.ABMPersister;
+import org.volante.abm.serialization.RegionLoader;
 
+import com.csvreader.CsvReader;
 import com.google.common.collect.Table;
 
 
@@ -32,9 +35,9 @@ import org.volante.abm.data.Cell;
 import com.moseph.modelutils.fastdata.DoubleMap;
 
 /**
- * Reads preserved land use for ticks from a CSV file and controls land use competition 
+ * Reads protected land use for ticks from a CSV file and controls land use competition 
  * accordingly. The adjustment is performed at the beginning of each tick
- * (e.g. before perceiving social networks) @todo or after?.   
+ * (e.g. before perceiving social networks) @TODO or after?.   
  * 
  */
 
@@ -42,6 +45,8 @@ import com.moseph.modelutils.fastdata.DoubleMap;
 /**
  * @see org.volante.abm.institutions.AbstractInstitution#initialise(org.volante.abm.data.ModelData,
  *      org.volante.abm.schedule.RunInfo, org.volante.abm.data.Region)
+ * 		CellCSVReader
+ * 		CellRasterReader
  */
 
 /**
@@ -76,10 +81,11 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 	@Element(required = false)
 	String yColumn = "y";
 
+	// protected Table<String, String, Double> restrictedRoles;
+	// protected Set<FunctionalRole> frs = null;
 
-	//	protected Table<String, String, Double> restrictedRoles;
-	//
-	//	protected Set<FunctionalRole> frs = null;
+	protected  Map<String, String> landuseProhibited = null;
+
 
 	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
 		super.initialise(data, info, extent);
@@ -87,24 +93,57 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 		// <- LOGGING
 		logger.info("Initialise " + this);
 		// LOGGING ->
-		final Table<String, String, Double> landuseProhibited;
-
-		try {
-			
-//			landuseProhibited = ABMPersister.getInstance()..(csvFileRestrictedLanduse, "Restricted", null);
-			// @todo read YN values  
-
-
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			logger.fatal("Land Use Controlling Institution failed: " + exception.toString());
-			
-			System.exit(0);
-		}
+		logger.info("Loading land use restriction CSV from " + csvFileRestrictedLanduse);
 
 
 		if (csvFileRestrictedLanduse != null) {
-			//		do something here
+
+			try {
+				// @see CellCSVReader and CellRasterReader
+
+				//			landuseProhibited = ABMPersister.getInstance().csvToStringMap(csvFileRestrictedLanduse, "Restricted", null, null);
+
+				//			CsvReader capitalFactorReader =
+				//					rLoader.persister.getCSVReader(csvCapitalFactorFile, rLoader.getRegion().getPersisterContextExtra());
+				//
+				//			while (capitalFactorReader.readRecord()) {
+				//
+				//				int x = Integer.parseInt(capitalFactorReader.get(xColumn));
+				//				if (xTransformer != null) {
+				//					x = xTransformer.transform(x);
+				//				}
+				//
+				//				int y = Integer.parseInt(capitalFactorReader.get(yColumn));
+				//				if (yTransformer != null) {
+				//					y = yTransformer.transform(y);
+				//				}
+				//
+				//				Cell c = rLoader.getCell(x, y);
+				//				for (Capital cap : data.capitals) {
+				//					String s = capitalFactorReader.get(cap.getName());
+				//					if (!s.equals("")) {
+				//						try {
+				//							DoubleMap<Capital> adjusted = data.capitalMap();
+				//							c.getBaseCapitals().copyInto(adjusted);
+				//							adjusted.putDouble(cap, adjusted.get(cap) * Double.parseDouble(s));
+				//							c.setBaseCapitals(adjusted);
+				//
+				//						} catch (Exception exception) {
+				//							logger.error("Exception in row " + capitalFactorReader.getCurrentRecord() + " ("
+				//									+ exception.getMessage() + ") for capital " + cap.getName());
+				//						}
+				//					}
+				//				}
+				//			}
+			} catch (Exception exception) {
+				exception.printStackTrace();
+				logger.fatal("Land Use Controlling Institution failed: " + exception.toString());
+
+				System.exit(0);
+			}
+
+	  
+			
 		}
 	}
 
@@ -121,11 +160,11 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 
 		//		DoubleMap<Capital> adjusted = modelData.landUses();
 		//
- 
-		boolean landuseallowed = false;
+
+		boolean landuseallowed = false; // @todo read the matrix or double map from the region object and decide if it is allowed
 
 
-		// TODO year tick in land 
+		// @TODO year tick in land 
 		//		year tick 
 		//		keeps applied until the next restriction rule applied 
 
@@ -147,7 +186,7 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 	 */
 	@Override
 	public String toString() {
-		return "Landuse Restriction Institution";
+		return "Land Use Controlling Institution";
 	}
 }
 
