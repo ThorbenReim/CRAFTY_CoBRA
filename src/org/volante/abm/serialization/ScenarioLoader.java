@@ -300,20 +300,7 @@ public class ScenarioLoader {
 		for (GlobalInstitution institution : institutions) {
 			institution.initialise(modelData, info);
 		}
-
-	 	
-		// regional institutions:
-//		log.info("About to initialise regional institutions");
-//		Set<GlobalInstitution> institutions = new HashSet<GlobalInstitution>();
-//
-//		for (String institutionsFile : globalInstitutionFiles) {
-//			institutions.addAll(persister.readXML(GlobalInstitutionsList.class, institutionsFile, null)
-//					.getGlobalInstitutions());
-//		}
-//		for (GlobalInstitution institution : institutions) {
-//			institution.initialise(modelData, info);
-//		}
- 
+		// Regional institutions are initialised elsewhere.. 
 		
 		outputs.initialise(modelData, info);
 

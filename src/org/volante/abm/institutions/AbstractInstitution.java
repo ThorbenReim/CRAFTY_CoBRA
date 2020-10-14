@@ -48,8 +48,8 @@ public abstract class AbstractInstitution implements Institution
 	protected Region	region	= null;
 
 	@Override
-	public void adjustCapitals( Cell c )
-	{}
+	public void adjustCapitals( Cell c ){
+	}
 
 	/**
 	 * @see org.volante.abm.institutions.Institution#adjustCompetitiveness(org.volante.abm.agent.fr.FunctionalRole,

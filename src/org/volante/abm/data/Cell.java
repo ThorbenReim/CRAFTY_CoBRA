@@ -71,6 +71,10 @@ public class Cell implements Initialisable, PropertyProvider<Object> {
 	int					y					= 0;
 	boolean				initialised			= false;
 
+	
+	// Land use change allowed YN
+	boolean 			frMutable			= true;
+	
 	Set<CellCapitalObserver> cellCapitalObservers = new HashSet<CellCapitalObserver>();
 
 	PropertyProviderComp<Object> propertyProvider = null;
@@ -273,4 +277,23 @@ public class Cell implements Initialisable, PropertyProvider<Object> {
 		}
 		this.propertyProvider.setObjectProperty(propertyId, value);
 	}
+
+	/**
+	 * @param yn
+	 */
+	public void setFRmutable(boolean yn) {
+		this.frMutable = yn;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean getFRmutable() {
+		return this.frMutable;
+	}
+	
+	
+	
+	
+	
 }

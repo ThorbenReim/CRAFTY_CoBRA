@@ -30,5 +30,5 @@ import org.volante.abm.agent.property.PropertyId;
  *
  */
 public enum CellPropertyIds implements PropertyId {
-	RESTRICTED;
+	RESTRICTED, // Fr ID
 }
