@@ -58,12 +58,10 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 	
 	
 	/**
-	 * Absolute thresholding makes difficult to determine the prescribed giving-in and giving-up thresholds as the
-	 * benefit level changes over time. 
-	 *
-	 * When relative thresholding is used, the current benefit value of perfect agent is compared to the benefit values of a cell.
-	 * Every time a threshold is used, it's converted to a proportion of the mean benefit value across the current
-	 * population of agents.  
+	 * Default absolute thresholding makes difficult to determine the giving-in and giving-up threshold values as the
+	 * benefit level changes over time. When relative thresholding is used, it's converted to a proportion of 
+	 * the mean benefit value across the current population of agents, which is modelled by the current benefit value of perfect agent
+	 * (= perfect cells) and is compared to the benefit values of a cell. 
 	 * 
  	 * @see org.volante.abm.example.NormalisedCurveCompetitivenessModel#addUpMarginalUtilities()
  	 * 
@@ -85,7 +83,6 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 	}
 
  
-
 	public DefaultLandUseAgent(String id, ModelData data) {
 		this(LazyFR.getInstance(), id, data, null,
 				NullProductionModel.INSTANCE, -Double.MAX_VALUE,
@@ -146,8 +143,7 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 
 	@Override
 	public void considerGivingUp() {
-		
-		 
+ 		 
 		
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
@@ -162,12 +158,11 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
  
 		double givingUpThreshold =  this.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD);
 
-
  		double compThresholdDiff = 0; 
 
 		if (relativeThresholding) { 
 			
-			/* competitiveness of perfect agents (function of residual demand and prescribed production parameter and competitiveness functions. 
+			/* Use competitiveness of perfect agents (function of residual demand and prescribed production parameter and competitiveness functions). 
 			 * It changes over time and does not reflect cell-level capitals. 
 			 */
  			
@@ -177,15 +172,17 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 			
  			
 			compThresholdDiff = givingUpThreshold * compPerfect  - this.getProperty(AgentPropertyIds.COMPETITIVENESS);
-
+			logger.debug(this + "> Use relative thresholding (compPerfect=" + compPerfect+")");
+			
 		} else { 
-			// original absolute thresholding
+			// Original absolute thresholding
 			compThresholdDiff = givingUpThreshold - this.getProperty(AgentPropertyIds.COMPETITIVENESS);  
 		}
 
 
 
 		if (compThresholdDiff > 0.0) { // try to give-up  
+			logger.debug(this + "> compThresholdDiff > 0.0, consider giving-up)");
 
 			double random = this.region.getRandom().getURService().nextDouble(RandomPa.RANDOM_SEED_RUN_GIVINGUP.name());
 
@@ -217,32 +214,31 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 	public boolean canTakeOver(Cell c, double incoming) {
 
  
-		// able to give in?
  		double givingInThreshold =  this.getProperty(AgentPropertyIds.GIVING_IN_THRESHOLD);
 		double competitiveness = this.getProperty(AgentPropertyIds.COMPETITIVENESS);
 
+		boolean takeover; // able to give in?
 
-		boolean takeover; 
-		 
 		
  		if (relativeThresholding) { 
 			
-			/* competitiveness of perfect agents (function of residual demand and prescribed production parameter and competitiveness functions. 
+			/* Use competitiveness of perfect agents (function of residual demand and prescribed production parameter and competitiveness functions). 
 			 * It changes over time and does not reflect cell-level capitals. 
 			 */
 			Cell perfectCell =  ((GiveUpGiveInAllocationModel) this.region.getAllocationModel()).getPerfectCell();
 			double compPerfect = this.region.getCompetitiveness(this.getFC().getFR(), perfectCell);
-			
+			logger.debug(this + "> canTakeOver using relative thresholding (compPerfect=" + compPerfect+")");
+
 			 
 			takeover = incoming > (competitiveness + givingInThreshold * compPerfect); // 
 
-
-			// Different idea not implemented  
-			// boolean takeover = incoming > (competitiveness * ( 1 + givingInThreshold ) ); // Direct comparison (x% higher than the current competitiveness (=sum of benefits) 
+			// Could do a direct comparison (x% higher than the current competitiveness  also like (not implemented)  
+			// takeover = incoming > (competitiveness * ( 1 + givingInThreshold )); 
 
 		} else { 
-			 takeover = incoming > (competitiveness +  givingInThreshold  ); // original 
-
+			// Original absolute thresholding
+			 takeover = incoming > (competitiveness +  givingInThreshold  );  
+ 
 		}
 
 
