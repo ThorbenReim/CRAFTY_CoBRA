@@ -38,7 +38,7 @@ import org.volante.abm.schedule.RunInfo;
 
 import com.csvreader.CsvReader;
 
-//import mpi.MPI;
+import mpi.MPI;
 
 
 public class WorldLoader {
@@ -54,7 +54,7 @@ public class WorldLoader {
 	List<String> regionFiles = new ArrayList<String>();
 	@ElementList(required=false,inline=true,entry="regionCSV")
 	List<String> regionCSV = new ArrayList<String>();
-	
+
 	@Attribute(required=false)
 	String					pidColumn			= "pid";
 	@Attribute(required = false)
@@ -97,7 +97,7 @@ public class WorldLoader {
 	ABMPersister persister = ABMPersister.getInstance();
 	ModelData modelData = new ModelData();
 	RunInfo					info				= null;
-	
+
 	public WorldLoader() {}
 	public WorldLoader( ModelData data, ABMPersister persister )
 	{
@@ -116,91 +116,102 @@ public class WorldLoader {
 			loaders.addAll(allLoaders(BatchRunParser.parseString(c, info)));
 		}
 	}
-	
+
 	public RegionSet getWorld() throws Exception
 	{
 		RegionSet rs = new RegionSet();
 		for( RegionLoader rl : loaders ) {
-//			try {
-//				Class.forName("mpi.MPI");
-//				if (MPI.COMM_WORLD.Rank() == rl.getUid()) {
-//					Region r = loadRegion(rl);
-//
-//					logger.info("Run region " + r + " on rank " + MPI.COMM_WORLD.Rank());
-//
-//					rs.addRegion(r);
-//				}
-//			} catch (ClassNotFoundException exception) {
-				Region r = loadRegion(rl);
-//
-				logger.info("No MPI. Region " + r + " loaded.");
-//
+
+			Region r = loadRegion(rl);
+
+			try {
+
+				Class.forName("mpi.MPI");
+				if (MPI.COMM_WORLD.Rank() == rl.getUid()) {
+
+					logger.info("Run region " + r + " on rank " + MPI.COMM_WORLD.Rank());
+
+				}
+			} catch (NoClassDefFoundError ncde) {
+				logger.error("NoClassDefFoundError: No MPI. Region " + r + " loaded.");
+
+			} catch (UnsatisfiedLinkError ule) {
+				logger.error("MPI is in classpath but not linked to shared libraries correctly (this message can be ignored if not running in parallel)!" + " No MPI. Region \" + r + \" loaded.\");");
+
+			} catch (ClassNotFoundException cnfe) {
+				logger.error("ClassNotFoundException: No MPI. Region " + r + " loaded.");
+
+			} finally { 
+
 				rs.addRegion(r);
-//			}
-		}
-		return rs;
+
+			}
+ 
+
 	}
-	
-	Region loadRegion( RegionLoader l ) throws Exception
-	{
-		
-		try {
+	return rs;
+}
+
+Region loadRegion( RegionLoader l ) throws Exception
+{
+
+	try {
 
 		l.setPersister( persister );
 		l.setModelData( modelData );
 		l.initialise( info );
-		
-		} catch (Exception exception) {
-			logger.fatal("Loading region failed: " + exception.toString() + exception.getStackTrace());
-//			exception.printStackTrace();
-			System.exit(0);
-		}
 
-		return l.getRegion();
+	} catch (Exception exception) {
+		logger.fatal("Loading region failed: " + exception.toString() + exception.getStackTrace());
+		// exception.printStackTrace();
+		System.exit(0);
 	}
-	
-	Set<RegionLoader> allLoaders( String csvFile ) throws IOException
-	{
-		Set<RegionLoader> loaders = new LinkedHashSet<RegionLoader>();
-		// TODO override persister method
-		CsvReader reader = persister.getCSVReader(csvFile, null);
 
-		while( reader.readRecord() ) {
-			if (reader.getColumnCount() <= 1) {
-				logger.warn("There was no column detected in your CSV world XML file " + csvFile
-						+ ". It is most" +
-						"likely that columns are not separated by column!");
-			}
-			loaders.add( loaderFromCSV( reader ));
-		}
-		return loaders;
-	}
-	
-	RegionLoader loaderFromCSV( CsvReader reader ) throws IOException
-	{
-		RegionLoader rl = new RegionLoader(
-((reader.getIndex(pidColumn) == -1) ? "-1" : BatchRunParser.parseString(
-						reader.get(pidColumn), info)),
-				BatchRunParser.parseString(reader.get(idColumn), info),
-				BatchRunParser.parseString(reader.get(competitionColumn), info),
-				BatchRunParser.parseString(reader.get(allocationColumn), info),
-		        Boolean.parseBoolean(reader.get(handleAmbulantAgentsColumn)),
-				BatchRunParser.parseString(reader.get(demandColumn), info),
-				BatchRunParser.parseString(reader.get(btColumn), info), 
-				BatchRunParser.parseString(reader.get(frColumn), info),
-				BatchRunParser.parseString(reader.get(cellColumn), info),
-				null,
-				BatchRunParser.parseString(reader.get(socNetColumn), info),
-				BatchRunParser.parseString(reader.get(institutionsColumn), info),
- BatchRunParser.parseString(
-		                        reader.get(updatersColumn), info),
-				BatchRunParser.parseString(reader.get(laraModelColumn), info));
+	return l.getRegion();
+}
 
-		if (!reader.get(this.initialisersColumn).equals("")) {
-			rl.initialiserFiles.add(reader.get(this.initialisersColumn));
+Set<RegionLoader> allLoaders( String csvFile ) throws IOException
+{
+	Set<RegionLoader> loaders = new LinkedHashSet<RegionLoader>();
+	// TODO override persister method
+	CsvReader reader = persister.getCSVReader(csvFile, null);
+
+	while( reader.readRecord() ) {
+		if (reader.getColumnCount() <= 1) {
+			logger.warn("There was no column detected in your CSV world XML file " + csvFile
+					+ ". It is most" +
+					"likely that columns are not separated by column!");
 		}
-		return rl;
+		loaders.add( loaderFromCSV( reader ));
 	}
-	
-	public void setModelData( ModelData data ) { this.modelData = data; }
+	return loaders;
+}
+
+RegionLoader loaderFromCSV( CsvReader reader ) throws IOException
+{
+	RegionLoader rl = new RegionLoader(
+			((reader.getIndex(pidColumn) == -1) ? "-1" : BatchRunParser.parseString(
+					reader.get(pidColumn), info)),
+			BatchRunParser.parseString(reader.get(idColumn), info),
+			BatchRunParser.parseString(reader.get(competitionColumn), info),
+			BatchRunParser.parseString(reader.get(allocationColumn), info),
+			Boolean.parseBoolean(reader.get(handleAmbulantAgentsColumn)),
+			BatchRunParser.parseString(reader.get(demandColumn), info),
+			BatchRunParser.parseString(reader.get(btColumn), info), 
+			BatchRunParser.parseString(reader.get(frColumn), info),
+			BatchRunParser.parseString(reader.get(cellColumn), info),
+			null,
+			BatchRunParser.parseString(reader.get(socNetColumn), info),
+			BatchRunParser.parseString(reader.get(institutionsColumn), info),
+			BatchRunParser.parseString(
+					reader.get(updatersColumn), info),
+			BatchRunParser.parseString(reader.get(laraModelColumn), info));
+
+	if (!reader.get(this.initialisersColumn).equals("")) {
+		rl.initialiserFiles.add(reader.get(this.initialisersColumn));
+	}
+	return rl;
+}
+
+public void setModelData( ModelData data ) { this.modelData = data; }
 }
