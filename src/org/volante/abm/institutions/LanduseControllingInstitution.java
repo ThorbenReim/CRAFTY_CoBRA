@@ -222,7 +222,47 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 	// @TODO
 	//		keeps applied until the next restriction rule applied 
 
+	/**
+	 * If there's a file to be applied this year, then get it.
+	 * Next, check to see if the year is in the filename, and there's a file that matches.
+	 * Finally if we should re-apply the same file (e.g. if there is time-varying noise being added), return that.
+	 * Otherwise, return null
+	 * @return
+	 * @throws IOException 
+	 */
+	
+	CsvReader getFileForYear() throws IOException
+	{
+		ABMPersister persister = ABMPersister.getInstance();
+		String fn = null;
+//		String yearly = yearlyFilenames.get( info.getSchedule().getCurrentTick() );
+//		if (yearly != null
+//				&& persister.csvFileOK(getClass(), yearly, region.getPersisterContextExtra(), X_COL, Y_COL)) {
+//			fn = yearly;
+//		} else if (yearInFilename
+//				&& persister.csvFileOK(getClass(), filename, region.getPersisterContextExtra(), X_COL, Y_COL)) {
+//			fn = filename;
+//		} else if( reapplyPreviousFile && previousFilename != null ) {
+//			fn = previousFilename;
+//		}
+//		
+//		logger.debug("Read " + fn);
+//
+//		
+//		if( fn != null )
+//		{
+//			previousFilename = fn;
+//			return persister.getCSVReader(fn, region.getPersisterContextExtra());
+//		}
+//		
+  	
+		return null;
+	}
+	
 
+	
+
+	
 	/**
 	 * If there's a file to be applied this year, then get it.
 	 * Next, check to see if the year is in the filename, and there's a file that matches.
