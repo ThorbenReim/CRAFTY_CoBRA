@@ -69,6 +69,10 @@ import com.moseph.modelutils.fastdata.DoubleMap;
  * @author Bumsuk Seo
  *
  */
+
+
+
+
 public class LanduseControllingInstitution extends AbstractInstitution {
 
 	/**
@@ -79,7 +83,7 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 	/**
 	 * Name of CSV file that contains per-tick land use changed allowed YN
 	 */
-	@Element(required = true)
+	@Element(required = false)
 	protected String csvFileProhibitedLanduse = null;
 	
 	/**
@@ -108,158 +112,94 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 		// <- LOGGING
 		logger.info("Initialise " + this);
 		// LOGGING ->
-		logger.info("Loading land use restriction CSV from " + csvFileProhibitedLanduse);
+//		logger.info("Loading land use restriction CSV from " + csvFileProhibitedLanduse);
 
 
 
-		try {
+//		try {
 
-			ABMPersister persister = ABMPersister.getInstance();
-
-  
-			logger.info("Loading cell CSV from " + csvFileProhibitedLanduse);
- 
-			CsvReader reader = persister.getCSVReader(csvFileProhibitedLanduse, this.region.getPersisterContextExtra());
-
-			List<String> columns = Arrays.asList(reader.getHeaders());
-			
-			if (!columns.contains(prohibitedColumn)) { 
-				throw new IllegalStateException(
-				        "The land use controlling institution does not have " + prohibitedColumn +  " in the CSV file " + csvFileProhibitedLanduse);
-			}
-			
-			 
-			
-			while (reader.readRecord()) {
- 				if (logger.isDebugEnabled()) {
-					logger.debug("Read row " + reader.getCurrentRecord());
-				}
- 
-				int x = Integer.parseInt(reader.get(xColumn));
-				if (xTransformer != null) {
-					x = xTransformer.transform(x);
-				}
-
-				int y = Integer.parseInt(reader.get(yColumn));
-				if (yTransformer != null) {
-					y = yTransformer.transform(y);
-				}
-	 
-				boolean yn = reader.get(prohibitedColumn).equalsIgnoreCase(maskChar);
- 				logger.debug(yn);
-
-				Cell cell = region.getCell(x, y);
-				
-				cell.setFRmutable(yn);
-  
-			}
-
-
-		} catch (Exception exception) {
-			exception.printStackTrace();
-			logger.fatal("Land Use Controlling Institution failed: " + exception.toString());
-
-			System.exit(0);
-		}
- 
-
-	}
-
- 
-
-
-
-	
-	/**
-	 * Use the csv file to set the capital levels for the cells
-	 * @param file
-	 * @throws IOException 
-	 */
-	void applyFile( CsvReader file ) throws IOException
-	{
-		//Assume we've got the CSV file, and we've read the headers in
-		while( file.readRecord() ) //For each entry
-		{
-			//Try to get the cell
-			Cell cell = region.getCell( Integer.parseInt( file.get(xColumn) ), Integer.parseInt( file.get( yColumn ) ) );
-			
-			if( cell == null ) //Complain if we couldn't find it - implies there's data that doesn't line up!
-			{
-				logger.warn("Update for unknown cell:" + file.get(xColumn) + ", " + file.get(yColumn));
-				continue; //Go to next line
-			}
- 
-		}
-	}
-	
-	
-	
-	 
-	
-	
-	/**
-	 * Do annual updating
-	 */
-	@Override
-	public void update()
-	{
-		super.update();
-		logger.info(this + "in update() @TODO apply new YN marker");
-
-		try {
-//			CsvReader file = getFileForYear();
-// 			if( file != null ) {
-//				applyFile( file );
-//			}
-		} catch ( Exception e )
-		{
-			logger.fatal( "Couldn't update Capitals: " + e.getMessage() );
-			e.printStackTrace();
-		}
-	}
-	
-	
-	// @TODO
-	//		keeps applied until the next restriction rule applied 
-
-
-	/**
-	 * If there's a file to be applied this year, then get it.
-	 * Next, check to see if the year is in the filename, and there's a file that matches.
-	 * Finally if we should re-apply the same file (e.g. if there is time-varying noise being added), return that.
-	 * Otherwise, return null
-	 * @return
-	 * @throws IOException 
-	 */
-	
-//	CsvReader getFileForYear() throws IOException { @TODO create an updater xml file first
-//		ABMPersister persister = ABMPersister.getInstance();
-//		String fn = null;
-//		String yearly = yearlyFilenames.get( info.getSchedule().getCurrentTick() );
-//		if (yearly != null
-//				&& persister.csvFileOK(getClass(), yearly, region.getPersisterContextExtra(), X_COL, Y_COL)) {
-//			fn = yearly;
-//		} else if (yearInFilename
-//				&& persister.csvFileOK(getClass(), filename, region.getPersisterContextExtra(), X_COL, Y_COL)) {
-//			fn = filename;
-//		} else if( reapplyPreviousFile && previousFilename != null ) {
-//			fn = previousFilename;
-//		}
-//		
-//		logger.debug("Read " + fn);
+//			ABMPersister persister = ABMPersister.getInstance();
 //
-//		
-//		if( fn != null )
-//		{
-//			previousFilename = fn;
-//			return persister.getCSVReader(fn, region.getPersisterContextExtra());
+//  
+//			logger.info("Loading cell CSV from " + csvFileProhibitedLanduse);
+// 
+//			CsvReader reader = persister.getCSVReader(csvFileProhibitedLanduse, this.region.getPersisterContextExtra());
+//
+//			List<String> columns = Arrays.asList(reader.getHeaders());
+//			
+//			if (!columns.contains(prohibitedColumn)) { 
+//				throw new IllegalStateException(
+//				        "The land use controlling institution does not have " + prohibitedColumn +  " in the CSV file " + csvFileProhibitedLanduse);
+//			}
+//			
+//			 
+//			
+//			while (reader.readRecord()) {
+// 				if (logger.isDebugEnabled()) {
+//					logger.debug("Read row " + reader.getCurrentRecord());
+//				}
+// 
+//				int x = Integer.parseInt(reader.get(xColumn));
+//				if (xTransformer != null) {
+//					x = xTransformer.transform(x);
+//				}
+//
+//				int y = Integer.parseInt(reader.get(yColumn));
+//				if (yTransformer != null) {
+//					y = yTransformer.transform(y);
+//				}
+//	 
+//				boolean yn = reader.get(prohibitedColumn).equalsIgnoreCase(maskChar);
+// 				logger.debug(yn);
+//
+//				Cell cell = region.getCell(x, y);
+//				
+//				cell.setFRmutable(yn);
+//  
+//			}
+
+
+//		} catch (Exception exception) {
+//			exception.printStackTrace();
+//			logger.fatal("Land Use Controlling Institution failed: " + exception.toString());
+//
+//			System.exit(0);
 //		}
-//		
-//  	
-//		return null;
+ 
+
+	}
+
+ 
+	
+	
+	 
+//	
+//	//@Deprecated (use CSVLandUseUpdate instead)
+//
+//	/**
+//	 * Do annual updating
+//	 */
+//	@Override
+//	public void update()
+//	{
+//		super.update();
+//		logger.info(this + "in update() @TODO apply new YN marker");
+//
+//		try {
+////			CsvReader file = getFileForYear();
+//// 			if( file != null ) {
+////				applyFile( file );
+////			}
+//		} catch ( Exception e )
+//		{
+//			logger.fatal( "Couldn't update Capitals: " + e.getMessage() );
+//			e.printStackTrace();
+//		}
 //	}
 //	
-
+// 
+ 
+ 
 	
 
 	
@@ -277,7 +217,7 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 
 		if (landuseallowed) {
 			// <- LOGGING
-			logger.debug("Land use change allowed X" + cell.getX() + "Y" + cell.getY());
+			logger.trace("Land use change allowed X" + cell.getX() + "Y" + cell.getY());
 			// LOGGING ->
 			return true;
 		} else {
