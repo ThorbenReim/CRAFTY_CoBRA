@@ -159,6 +159,7 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 //			}
 
 
+			if (!columns.contains(prohibitedColumn)) { 
 //		} catch (Exception exception) {
 //			exception.printStackTrace();
 //			logger.fatal("Land Use Controlling Institution failed: " + exception.toString());
