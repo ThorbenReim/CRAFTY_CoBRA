@@ -4,50 +4,14 @@
 package org.volante.abm.institutions;
 
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-import java.util.Set;
-
 import org.apache.log4j.Logger;
-import org.junit.Test;
-import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
-import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.fr.FunctionalRole;
-import org.volante.abm.agent.property.PropertyId;
-import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
-import org.volante.abm.example.CellPropertyIds;
-import org.volante.abm.example.SimpleCapital;
-import org.volante.abm.output.tablecolumns.RestrictionNumber.RestrictionNumberProperties;
-import org.volante.abm.param.RandomPa;
 import org.volante.abm.schedule.RunInfo;
-import org.volante.abm.serialization.ABMPersister;
-import org.volante.abm.serialization.CellCSVReader;
-import org.volante.abm.serialization.CellRasterReader;
-import org.volante.abm.serialization.ModelRunner;
-import org.volante.abm.serialization.RegionLoader;
 import org.volante.abm.serialization.transform.IntTransformer;
-
-import com.csvreader.CsvReader;
-import com.google.common.collect.Table;
-
-
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.volante.abm.data.Cell;
-
-//import com.moseph.modelutils.curve.Curve;
-//import com.moseph.modelutils.curve.LinearInterpolator;
-import com.moseph.modelutils.fastdata.DoubleMap;
 
 /**
  * Reads protected land use for ticks from a CSV file and controls land use competition 
@@ -171,8 +135,7 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 	}
 
  
-	
-	
+	 
 	 
 //	
 //	//@Deprecated (use CSVLandUseUpdate instead)
@@ -198,9 +161,7 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 //		}
 //	}
 //	
-// 
- 
- 
+//  
 	
 
 	
@@ -218,11 +179,11 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 
 		if (landuseallowed) {
 			// <- LOGGING
-			logger.trace("Land use change allowed X" + cell.getX() + "Y" + cell.getY());
+			logger.debug("Land use change allowed X" + cell.getX() + "Y" + cell.getY());
 			// LOGGING ->
 			return true;
 		} else {
-			logger.debug("Land use change prohibited X" + cell.getX() + "Y" + cell.getY());
+			logger.info("Land use change prohibited X" + cell.getX() + "Y" + cell.getY());
 
 			return false;
 		}
