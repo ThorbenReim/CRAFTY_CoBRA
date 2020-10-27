@@ -236,29 +236,43 @@ public class Region implements Regions, PreTickAction {
 	 * @return the geography
 	 */
 	public Geography<Object> getGeography() {
-		if (this.geography == null) {
-			// Causes the CRS factory to apply (longitude, latitude) order of
-			// axis:
-			// TODO
-			// System.setProperty(GeoTools.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
-			// "true");
-			GeographyParameters<Object> geoParams = new GeographyParameters<Object>();
-			geoParams.setCrs((String) PmParameterManager
-					.getParameter(GeoPa.CRS));
-
-			String crsCode = geoParams.getCrs();
-			this.geography = new DefaultGeography<Object>(this.id
-					+ GEOGRAPHY_NAME_EXTENSION,
-					crsCode);
-
-			this.geography.setAdder(geoParams.getAdder());
-
-			// <- LOGGING
-			if (logger.isDebugEnabled()) {
-				logger.debug("Geography CRS: " + this.geography.getCRS());
-			}
-			// LOGGING ->
-		}
+		
+ 
+//@TODO currently throws an uncatchable error
+		
+//		if (this.geography == null) {
+//			
+//			try {
+//			// Causes the CRS factory to apply (longitude, latitude) order of
+//			// axis:
+//			// TODO
+//			// System.setProperty(GeoTools.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
+//			// "true");
+//			GeographyParameters<Object> geoParams = new GeographyParameters<Object>();
+//			geoParams.setCrs((String) PmParameterManager
+//					.getParameter(GeoPa.CRS));
+//
+//			String crsCode = geoParams.getCrs();
+//			this.geography = new DefaultGeography<Object>(this.id
+//					+ GEOGRAPHY_NAME_EXTENSION,
+//					crsCode);
+//
+//			this.geography.setAdder(geoParams.getAdder());
+//
+//			// <- LOGGING
+//			if (logger.isDebugEnabled()) {
+//				logger.debug("Geography CRS: " + this.geography.getCRS());
+//			}
+//			// LOGGING ->
+//			} catch (Exception e) { 
+//				
+//				logger.info("Geography is null and failed to generate one");
+//				e.printStackTrace();
+//				
+//			}
+//			
+//		}
+// 
 		return this.geography;
 	}
 
