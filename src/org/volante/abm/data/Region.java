@@ -240,7 +240,7 @@ public class Region implements Regions, PreTickAction {
 		
  
 		// gt-opengis-9.0.jar must be included before geoapi-20050403.jar!
-		// Otherwise this method throws an uncatchable error 
+		// Otherwise this method throws an uncatchable error.
 		
 		if (this.geography == null) {
 			
@@ -248,8 +248,8 @@ public class Region implements Regions, PreTickAction {
 			// Causes the CRS factory to apply (longitude, latitude) order of
 			// axis:
 			// TODO
-			// System.setProperty(GeoTools.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
-			// "true");
+//			 System.setProperty(GeoTools.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
+//			 "true");
 			GeographyParameters<Object> geoParams = new GeographyParameters<Object>();
 			geoParams.setCrs((String) PmParameterManager
 					.getParameter(GeoPa.CRS));
