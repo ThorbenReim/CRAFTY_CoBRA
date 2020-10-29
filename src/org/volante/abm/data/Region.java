@@ -248,8 +248,8 @@ public class Region implements Regions, PreTickAction {
 			// Causes the CRS factory to apply (longitude, latitude) order of
 			// axis:
 			// TODO
-			 System.setProperty(GeoTools.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
-			 "true");
+			// System.setProperty(GeoTools.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
+			// "true");
 			GeographyParameters<Object> geoParams = new GeographyParameters<Object>();
 			geoParams.setCrs((String) PmParameterManager
 					.getParameter(GeoPa.CRS));
