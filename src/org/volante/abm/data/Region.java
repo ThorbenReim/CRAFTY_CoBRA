@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.geotools.factory.GeoTools;
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.LandUseAgent;
 import org.volante.abm.agent.SocialAgent;
@@ -238,41 +239,42 @@ public class Region implements Regions, PreTickAction {
 	public Geography<Object> getGeography() {
 		
  
-//@TODO currently throws an uncatchable error
+		// gt-opengis-9.0.jar must be included before geoapi-20050403.jar!
+		// Otherwise this method throws an uncatchable error 
 		
-//		if (this.geography == null) {
-//			
-//			try {
-//			// Causes the CRS factory to apply (longitude, latitude) order of
-//			// axis:
-//			// TODO
-//			// System.setProperty(GeoTools.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
-//			// "true");
-//			GeographyParameters<Object> geoParams = new GeographyParameters<Object>();
-//			geoParams.setCrs((String) PmParameterManager
-//					.getParameter(GeoPa.CRS));
-//
-//			String crsCode = geoParams.getCrs();
-//			this.geography = new DefaultGeography<Object>(this.id
-//					+ GEOGRAPHY_NAME_EXTENSION,
-//					crsCode);
-//
-//			this.geography.setAdder(geoParams.getAdder());
-//
-//			// <- LOGGING
-//			if (logger.isDebugEnabled()) {
-//				logger.debug("Geography CRS: " + this.geography.getCRS());
-//			}
-//			// LOGGING ->
-//			} catch (Exception e) { 
-//				
-//				logger.info("Geography is null and failed to generate one");
-//				e.printStackTrace();
-//				
-//			}
-//			
-//		}
-// 
+		if (this.geography == null) {
+			
+			try {
+			// Causes the CRS factory to apply (longitude, latitude) order of
+			// axis:
+			// TODO
+			 System.setProperty(GeoTools.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
+			 "true");
+			GeographyParameters<Object> geoParams = new GeographyParameters<Object>();
+			geoParams.setCrs((String) PmParameterManager
+					.getParameter(GeoPa.CRS));
+
+			String crsCode = geoParams.getCrs();
+			this.geography = new DefaultGeography<Object>(this.id
+					+ GEOGRAPHY_NAME_EXTENSION,
+					crsCode);
+
+			this.geography.setAdder(geoParams.getAdder());
+
+			// <- LOGGING
+			if (logger.isDebugEnabled()) {
+				logger.debug("Geography CRS: " + this.geography.getCRS());
+			}
+			// LOGGING ->
+			} catch (Exception e) { 
+				
+				logger.info("Geography is null and failed to generate one");
+				e.printStackTrace();
+				
+			}
+			
+		}
+ 
 		return this.geography;
 	}
 
