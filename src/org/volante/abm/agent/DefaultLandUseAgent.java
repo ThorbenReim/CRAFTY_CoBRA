@@ -55,16 +55,16 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 	 * Logger
 	 */
 	static private Logger	logger	= Logger.getLogger(DefaultLandUseAgent.class);
-	
-	
+
+
 	/**
 	 * Default absolute thresholding makes difficult to determine the giving-in and giving-up threshold values as the
 	 * benefit level changes over time. When relative thresholding is used, it's converted to a proportion of 
 	 * the mean benefit value across the current population of agents, which is modelled by the current benefit value of perfect agent
 	 * (= perfect cells) and is compared to the benefit values of a cell. 
 	 * 
- 	 * @see org.volante.abm.example.NormalisedCurveCompetitivenessModel#addUpMarginalUtilities()
- 	 * 
+	 * @see org.volante.abm.example.NormalisedCurveCompetitivenessModel#addUpMarginalUtilities()
+	 * 
 	 */
 	private boolean relativeThresholding
 	; 
@@ -82,7 +82,7 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 		this.relativeThresholding = relativeThresholding;
 	}
 
- 
+
 	public DefaultLandUseAgent(String id, ModelData data) {
 		this(LazyFR.getInstance(), id, data, null,
 				NullProductionModel.INSTANCE, -Double.MAX_VALUE,
@@ -137,14 +137,14 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 		return this.getFC().getProduction();
 	}
 
- 
+
 
 
 
 	@Override
 	public void considerGivingUp() {
- 		 
-		
+
+
 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
 			logger.debug(this + "> Consider giving up: "
@@ -155,25 +155,25 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 		}
 		// LOGGING ->
 
- 
+
 		double givingUpThreshold =  this.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD);
 
- 		double compThresholdDiff = 0; 
+		double compThresholdDiff = 0; 
 
 		if (relativeThresholding) { 
-			
+
 			/* Use competitiveness of perfect agents (function of residual demand and prescribed production parameter and competitiveness functions). 
 			 * It changes over time and does not reflect cell-level capitals. 
 			 */
- 			
+
 			Cell perfectCell =  ((GiveUpGiveInAllocationModel) this.region.getAllocationModel()).getPerfectCell();
 
 			double compPerfect = this.region.getCompetitiveness(this.getFC().getFR(), perfectCell);
-			
- 			
+
+
 			compThresholdDiff = givingUpThreshold * compPerfect  - this.getProperty(AgentPropertyIds.COMPETITIVENESS);
 			logger.debug(this + "> Use relative thresholding (compPerfect=" + compPerfect+")");
-			
+
 		} else { 
 			// Original absolute thresholding
 			compThresholdDiff = givingUpThreshold - this.getProperty(AgentPropertyIds.COMPETITIVENESS);  
@@ -213,23 +213,27 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 	@Override
 	public boolean canTakeOver(Cell c, double incoming) {
 
- 
- 		double givingInThreshold =  this.getProperty(AgentPropertyIds.GIVING_IN_THRESHOLD);
+
+		double givingInThreshold =  this.getProperty(AgentPropertyIds.GIVING_IN_THRESHOLD);
 		double competitiveness = this.getProperty(AgentPropertyIds.COMPETITIVENESS);
 
 		boolean takeover; // able to give in?
 
-		
- 		if (relativeThresholding) { 
-			
+
+		if (relativeThresholding) { 
+
 			/* Use competitiveness of perfect agents (function of residual demand and prescribed production parameter and competitiveness functions). 
 			 * It changes over time and does not reflect cell-level capitals. 
 			 */
 			Cell perfectCell =  ((GiveUpGiveInAllocationModel) this.region.getAllocationModel()).getPerfectCell();
 			double compPerfect = this.region.getCompetitiveness(this.getFC().getFR(), perfectCell);
-			logger.debug(this + "> canTakeOver using relative thresholding (compPerfect=" + compPerfect+")");
 
-			 
+			// <- LOGGING
+			if (logger.isDebugEnabled()) { 
+				logger.debug(this + "> canTakeOver using relative thresholding (compPerfect=" + compPerfect+")");
+			} 
+			// LOGGING ->
+
 			takeover = incoming > (competitiveness + givingInThreshold * compPerfect); // 
 
 			// Could do a direct comparison (x% higher than the current competitiveness  also like (not implemented)  
@@ -237,15 +241,15 @@ public class DefaultLandUseAgent extends AbstractLandUseAgent {
 
 		} else { 
 			// Original absolute thresholding
-			 takeover = incoming > (competitiveness +  givingInThreshold  );  
- 
+			takeover = incoming > (competitiveness +  givingInThreshold  );  
+
 		}
 
-
-		// <- LOGGING
+ 		// <- LOGGING
 		if (logger.isDebugEnabled()) {
 			logger.debug(this + "> canTakeOver?" + takeover);
 		}
+		// LOGGING ->
 
 		return (takeover);
 	}

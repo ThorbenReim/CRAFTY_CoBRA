@@ -179,12 +179,15 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 
 		if (landuseallowed) {
 			// <- LOGGING
+			if (logger.isDebugEnabled()) {
 			logger.debug("Land use change allowed X" + cell.getX() + "Y" + cell.getY());
 			// LOGGING ->
+			}
 			return true;
 		} else {
-			logger.info("Land use change prohibited X" + cell.getX() + "Y" + cell.getY());
-
+			if (logger.isDebugEnabled()) {
+			logger.debug("Land use change prohibited X" + cell.getX() + "Y" + cell.getY());
+			}
 			return false;
 		}
 	}

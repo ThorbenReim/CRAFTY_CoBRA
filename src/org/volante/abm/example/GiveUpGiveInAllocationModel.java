@@ -264,7 +264,10 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 		// LOGGING ->
 		Map<FunctionalRole, Double> scores;
 		double maxProb;
-		//@TODO optimise the for loop (using parallel stream?)
+		
+		//@TODO optimise the for loop (using parallel stream?). 
+		// Tricky because each allocation alters competitiveness map.. Now it is done sequentially. 
+		
 		for (int i = 0; i < numTakeoversDerived; i++) {
 
 			// updating supply/demand is done in r.setOwnership(agent, c);
@@ -294,12 +297,11 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 
 			tryToComeIn(sample(scores, false, r.getRandom().getURService(), RandomPa.RANDOM_SEED_RUN_ALLOCATION.name()),
 					r);
-			
-			
-			if (i % 500 == 0) {
-				logger.info(i + " out of " + numTakeoversDerived +" cells allocated");
+ 
+			if (i % 500 == 0 & i > 0) {
+				logger.info(i + 1 + " out of " + numTakeoversDerived +" cells allocated");
 			}
- 		}
+		}
 	}
 
 	/**
@@ -351,69 +353,90 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 				break;
 		}
 
-		logger.debug("Try " + fr.getLabel() + " to take over on mostly " + sorted.size() + " cells (region " + r.getID()
-		+ " has " + r.getNumCells() + " cells).");
+		// LOGGING
+		if (logger.isDebugEnabled()) {
+
+			logger.debug("Try " + fr.getLabel() + " to take over on mostly " + sorted.size() + " cells (region " + r.getID()
+			+ " has " + r.getNumCells() + " cells).");
+		}
+		// LOGGING
+		
+		
+		// @TODO preprocess land use control and GU, not to do calculations over unavailable cells
 
 		double newAgentsGU = fr.getSampledGivingUpThreshold(); 
-		
+
 		for (Cell c : sorted) {
+
 			// if (competitiveness.get(c) < a.getGivingUp()) return;
 
 
-			boolean canComein =  competitiveness.get(c) > newAgentsGU;
-			boolean canTakeOver =c.getOwner().canTakeOver(c, competitiveness.get(c));
 			boolean isAllowed =  r.getInstitutions().isAllowed(fr, c); // e.g., protected area
 
+			if (isAllowed) {
 
-			if (canComein && canTakeOver && isAllowed) {
+				boolean canComein = competitiveness.get(c) > newAgentsGU;
 
-				LandUseAgent agent = agentFinder.findAgent(c, Integer.MIN_VALUE, fr.getSerialID());
+				if (canComein) {
 
-				agent.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, // @TODO print out in cell table
-						newAgentsGU);
+					boolean canTakeOver =c.getOwner().canTakeOver(c, competitiveness.get(c));
 
-				for (TakeoverObserver observer : takeoverObserver) {
-					observer.setTakeover(r, c.getOwner(), agent);
-				}
-				for (CellVolatilityObserver o : cellVolatilityObserver) {
-					o.increaseVolatility(c);
-				}
+					if (canTakeOver) { 
 
-				// <- LOGGING
-				if (logger.isDebugEnabled()) {
-					logger.debug("Ownership from :" + c.getOwner() + " --> " + agent);
-					logger.debug("Take over cell " + sorted.indexOf(c) + " of " + sorted.size());
-				}
-				// LOGGING ->
+						LandUseAgent agent = agentFinder.findAgent(c, Integer.MIN_VALUE, fr.getSerialID());
 
-				for (GivingInStatisticsObserver observer : this.statisticsObserver) {
-					observer.setNumberSearchedCells(r, fr, sorted.indexOf(c) + 1);
-				}
+						agent.setProperty(AgentPropertyIds.GIVING_UP_THRESHOLD, // @TODO print out in cell table
+								newAgentsGU);
 
-				r.setOwnership(agent, c);
-
-				if (r.getNetworkService() != null) {
-					if (r.getNetwork() != null) {
-
-						if (r.getGeography() != null && agent instanceof GeoAgent) {
-							((GeoAgent) agent).addToGeography();
+						for (TakeoverObserver observer : takeoverObserver) {
+							observer.setTakeover(r, c.getOwner(), agent);
 						}
-						if (agent instanceof SocialAgent) {
-							r.getNetworkService().addAndLinkNode(r.getNetwork(), (SocialAgent) agent);
+						
+						for (CellVolatilityObserver o : cellVolatilityObserver) {
+							o.increaseVolatility(c);
 						}
+
+						// <- LOGGING
+						if (logger.isDebugEnabled()) {
+							logger.debug("Ownership from :" + c.getOwner() + " --> " + agent);
+							logger.debug("Take over cell " + sorted.indexOf(c) + " of " + sorted.size());
+						}
+						// LOGGING ->
+
+						for (GivingInStatisticsObserver observer : this.statisticsObserver) {
+							observer.setNumberSearchedCells(r, fr, sorted.indexOf(c) + 1);
+						}
+
+						r.setOwnership(agent, c);
+
+						if (r.getNetworkService() != null) {
+							if (r.getNetwork() != null) {
+
+								if (r.getGeography() != null && agent instanceof GeoAgent) {
+									((GeoAgent) agent).addToGeography();
+								}
+								if (agent instanceof SocialAgent) {
+									r.getNetworkService().addAndLinkNode(r.getNetwork(), (SocialAgent) agent);
+								}
+							} else {
+								if (!networkNullErrorOccurred) {
+									logger.warn(
+											"Network object not present during creation of new agent (subsequent error messages are suppressed)");
+									networkNullErrorOccurred = true;
+								}
+							}
+						}
+
+						break; // stop searching
+						
 					} else {
-						if (!networkNullErrorOccurred) {
-							logger.warn(
-									"Network object not present during creation of new agent (subsequent error messages are suppressed)");
-							networkNullErrorOccurred = true;
-						}
-					}
-				}
-
-				break;
-			} else {
-				// not interested in
-
+						// not allowed 
+					} 
+				}else {
+					// less competitive than threshold
+				} 
+			}else { 
+				// not competitive enough
 			}
 		}
 	}

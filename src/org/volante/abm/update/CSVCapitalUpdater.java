@@ -80,12 +80,14 @@ public class CSVCapitalUpdater extends AbstractUpdater
 		try {
 			CsvReader file = getFileForYear();
  			if( file != null ) {
+ 				
 				applyFile( file );
 			}
 		} catch ( Exception e )
 		{
-			this.log.fatal( "Couldn't update Capitals: " + e.getMessage() );
+			this.log.fatal( "Couldn't update Capitals: "  +  e.getMessage() );
 			e.printStackTrace();
+			System.exit(0);
 		}
 	}
 
