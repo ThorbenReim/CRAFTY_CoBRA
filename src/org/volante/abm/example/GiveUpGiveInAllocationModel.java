@@ -227,7 +227,7 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 			fComps.add(fRole);
 		}
 
-		logger.info("Number of derived take overs: " + numTakeoversDerived + " (specified percentage: "
+		logger.info("Number of derived take overs: " + numTakeoversDerived + " (% of total cells: "
 				+ this.percentageTakeOvers + ")");
 
 		////////////
@@ -294,7 +294,12 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 
 			tryToComeIn(sample(scores, false, r.getRandom().getURService(), RandomPa.RANDOM_SEED_RUN_ALLOCATION.name()),
 					r);
-		}
+			
+			
+			if (i % 500 == 0) {
+				logger.info(i + " out of " + numTakeoversDerived +" cells allocated");
+			}
+ 		}
 	}
 
 	/**
@@ -350,13 +355,14 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 		+ " has " + r.getNumCells() + " cells).");
 
 		double newAgentsGU = fr.getSampledGivingUpThreshold(); 
+		
 		for (Cell c : sorted) {
 			// if (competitiveness.get(c) < a.getGivingUp()) return;
 
 
-			boolean canComein = competitiveness.get(c) > newAgentsGU;
+			boolean canComein =  competitiveness.get(c) > newAgentsGU;
 			boolean canTakeOver =c.getOwner().canTakeOver(c, competitiveness.get(c));
-			boolean isAllowed = r.getInstitutions().isAllowed(fr, c); // e.g., protected area
+			boolean isAllowed =  r.getInstitutions().isAllowed(fr, c); // e.g., protected area
 
 
 			if (canComein && canTakeOver && isAllowed) {
