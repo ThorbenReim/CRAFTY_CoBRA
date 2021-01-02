@@ -28,7 +28,6 @@ public class UKAgents extends AgentTypeDisplay
 		addAgent("PNNC", Color.blue.brighter());
 		addAgent("SusAr", Color.cyan.brighter());
 		addAgent("VEP", Color.magenta.darker());	
-		addAgent("Lazy FR", Color.blue.darker());	
-
+		addAgent("Lazy FR", Color.white.brighter());	
 	}
 }

@@ -264,10 +264,10 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 		// LOGGING ->
 		Map<FunctionalRole, Double> scores;
 		double maxProb;
-		
+
 		//@TODO optimise the for loop (using parallel stream?). 
 		// Tricky because each allocation alters competitiveness map.. Now it is done sequentially. 
-		
+
 		for (int i = 0; i < numTakeoversDerived; i++) {
 
 			// updating supply/demand is done in r.setOwnership(agent, c);
@@ -275,7 +275,10 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 			// Update scores (for each FR), which changes in the course as new ownerships are set in trytoComeIn()
 			scores = scoreMap(fComps, compScore); 
 
-			logger.debug(scores);
+			if (logger.isDebugEnabled()) { 
+				logger.debug(scores);
+			}
+			
 			// sum of the scores
 			maxProb = 0.0;
 			for (double d : scores.values()) {
@@ -297,9 +300,9 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 
 			tryToComeIn(sample(scores, false, r.getRandom().getURService(), RandomPa.RANDOM_SEED_RUN_ALLOCATION.name()),
 					r);
- 
-			if (i % 500 == 0 & i > 0) {
-				logger.info(i + 1 + " out of " + numTakeoversDerived +" cells allocated");
+
+			if (i % 1000 == 0) {
+				logger.info(i + 1 + " of " + numTakeoversDerived +" cells tried to come in");
 			}
 		}
 	}
@@ -360,8 +363,8 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 			+ " has " + r.getNumCells() + " cells).");
 		}
 		// LOGGING
-		
-		
+
+
 		// @TODO preprocess land use control and GU, not to do calculations over unavailable cells
 
 		double newAgentsGU = fr.getSampledGivingUpThreshold(); 
@@ -379,7 +382,7 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 
 				if (canComein) {
 
-					boolean canTakeOver =c.getOwner().canTakeOver(c, competitiveness.get(c));
+					boolean canTakeOver = c.getOwner().canTakeOver(c, competitiveness.get(c));
 
 					if (canTakeOver) { 
 
@@ -391,7 +394,7 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 						for (TakeoverObserver observer : takeoverObserver) {
 							observer.setTakeover(r, c.getOwner(), agent);
 						}
-						
+
 						for (CellVolatilityObserver o : cellVolatilityObserver) {
 							o.increaseVolatility(c);
 						}
@@ -428,7 +431,7 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 						}
 
 						break; // stop searching
-						
+
 					} else {
 						// not allowed 
 					} 
