@@ -13,19 +13,19 @@ public class UKAgents extends AgentTypeDisplay
 
 	public UKAgents()
 	{
-		addAgent("NNWCons", Color.pink.brighter());
+		addAgent("NWCons", Color.magenta.brighter());
 		addAgent("Bioenergy", Color.cyan.darker());
 		addAgent("EA", Color.orange.darker());
 		addAgent("EP", Color.red.darker());
 		addAgent("IAfodder", Color.yellow.brighter());
-		addAgent("IAfood", Color.yellow.darker());
+		addAgent("IAfood", Color.blue.darker());
 		addAgent("PNNB", Color.red.brighter());
-		addAgent("MMW", Color.green.brighter());		
+		addAgent("MW", Color.green.brighter());		
 		addAgent("AF", Color.orange.brighter());
 		addAgent("PNB", Color.gray.darker());	
 		addAgent("PNC", Color.green.darker());	
-		addAgent("IP", Color.pink.darker());
-		addAgent("PNNC", Color.blue.brighter());
+		addAgent("PNNC", Color.pink.darker());
+		addAgent("IP", Color.lightGray);
 		addAgent("SusAr", Color.cyan.brighter());
 		addAgent("VEP", Color.magenta.darker());	
 		addAgent("Lazy FR", Color.white.brighter());	

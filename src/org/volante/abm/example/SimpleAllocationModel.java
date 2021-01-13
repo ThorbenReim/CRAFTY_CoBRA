@@ -26,9 +26,12 @@ package org.volante.abm.example;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
@@ -118,6 +121,13 @@ public class SimpleAllocationModel implements AllocationModel, CellVolatilityMes
 
 		allocateAvailableCells(r);
 	}
+	
+// Reference: https://stackoverflow.com/questions/21593506/how-can-i-randomize-the-iteration-sequence-of-a-set
+//	public static <T> Set<T> newShuffledSet(Collection<T> collection) {
+//    List<T> shuffleMe = new ArrayList<T>(collection);
+//    Collections.shuffle(shuffleMe);
+//    return new LinkedHashSet<T>(shuffleMe);
+//}
 
 	/**
 	 * @param r
@@ -127,7 +137,14 @@ public class SimpleAllocationModel implements AllocationModel, CellVolatilityMes
 		Collection<Cell> cells2allocate =
 		        Utilities.sampleN(r.getAvailable(), (int) (r.getAvailable().size() * proportionToAllocate),
 		                r.getRandom().getURService(), RandomPa.RANDOM_SEED_RUN_ALLOCATION.name());
-
+		
+		// when proportionToAllocate=1, the sampleN() returns the input collection with the same order  
+		// then we need to shuffle the cells to randomly allocate initial FRs 
+		// Reference: https://stackoverflow.com/questions/21593506/how-can-i-randomize-the-iteration-sequence-of-a-set
+	    List<Cell> cells2allocate_list = new ArrayList<Cell>(cells2allocate);		
+		Utilities.shuffle(cells2allocate_list, r.getRandom().getURService(), RandomPa.RANDOM_SEED_RUN_ALLOCATION.name());
+		cells2allocate = new LinkedHashSet<Cell>(cells2allocate_list);
+				
 		for (Cell c : cells2allocate) {
 			// <- LOGGING
 			if (logger.isDebugEnabled()) {

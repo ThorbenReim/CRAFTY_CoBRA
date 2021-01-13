@@ -373,14 +373,13 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 
 			// if (competitiveness.get(c) < a.getGivingUp()) return;
 
+			boolean canComein = competitiveness.get(c) > newAgentsGU;
 
-			boolean isAllowed =  r.getInstitutions().isAllowed(fr, c); // e.g., protected area
+			if (canComein) {
 
-			if (isAllowed) {
+				boolean isAllowed =  r.getInstitutions().isAllowed(fr, c); // e.g., protected area
 
-				boolean canComein = competitiveness.get(c) > newAgentsGU;
-
-				if (canComein) {
+				if (isAllowed) {
 
 					boolean canTakeOver = c.getOwner().canTakeOver(c, competitiveness.get(c));
 
@@ -430,16 +429,20 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 							}
 						}
 
+						// @TODO remove c from searched cells
+
 						break; // stop searching
 
 					} else {
-						// not allowed 
+						// not competitive enough
 					} 
 				}else {
-					// less competitive than threshold
+					// not allowed 
+
 				} 
 			}else { 
-				// not competitive enough
+				// less competitive than threshold
+
 			}
 		}
 	}
