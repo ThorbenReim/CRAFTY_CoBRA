@@ -24,12 +24,12 @@ import com.google.common.collect.Table;
  * @author Sascha Holzhauer
  *
  */
-public class FrRestrictingInsitution extends AbstractInstitution {
+public class FrRestrictingInstitution extends AbstractInstitution {
 
 	/**
 	 * Logger
 	 */
-	static private Logger logger = Logger.getLogger(FrRestrictingInsitution.class);
+	static private Logger logger = Logger.getLogger(FrRestrictingInstitution.class);
 
 	/**
 	 * CSV file matrix of functional role serial IDs as column and row names. If the entry is > 0 a transition from the
@@ -43,14 +43,22 @@ public class FrRestrictingInsitution extends AbstractInstitution {
 
 	protected Table<String, String, Double> restrictedRoles;
 
-	protected Set<FunctionalRole> frs = null;
-
+//	protected Set<FunctionalRole> frs = null;
+    
+	@Override
 	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
+		
+		// <- LOGGING
+		logger.info("Initialise " + this);
+		
 		super.initialise(data, info, extent);
 		try {
 			restrictedRoles = ABMPersister.getInstance().csvToDoubleTable(csvFileRestrictedAllocations, "FR", null);
 		} catch (IOException exception) {
+			logger.info("Failed to initialise " + this);
+
 			exception.printStackTrace();
+			throw(exception);
 		}
 	}
 
@@ -76,4 +84,14 @@ public class FrRestrictingInsitution extends AbstractInstitution {
 			return restrictedRoles.get(label2request, fr.getLabel()) <= 0;
 		}
 	}
+	
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return ("FR restricting institution");
+	}
+
 }
