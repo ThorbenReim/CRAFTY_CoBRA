@@ -267,7 +267,7 @@ public class ModelRunner {
 		int j = numOfRandVariation;
 
 		int randomSeed =
-		        cmd.hasOption('o') ? (j + Integer.parseInt(cmd.getOptionValue('o'))) : (int) System.currentTimeMillis();
+		        cmd.hasOption('o') ? (j -1 + Integer.parseInt(cmd.getOptionValue('o'))) : (int) System.currentTimeMillis();
 		// Worry about random seeds here...
 		rInfo = new RunInfo();
 		rInfo.setNumRuns(numRuns);
