@@ -95,7 +95,7 @@ public class GlobalMonitoringInstitution extends AbstractCobraGlobalInstitution 
 
 
 	public void initialise(ModelData mdata, RunInfo rinfo) {
-		super.initialise(mdata, rinfo);
+ 
 
 		rinfo.getSchedule().register(this);
 

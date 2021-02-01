@@ -194,6 +194,14 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 			adjusted.putDouble(c, 1);
 		}
 		perfectCell.setBaseCapitals(adjusted);
+
+
+		// doesn't have to be sampled for every takeover
+		// @TODO avoid re-considering an updated cell to be renewed?  
+		// 	searchedCells = sampleN(r.getCells(), numSearchedCells,
+		// 	r.getRandom().getURService(), RandomPa.RANDOM_SEED_RUN_ALLOCATION.name());
+
+
 	};
 
 	/**
@@ -265,8 +273,7 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 		Map<FunctionalRole, Double> scores;
 		double maxProb;
 
-		//@TODO optimise the for loop (using parallel stream?). 
-		// Tricky because each allocation alters competitiveness map.. Now it is done sequentially. 
+		// Tricky to parallelise as each allocation alters competitiveness. 
 
 		for (int i = 0; i < numTakeoversDerived; i++) {
 
@@ -298,8 +305,14 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 			// Resample this each time to deal with changes in supply affecting competitiveness
 			// com.moseph.modelutils.Utilities.sample() samples from the map of probabilities (i.e. T -> prob of T)  
 
-			tryToComeIn(sample(scores, false, r.getRandom().getURService(), RandomPa.RANDOM_SEED_RUN_ALLOCATION.name()),
-					r);
+			
+			FunctionalRole fr_try = sample(scores, false, r.getRandom().getURService(), RandomPa.RANDOM_SEED_RUN_ALLOCATION.name());
+			
+//			if (!fr_try.getLabel().equals("Ur")) {
+//				logger.debug(scores);
+//			}
+			
+			tryToComeIn(fr_try, r);
 
 			if (i % 1000 == 0) {
 				logger.info(i + 1 + " of " + numTakeoversDerived +" cells tried to come in");
@@ -338,6 +351,16 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 				return r.getCompetitiveness(fr, c);
 			}
 		});
+
+		// doesn't have to be sampled again for every takeover (4.1.2021 by ABS)
+
+		//		Map<Cell, Double> competitiveness = scoreMap(searchedCells, new Score<Cell>() {
+		//			@Override
+		//			public double getScore(Cell c) {
+		//				return r.getCompetitiveness(fr, c);
+		//			}
+		//		});
+
 
 		List<Cell> sorted = new ArrayList<>(competitiveness.keySet());
 
@@ -430,6 +453,7 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 						}
 
 						// @TODO remove c from searched cells
+						// decided not to do so in Jan 2021
 
 						break; // stop searching
 

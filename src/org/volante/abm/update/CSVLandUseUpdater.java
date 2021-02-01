@@ -186,9 +186,11 @@ public class CSVLandUseUpdater extends AbstractUpdater
 				continue; //Go to next line
 			}
 
-			// Set LU change YN flag
-			cell.setFRmutable(yn);
-
+			// could have multiple protected area masks, thus only apply when it is false
+			if (!yn) { 
+				// Set LU change YN flag
+				cell.setFRmutable(yn);
+			}
 
 
 		}
