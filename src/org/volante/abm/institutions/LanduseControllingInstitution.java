@@ -10,6 +10,7 @@ import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
+import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.transform.IntTransformer;
 
@@ -175,7 +176,7 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 	@Override
 	public boolean isAllowed(FunctionalRole fr, Cell cell) {
  
-		boolean landuseallowed = cell.getFRmutable();
+		boolean landuseallowed = (boolean) cell.getObjectProperty(AgentPropertyIds.FR_MUTABLE);
 
 		if (landuseallowed) {
 			// <- LOGGING

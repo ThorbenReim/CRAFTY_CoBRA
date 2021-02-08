@@ -278,21 +278,6 @@ public class Cell implements Initialisable, PropertyProvider<Object> {
 		this.propertyProvider.setObjectProperty(propertyId, value);
 	}
 
-	/**
-	 * @param yn
-	 */
-	public void setFRmutable(boolean yn) {
-		this.frMutable = yn;
-	}
-
-	/**
-	 * @return
-	 */
-	public boolean getFRmutable() {
-		return this.frMutable;
-	}
-	
-	
 	
 	
 	

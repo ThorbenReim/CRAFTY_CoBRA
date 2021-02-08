@@ -32,6 +32,7 @@ import org.simpleframework.xml.ElementMap;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
+import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.institutions.LanduseControllingInstitution;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.ABMPersister;
@@ -55,7 +56,7 @@ public class CSVLandUseUpdater extends AbstractUpdater
 	/**
 	 * Logger
 	 */
-	static private Logger logger = Logger.getLogger(LanduseControllingInstitution.class);
+	static private Logger logger = Logger.getLogger(CSVLandUseUpdater.class);
 
 	/**
 	 * Name of column in CSV file that specifies the year a row belongs to
@@ -71,8 +72,8 @@ public class CSVLandUseUpdater extends AbstractUpdater
 	IntTransformer	yTransformer	= null;
 
 
-	@Attribute(required = false)
-	String prohibitedColumn = "Protected";
+	@Attribute(required = true)
+	String restrictionColumn;
 	@Attribute(required= false)
 	String maskChar = "Y";
 
@@ -172,7 +173,7 @@ public class CSVLandUseUpdater extends AbstractUpdater
 				y = yTransformer.transform(y);
 			}
 
-			boolean yn = !reader.get(prohibitedColumn).equalsIgnoreCase(maskChar);
+			boolean yn = !reader.get(restrictionColumn).equalsIgnoreCase(maskChar);
 			logger.trace(yn);
 
 			//Try to get the cell
@@ -186,13 +187,9 @@ public class CSVLandUseUpdater extends AbstractUpdater
 				continue; //Go to next line
 			}
 
-			// could have multiple protected area masks, thus only apply when it is false
-			if (!yn) { 
-				// Set LU change YN flag
-				cell.setFRmutable(yn);
-			}
-
-
+			// Set YN to the property
+			cell.setObjectProperty(AgentPropertyIds.valueOf(restrictionColumn), yn);
+ 
 		}
 	}
 
@@ -207,7 +204,7 @@ public class CSVLandUseUpdater extends AbstractUpdater
 		// <- LOGGING
 		logger.info("Initialise " + this);
 		// LOGGING ->
-		logger.info("Loading land use restriction CSVs annually");
+		logger.info("Loading land use restriction CSVs annually (" + restrictionColumn + ")");
 
 
 	}

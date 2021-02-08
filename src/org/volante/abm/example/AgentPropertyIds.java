@@ -70,5 +70,12 @@ public enum AgentPropertyIds implements PropertyId {
 	 * {@link AgentPropertyIds#GIVING_UP_THRESHOLD} may not be overwritten,
 	 * below 1 only by a lower value.
 	 */
-	FORBID_GIVING_UP_THRESHOLD_OVERWRITE;
+	FORBID_GIVING_UP_THRESHOLD_OVERWRITE,
+	
+	// FR mutable (replacing set and get fr mutable) 
+	FR_MUTABLE,
+	PROTECTED_L1,
+	PROTECTED_L2
+	
+	
 }
