@@ -72,10 +72,10 @@ public enum AgentPropertyIds implements PropertyId {
 	 */
 	FORBID_GIVING_UP_THRESHOLD_OVERWRITE,
 	
-	// FR mutable (replacing set and get fr mutable) 
-	FR_MUTABLE,
+	// Wheter FR is mutable or not 
+	FR_IMMUTABLE,
 	PROTECTED_L1,
-	PROTECTED_L2
+	PROTECTED_L2, 
 	
 	
 }

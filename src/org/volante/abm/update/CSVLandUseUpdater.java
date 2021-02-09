@@ -173,8 +173,10 @@ public class CSVLandUseUpdater extends AbstractUpdater
 				y = yTransformer.transform(y);
 			}
 
-			boolean yn = !reader.get(restrictionColumn).equalsIgnoreCase(maskChar);
-			logger.trace(yn);
+
+
+			boolean masked = reader.get(restrictionColumn).equalsIgnoreCase(maskChar);
+			// logger.trace(yn);
 
 			//Try to get the cell
 			Cell cell = region.getCell(x, y);
@@ -188,8 +190,8 @@ public class CSVLandUseUpdater extends AbstractUpdater
 			}
 
 			// Set YN to the property
-			cell.setObjectProperty(AgentPropertyIds.valueOf(restrictionColumn), yn);
- 
+			cell.setObjectProperty(AgentPropertyIds.valueOf(restrictionColumn), masked);
+
 		}
 	}
 

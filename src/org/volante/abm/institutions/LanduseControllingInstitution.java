@@ -70,101 +70,16 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 	IntTransformer	xTransformer	= null;
 	IntTransformer	yTransformer	= null;
 
-    @Override
-	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
-		super.initialise(data, info, extent);
-
-		// <- LOGGING
-		logger.info("Initialise " + this);
-		// LOGGING ->
-//		logger.info("Loading land use restriction CSV from " + csvFileProhibitedLanduse);
-
-
-
-//		try {
-
-//			ABMPersister persister = ABMPersister.getInstance();
+//    @Override
+//	public void initialise(ModelData data, RunInfo info, Region extent) throws Exception {
+//		super.initialise(data, info, extent);
 //
-//  
-//			logger.info("Loading cell CSV from " + csvFileProhibitedLanduse);
+//		// <- LOGGING
+//		logger.info("Initialise " + this);
+//		// LOGGING ->
 // 
-//			CsvReader reader = persister.getCSVReader(csvFileProhibitedLanduse, this.region.getPersisterContextExtra());
 //
-//			List<String> columns = Arrays.asList(reader.getHeaders());
-//			
-//			if (!columns.contains(prohibitedColumn)) { 
-//				throw new IllegalStateException(
-//				        "The land use controlling institution does not have " + prohibitedColumn +  " in the CSV file " + csvFileProhibitedLanduse);
-//			}
-//			
-//			 
-//			
-//			while (reader.readRecord()) {
-// 				if (logger.isDebugEnabled()) {
-//					logger.debug("Read row " + reader.getCurrentRecord());
-//				}
-// 
-//				int x = Integer.parseInt(reader.get(xColumn));
-//				if (xTransformer != null) {
-//					x = xTransformer.transform(x);
-//				}
-//
-//				int y = Integer.parseInt(reader.get(yColumn));
-//				if (yTransformer != null) {
-//					y = yTransformer.transform(y);
-//				}
-//	 
-//				boolean yn = reader.get(prohibitedColumn).equalsIgnoreCase(maskChar);
-// 				logger.debug(yn);
-//
-//				Cell cell = region.getCell(x, y);
-//				
-//				cell.setFRmutable(yn);
-//  
-//			}
-
-
-//			if (!columns.contains(prohibitedColumn)) { 
-//		} catch (Exception exception) {
-//			exception.printStackTrace();
-//			logger.fatal("Land Use Controlling Institution failed: " + exception.toString());
-//
-//			System.exit(0);
-//		}
- 
-
-	}
-
- 
-	 
-	 
-//	
-//	//@Deprecated (use CSVLandUseUpdate instead)
-//
-//	/**
-//	 * Do annual updating
-//	 */
-//	@Override
-//	public void update()
-//	{
-//		super.update();
-//		logger.info(this + "in update() @TODO apply new YN marker");
-//
-//		try {
-////			CsvReader file = getFileForYear();
-//// 			if( file != null ) {
-////				applyFile( file );
-////			}
-//		} catch ( Exception e )
-//		{
-//			logger.fatal( "Couldn't update Capitals: " + e.getMessage() );
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//  
-	
-
+//	} 
 	
 	/**
 	 * Checks configured restriction CSV file.
@@ -176,7 +91,7 @@ public class LanduseControllingInstitution extends AbstractInstitution {
 	@Override
 	public boolean isAllowed(FunctionalRole fr, Cell cell) {
  
-		boolean landuseallowed = (boolean) cell.getObjectProperty(AgentPropertyIds.FR_MUTABLE);
+		boolean landuseallowed = !(boolean) cell.getObjectProperty(AgentPropertyIds.FR_IMMUTABLE);
 
 		if (landuseallowed) {
 			// <- LOGGING

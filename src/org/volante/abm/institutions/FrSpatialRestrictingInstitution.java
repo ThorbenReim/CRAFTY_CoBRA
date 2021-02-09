@@ -46,9 +46,9 @@ public class FrSpatialRestrictingInstitution extends FrRestrictingInstitution {
 	@Override
 	public boolean isAllowed(FunctionalRole fr, Cell cell) {
 
-		boolean covered = (boolean) cell.getObjectProperty(AgentPropertyIds.valueOf(spatialLayer));
+		boolean masked = (boolean) cell.getObjectProperty(AgentPropertyIds.valueOf(spatialLayer));
 
-		if (!covered) {
+		if (!masked) {
 			return true; // does not care as it is not covered 
 		}
 

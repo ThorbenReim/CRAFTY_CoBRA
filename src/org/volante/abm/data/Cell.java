@@ -71,9 +71,7 @@ public class Cell implements Initialisable, PropertyProvider<Object> {
 	int					y					= 0;
 	boolean				initialised			= false;
 
-	
-	// Land use change allowed YN
-	boolean 			frMutable			= true;
+ 
 	
 	Set<CellCapitalObserver> cellCapitalObservers = new HashSet<CellCapitalObserver>();
 
