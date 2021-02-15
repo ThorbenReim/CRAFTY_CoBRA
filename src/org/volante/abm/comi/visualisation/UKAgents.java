@@ -16,18 +16,19 @@ public class UKAgents extends AgentTypeDisplay
 		addAgent("NWCons", Color.magenta.brighter());
 		addAgent("Bioenergy", Color.cyan.darker());
 		addAgent("EA", Color.orange.darker());
-		addAgent("EP", Color.red.darker());
-		addAgent("IAfodder", Color.yellow.brighter());
+		addAgent("EP", new Color(251,154,153));
+		addAgent("IAfodder", Color.red.brighter());
 		addAgent("IAfood", Color.blue.darker());
-		addAgent("PNNB", Color.red.brighter());
+		addAgent("PNNB", Color.yellow.brighter() );
 		addAgent("MW", Color.green.brighter());		
-		addAgent("AF", Color.orange.brighter());
+		addAgent("AF", new Color(31,120,180)); // #1f78b4
 		addAgent("PNB", Color.gray.darker());	
 		addAgent("PNC", Color.green.darker());	
 		addAgent("PNNC", Color.pink.darker());
-		addAgent("IP", Color.lightGray);
+		addAgent("IP",new Color(178,223,138) );// #b2df8a
 		addAgent("SusAr", Color.cyan.brighter());
-		addAgent("VEP", Color.magenta.darker());	
+		addAgent("VEP", new Color(51,160,44)); //	#33a02c
+		addAgent("Urban", new Color(255,127,0)); // #6a3d9a	
 		addAgent("Lazy FR", Color.white.brighter());	
 	}
 }
