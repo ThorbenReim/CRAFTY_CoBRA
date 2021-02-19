@@ -40,10 +40,8 @@ import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Regions;
 import org.volante.abm.schedule.RunInfo;
 
-import sun.java2d.SunGraphicsEnvironment;
-
-
-/**
+//import sun.java2d.SunGraphicsEnvironment;
+ /**
  * @author Sascha Holzhauer
  * 
  */
@@ -77,8 +75,9 @@ public class DefaultModelDisplays extends ModelDisplays {
 		}
 
 		GraphicsConfiguration config = getFrame().getGraphicsConfiguration();
-		Rectangle usableBounds = SunGraphicsEnvironment.getUsableBounds(config.getDevice());
- 
+//		Rectangle usableBounds = SunGraphicsEnvironment.getUsableBounds(config.getDevice());
+		Rectangle usableBounds = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+
 		
 		// Make the model display smaller 
 		usableBounds.x = usableBounds.width / 20 ;
