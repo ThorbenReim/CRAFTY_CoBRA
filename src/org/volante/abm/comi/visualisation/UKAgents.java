@@ -22,13 +22,20 @@ public class UKAgents extends AgentTypeDisplay
 		addAgent("PNNB", Color.yellow.brighter() );
 		addAgent("MW", Color.green.brighter());		
 		addAgent("AF", new Color(31,120,180)); // #1f78b4
-		addAgent("PNB", Color.gray.darker());	
+		addAgent("PNB", new Color(255,127,0) );	
 		addAgent("PNC", Color.green.darker());	
 		addAgent("PNNC", Color.pink.darker());
 		addAgent("IP",new Color(178,223,138) );// #b2df8a
 		addAgent("SusAr", Color.cyan.brighter());
 		addAgent("VEP", new Color(51,160,44)); //	#33a02c
-		addAgent("Urban", new Color(255,127,0)); // #6a3d9a	
+		addAgent("Urban", Color.gray.darker() ); // #6a3d9a	
 		addAgent("Lazy FR", Color.white.brighter());	
 	}
 }
+
+
+// urban = red, cropland intensity classes from yellow to orange,
+// cropland is yellow/orange/brown, 
+// urban is red (or sometimes black), 
+// water is blue, grassland is light green, forest is dark green. 
+// Natural areas perhaps brown or purple, ...
