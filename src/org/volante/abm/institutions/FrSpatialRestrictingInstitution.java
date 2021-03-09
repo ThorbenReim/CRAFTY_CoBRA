@@ -23,6 +23,7 @@ import com.google.common.collect.Table;
 
 /**
  * @author Sascha Holzhauer
+ * 		   Bumsuk Seo
  *
  */
 public class FrSpatialRestrictingInstitution extends FrRestrictingInstitution {
@@ -49,7 +50,7 @@ public class FrSpatialRestrictingInstitution extends FrRestrictingInstitution {
 		boolean masked = (boolean) cell.getObjectProperty(AgentPropertyIds.valueOf(spatialLayer));
 
 		if (!masked) {
-			return true; // does not care as it is not covered 
+			return true; // does not care as it is not masked 
 		}
 
 		String label2request =

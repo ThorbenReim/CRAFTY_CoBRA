@@ -220,6 +220,9 @@ public class SimpleAllocationModel implements AllocationModel, CellVolatilityMes
 			}
 			// LOGGING ->
 
+			
+			//@TODO probably add to takeoverobserver? (ABS 2021)
+			
 			r.setOwnership(agent, c);
 
 			for (CellVolatilityObserver o : cellVolatilityObserver) {

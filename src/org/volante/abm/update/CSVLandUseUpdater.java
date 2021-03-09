@@ -24,21 +24,35 @@ package org.volante.abm.update;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.ElementMap;
+import org.volante.abm.agent.GeoAgent;
+import org.volante.abm.agent.LandUseAgent;
+import org.volante.abm.agent.SocialAgent;
+import org.volante.abm.agent.assembler.DefaultSocialAgentAssembler;
+import org.volante.abm.data.Capital;
 import org.volante.abm.data.Cell;
 import org.volante.abm.data.ModelData;
 import org.volante.abm.data.Region;
 import org.volante.abm.example.AgentPropertyIds;
+import org.volante.abm.example.allocation.AgentFinder;
 import org.volante.abm.institutions.LanduseControllingInstitution;
+import org.volante.abm.models.utils.CellVolatilityObserver;
+import org.volante.abm.models.utils.GivingInStatisticsMessenger;
+import org.volante.abm.models.utils.TakeoverMessenger;
+import org.volante.abm.models.utils.TakeoverObserver;
+import org.volante.abm.output.GivingInStatisticsObserver;
 import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.serialization.ABMPersister;
 import org.volante.abm.serialization.transform.IntTransformer;
 
 import com.csvreader.CsvReader;
+import com.moseph.modelutils.fastdata.DoubleMap;
 
 
 /**
@@ -50,8 +64,8 @@ import com.csvreader.CsvReader;
 
 
 
-public class CSVLandUseUpdater extends AbstractUpdater
-{
+public class CSVLandUseUpdater extends AbstractUpdater implements TakeoverMessenger, GivingInStatisticsMessenger {
+
 
 	/**
 	 * Logger
@@ -77,6 +91,15 @@ public class CSVLandUseUpdater extends AbstractUpdater
 	@Attribute(required= false)
 	String maskChar = "Y";
 
+	@Attribute(required = false)
+	String updateColumn;
+	@Attribute(required = false)
+	String updateFR;
+	@Attribute(required= false)
+	String updateChar = null;
+
+	Integer frId;
+	protected AgentFinder agentFinder; 
 
 	@Attribute(required=false)
 	boolean yearInFilename = true;
@@ -94,6 +117,10 @@ public class CSVLandUseUpdater extends AbstractUpdater
 	Map<Integer,String> yearlyFilenames = new HashMap<Integer, String>();
 
 
+	protected Set<TakeoverObserver> takeoverObserver = new HashSet<>();
+
+	protected Set<GivingInStatisticsObserver> statisticsObserver = new HashSet<>();
+	protected Set<CellVolatilityObserver> cellVolatilityObserver = new HashSet<CellVolatilityObserver>();
 
 	/**
 	 * Do the actual updating
@@ -174,14 +201,8 @@ public class CSVLandUseUpdater extends AbstractUpdater
 			}
 
 
-
-			boolean masked = reader.get(restrictionColumn).equalsIgnoreCase(maskChar);
-			// logger.trace(yn);
-
 			//Try to get the cell
 			Cell cell = region.getCell(x, y);
-
-
 
 			if( cell == null ) //Complain if we couldn't find it - implies there's data that doesn't line up!
 			{
@@ -189,8 +210,73 @@ public class CSVLandUseUpdater extends AbstractUpdater
 				continue; //Go to next line
 			}
 
+
+
+
+			boolean masked = reader.get(restrictionColumn).equalsIgnoreCase(maskChar);
+			// logger.trace(yn);
+
 			// Set YN to the property
 			cell.setObjectProperty(AgentPropertyIds.valueOf(restrictionColumn), masked);
+
+
+
+			boolean updated = reader.get(updateColumn).equalsIgnoreCase(updateChar);
+
+
+
+			// 	System.out.println(updateFR + frId);
+ 
+
+			if (updated) { 
+ 
+
+				LandUseAgent agent = agentFinder.findAgent(cell, Integer.MIN_VALUE, frId);
+
+
+				for (TakeoverObserver observer : takeoverObserver) {
+					observer.setTakeover(this.region, cell.getOwner(), agent);
+				}
+
+				for (CellVolatilityObserver o : cellVolatilityObserver) {
+					o.increaseVolatility(cell);
+				}
+
+				// <- LOGGING
+				if (logger.isDebugEnabled()) {
+					logger.debug("Ownership from :" + cell.getOwner() + " --> " + agent);
+				}
+				// LOGGING ->
+
+
+
+				region.setOwnership(agent, cell);
+
+				//@TODO adapt to the network service 
+				//				if (region.getNetworkService() != null) {
+				//					if (region.getNetwork() != null) {
+				//M
+				//						if (region.getGeography() != null && agent instanceof GeoAgent) {
+				//							((GeoAgent) agent).addToGeography();
+				//						}
+				//						if (agent instanceof SocialAgent) {
+				//							region.getNetworkService().addAndLinkNode(region.getNetwork(), (SocialAgent) agent);
+				//						}
+				//					} else {
+				//						if (!networkNullErrorOccurred) {
+				//							logger.warn(
+				//									"Network object not present during creation of new agent (subsequent error messages are suppressed)");
+				//							networkNullErrorOccurred = true;
+				//						}
+				//					}
+				//				}
+
+
+			}
+
+
+
+
 
 		}
 	}
@@ -209,5 +295,54 @@ public class CSVLandUseUpdater extends AbstractUpdater
 		logger.info("Loading land use restriction CSVs annually (" + restrictionColumn + ")");
 
 
+
+		if (updateColumn != null) { 
+
+			agentFinder = new DefaultSocialAgentAssembler();
+			try {
+				agentFinder.initialise(data, info, extent);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+			}
+
+			if (!this.region.getFunctionalRoleMapByLabel().containsKey(
+					updateFR)) {
+				logger.warn("Couldn't find FunctionalRole by label: "
+						+ updateFR + ". Assigning default!");
+				frId = Integer.MIN_VALUE;
+			} else {
+				frId = this.region.getFunctionalRoleMapByLabel()
+						.get(updateFR).getSerialID();
+			}
+		}
+
+
+		
+		// initialise observers
+		for (TakeoverObserver o : takeoverObserver) {
+			o.initTakeOvers(extent);
+		}
+		for (GivingInStatisticsObserver o : statisticsObserver) {
+			o.initGivingInStatistic(extent);
+		}
+
+
+	}
+
+
+	@Override
+	public void registerTakeoverOberserver(TakeoverObserver observer) {
+		takeoverObserver.add(observer);
+
+		// <- LOGGING
+		if (logger.isDebugEnabled()) {
+			logger.debug("Register TakeoverObserver " + observer);
+		}
+		// LOGGING ->
+	}
+
+	@Override
+	public void registerGivingInStatisticOberserver(GivingInStatisticsObserver observer) {
+		this.statisticsObserver.add(observer);
 	}
 }

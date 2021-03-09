@@ -452,9 +452,8 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 							}
 						}
 
-						// @TODO remove c from searched cells
-						// decided not to do so in Jan 2021
-
+						// decided not to remove c from searched cells (Jan 2021)
+ 
 						break; // stop searching
 
 					} else {
