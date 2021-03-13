@@ -78,6 +78,7 @@ public class DefaultModelDisplays extends ModelDisplays {
 		GraphicsConfiguration config = getFrame().getGraphicsConfiguration();
 //		Rectangle usableBounds = SunGraphicsEnvironment.getUsableBounds(config.getDevice()); // replaced by the awt method
 		Rectangle usableBounds = java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+		// See https://stackoverflow.com/questions/22467544/java-awt-graphicsenvironment-getmaximumwindowbounds-does-not-change-after-scre 
 
 		
 		// Make the model display smaller 
