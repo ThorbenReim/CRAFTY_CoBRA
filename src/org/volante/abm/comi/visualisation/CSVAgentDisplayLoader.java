@@ -28,8 +28,7 @@ import org.volante.abm.schedule.RunInfo;
 import org.volante.abm.visualisation.AgentTypeDisplay;
 import com.csvreader.CsvReader;
 import java.awt.Color;
-import java.io.IOException;
-
+ 
 import org.apache.log4j.Logger;
 
 
@@ -39,8 +38,8 @@ public class CSVAgentDisplayLoader extends AgentTypeDisplay {
 	/**
 	 * 
 	 */
-	//	private static final long serialVersionUID = -8136199562481069547L; // @TODO change the ID?
-
+	private static final long serialVersionUID = 5182974347882438506L;
+ 
 	/**
 	 * Logger
 	 */
@@ -49,8 +48,8 @@ public class CSVAgentDisplayLoader extends AgentTypeDisplay {
 
 	@Attribute(name = "file", required= true)
 	String	file		= "";
-	//	@Attribute(name = "indexed", required = false)
-	//	boolean	indexed		= true;
+	@Attribute(name = "indexed", required = false)
+	boolean	indexed		= true;
 	@Attribute(name = "nameColumn", required = false)
 	String	nameColumn	= "Name";
 	@Attribute(name = "colorColumn", required = false)
