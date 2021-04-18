@@ -42,6 +42,7 @@ import org.volante.abm.schedule.RunInfo;
 import com.moseph.modelutils.distribution.Distribution;
 import com.moseph.modelutils.fastdata.DoubleMap;
 import com.moseph.modelutils.fastdata.DoubleMatrix;
+//import com.moseph.modelutils.fastdata.IndexSet;
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
 
 /**
@@ -60,12 +61,12 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 	static private Logger			logger				= Logger.getLogger(SimpleProductionModel.class);
 
 	protected DoubleMatrix<Capital, Service> capitalWeights =
-			new DoubleMatrix<Capital, Service>( simpleCapitals, simpleServices );
-	protected DoubleMap<Service> productionWeights = new DoubleMap<Service>(simpleServices, 1);
-	
+			new DoubleMatrix<>( simpleCapitals, simpleServices );
+	protected DoubleMap<Service> productionWeights = new DoubleMap<>(simpleServices, 1);
+
 	@Attribute(required=false)
 	String csvFile = null;
-	
+
 	/**
 	 * If true, the noise term is not added to production weights but multiplied when updating production weights.
 	 */
@@ -81,7 +82,11 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 
 	@Attribute(required = false)
 	String doubleFormat = "0.000";
-	
+
+
+
+
+
 	public SimpleProductionModel() {}
 	/**
 	 * Takes an array of capital weights, in the form:
@@ -98,7 +103,7 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 		this.capitalWeights.putT(weights);
 		this.productionWeights.put( productionWeights );
 	}
-	
+
 	/**
 	 * Initialises capital weights and production weights only when not already
 	 * compliant with model data.
@@ -123,8 +128,10 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 				productionWeights = new DoubleMap<Service>(data.services);
 			}
 		}
+
+
 	}
-	
+
 	void initWeightsFromCSV(ModelData data, RunInfo info, Region region) throws Exception
 	{
 		capitalWeights = info.getPersister().csvToMatrix(csvFile, data.capitals, data.services,
@@ -132,7 +139,7 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 		productionWeights = info.getPersister().csvToDoubleMap(csvFile, data.services,
 				"Production", region != null ? region.getPersisterContextExtra() : null);
 	}
-	
+
 	/**
 	 * Sets the effect of a capital on provision of a service
 	 * @param c
@@ -152,37 +159,36 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 	{
 		productionWeights.put( s, weight );
 	}
-	
+
 	public UnmodifiableNumberMap<Service> getProductionWeights() { return productionWeights; }
 	public DoubleMatrix<Capital, Service> getCapitalWeights() { return capitalWeights; }
-	
+
 	@Override
 	public void production( Cell cell, DoubleMap<Service> production )
 	{
 		UnmodifiableNumberMap<Capital> capitals = cell.getEffectiveCapitals();
-		production(capitals, production, cell);
+		production(capitals, production);
 	}
 
-	public void production( UnmodifiableNumberMap<Capital> capitals, DoubleMap<Service> production) {
-		production( capitals, production , null);
-	}
-	public void production( UnmodifiableNumberMap<Capital> capitals, DoubleMap<Service> production, Cell cell)
-	{
+	@Deprecated
+	public void production( UnmodifiableNumberMap<Capital> capitals, DoubleMap<Service> production, Cell cell) {
+
 		if (logger.isDebugEnabled() && cell != null) {
-			StringBuffer buffer = new StringBuffer();
+			StringBuilder buffer = new StringBuilder();
 			DecimalFormat format = new DecimalFormat(doubleFormat);
 
-			if (cell != null) {
-				buffer.append("Cell " + cell.getX() + "|" + cell.getY() + " ");
-			}
+			buffer.append("Cell " + cell.getX() + "|" + cell.getY() + " ");
 			buffer.append("(" + cell.getOwnersFrLabel() + ") ");
 			buffer.append("Production: ");
+
+
+			double val;
 
 			for( Service s : capitalWeights.rows() )
 			{
 				buffer.append(System.getProperty("line.separator") + " Service " + s + "> ");
 
-				double val = 1;
+				val = 1;
 				for( Capital c : capitalWeights.cols() ) {
 					buffer.append(format.format(capitals.getDouble(c)) + "^" + capitalWeights.get(c, s) + " * ");
 
@@ -200,7 +206,7 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 				double val = 1;
 				for( Capital c : capitalWeights.cols() ) {
 					val = val * pow( capitals.getDouble( c ), capitalWeights.get( c, s ) ) ;
-					
+
 					if (Double.isInfinite(val) || Double.isNaN(val)) {
 						logger.error("Production for " + s + " at cell " + cell + " (" + val
 								+ ") became Infinity or NaN after processing capital " + c + " (capital value: "
@@ -210,9 +216,32 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 				}
 				production.putDouble( s, productionWeights.get(s) * val );
 			}
+
 		}
 	}
-	
+
+	// By ABS (Apr 2021) 
+	//@todo check NaN? 
+	public void production(UnmodifiableNumberMap<Capital> capitals, DoubleMap<Service> production ) {
+
+		double[] capitals_arr = ((DoubleMap)capitals).data;
+		// double[][] capital_weights_mat = capitalWeights.data; //getAll();
+		// double[] prod_weights_arr = productionWeights.data; //getAll(); 
+		double[] val_arr = new double[capitalWeights.data[0].length];
+
+
+		for (int i = 0; i < capitalWeights.data[0].length; i++) { 
+			val_arr[i] = 1;
+			for (int j = 0; j < capitals_arr.length; j++) { 
+				val_arr[i] = val_arr[i] * pow(capitals_arr[j], capitalWeights.data[j][i] );
+			}
+			val_arr[i] = val_arr[i] * productionWeights.data[i];
+		}
+
+		production.put(val_arr);
+
+	}
+
 	@Override
 	public String toString()
 	{
@@ -258,7 +287,7 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 				}
 				// LOGGING ->
 			}
-			
+
 			for( Capital c : data.capitals )
 			{
 				// if there is no sensitivity, it remains no sensitivity:
@@ -301,4 +330,3 @@ public class SimpleProductionModel implements ProductionModel, ProductionWeightR
 		return pout;
 	}
 }
-	
