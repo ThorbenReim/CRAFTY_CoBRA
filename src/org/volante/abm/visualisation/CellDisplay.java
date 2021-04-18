@@ -71,11 +71,11 @@ public abstract class CellDisplay extends AbstractDisplay implements KeyListener
 	int							selectedY			= 0;
 	
 	@Attribute(required = false)
-	int							legendSize			= 100;
+	int							legendSize			= 125; // size of the panel
 	
 	@Attribute(required = false)
-	int							legendSquares		= 3;
-	Logger						log					= Logger.getLogger(getClass());
+	int							legendSquares		= 5; // size of the window
+	Logger						logger					= Logger.getLogger(getClass());
 
 	@Attribute(required = false)
 	boolean						drawLegend			= true;
@@ -164,8 +164,8 @@ public abstract class CellDisplay extends AbstractDisplay implements KeyListener
 			try {
 				image.setRGB(x, y, getColourForCell(c));
 			} catch (ArrayIndexOutOfBoundsException e) {
-				log.fatal("Extent: " + extent);
-				log.fatal("Couldn't set cell: " + x + ", " + y + ": " + c.getX() + ", " + c.getY());
+				logger.fatal("Extent: " + extent);
+				logger.fatal("Couldn't set cell: " + x + ", " + y + ": " + c.getX() + ", " + c.getY());
 				throw e;
 			}
 		}
@@ -190,12 +190,12 @@ public abstract class CellDisplay extends AbstractDisplay implements KeyListener
 		if (x >= 0 && x < regionWidth && y >= 0 && y < regionHeight) {
 			setSelectedCell(cells[x][y]);
 			if (selected == null) {
-				log.error("No cell found for " + x + ", " + y);
+				logger.error("No cell found for " + x + ", " + y);
 			}
 			selectedX = selected.getX();
 			selectedY = selected.getY();
 		} else {
-			log.warn("Tried to set cell " + x + "," + y + ", with width=" + regionWidth
+			logger.warn("Tried to set cell " + x + "," + y + ", with width=" + regionWidth
 					+ ", height="
 					+ regionHeight);
 		}
@@ -274,7 +274,7 @@ public abstract class CellDisplay extends AbstractDisplay implements KeyListener
 		@SuppressWarnings("unchecked")
 		NamedIndexSet<T> n = (NamedIndexSet<T>) map.getKeys();
 		if (!n.contains(name)) {
-			log.warn("Bad value asked for: " + name + " got: " + n.names());
+			logger.warn("Bad value asked for: " + name + " got: " + n.names());
 			return 0;
 		}
 		return map.getDouble(n.forName(name));
@@ -300,7 +300,7 @@ public abstract class CellDisplay extends AbstractDisplay implements KeyListener
 		} else if (key == KeyEvent.VK_KP_DOWN || key == KeyEvent.VK_DOWN) {
 			moveSelection(0, -1);
 		} else if (e.getKeyChar() == 'u') {
-			log.debug("Update");
+			logger.debug("Update");
 			update();
 		}
 	}
