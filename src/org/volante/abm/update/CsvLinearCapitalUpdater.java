@@ -57,7 +57,7 @@ public class CsvLinearCapitalUpdater extends AbstractUpdater {
 
 			if (c == null) // Complain if we couldn't find it - implies there's data that doesn't line up!
 			{
-				log.warn("Update for unknown cell:" + x + ", " + y);
+				log.debug("Update for unknown cell:" + x + ", " + y);
 			} else {
 
 				DoubleMap<Capital> adjusted = r.getModelData().capitalMap();

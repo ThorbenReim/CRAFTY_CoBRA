@@ -141,7 +141,7 @@ public class CSVCapitalUpdater extends AbstractUpdater
 			Cell cell = region.getCell( Integer.parseInt( file.get(X_COL) ), Integer.parseInt( file.get( Y_COL ) ) );
 			if( cell == null ) //Complain if we couldn't find it - implies there's data that doesn't line up!
 			{
-				log.warn("Update for unknown cell:" + file.get(X_COL) + ", " + file.get(Y_COL));
+				log.debug("Update for unknown cell:" + file.get(X_COL) + ", " + file.get(Y_COL));
 				continue; //Go to next line
 			}
 			DoubleMap<Capital> adjusted = data.capitalMap();

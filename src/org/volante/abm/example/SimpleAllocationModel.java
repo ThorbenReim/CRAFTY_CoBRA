@@ -26,13 +26,11 @@ package org.volante.abm.example;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
-
+ 
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;

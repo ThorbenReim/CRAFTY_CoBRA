@@ -206,7 +206,7 @@ public class CSVLandUseUpdater extends AbstractUpdater implements TakeoverMessen
 
 			if( cell == null ) //Complain if we couldn't find it - implies there's data that doesn't line up!
 			{
-				log.warn("Update for unknown cell:" + reader.get(X_COL) + ", " + reader.get(Y_COL));
+				log.debug("Update for unknown cell:" + reader.get(X_COL) + ", " + reader.get(Y_COL));
 				continue; //Go to next line
 			}
 

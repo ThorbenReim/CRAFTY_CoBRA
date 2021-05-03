@@ -46,7 +46,7 @@ public class NormalisedCurveCompetitivenessModelDebug extends CurveCompetitivene
 	/**
 	 * Logger
 	 */
-	private static Logger log = Logger.getLogger(NormalisedCurveCompetitivenessModelDebug.class);
+	private static Logger logger = Logger.getLogger(NormalisedCurveCompetitivenessModelDebug.class);
 
 	/**
 	 * Residuals are normalised by per cell demand of the particular service. Used to balance differences in services'
@@ -113,11 +113,11 @@ public class NormalisedCurveCompetitivenessModelDebug extends CurveCompetitivene
 			dm =  region.getDemandModel().getDemand();
 			double dm_s = dm.get(s);
 
-			boolean printDebug = log.isDebugEnabled() && (dm_s >  Double.MIN_VALUE);
+			boolean printDebug = logger.isDebugEnabled() && (dm_s >  Double.MIN_VALUE);
 
 			if (printDebug) { 
-				log.debug(this + "> addUpMarginalUtilities ");
-				log.debug(s.getName()+ " demand=" + dm_s);
+				logger.debug(this + "> addUpMarginalUtilities ");
+				logger.debug(s.getName()+ " demand=" + dm_s);
 			}
 
 			double perCellDemand = region.getDemandModel().getAveragedPerCellDemand().get(s); // static  
@@ -125,21 +125,20 @@ public class NormalisedCurveCompetitivenessModelDebug extends CurveCompetitivene
 
 			if (c == null) {
 				message = "Missing curve for: " + s.getName() + " got: " + curves.keySet();
-				log.fatal(message);
+				logger.fatal(message);
 				throw new IllegalStateException(message);
 			}
 
 			double resDem = residualDemand.getDouble(s); 
 
 			// relative residual demand
-//			double resDem2 = residualDemand.getDouble(s);
+			// double resDem2 = residualDemand.getDouble(s);
 			// The current mean benefit value can be compared to the benefit values of a cell.
-
  			
 			
 			if (printDebug) { 
-				log.debug("perCellDemand=" + perCellDemand);
-				log.debug("residualDemand=" + resDem ) ;
+				logger.debug("perCellDemand=" + perCellDemand);
+				logger.debug("residualDemand=" + resDem ) ;
 			}
 			// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - residualDemand=1.1089970033307922E-8 perCellDemand=46.45615663357212 in Meat
 
@@ -148,7 +147,7 @@ public class NormalisedCurveCompetitivenessModelDebug extends CurveCompetitivene
 				resDem /= perCellDemand;
 
 				if (printDebug) { 
-					log.debug("residualDemand/perCellDemand = " + resDem );
+					logger.debug("residualDemand/perCellDemand = " + resDem );
 				}
 				// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - residualDemand/perCellDemand = 2.387190597961265E-10
 
@@ -156,7 +155,7 @@ public class NormalisedCurveCompetitivenessModelDebug extends CurveCompetitivene
 				if (resDem > 1.0) {
 					message = "residualDemand/perCellDemand > 1 : " + s.getName() + " got: " + curves.keySet()
 					+ " res = " + resDem;
-					log.fatal(message);
+					logger.fatal(message);
 					throw new IllegalStateException(message);
 				}
 
@@ -176,10 +175,10 @@ public class NormalisedCurveCompetitivenessModelDebug extends CurveCompetitivene
 			if (printDebug) { 
 
 
-				log.debug("marginal = " + marginal);
+				logger.debug("marginal = " + marginal);
 				// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - marginal = 2.983988247451581E-13 (=2.387190597961265E-10 * 0.00125 (see values in Competition_linear_new_relative.xml)
 
-				log.debug("amount (cell level supply) = " + amount);
+				logger.debug("amount (cell level supply) = " + amount);
 				// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - amount = 86.4036268140081
 			}
 
@@ -191,7 +190,7 @@ public class NormalisedCurveCompetitivenessModelDebug extends CurveCompetitivene
 
 			if (printDebug) { 
 
-				log.debug( "amount = amount/perCellDemand (normalised) = " + amount);
+				logger.debug( "amount = amount/perCellDemand (normalised) = " + amount);
 				// 1967     DEBUG:	RelativeThresholdCompetitivenessModel - amount/perCellDemand= 1.8598961488684032
 			}
 
@@ -204,14 +203,14 @@ public class NormalisedCurveCompetitivenessModelDebug extends CurveCompetitivene
 			double comp = ((marginal == 0 || amount == 0) ? 0 : marginal * amount);
 
 			if (  removeNegative && comp < 0) {
-				log.debug(String.format(
+				logger.debug(String.format(
 						"\t\tService %10s: Residual (%5f) > Marginal (%5f; Curve: %s) * Amount (%5f) = %5f",
 						s.getName(), resDem, marginal, c.toString(), amount, marginal * amount));
 			}
 
 			if (printDebug) { 
 
-				log.debug( "Competitiveness = " + comp);
+				logger.debug( "Competitiveness = " + comp);
 
 			}
 			//	   	1967     DEBUG:	RelativeThresholdCompetitivenessModel - Competitiveness = 5.549908249703771E-13
@@ -222,7 +221,7 @@ public class NormalisedCurveCompetitivenessModelDebug extends CurveCompetitivene
 		if (sum > Double.MIN_VALUE) { 
 
 
-			log.debug("Competitiveness sum: " + sum);
+			logger.debug("Competitiveness sum: " + sum);
 		}
 		return sum;
 	}

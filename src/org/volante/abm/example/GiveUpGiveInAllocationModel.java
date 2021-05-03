@@ -352,7 +352,7 @@ implements TakeoverMessenger, GivingInStatisticsMessenger {
 			}
 		});
 
-		// doesn't have to be sampled again for every takeover (4.1.2021 by ABS)
+		// @TODO doesn't have to be sampled again for every takeover? (4.1.2021 by ABS)
 
 		//		Map<Cell, Double> competitiveness = scoreMap(searchedCells, new Score<Cell>() {
 		//			@Override
