@@ -81,7 +81,7 @@ public class NormalisedCurveCompetitivenessModel extends CurveCompetitivenessMod
 	 * @return summed marginal utilities of all services
 	 */
 	public double addUpMarginalUtilities(UnmodifiableNumberMap<Service> residualDemand,
-	        UnmodifiableNumberMap<Service> supply, boolean showWorking) { // @TODO showWorking is not being used?
+			UnmodifiableNumberMap<Service> supply, boolean showWorking) { // @TODO showWorking is not being used?
 		double sum = 0;
 
 		for (Service s : supply.getKeySet()) {
@@ -105,17 +105,17 @@ public class NormalisedCurveCompetitivenessModel extends CurveCompetitivenessMod
 			// message = "residualDemand/perCellDemand = " + res ;
 			// log.info(message);
 
- 
+
 			if (res > 1.0) {
 				String message = "residualDemand/perCellDemand > 1 : " + s.getName() + " got: " + curves.keySet()
-				        + " res = " + res;
+				+ " res = " + res;
 				log.fatal(message);
 				throw new IllegalStateException(message);
 			}
 
 			double marginal = c.sample(res); /*
-			                                  * Get the corresponding 'value' (y-value) for this level of unmet demand
-			                                  */
+			 * Get the corresponding 'value' (y-value) for this level of unmet demand
+			 */
 			// message = "marginal = " + marginal;
 			// log.info(message);
 
@@ -138,16 +138,17 @@ public class NormalisedCurveCompetitivenessModel extends CurveCompetitivenessMod
 
 			if (log.isTraceEnabled() || (log.isDebugEnabled() && removeNegative && comp < 0)) {
 				log.debug(String.format(
-				        "\t\tService %10s: Residual (%5f) > Marginal (%5f; Curve: %s) * Amount (%5f) = %5f",
-				        s.getName(), res, marginal, c.toString(), amount, marginal * amount));
+						"\t\tService %10s: Residual (%5f) > Marginal (%5f; Curve: %s) * Amount (%5f) = %5f",
+						s.getName(), res, marginal, c.toString(), amount, marginal * amount));
 			}
 			// message = "comp = " + comp;
 			// log.info(message);
 
 			sum += comp;
 		}
-		log.trace("Competitiveness sum: " + sum);
-
+		if (log.isTraceEnabled()) {
+			log.trace("Competitiveness sum: " + sum);
+		}
 		return sum;
 	}
 

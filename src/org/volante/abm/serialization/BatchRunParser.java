@@ -160,9 +160,9 @@ public class BatchRunParser {
 					throw new IllegalStateException("The current run (" + run
 					        + ") exceeds the number of defined values (" + values.length + ")");
 				}
-				return new Double(values[run]).toString();
+				return Double.toString(values[run]);
 			} else {
-				return new Double(values[0]).toString();
+				return Double.toString(values[0]);
 			}
 
 		} else if (text.startsWith("I(")) {
@@ -179,7 +179,7 @@ public class BatchRunParser {
 			}
 			// LOGGING ->
 
-			return new Integer(values[run]).toString();
+			return Integer.toString(values[run]);
 
 		} else if (text.contains("(")) {
 
