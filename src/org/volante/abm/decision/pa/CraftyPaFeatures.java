@@ -24,6 +24,8 @@
 package org.volante.abm.decision.pa;
 
 /**
+ * CRAFTY potential action (pa) features 
+ * 
  * @author Sascha Holzhauer
  *
  */

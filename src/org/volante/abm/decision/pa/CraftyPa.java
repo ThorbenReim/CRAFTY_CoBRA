@@ -32,6 +32,8 @@ import de.cesr.lara.components.LaraBehaviouralOption;
 import de.cesr.lara.components.LaraPreference;
 
 /**
+ * CRAFTY potential action (pa) 
+ * 
  * @author Sascha Holzhauer
  * @param <BO>
  * 
