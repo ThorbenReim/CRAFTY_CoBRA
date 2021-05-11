@@ -77,5 +77,7 @@ public enum AgentPropertyIds implements PropertyId {
 	PROTECTED_L1,
 	PROTECTED_L2, 
 	
+	// Density of the same AFT within the neighbourhood
+	SN_STRENGTH
 	
 }

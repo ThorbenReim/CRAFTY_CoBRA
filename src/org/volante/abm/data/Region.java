@@ -116,7 +116,7 @@ public class Region implements Regions, PreTickAction {
 	boolean hasCompetitivenessAdjustingInstitution = false;
 
 	boolean skipInitialAllocation = false;
-	
+
 	boolean handleAmbulantAgents = true;
 
 	Map<Object, RegionHelper>	helpers					= new LinkedHashMap<Object, RegionHelper>();
@@ -228,7 +228,7 @@ public class Region implements Regions, PreTickAction {
 		if (this.geoFactory == null) {
 			// geometry factory with floating precision model (default)
 			this.geoFactory =
-						new GeometryFactory(new PrecisionModel(), 32632);
+					new GeometryFactory(new PrecisionModel(), 32632);
 		}
 		return geoFactory;
 	}
@@ -237,44 +237,44 @@ public class Region implements Regions, PreTickAction {
 	 * @return the geography
 	 */
 	public Geography<Object> getGeography() {
-		
- 
+
+
 		// gt-opengis-9.0.jar must be included before geoapi-20050403.jar!
 		// Otherwise this method throws an uncatchable error.
-		
+
 		if (this.geography == null) {
-			
+
 			try {
-			// Causes the CRS factory to apply (longitude, latitude) order of
-			// axis:
-			// TODO
-//			 System.setProperty(GeoTools.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
-//			 "true");
-			GeographyParameters<Object> geoParams = new GeographyParameters<Object>();
-			geoParams.setCrs((String) PmParameterManager
-					.getParameter(GeoPa.CRS));
+				// Causes the CRS factory to apply (longitude, latitude) order of
+				// axis:
+				// TODO
+				//			 System.setProperty(GeoTools.FORCE_LONGITUDE_FIRST_AXIS_ORDER,
+				//			 "true");
+				GeographyParameters<Object> geoParams = new GeographyParameters<Object>();
+				geoParams.setCrs((String) PmParameterManager
+						.getParameter(GeoPa.CRS));
 
-			String crsCode = geoParams.getCrs();
-			this.geography = new DefaultGeography<Object>(this.id
-					+ GEOGRAPHY_NAME_EXTENSION,
-					crsCode);
+				String crsCode = geoParams.getCrs();
+				this.geography = new DefaultGeography<Object>(this.id
+						+ GEOGRAPHY_NAME_EXTENSION,
+						crsCode);
 
-			this.geography.setAdder(geoParams.getAdder());
+				this.geography.setAdder(geoParams.getAdder());
 
-			// <- LOGGING
-			if (logger.isDebugEnabled()) {
-				logger.debug("Geography CRS: " + this.geography.getCRS());
-			}
-			// LOGGING ->
+				// <- LOGGING
+				if (logger.isDebugEnabled()) {
+					logger.debug("Geography CRS: " + this.geography.getCRS());
+				}
+				// LOGGING ->
 			} catch (Exception e) { 
-				
+
 				logger.error("Geography is null and failed to generate one");
-//				e.printStackTrace();
-				
+				//				e.printStackTrace();
+
 			}
-			
+
 		}
- 
+
 		return this.geography;
 	}
 
@@ -394,8 +394,8 @@ public class Region implements Regions, PreTickAction {
 		demand.initialise(data, info, this);
 		// <- LOGGING
 		logger.info("Demand model initialised " + this + "...");
-		
-		 
+
+
 
 		if (this.institutions != null) {
 			this.institutions.initialise(data, info, this);
@@ -499,7 +499,7 @@ public class Region implements Regions, PreTickAction {
 			UIdentifyCallerException.setOmitLineNumbers(false);
 			if (functionalRolesBySerialId.containsKey(role.getSerialID())) {
 				logger.warn("New Functional Role overwrites existing one with serial ID "
-								+ role.getSerialID(),
+						+ role.getSerialID(),
 						new UIdentifyCallerException());
 			}
 			functionalRolesBySerialId.put(role.getSerialID(), role);
@@ -729,7 +729,7 @@ public class Region implements Regions, PreTickAction {
 	 */
 	public double getCompetitiveness(Cell c) {
 		double comp = getUnadjustedCompetitiveness(c); // before institution intervenes
-		
+
 		if (hasCompetitivenessAdjustingInstitution()) {
 			FunctionalRole a = c.getOwner() == null ? null : c.getOwner()
 					.getFC().getFR();
@@ -803,12 +803,12 @@ public class Region implements Regions, PreTickAction {
 			}
 			if (log.isDebugEnabled()
 					&& a.getProperty(AgentPropertyIds.COMPETITIVENESS) < a
-							.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)) {
+					.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)) {
 				log.debug(" Cell below new " + a.getID()
-						+ "'s GivingUp threshold: comp = "
-						+ a.getProperty(AgentPropertyIds.COMPETITIVENESS)
-						+ " GU = "
-						+ a.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD));
+				+ "'s GivingUp threshold: comp = "
+				+ a.getProperty(AgentPropertyIds.COMPETITIVENESS)
+				+ " GU = "
+				+ a.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD));
 			}
 			if (log.isTraceEnabled()) {
 				log.trace(" owner is now " + a);
@@ -820,10 +820,10 @@ public class Region implements Regions, PreTickAction {
 				reporter.registerAtAgent(a);
 			}
 		}
-		
+
 		allocatedAgents.add(a);
 		ambulantAgents.remove(a);
-		
+
 		for (RegionHelper helper : this.helpers.values()) {
 			if (helper instanceof PopulationRegionHelper) {
 				((PopulationRegionHelper) helper).agentAdded(a);
@@ -898,8 +898,8 @@ public class Region implements Regions, PreTickAction {
 			updateExtent(c);
 		}
 		cellTable = TreeBasedTable.create(); // Would rather use the ArrayTable below, but requires
-												// setting up ranges, and the code below doesn't
-												// work
+		// setting up ranges, and the code below doesn't
+		// work
 		/*
 		 * cellTable = ArrayTable.create( Ranges.open( extent.minY, extent.maxY ).asSet(
 		 * DiscreteDomains.integers() ), Ranges.open( extent.minX, extent.maxX ).asSet(
@@ -931,7 +931,7 @@ public class Region implements Regions, PreTickAction {
 	}
 
 	/**
-	 * Returns More-neighbourhood of the given cell.
+	 * Returns Moore-neighbourhood of the given cell.
 	 * 
 	 * @param c
 	 * @return set of cell belonging the the given cell's Moore neighbourhood
@@ -952,6 +952,76 @@ public class Region implements Regions, PreTickAction {
 		}
 		return adjacent;
 	}
+
+
+
+
+	/**
+	 * Returns cells of the given cell within the neighbourhood (size defined by pixel width).
+	 * 
+	 * @param c
+	 * @param width (radius in pixel)
+	 * @return set of cell belonging the the given cell's circular neighbourhood
+	 */
+	public Set<Cell> getAdjacentCells(Cell c, int width) {
+		
+		if (cellTable == null) {
+			this.cellsCreated();
+		}
+		
+		Set<Cell> adjacent = new HashSet<Cell>();
+
+		// Compare radius of circle with
+		// distance of its centre from given point
+		int centre_x = c.getX();
+		int centre_y = c.getY();
+
+		int dx = 0;
+		int dy = 0;
+
+		// radius squared 
+		int radiusSquared = (int) Math.pow(width, 2); 
+
+		Cell thisCell = null; 
+
+		for (int x = centre_x - width; x <= centre_x + width; x++) {
+
+			// Abs distance in x axis
+			dx = Math.abs(x - centre_x);  // guess Math.abs is JVM intrinsic..?
+
+			for (int y = centre_y - width; y <= centre_y + width; y++) {
+
+				// the point itself
+				if (x == centre_x && y==centre_y) { 
+					continue;
+				} 
+				
+				// the cell is null 
+				if ((thisCell = this.getCell(x, y))==null) {
+					continue;
+				}
+
+				// Abs distance in y axis
+				dy = Math.abs(y - centre_y);
+
+				// compare extent 
+				if ( dx+dy <= width) {
+					adjacent.add(thisCell);
+					continue;
+				} 
+
+				// compare distance
+				if (Math.pow(dx,2) + Math.pow(dy,2) <= radiusSquared) { // same for Math.pow
+					adjacent.add(thisCell);
+				}
+			}
+		}
+		return adjacent;
+	}
+
+
+
+
 
 	public boolean hasInstitutions() {
 		return institutions == null ? false : institutions.hasInstitutions();
@@ -1078,12 +1148,12 @@ public class Region implements Regions, PreTickAction {
 			double diff = 0.0;
 			for (LandUseAgent a : this.getAllAllocatedAgents()) {
 				diff = a.getProperty(AgentPropertyIds.GIVING_UP_THRESHOLD)
-				        - a.getProperty(AgentPropertyIds.COMPETITIVENESS);
+						- a.getProperty(AgentPropertyIds.COMPETITIVENESS);
 				this.maxGivingUpDiff.put(a.getFC().getFR(),
-				        new Double(Math.max(diff,
-				                this.maxGivingUpDiff.containsKey(a.getFC().getFR())
-				                        ? this.maxGivingUpDiff.get(a.getFC().getFR())
-				                        : 0)));
+						new Double(Math.max(diff,
+								this.maxGivingUpDiff.containsKey(a.getFC().getFR())
+								? this.maxGivingUpDiff.get(a.getFC().getFR())
+										: 0)));
 			}
 		}
 		return this.maxGivingUpDiff;
