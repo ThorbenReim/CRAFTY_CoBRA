@@ -934,7 +934,7 @@ public class Region implements Regions, PreTickAction {
 	 * Returns More-neighbourhood of the given cell.
 	 * 
 	 * @param c
-	 * @return set of cell belonging the the given cell's More neighbourhood
+	 * @return set of cell belonging the the given cell's Moore neighbourhood
 	 */
 	public Set<Cell> getAdjacentCells(Cell c) {
 		if (cellTable == null) {
