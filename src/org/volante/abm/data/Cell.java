@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.volante.abm.agent.Agent;
 import org.volante.abm.agent.LandUseAgent;
+import org.volante.abm.agent.fr.FunctionalRole;
 import org.volante.abm.agent.property.PropertyId;
 import org.volante.abm.agent.property.PropertyProvider;
 import org.volante.abm.agent.property.PropertyProviderComp;
@@ -54,7 +55,7 @@ public class Cell implements Initialisable, PropertyProvider<Object> {
 	 */
 	DoubleMap<Capital>	baseCapitals		= null;				// Current levels of
 																	// baseCapitals
-	DoubleMap<Capital>			effectiveCapitals	= null;				// Current levels of
+	DoubleMap<Capital>	effectiveCapitals	= null;				// Current levels of
 																			// effective capitals
 																			// (including
 																			// institutional
@@ -76,6 +77,9 @@ public class Cell implements Initialisable, PropertyProvider<Object> {
 	Set<CellCapitalObserver> cellCapitalObservers = new HashSet<CellCapitalObserver>();
 
 	PropertyProviderComp<Object> propertyProvider = null;
+
+	// store neighbourhood density
+	public float[] neighbourhoodFrDensity;
 
 
 	public Cell() {
@@ -274,6 +278,14 @@ public class Cell implements Initialisable, PropertyProvider<Object> {
 			this.propertyProvider = new PropertyProviderComp<>();
 		}
 		this.propertyProvider.setObjectProperty(propertyId, value);
+	}
+
+	public float getNeighbourhoodFrDensity(FunctionalRole fRole) {
+		return(this.neighbourhoodFrDensity[fRole.getSerialID()]);
+	}
+
+	public void setNeighbourhoodFrDensity(FunctionalRole fRole, float snStrength) {
+		this.neighbourhoodFrDensity[fRole.getSerialID()] = snStrength;
 	}
 
 	

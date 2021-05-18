@@ -3,7 +3,10 @@
  */
 package org.volante.abm.institutions;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -18,6 +21,7 @@ import org.volante.abm.example.AgentPropertyIds;
 import org.volante.abm.schedule.RunInfo;
 import com.moseph.modelutils.fastdata.UnmodifiableNumberMap;
 import java.util.stream.Collectors;
+import org.volante.abm.agent.fr.FunctionalRole;
 
 
 /**
@@ -50,7 +54,7 @@ public class NeighbourhoodNetworkInstitution extends AbstractInstitution {
 	private float effectFactor = (float) 0.1;
 
 
-
+ 
 
 	/**
 	 * Update AFT density 
@@ -95,23 +99,26 @@ public class NeighbourhoodNetworkInstitution extends AbstractInstitution {
 
 			if (c.getOwner() != Agent.NOT_MANAGED && c.getOwner() != null ) {
 
-				int cId = c.getOwnersFrSerialID();
-				var sameNeighbours = 0;
+			 
+				region.getFunctionalRoles().forEach(fRole -> { 
 
-				Set<Cell> neighbours = region.getAdjacentCells(c, neighbourhoodRadius);
+					int cId = fRole.getSerialID();
+					int sameNeighbours = 0;
 
-				// Count neighbouring cells under the same management
+					Set<Cell> neighbours = region.getAdjacentCells(c, neighbourhoodRadius);
 
-				for (Cell n : neighbours) {
-					if (n.getOwnersFrSerialID() == cId) {
-						sameNeighbours++;
+					// Count neighbouring cells under the same management
+
+					for (Cell n : neighbours) {
+						if (n.getOwnersFrSerialID() == cId) {
+							sameNeighbours++;
+						}
 					}
-				}
-				// Sum of the AFT density multiplied by effectOnCapitalFactor
-				float snStrength = (float) sameNeighbours / (float) neighbours.size() * effectFactor;
+					// Sum of the AFT density multiplied by effectOnCapitalFactor
+					float snStrength = (float) sameNeighbours / (float) neighbours.size() * effectFactor;
 
-				c.setObjectProperty(AgentPropertyIds.SN_STRENGTH, (double) snStrength);
-
+					c.setNeighbourhoodFrDensity(fRole, snStrength);
+				});
 			}
 		});		
 
@@ -127,7 +134,7 @@ public class NeighbourhoodNetworkInstitution extends AbstractInstitution {
 
 		if (c.getOwner() != Agent.NOT_MANAGED && c.getOwner() != null ) {
 
-			adjustFactor += (double) c.getObjectProperty(AgentPropertyIds.SN_STRENGTH);
+			adjustFactor += (double) c.getNeighbourhoodFrDensity(fRole);
 
 		}			
 
@@ -153,10 +160,11 @@ public class NeighbourhoodNetworkInstitution extends AbstractInstitution {
 		//	for (Cell c : this.region.getAllCells()) {
 		//		c.setObjectProperty(AgentPropertyIds.SN_STRENGTH, 0.0);
 		//	}
-		
+
 		// parallelised
 		((Collection<Cell>) this.region.getAllCells()).parallelStream().forEach(c -> {
-			c.setObjectProperty(AgentPropertyIds.SN_STRENGTH, 0.0);
+			c.neighbourhoodFrDensity = new float[region.getFunctionalRoles().size()];
+			Arrays.fill(c.neighbourhoodFrDensity, (float) 0.0);
 		});
 
 		// <- LOGGING

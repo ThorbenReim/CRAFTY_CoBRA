@@ -226,7 +226,7 @@ public class ModelRunner {
 		int startRun = cmd.hasOption("sr") ? Integer.parseInt(cmd.getOptionValue("sr")) : 0;
 
 		if (numRuns - startRun != 1) {
-			logger.error("CRAFTY R-JAVA API does not allow multiple runs in one call (yet in 2020).");
+			logger.error("CRAFTY R-JAVA API does not allow multiple runs in one call.");
 
 			return (null);
 
@@ -235,7 +235,7 @@ public class ModelRunner {
 		int numOfRandVariation = cmd.hasOption("r") ? Integer.parseInt(cmd.getOptionValue('r')) : 1;
 
 		if (numOfRandVariation > 1) {
-			logger.error("CRAFTY R-JAVA API does not allow multiple random variations in one call (yet in 2020).");
+			logger.error("CRAFTY R-JAVA API does not allow multiple random variations in one call.");
 
 			return (null);
 		}
