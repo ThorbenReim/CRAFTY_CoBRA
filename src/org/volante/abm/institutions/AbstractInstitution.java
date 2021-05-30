@@ -84,4 +84,8 @@ public abstract class AbstractInstitution implements Institution
 		this.rInfo = info;
 		this.region = extent;
 	}
+
+	public void takeOver(Cell c) { 
+		// do nothing
+	}
 }

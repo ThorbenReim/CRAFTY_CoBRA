@@ -219,4 +219,11 @@ public class Institutions implements Institution, PreTickAction {
 		}
 		return null;
 	}
+
+	@Override
+	public void takeOver(Cell c) {
+		for (Institution inst : institutions) {
+			inst.takeOver(c);
+		}
+	}
 }

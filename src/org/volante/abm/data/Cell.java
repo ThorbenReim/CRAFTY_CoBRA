@@ -284,8 +284,8 @@ public class Cell implements Initialisable, PropertyProvider<Object> {
 		return(this.neighbourhoodFrDensity[fRole.getSerialID()]);
 	}
 
-	public void setNeighbourhoodFrDensity(FunctionalRole fRole, float snStrength) {
-		this.neighbourhoodFrDensity[fRole.getSerialID()] = snStrength;
+	public void setNeighbourhoodFrDensity(int cId, float snStrength) {
+		this.neighbourhoodFrDensity[cId] = snStrength;
 	}
 
 	

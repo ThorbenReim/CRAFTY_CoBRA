@@ -91,4 +91,11 @@ public interface Institution extends Initialisable {
 	 * internal updates necessary.
 	 */
 	public void update();
+
+	/**
+	 * Called everytime a take over happens
+	 * 30 May 2021 by ABS   
+	 * @param c
+	 */
+	void takeOver(Cell c);
 }

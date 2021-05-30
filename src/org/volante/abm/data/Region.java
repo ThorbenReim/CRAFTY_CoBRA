@@ -813,6 +813,13 @@ public class Region implements Regions, PreTickAction {
 			if (log.isTraceEnabled()) {
 				log.trace(" owner is now " + a);
 			}
+
+			// Institutions updates at each take over (May 2021 by ABS)
+			// @todo it could be via RegionHelper? 
+ 			if (c.getRegion().hasInstitutions()) {  
+ 				c.getRegion().getInstitutions().takeOver(c); 
+ 			}
+ 			
 		}
 
 		if (!this.allocatedAgents.contains(a) && !this.ambulantAgents.contains(a)) {
