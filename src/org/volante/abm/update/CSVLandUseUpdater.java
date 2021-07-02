@@ -23,6 +23,7 @@
 package org.volante.abm.update;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -129,6 +130,17 @@ public class CSVLandUseUpdater extends AbstractUpdater implements TakeoverMessen
 	public void prePreTick()
 	{
 		try {
+
+			if (region!=null) {
+				// Reset fr mutable mask
+				((Collection<Cell>) this.region.getAllCells()).parallelStream().forEach(cell -> {
+					cell.setObjectProperty(AgentPropertyIds.FR_IMMUTABLE, false);
+					cell.setObjectProperty(AgentPropertyIds.PROTECTED_L1, false);
+					cell.setObjectProperty(AgentPropertyIds.PROTECTED_L2, false);
+
+				});
+			}
+
 			CsvReader file = getFileForYear();
 			if( file != null ) {
 				applyFile( file );
@@ -212,13 +224,14 @@ public class CSVLandUseUpdater extends AbstractUpdater implements TakeoverMessen
 
 
 
-
 			boolean masked = reader.get(restrictionColumn).equalsIgnoreCase(maskChar);
 			// logger.trace(yn);
 
-			// Set YN to the property
-			cell.setObjectProperty(AgentPropertyIds.valueOf(restrictionColumn), masked);
-
+			// Update only when it's true (for having multiple FR restriction csvs) 
+			if (masked) {
+				// Set the property true
+				cell.setObjectProperty(AgentPropertyIds.valueOf(restrictionColumn), masked);
+			}
 
 
 			boolean updated = reader.get(updateColumn).equalsIgnoreCase(updateChar);
